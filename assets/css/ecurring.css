@@ -1,0 +1,48 @@
+.ecurring-mandate-accept .mandate_accepted_label {
+    display: inline;
+    cursor: pointer;
+}
+
+.ecurring-mandate-accept #mandate_accepted {
+    position: relative;
+    top: 1px;
+    margin-right: 8px;
+}
+
+.ecurring-mandate-accept .accept-required,
+.ecurring-mandate-accept-description .accept-required {
+    color: #ff0000;
+}
+
+.ecurring-mandate-accept-read-more:hover .ecurring-mandate-accept-description,
+.ecurring-subscriptions-status-read-more:hover .ecurring-subscriptions-status-description {
+    display: block;
+}
+
+.ecurring-mandate-accept-read-more {
+    text-decoration: underline;
+}
+
+.ecurring-subscriptions-status-read-more {
+    margin-top: -20px;
+}
+
+.ecurring-mandate-accept-description, .ecurring-subscriptions-status-description {
+    display: none;
+    background: #000;
+    padding: 10px;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: -125px;
+    z-index: 1000;
+    width: 300px;
+    opacity: 0.95;
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+.ecurring-subscriptions-status-description {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    line-height: 16pt;
+}
