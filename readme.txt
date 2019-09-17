@@ -135,6 +135,10 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 == Changelog ==
 
+= 1.1.1 - 17-09-2019 =
+
+* Fix translation strings
+
 = 1.1.0 - 29-05-2019 =
 
 * Add WooCommerce > Account > Subscriptions for eCurring subscriptions
