@@ -825,10 +825,12 @@ class eCurring_WC_Plugin
 
 				echo '<style>.woocommerce-privacy-policy-text{display: none}</style>';
 				echo '<div class="ecurring-mandate-accept"><input type="checkbox" name="mandate_accepted" id="mandate_accepted">';
-				echo __('I authorize ' . esc_html(get_bloginfo('name')) . ' to automatically debit future costs from my debit or credit card depending on the chosen payment method in the next step.', 'woo-ecurring');
+				echo sprintf(__('I authorize %s to automatically debit future costs from my debit or credit card depending on the chosen payment method in the next step.', 'woo-ecurring'), esc_html(get_bloginfo('name')));
 				echo '&nbsp;<span class="ecurring-mandate-accept-read-more">' . __('More info on direct debit mandate.', 'woo-ecurring');
 				echo '<span class="accept-required">*</span></label>';
-				echo '<span class="ecurring-mandate-accept-description"><span class="accept-required">*</span>' . __('You authorize ' . esc_html(get_bloginfo('name')) . ' to charge recurring payments from your account or card, commissioned by ' . esc_html(get_bloginfo('name')) . '. If you do not agree with a charge, you can have it charged back. Please contact your bank within 8 weeks of the debit. Ask your bank about the terms and conditions. Benificiary ID: NL05ZZZ577987450000.', 'woo-ecurring') . '</span></span></div>';
+				echo '<span class="ecurring-mandate-accept-description"><span class="accept-required">*</span>';
+                echo sprintf(__('You authorize %s to charge recurring payments from your account or card, commissioned by %s. If you do not agree with a charge, you can have it charged back. Please contact your bank within 8 weeks of the debit. Ask your bank about the terms and conditions. Benificiary ID: NL05ZZZ577987450000.', 'woo-ecurring'), esc_html(get_bloginfo('name')));
+                echo '</span></span></div>';
 			}
 		}
 	}
