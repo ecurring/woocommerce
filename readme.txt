@@ -3,7 +3,7 @@ Contributors: davdebcom
 Tags: recurring payments, woocommerce, payment gateway, direct debit, subscriptions, woocommerce subscriptions, sepa
 Requires at least: 4.0
 Tested up to: 5.2
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,7 +86,7 @@ Yes, you can with a separate plugin. At the moment we have tested and can recomm
 
 = Why do orders with payment method BankTransfer and Direct Debit get the status 'on-hold'? =
 
-These payment methods take longer than a few hours to complete. The order status is set to 'on-hold' to prevent the WooCommerce setting 'Hold stock (minutes)' (https://docs.woothemes.com/document/configuring-woocommerce-settings/#inventory-options) will 
+These payment methods take longer than a few hours to complete. The order status is set to 'on-hold' to prevent the WooCommerce setting 'Hold stock (minutes)' (https://docs.woothemes.com/document/configuring-woocommerce-settings/#inventory-options) will
 cancel the order. The order stock is also reduced to reserve stock for these orders. The stock is restored if the payment fails or is cancelled. You can change the initial order status for these payment methods on their setting page.
 
 = I have a different question about this plugin =
