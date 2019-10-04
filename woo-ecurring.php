@@ -5,7 +5,7 @@
  * Description: Collect your subscription fees in WooCommerce with ease.
  * Version: 1.1.1
  * Author: eCurring
- * Requires at least: 4.0
+ * Requires at least: 4.6
  * Tested up to: 5.1
  * Text Domain: woo-ecurring
  * License: GPLv2 or later

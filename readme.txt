@@ -1,7 +1,7 @@
 === WooCommerce eCurring gateway ===
 Contributors: davdebcom
 Tags: recurring payments, woocommerce, payment gateway, direct debit, subscriptions, woocommerce subscriptions, sepa
-Requires at least: 4.0
+Requires at least: 4.6
 Tested up to: 5.2
 Stable tag: 1.1.1
 Requires PHP: 5.6
@@ -109,7 +109,7 @@ Where possible, also include the eCurring log file. You can find the eCurring lo
 
 * PHP version 5.6 or greater
 * PHP extensions enabled: cURL, JSON
-* WordPress 4.0 or greater
+* WordPress 4.6 or greater
 * WooCommerce 3.0 or greater
 
 = Automatic installation =
