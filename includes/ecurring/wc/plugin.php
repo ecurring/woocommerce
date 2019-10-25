@@ -829,7 +829,7 @@ class eCurring_WC_Plugin
 				echo '&nbsp;<span class="ecurring-mandate-accept-read-more">' . __('More info on direct debit mandate.', 'woo-ecurring');
 				echo '<span class="accept-required">*</span></label>';
 				echo '<span class="ecurring-mandate-accept-description"><span class="accept-required">*</span>';
-                echo sprintf(__('You authorize %s to charge recurring payments from your account or card, commissioned by %s. If you do not agree with a charge, you can have it charged back. Please contact your bank within 8 weeks of the debit. Ask your bank about the terms and conditions. Benificiary ID: NL05ZZZ577987450000.', 'woo-ecurring'), esc_html(get_bloginfo('name')));
+                echo sprintf(__('You authorize %1$s to charge recurring payments from your account or card, commissioned by %1$s. If you do not agree with a charge, you can have it charged back. Please contact your bank within 8 weeks of the debit. Ask your bank about the terms and conditions. Benificiary ID: NL05ZZZ577987450000.', 'woo-ecurring'), esc_html(get_bloginfo('name')));
                 echo '</span></span></div>';
 			}
 		}
