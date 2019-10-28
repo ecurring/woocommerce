@@ -402,6 +402,11 @@ class eCurring_WC_Helper_Data {
 			                'first_name'     => trim( $order->get_billing_first_name() ),
 			                'last_name'     => trim( $order->get_billing_last_name() ),
 			                'email'    => trim( $order->get_billing_email() ),
+                            'city' => trim($order->get_billing_city()),
+                            'country_iso2' => trim($order->get_billing_country()),
+                            'street' => trim($order->get_billing_address_1()),
+                            'house_number' => trim($order->get_billing_address_2()),
+                            'postalcode' => trim($order->get_billing_postcode()),
 		                )
 	                ),
                 ));
