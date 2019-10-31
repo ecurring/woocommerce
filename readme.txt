@@ -3,7 +3,7 @@ Contributors: davdebcom
 Tags: recurring payments, woocommerce, payment gateway, direct debit, subscriptions, woocommerce subscriptions, sepa
 Requires at least: 4.6
 Tested up to: 5.2
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -134,6 +134,11 @@ Please contact support@ecurring.com if you need help installing the eCurring Woo
 Automatic updates should work like a charm; as always though, ensure you backup your site just in case.
 
 == Changelog ==
+
+= 1.1.2 - 31-10-2019 =
+
+* Add address information from order billing on customer creation
+* Fix translation sprintf issue by adding positional parameter
 
 = 1.1.1 - 17-09-2019 =
 
