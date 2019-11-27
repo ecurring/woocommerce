@@ -360,14 +360,21 @@ class eCurring_WC_Helper_Data {
 			try {
                 $api->apiCall('GET','https://api.ecurring.com/customers/'.$customer_id);
 
-				$request = $api->apiCall('PATCH','https://api.ecurring.com/customers'.$customer_id,array (
+                $request = $api->apiCall('PATCH',
+                    'https://api.ecurring.com/customers/' . $customer_id, array(
 					'data' => array(
 						'type' => 'customer',
 						'id' => $customer_id,
 						'attributes' => array(
-							'first_name'     => trim( $order->get_billing_first_name() ),
-							'last_name'     => trim( $order->get_billing_last_name() ),
-							'email'    => trim( $order->get_billing_email() ),
+                            'first_name' => trim($order->get_billing_first_name()),
+                            'last_name' => trim($order->get_billing_last_name()),
+                            'email' => trim($order->get_billing_email()),
+                            'telephone' => trim($order->get_billing_phone()),
+                            'city' => trim($order->get_billing_city()),
+                            'country_iso2' => trim($order->get_billing_country()),
+                            'street' => trim($order->get_billing_address_1()),
+                            'house_number' => trim($order->get_billing_address_2()),
+                            'postalcode' => trim($order->get_billing_postcode()),
 						)
 					),
 				));
@@ -395,21 +402,21 @@ class eCurring_WC_Helper_Data {
 		if ( empty( $customer_id ) ) {
 			try {
 
-                $request = $api->apiCall('POST','https://api.ecurring.com/customers',array (
-	                'data' => array(
-		                'type' => 'customer',
-		                'attributes' => array(
-			                'first_name'     => trim( $order->get_billing_first_name() ),
-			                'last_name'     => trim( $order->get_billing_last_name() ),
-			                'email'    => trim( $order->get_billing_email() ),
+                $request = $api->apiCall('POST', 'https://api.ecurring.com/customers', array(
+                    'data' => array(
+                        'type' => 'customer',
+                        'attributes' => array(
+                            'first_name' => trim($order->get_billing_first_name()),
+                            'last_name' => trim($order->get_billing_last_name()),
+                            'email' => trim($order->get_billing_email()),
                             'telephone' => trim($order->get_billing_phone()),
                             'city' => trim($order->get_billing_city()),
                             'country_iso2' => trim($order->get_billing_country()),
                             'street' => trim($order->get_billing_address_1()),
                             'house_number' => trim($order->get_billing_address_2()),
                             'postalcode' => trim($order->get_billing_postcode()),
-		                )
-	                ),
+                        )
+                    ),
                 ));
 
                 $response = json_decode($request,true);
