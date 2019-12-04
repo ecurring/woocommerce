@@ -42,9 +42,10 @@ class eCurring_WC_Helper_Api
 
 		$result = $WP_Http->request( $url, $args );
 
-		$result = $result['body'];
+		if(is_wp_error($result)) {
+            return $result->get_error_message();
+        }
 
-		return $result;
+		return $result['body'];
 	}
-
 }
