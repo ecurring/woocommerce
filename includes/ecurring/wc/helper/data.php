@@ -368,6 +368,7 @@ class eCurring_WC_Helper_Data {
 						'attributes' => array(
                             'first_name' => trim($order->get_billing_first_name()),
                             'last_name' => trim($order->get_billing_last_name()),
+                            'company_name' => trim($order->get_billing_company()),
                             'email' => trim($order->get_billing_email()),
                             'telephone' => trim($order->get_billing_phone()),
                             'city' => trim($order->get_billing_city()),
@@ -408,6 +409,7 @@ class eCurring_WC_Helper_Data {
                         'attributes' => array(
                             'first_name' => trim($order->get_billing_first_name()),
                             'last_name' => trim($order->get_billing_last_name()),
+                            'company_name' => trim($order->get_billing_company()),
                             'email' => trim($order->get_billing_email()),
                             'telephone' => trim($order->get_billing_phone()),
                             'city' => trim($order->get_billing_city()),
