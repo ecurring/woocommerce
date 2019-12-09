@@ -2,7 +2,7 @@
 Contributors: davdebcom, inpsyde
 Tags: recurring payments, woocommerce, payment gateway, direct debit, subscriptions, woocommerce subscriptions, sepa
 Requires at least: 4.6
-Tested up to: 5.2
+Tested up to: 5.3
 Stable tag: 1.1.3
 Requires PHP: 5.6
 License: GPLv2 or later
