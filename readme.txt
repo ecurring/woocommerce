@@ -1,5 +1,5 @@
 === WooCommerce eCurring gateway ===
-Contributors: davdebcom
+Contributors: davdebcom, inpsyde
 Tags: recurring payments, woocommerce, payment gateway, direct debit, subscriptions, woocommerce subscriptions, sepa
 Requires at least: 4.6
 Tested up to: 5.2
@@ -135,35 +135,40 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 == Changelog ==
 
+= 1.1.3 - 09-12-2019 =
+
+* Add business name from order billing on customer creation.
+* Handle `WP_Error` from eCurring api call response.
+
 = 1.1.2 - 31-10-2019 =
 
-* Add address information from order billing on customer creation
-* Fix translation sprintf issue by adding positional parameter
+* Add address information from order billing on customer creation.
+* Fix translation sprintf issue by adding positional parameter.
 
 = 1.1.1 - 17-09-2019 =
 
-* Fix translation strings
+* Fix translation strings.
 
 = 1.1.0 - 29-05-2019 =
 
-* Add WooCommerce > Account > Subscriptions for eCurring subscriptions
+* Add WooCommerce > Account > Subscriptions for eCurring subscriptions.
 
 = 1.0.5 - 03-04-2019 =
 
-* Update statuses in ecurring_webhook to use new eCurring pretty status
-* Disable eCurring on "Pay for order" page
-* Convert eCurring API status to a pretty status for merchants and users
-* Remove 'Pay' button from My Account when method is eCurring
-* Add warning to "Add products" when products are added to manual order
-* Update checkout "Accept mandate" to use a tooltip
-* Updating mapping of order statuses
-* Add custom order status 'wc-ecurring-retrying-payment'
-* Correct WooCommerce status to on-hold
+* Update statuses in ecurring_webhook to use new eCurring pretty status.
+* Disable eCurring on "Pay for order" page.
+* Convert eCurring API status to a pretty status for merchants and users.
+* Remove 'Pay' button from My Account when method is eCurring.
+* Add warning to "Add products" when products are added to manual order.
+* Update checkout "Accept mandate" to use a tooltip.
+* Updating mapping of order statuses.
+* Add custom order status 'wc-ecurring-retrying-payment'.
+* Correct WooCommerce status to on-hold.
 
 = 1.0.4 - 20-02-2019 =
 
-* Removed WooCommerce order status update in getReturnRedirectUrlForOrder
-* Removed default status "pending" in webhook function
+* Removed WooCommerce order status update in getReturnRedirectUrlForOrder.
+* Removed default status "pending" in webhook function.
 
 = 1.0.3 - 18-02-2019 =
 

@@ -3,10 +3,10 @@
  * Plugin Name: WooCommerce eCurring gateway
  * Plugin URI: https://www.ecurring.com/
  * Description: Collect your subscription fees in WooCommerce with ease.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: eCurring
  * Requires at least: 4.6
- * Tested up to: 5.1
+ * Tested up to: 5.3
  * Text Domain: woo-ecurring
  * License: GPLv2 or later
  * WC requires at least: 3.0.0
