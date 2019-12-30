@@ -10,7 +10,7 @@
  * Text Domain: woo-ecurring
  * License: GPLv2 or later
  * WC requires at least: 3.0.0
- * WC tested up to: 3.6
+ * WC tested up to: 3.8
  */
 
 // Exit if accessed directly.
