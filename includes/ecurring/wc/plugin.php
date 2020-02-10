@@ -633,7 +633,7 @@ class eCurring_WC_Plugin
 	 */
 	public static function eCurringProcessProductMetaFieldsSave($post_id) {
 
-		if (isset($_POST['_woo_ecurring_product_data']) && $_POST['_woo_ecurring_product_data'] != '0') {
+	    if (isset($_POST['_woo_ecurring_product_data'])) {
 			update_post_meta($post_id, '_ecurring_subscription_plan', $_POST['_woo_ecurring_product_data']);
 		}
 	}
