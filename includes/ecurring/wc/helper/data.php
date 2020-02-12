@@ -365,18 +365,7 @@ class eCurring_WC_Helper_Data {
 					'data' => array(
 						'type' => 'customer',
 						'id' => $customer_id,
-						'attributes' => array(
-                            'first_name' => trim($order->get_billing_first_name()),
-                            'last_name' => trim($order->get_billing_last_name()),
-                            'company_name' => trim($order->get_billing_company()),
-                            'email' => trim($order->get_billing_email()),
-                            'telephone' => trim($order->get_billing_phone()),
-                            'city' => trim($order->get_billing_city()),
-                            'country_iso2' => trim($order->get_billing_country()),
-                            'street' => trim($order->get_billing_address_1()),
-                            'house_number' => trim($order->get_billing_address_2()),
-                            'postalcode' => trim($order->get_billing_postcode()),
-						)
+						'attributes' => $this->customerAttributesFromOrder($order)
 					),
 				));
 
@@ -406,18 +395,7 @@ class eCurring_WC_Helper_Data {
                 $request = $api->apiCall('POST', 'https://api.ecurring.com/customers', array(
                     'data' => array(
                         'type' => 'customer',
-                        'attributes' => array(
-                            'first_name' => trim($order->get_billing_first_name()),
-                            'last_name' => trim($order->get_billing_last_name()),
-                            'company_name' => trim($order->get_billing_company()),
-                            'email' => trim($order->get_billing_email()),
-                            'telephone' => trim($order->get_billing_phone()),
-                            'city' => trim($order->get_billing_city()),
-                            'country_iso2' => trim($order->get_billing_country()),
-                            'street' => trim($order->get_billing_address_1()),
-                            'house_number' => trim($order->get_billing_address_2()),
-                            'postalcode' => trim($order->get_billing_postcode()),
-                        )
+                        'attributes' => $this->customerAttributesFromOrder($order)
                     ),
                 ));
 
@@ -682,4 +660,32 @@ class eCurring_WC_Helper_Data {
 		return rtrim($string, '/');
 	}
 
+    /**
+     * @param WC_Order $order
+     * @return array
+     */
+    private function customerAttributesFromOrder(WC_Order $order): array
+    {
+        $fields = [
+            'first_name' => trim($order->get_billing_first_name()),
+            'last_name' => trim($order->get_billing_last_name()),
+            'company_name' => trim($order->get_billing_company()),
+            'email' => trim($order->get_billing_email()),
+            'telephone' => trim($order->get_billing_phone()),
+            'city' => trim($order->get_billing_city()),
+            'country_iso2' => trim($order->get_billing_country()),
+            'street' => trim($order->get_billing_address_1()),
+            'house_number' => trim($order->get_billing_address_2()),
+            'postalcode' => trim($order->get_billing_postcode())
+        ];
+
+        $attributes = [];
+        foreach ($fields as $key => $value) {
+            if(isset($value) && $value !== '') {
+                $attributes[$key] = $value;
+            }
+        }
+
+        return $attributes;
+    }
 }
