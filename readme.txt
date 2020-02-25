@@ -3,7 +3,7 @@ Contributors: davdebcom, inpsyde
 Tags: recurring payments, woocommerce, payment gateway, direct debit, subscriptions, woocommerce subscriptions, sepa
 Requires at least: 4.6
 Tested up to: 5.3
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -134,6 +134,11 @@ Please contact support@ecurring.com if you need help installing the eCurring Woo
 Automatic updates should work like a charm; as always though, ensure you backup your site just in case.
 
 == Changelog ==
+
+= 1.1.4 - 25-02-2020 =
+
+* Allow disconnect a connected eCurring product.
+* Do not send empty attributes to customers endpoint.
 
 = 1.1.3 - 09-12-2019 =
 
