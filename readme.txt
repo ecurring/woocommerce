@@ -26,9 +26,9 @@ With eCurring you can easily manage customers and subscriptions, collect funds p
 * V Pay
 * Maestro
 
-Please go to the [signup page](https://app.ecurring.com/merchants/signup) to create a new eCurring account and start receiving payments in a couple of minutes. Contact support@ecurring.com if you have any questions or comments about this plugin.
+Please go to the [signup page](https://app.ecurring.com/signup?utm_medium=partner&utm_source=woocommerce&utm_campaign=shop%20description&utm_content=to%20pricing%20page) to create a new eCurring account and start receiving payments in a couple of minutes. Contact support@ecurring.com if you have any questions or comments about this plugin.
 
-> Pricing: One Size Fits All for €29 per month, and some costs per transaction.
+> Pricing: From €39 per month, plus variable (transaction) costs.
 
 = FEATURES =
 
