@@ -752,7 +752,9 @@ class eCurring_WC_Plugin
 							unset( $gateway_list[ $gateway ] );
 						}
 					}
-					echo is_checkout() ? '<style>.wc_payment_methods { display: none; }</style>' : '';
+                    if (is_checkout()) {
+                        wp_add_inline_style('ecurring_frontend_style', '.wc_payment_methods{display:none;}');
+                    }
 				} else {
 					unset( $gateway_list['ecurring_wc_gateway_ecurring'] );
 				}
