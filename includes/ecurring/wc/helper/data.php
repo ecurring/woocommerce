@@ -676,16 +676,38 @@ class eCurring_WC_Helper_Data {
             'country_iso2' => trim($order->get_billing_country()),
             'street' => trim($order->get_billing_address_1()),
             'house_number' => trim($order->get_billing_address_2()),
-            'postalcode' => trim($order->get_billing_postcode())
+            'postalcode' => trim($order->get_billing_postcode()),
+            'language' => $this->getCustomerLanguage($order),
         ];
 
         $attributes = [];
         foreach ($fields as $key => $value) {
-            if(isset($value) && $value !== '') {
+            if (isset($value) && $value !== '') {
                 $attributes[$key] = $value;
             }
         }
 
         return $attributes;
     }
+
+    /**
+     * Returns the preferred communication language of the customer.
+     * @param WC_Order $order
+     * @return string
+     */
+    protected function getCustomerLanguage(WC_Order $order)
+    {
+        $userId = (version_compare(WC_VERSION, '3.0', '<'))
+            ? $order->customer_user
+            : $order->get_customer_id();
+
+        if (isset($userId)) {
+            $language = explode('_', get_user_locale($userId));
+
+            return $language[0];
+        }
+
+        return '';
+    }
+
 }
