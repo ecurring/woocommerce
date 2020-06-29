@@ -705,7 +705,7 @@ class eCurring_WC_Helper_Data {
             $userLocale = get_user_locale($userId);
 
             if ($userLocale === 'nl_BE') {
-                return 'nl-BE';
+                return 'nl-be';
             }
 
             $language = explode('_', get_user_locale($userId));
