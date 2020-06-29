@@ -702,12 +702,21 @@ class eCurring_WC_Helper_Data {
             : $order->get_customer_id();
 
         if (isset($userId)) {
+            $userLocale = get_user_locale($userId);
+
+            if ($userLocale === 'nl_BE') {
+                return 'nl-BE';
+            }
+
             $language = explode('_', get_user_locale($userId));
 
-            return $language[0];
+            $eCurringAvailableLanguages = ['nl', 'en', 'fr', 'de'];
+            if (in_array($language[0], $eCurringAvailableLanguages)) {
+                return $language[0];
+            }
         }
 
-        return '';
+        return 'en';
     }
 
 }
