@@ -4,6 +4,7 @@ namespace eCurring\WooEcurringTests\Unit;
 
 use eCurring_WC_Helper_Data;
 use eCurring\WooEcurringTests\TestCase;
+use ReflectionMethod;
 use WC_Order;
 
 use Brain\Monkey\Functions;
@@ -20,7 +21,7 @@ class DataTest extends TestCase
         $data = $this->getMockBuilder(eCurring_WC_Helper_Data::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $getCustomerLanguage = new \ReflectionMethod($data, 'getCustomerLanguage');
+        $getCustomerLanguage = new ReflectionMethod($data, 'getCustomerLanguage');
         $getCustomerLanguage->setAccessible(true);
 
         $order->expects($this->once())
@@ -36,7 +37,7 @@ class DataTest extends TestCase
     {
         return [
             ['de_DE', 'de'],
-            ['nl_BE', 'nl-BE'],
+            ['nl_BE', 'nl-be'],
             [null, 'en'],
             ['', 'en'],
             ['Klingon', 'en'],
