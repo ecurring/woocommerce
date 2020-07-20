@@ -44,6 +44,7 @@ function ecurring_webhook( $request ) {
 			}
 
 			$address     = $subscription_order->get_address();
+			$shippingAddress = $subscription_order->get_address('shipping');
 			$customer_id = $subscription_order->get_user_id();
 
 			foreach ( $subscription_order->get_items() as $item_id => $item_data ) {
@@ -136,6 +137,7 @@ function ecurring_webhook( $request ) {
 						$order->add_product( $product, 1 );
 					}
 					$order->set_address( $address, 'billing' );
+					$order->set_address( $shippingAddress, 'shipping' );
 					$order->calculate_totals();
 
 					$order->set_parent_id( $subscription_order_id );
