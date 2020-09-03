@@ -338,7 +338,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 		return array ( 'result' => 'failure' );
 	}
 
-	protected function updateOrderWithSubscriptionData($order_id, $response)
+	protected function updateOrderWithSubscriptionData($order_id, array $response)
     {
         $ecurring_subscription_id = $response['data']['id'];
 
