@@ -295,7 +295,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 			$response = json_decode( $request, true );
 
 			if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
-				$this->updateOrderWithSubscriptionData($order_id, $response);
+				$this->updateOrderWithSubscriptionData($order_id, $response, $order);
 			}
 
 			if ( isset( $response['errors'] ) ) {
@@ -338,7 +338,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 		return array ( 'result' => 'failure' );
 	}
 
-	protected function updateOrderWithSubscriptionData($order_id, array $response)
+	protected function updateOrderWithSubscriptionData($order_id, array $response, WC_Order $order)
     {
         $ecurring_subscription_id = $response['data']['id'];
 
