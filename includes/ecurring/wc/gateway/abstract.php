@@ -348,11 +348,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
         $subscription_link = 'https://app.ecurring.com/subscriptions/'.explode('/',$confirmation_page)[5];
         update_post_meta( $order_id, '_ecurring_subscription_link', $subscription_link );
 
-        if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-            eCurring_WC_Plugin::debug( $this->id . ': Subscription ' . $ecurring_subscription_id . ' created for order ' . $order->id );
-        } else {
-            eCurring_WC_Plugin::debug( $this->id . ': Subscription ' . $ecurring_subscription_id . ' created for order ' . $order->get_id() );
-        }
+        eCurring_WC_Plugin::debug( $this->id . ': Subscription ' . $ecurring_subscription_id . ' created for order ' . $order_id );
 
         $order->add_order_note( sprintf(
         /* translators: Placeholder 1: Payment method title, placeholder 2: payment ID */
