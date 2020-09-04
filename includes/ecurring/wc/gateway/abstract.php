@@ -294,13 +294,13 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
 			$response = json_decode( $request, true );
 
+            if ( isset( $response['errors'] ) ) {
+                eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );
+                return array ( 'result' => 'failure' );
+            }
+
 			if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
 				$this->updateOrderWithSubscriptionData($response, $order);
-			}
-
-			if ( isset( $response['errors'] ) ) {
-				eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );
-				return array ( 'result' => 'failure' );
 			}
 
 			do_action( WOOECUR_PLUGIN_ID . '_payment_created', $request, $order );
