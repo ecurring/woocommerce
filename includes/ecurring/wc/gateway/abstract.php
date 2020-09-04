@@ -286,7 +286,9 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 			);
 
             // Create eCurring subscription with customer id.
-			$rawResponse = $api->createSubscription($data, $order);
+            $data = apply_filters( 'woocommerce_' . $this->id . '_args', $data, $order );
+            do_action( WOOECUR_PLUGIN_ID . '_create_payment', $data, $order );
+			$rawResponse = $api->createSubscription($data);
             $response = json_decode( $rawResponse, true );
 
             if ( isset( $response['errors'] ) ) {
