@@ -19,6 +19,11 @@ class eCurring_WC_Helper_Api
         return $this->apiCall( 'POST', 'https://api.ecurring.com/subscriptions', $data );
     }
 
+    public function getSubscriptionById($subscription_id)
+    {
+        return $this->apiCall('GET','https://api.ecurring.com/subscriptions/'.$subscription_id);
+    }
+
 	/**
 	 * @param $method
 	 * @param $url
