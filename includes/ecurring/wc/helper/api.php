@@ -2,8 +2,6 @@
 
 class eCurring_WC_Helper_Api
 {
-	protected static $api_client;
-
 	/**
 	 * @var eCurring_WC_Helper_Settings
 	 */
