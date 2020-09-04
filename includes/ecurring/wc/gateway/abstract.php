@@ -285,14 +285,9 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 				)
 			);
 
-			$data = apply_filters( 'woocommerce_' . $this->id . '_args', $data, $order );
-
-			do_action( WOOECUR_PLUGIN_ID . '_create_payment', $data, $order );
-
-			// Create eCurring subscription with customer id.
-			$request = $api->apiCall( 'POST', 'https://api.ecurring.com/subscriptions', $data );
-
-			$response = json_decode( $request, true );
+            // Create eCurring subscription with customer id.
+			$rawResponse = $api->createSubscription($data, $order);
+            $response = json_decode( $rawResponse, true );
 
             if ( isset( $response['errors'] ) ) {
                 eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );
@@ -303,7 +298,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 				$this->updateOrderWithSubscriptionData($response, $order);
 			}
 
-			do_action( WOOECUR_PLUGIN_ID . '_payment_created', $request, $order );
+			do_action( WOOECUR_PLUGIN_ID . '_payment_created', $rawResponse, $order );
 
 			$redirect = isset( $response['error'] ) ? '' : $response['data']['attributes']['confirmation_page'] . '?accepted=true';
 

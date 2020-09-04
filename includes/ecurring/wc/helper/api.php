@@ -16,6 +16,14 @@ class eCurring_WC_Helper_Api
 		$this->settings_helper = $settings_helper;
 	}
 
+	public function createSubscription(array $data, WC_Order $order)
+    {
+        $data = apply_filters( 'woocommerce_' . $this->id . '_args', $data, $order );
+        do_action( WOOECUR_PLUGIN_ID . '_create_payment', $data, $order );
+
+        return $this->apiCall( 'POST', 'https://api.ecurring.com/subscriptions', $data );
+    }
+
 	/**
 	 * @param $method
 	 * @param $url
