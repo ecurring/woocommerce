@@ -296,7 +296,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
 			if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
 				update_post_meta( $order_id, '_ecurring_subscription_id', $response['data']['id'] );
-				update_post_meta( $order_id, '_transaction_id', $response['data']['id'] );
 
 				$confirmation_page = $response['data']['attributes']['confirmation_page'];
 				$subscription_link = 'https://app.ecurring.com/subscriptions/'.explode('/',$confirmation_page)[5];
