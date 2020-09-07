@@ -34,6 +34,9 @@ class eCurring_WC_Helper_Api
      * @return array Subscription data.
      *
      * @see https://docs.ecurring.com/subscriptions/get Response data structure.
+     *
+     * @throws eCurring_WC_Exception_ApiClientException If cannot parse response.
+     *
      */
     public function getSubscriptionById($subscription_id)
     {
@@ -41,7 +44,13 @@ class eCurring_WC_Helper_Api
         $subscriptionData = json_decode($rawResponseBody, true);
 
         if(json_last_error() !== JSON_ERROR_NONE){
-            //todo: throw an exception here.
+            throw new eCurring_WC_Exception_ApiClientException(
+                sprintf(
+                    'Cannot parse API response. JSON parse error message: %1$s. Parsed string: %2$s',
+                    json_last_error_msg(),
+                    $rawResponseBody
+                )
+            );
         }
 
         return $subscriptionData;
