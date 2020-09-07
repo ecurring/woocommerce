@@ -296,7 +296,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
             if($subscription_id) {
                 $subscriptionData = $api->getSubscriptionById($subscription_id);
 
-                if(isset($subscriptionData['type']) && $subscriptionData['type'] === 'subscription'){
+                if(isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription'){
                     $subscription_exists = true;
                 }
             }
