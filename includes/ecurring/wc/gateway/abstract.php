@@ -290,17 +290,18 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
             do_action( WOOECUR_PLUGIN_ID . '_create_payment', $data, $order );
 
             $subscription_id = get_post_meta('_ecurring_subscription_id', true);
+            $subscription_exists = false;
 
-            if(! $subscription_id) {
-                //todo: update existing subscription here.
+            if($subscription_id) {
+                $subscriptionData = $api->getSubscriptionById($subscription_id);
+
+                if(isset($subscriptionData['type']) && $subscriptionData['type'] === 'subscription'){
+                    $subscription_exists = true;
+                }
             }
 
-            $subscriptionData = $api->getSubscriptionById($subscription_id);
-
-            if(! isset($subscriptionData['type']) || $subscriptionData['type'] !== 'subscription')
+            if(! $subscription_exists)
             {
-                //todo: update existing subscription here.
-            } else {
                 $rawResponse = $api->createSubscription($data);
                 $response = json_decode( $rawResponse, true );
 
