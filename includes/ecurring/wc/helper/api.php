@@ -36,13 +36,19 @@ class eCurring_WC_Helper_Api
      * @see https://docs.ecurring.com/subscriptions/get Response data structure.
      *
      * @throws eCurring_WC_Exception_ApiClientException If cannot parse response.
-     *
      */
     public function getSubscriptionById($subscription_id)
     {
         $url = 'https://api.ecurring.com/subscriptions/'.$subscription_id;
 
         $subscriptionData = $this->doApiCallWithResultParsing('GET', $url);
+
+        if(isset($subscriptionData['errors'])){
+            throw new eCurring_WC_Exception_ApiClientException(
+                'Errors returned by the API. Returned response: %1$s',
+                print_r($subscriptionData, true)
+            );
+        }
 
         return $subscriptionData;
     }
