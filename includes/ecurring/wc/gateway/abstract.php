@@ -504,7 +504,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 		$api = eCurring_WC_Plugin::getApiHelper();
 		$eCurring_subscription_id = get_post_meta($order_id,'_ecurring_subscription_id',true);
 
-		$eCurring_subscription = $api->getSubscriptionById($eCurring_subscription_id)['data'];
+		$eCurring_subscription = json_decode($api->apiCall('GET','https://api.ecurring.com/subscriptions/'.$eCurring_subscription_id),true)['data'];
 
 		$eCurring_subscription_attr = $eCurring_subscription['attributes'];
 		$mandate_data = array(
