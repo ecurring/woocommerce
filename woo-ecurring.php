@@ -242,12 +242,80 @@ function eCurringRegisterNewStatusAsBulkAction( $actions ) {
 	$new_actions = array();
 
 	foreach ($actions as $key => $action) {
-		if ('mark_processing' === $key)
-			$new_actions['mark_ecurring-retry'] = __( 'Change status to Retrying payment at eCurring', 'Order status', 'woo-ecurring' );
+        if ('mark_processing' === $key) {
+            $new_actions['mark_ecurring-retry'] = __('Change status to Retrying payment at eCurring',
+                'Order status', 'woo-ecurring');
+        }
 
-		$new_actions[$key] = $action;
-	}
-	return $new_actions;
+        $new_actions[$key] = $action;
+    }
+    return $new_actions;
 }
 
 add_action('init', 'ecurring_wc_plugin_init');
+
+/**
+ * @throws Throwable
+ */
+function initialize()
+{
+    try {
+        if (is_readable(__DIR__ . '/vendor/autoload.php')) {
+            include_once __DIR__ . '/vendor/autoload.php';
+        }
+
+//        if (is_admin()) {
+//            $subscription = new \eCurring\WooEcurring\Subscriptions();
+//            $subscription->init();
+//        }
+
+    } catch (Throwable $throwable) {
+        handleException($throwable);
+    }
+}
+
+add_action('plugins_loaded', __NAMESPACE__ . '\\initialize', PHP_INT_MAX);
+
+/**
+ * Handle any exception that might occur during plugin setup.
+ *
+ * @param Throwable $throwable The Exception
+ *
+ * @return void
+ */
+function handleException(Throwable $throwable)
+{
+    do_action('ecurring.woo-ecurring.critical', $throwable);
+
+    errorNotice(
+        sprintf(
+            '<strong>Error:</strong> %s <br><pre>%s</pre>',
+            $throwable->getMessage(),
+            $throwable->getTraceAsString()
+        )
+    );
+}
+
+/**
+ * Display an error message in the WP admin.
+ *
+ * @param string $message The message content
+ *
+ * @return void
+ */
+function errorNotice(string $message)
+{
+    foreach (['admin_notices', 'network_admin_notices'] as $hook) {
+        add_action(
+            $hook,
+            function () use ($message) {
+                $class = 'notice notice-error';
+                printf(
+                    '<div class="%1$s"><p>%2$s</p></div>',
+                    esc_attr($class),
+                    wp_kses_post($message)
+                );
+            }
+        );
+    }
+}
