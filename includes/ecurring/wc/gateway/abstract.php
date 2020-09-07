@@ -288,17 +288,32 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
             // Create eCurring subscription with customer id.
             $data = apply_filters( 'woocommerce_' . $this->id . '_args', $data, $order );
             do_action( WOOECUR_PLUGIN_ID . '_create_payment', $data, $order );
-			$rawResponse = $api->createSubscription($data);
-            $response = json_decode( $rawResponse, true );
 
-            if ( isset( $response['errors'] ) ) {
-                eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );
-                return array ( 'result' => 'failure' );
+            $subscription_id = get_post_meta('_ecurring_subscription_id', true);
+
+            if(! $subscription_id) {
+                //todo: update existing subscription here.
             }
 
-			if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
-				$this->updateOrderWithSubscriptionData($response, $order);
-			}
+            $subscriptionData = $api->getSubscriptionById($subscription_id);
+
+            if(! isset($subscriptionData['type']) || $subscriptionData['type'] !== 'subscription')
+            {
+                //todo: update existing subscription here.
+            } else {
+                $rawResponse = $api->createSubscription($data);
+                $response = json_decode( $rawResponse, true );
+
+                if ( isset( $response['errors'] ) ) {
+                    eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );
+                    return array ( 'result' => 'failure' );
+                }
+
+                if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
+                    $this->updateOrderWithSubscriptionData($response, $order);
+                }
+            }
+
 
 			do_action( WOOECUR_PLUGIN_ID . '_payment_created', $rawResponse, $order );
 
