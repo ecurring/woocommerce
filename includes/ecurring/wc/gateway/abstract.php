@@ -289,7 +289,8 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
             $data = apply_filters( 'woocommerce_' . $this->id . '_args', $data, $order );
             do_action( WOOECUR_PLUGIN_ID . '_create_payment', $data, $order );
 
-            $subscription_id = get_post_meta('_ecurring_subscription_id', true);
+            $subscription_id = get_post_meta($order_id, '_ecurring_subscription_id', true);
+
             $subscription_exists = false;
 
             if($subscription_id) {
