@@ -40,8 +40,31 @@ class eCurring_WC_Helper_Api
      */
     public function getSubscriptionById($subscription_id)
     {
-        $rawResponseBody = $this->apiCall('GET','https://api.ecurring.com/subscriptions/'.$subscription_id);
-        $subscriptionData = json_decode($rawResponseBody, true);
+        $url = 'https://api.ecurring.com/subscriptions/'.$subscription_id;
+
+        $subscriptionData = $this->doApiCallWithResultParsing('GET', $url);
+
+        return $subscriptionData;
+    }
+
+    /**
+     * Do API call and parse results.
+     *
+     * This function is needed to call existing apiCall, parse results and throw en exception if something wrong.
+     * That function exists for backward compatibility and should be removed or updated in the future.
+     *
+     * @param string     $method HTTP Method, one of the GET, POST, PATH, DELETE.
+     * @param string     $url    Request target URL.
+     * @param bool|array $data   Content to be sent in JSON-encoded format as request body.
+     *
+     * @return array Response data.
+     *
+     * @throws eCurring_WC_Exception_ApiClientException If cannot parse response.
+     */
+    protected function doApiCallWithResultParsing($method, $url, $data = false)
+    {
+        $rawResponseBody = $this->apiCall($method, $url, $data);
+        $parsedResponse = json_decode($rawResponseBody, true);
 
         if(json_last_error() !== JSON_ERROR_NONE){
             throw new eCurring_WC_Exception_ApiClientException(
@@ -53,7 +76,7 @@ class eCurring_WC_Helper_Api
             );
         }
 
-        return $subscriptionData;
+        return $parsedResponse;
     }
 
 	/**
