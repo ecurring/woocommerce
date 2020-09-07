@@ -29,13 +29,22 @@ class eCurring_WC_Helper_Api
     /**
      * Get subscription data using subscription id.
      *
-     * @param string $subscription_id
+     * @param string $subscription_id The id of subscription to get from eCurring API.
      *
-     * @return string Response body with subscription data or error message.
+     * @return array Subscription data.
+     *
+     * @see https://docs.ecurring.com/subscriptions/get Response data structure.
      */
     public function getSubscriptionById($subscription_id)
     {
-        return $this->apiCall('GET','https://api.ecurring.com/subscriptions/'.$subscription_id);
+        $rawResponseBody = $this->apiCall('GET','https://api.ecurring.com/subscriptions/'.$subscription_id);
+        $subscriptionData = json_decode($rawResponseBody, true);
+
+        if(json_last_error() !== JSON_ERROR_NONE){
+            //todo: throw an exception here.
+        }
+
+        return $subscriptionData;
     }
 
 	/**
