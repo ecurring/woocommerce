@@ -291,18 +291,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
             $subscription_id = get_post_meta($order_id, '_ecurring_subscription_id', true);
 
-            $subscription_exists = false;
-
-            if($subscription_id) {
-                $subscription_data = $api->getSubscriptionById($subscription_id);
-
-                if(isset($subscription_data['data']['type']) && $subscription_data['data']['type'] === 'subscription'){
-                    $subscription_exists = true;
-                }
-            }
-
-            if(! $subscription_exists)
-            {
+            if(! $this->subscriptionExists($subscription_id)) {
                 $rawResponse = $api->createSubscription($data);
                 $response = json_decode( $rawResponse, true );
 
@@ -351,6 +340,27 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
 		return array ( 'result' => 'failure' );
 	}
+
+    /**
+     * Check if subscription exists.
+     *
+     * @param $subscription_id
+     *
+     * @return bool
+     * @throws eCurring_WC_Exception_ApiClientException
+     */
+	protected function subscriptionExists($subscription_id)
+    {
+        if(! $subscription_id) {
+            return false;
+        }
+
+        $api = eCurring_WC_Plugin::getApiHelper();
+        $subscription_data = $api->getSubscriptionById($subscription_id);
+
+        return isset($subscription_data['data']['type']) && $subscription_data['data']['type'] === 'subscription';
+
+    }
 
 	protected function updateOrderWithSubscriptionData(array $response, WC_Order $order)
     {
