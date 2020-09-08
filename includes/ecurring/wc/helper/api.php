@@ -65,7 +65,7 @@ class eCurring_WC_Helper_Api
      *
      * @return array Response data.
      *
-     * @throws eCurring_WC_Exception_ApiClientException If cannot parse response.
+     * @throws eCurring_WC_Exception_ApiClientException If cannot parse response or error returned.
      */
     protected function doApiCallWithResultParsing($method, $url, $data = false)
     {
@@ -78,6 +78,15 @@ class eCurring_WC_Helper_Api
                     'Cannot parse API response. JSON parse error message: %1$s. Parsed string: %2$s',
                     json_last_error_msg(),
                     $rawResponseBody
+                )
+            );
+        }
+
+        if (isset($parsedResponse['errors'])) {
+            throw new eCurring_WC_Exception_ApiClientException(
+                sprintf(
+                    'API response contains error data. Details: %1$s',
+                    print_r($parsedResponse['errors'], true)
                 )
             );
         }
