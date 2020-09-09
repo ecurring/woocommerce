@@ -116,7 +116,15 @@ class eCurring_WC_Helper_Api
 		if(is_wp_error($result)) {
             return $result->get_error_message();
         }
+		$response_body = $result['body'];
 
-		return apply_filters(WOOECUR_PLUGIN_ID . '_raw_api_response', $result['body'], $url, $args);
+		/**
+         * This is needed to keep backward compatibility. See WOOECUR_PLUGIN_ID . '_payment_created' action triggering for details.
+         */
+        add_filter(WOOECUR_PLUGIN_ID . '_raw_api_response', function() use ($response_body){
+            return $response_body;
+        });
+
+		return $response_body;
 	}
 }

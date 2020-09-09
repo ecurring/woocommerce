@@ -303,6 +303,8 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
             if(! $subscription_exists)
             {
+                $raw_api_response = apply_filters(WOOECUR_PLUGIN_ID . '_raw_api_response', null);
+
                 $response = $api->createSubscription($data);
 
                 if ( isset( $response['errors'] ) ) {
@@ -314,7 +316,12 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
                     $this->updateOrderWithSubscriptionData($response, $order);
                 }
 
-                do_action( WOOECUR_PLUGIN_ID . '_payment_created', $rawResponse, $order );
+                /**
+                 * This action was triggered here before with unparsed api response data, so we have to do the same.
+                 * We getting raw response above via filter.
+                 * It would be great idea to deprecate this action and add another one with parsed response as argument.
+                 */
+                do_action( WOOECUR_PLUGIN_ID . '_payment_created', $raw_api_response, $order );
             }
 
 			$redirect = isset( $response['error'] ) ? '' : $response['data']['attributes']['confirmation_page'] . '?accepted=true';
