@@ -303,9 +303,9 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
             }
 
             if (! isset($subscription_data)) {
-                $raw_api_response = apply_filters(WOOECUR_PLUGIN_ID . '_raw_api_response', null);
-
                 $subscription_data = $api->createSubscription($data);
+
+                $raw_api_response = apply_filters(WOOECUR_PLUGIN_ID . '_raw_api_response', null);
 
                 $this->updateOrderWithSubscriptionData($subscription_data, $order);
 
