@@ -291,21 +291,14 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
             $subscription_id = get_post_meta($order_id, '_ecurring_subscription_id', true);
 
-            $subscription_exists = false;
-
             if($subscription_id) {
                 $subscription_data = $api->getSubscriptionById($subscription_id);
-
-                $subscription_exists = true;
-            }
-
-            if(! $subscription_exists)
-            {
+            } else {
                 $raw_api_response = apply_filters(WOOECUR_PLUGIN_ID . '_raw_api_response', null);
 
-                $response = $api->createSubscription($data);
+                $subscription_data = $api->createSubscription($data);
 
-                $this->updateOrderWithSubscriptionData($response, $order);
+                $this->updateOrderWithSubscriptionData($subscription_data, $order);
 
                 /**
                  * This action was triggered here before with unparsed api response data, so we have to do the same.
@@ -315,7 +308,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
                 do_action( WOOECUR_PLUGIN_ID . '_payment_created', $raw_api_response, $order );
             }
 
-			$redirect = isset( $response['error'] ) ? '' : $response['data']['attributes']['confirmation_page'] . '?accepted=true';
+			$redirect = isset( $response['error'] ) ? '' : $subscription_data['data']['attributes']['confirmation_page'] . '?accepted=true';
 
 			if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 				eCurring_WC_Plugin::debug( "For order " . $order->id . " redirect user to eCurring Checkout URL: " . $redirect );
