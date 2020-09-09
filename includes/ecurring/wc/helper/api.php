@@ -19,11 +19,12 @@ class eCurring_WC_Helper_Api
      *
      * @param array $data
      *
-     * @return string API response body or error message.
+     * @return array API response body or error message.
+     * @throws eCurring_WC_Exception_ApiClientException
      */
 	public function createSubscription(array $data)
     {
-        return $this->apiCall( 'POST', 'https://api.ecurring.com/subscriptions', $data );
+        return $this->doApiCallWithResultParsing('POST', 'https://api.ecurring.com/subscriptions', $data);
     }
 
     /**
