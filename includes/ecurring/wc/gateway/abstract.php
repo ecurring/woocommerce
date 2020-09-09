@@ -313,10 +313,9 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
                 if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
                     $this->updateOrderWithSubscriptionData($response, $order);
                 }
+
+                do_action( WOOECUR_PLUGIN_ID . '_payment_created', $rawResponse, $order );
             }
-
-
-			do_action( WOOECUR_PLUGIN_ID . '_payment_created', $rawResponse, $order );
 
 			$redirect = isset( $response['error'] ) ? '' : $response['data']['attributes']['confirmation_page'] . '?accepted=true';
 
