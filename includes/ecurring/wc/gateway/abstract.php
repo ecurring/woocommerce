@@ -307,11 +307,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
                 $response = $api->createSubscription($data);
 
-                if ( isset( $response['errors'] ) ) {
-                    eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );
-                    return array ( 'result' => 'failure' );
-                }
-
                 if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
                     $this->updateOrderWithSubscriptionData($response, $order);
                 }
