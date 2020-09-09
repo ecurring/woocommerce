@@ -303,8 +303,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
             if(! $subscription_exists)
             {
-                $rawResponse = $api->createSubscription($data);
-                $response = json_decode( $rawResponse, true );
+                $response = $api->createSubscription($data);
 
                 if ( isset( $response['errors'] ) ) {
                     eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );
