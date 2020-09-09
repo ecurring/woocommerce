@@ -291,9 +291,18 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
             $subscription_id = get_post_meta($order_id, '_ecurring_subscription_id', true);
 
-            if($subscription_id) {
-                $subscription_data = $api->getSubscriptionById($subscription_id);
-            } else {
+            if ($subscription_id) {
+                try{
+                    $subscription_data = $api->getSubscriptionById($subscription_id);
+                } catch (eCurring_WC_Exception_ApiClientException $exception) {
+                    eCurring_WC_Plugin::debug(
+                        sprintf('Subscription %1$s for order %2$s not found on the remote API.', $subscription_id, $order_id),
+                        true
+                    );
+                }
+            }
+
+            if (! isset($subscription_data)) {
                 $raw_api_response = apply_filters(WOOECUR_PLUGIN_ID . '_raw_api_response', null);
 
                 $subscription_data = $api->createSubscription($data);
