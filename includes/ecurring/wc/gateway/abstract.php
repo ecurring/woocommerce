@@ -307,9 +307,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
                 $response = $api->createSubscription($data);
 
-                if ( isset( $response['data'] ) && $response['data']['type'] == 'subscription' ) {
-                    $this->updateOrderWithSubscriptionData($response, $order);
-                }
+                $this->updateOrderWithSubscriptionData($response, $order);
 
                 /**
                  * This action was triggered here before with unparsed api response data, so we have to do the same.
