@@ -117,6 +117,6 @@ class eCurring_WC_Helper_Api
             return $result->get_error_message();
         }
 
-		return $result['body'];
+		return apply_filters(WOOECUR_PLUGIN_ID . '_raw_api_response', $result['body'], $url, $args);
 	}
 }
