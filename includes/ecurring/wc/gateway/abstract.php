@@ -350,9 +350,9 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 		return array ( 'result' => 'failure' );
 	}
 
-	protected function updateOrderWithSubscriptionData(array $response, WC_Order $order)
+	protected function updateOrderWithSubscriptionData(array $subscription, WC_Order $order)
     {
-        $ecurring_subscription_id = $response['data']['id'];
+        $ecurring_subscription_id = $subscription['data']['id'];
 
         if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
             $order_id = $order->id;
@@ -362,7 +362,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
         update_post_meta( $order_id, '_ecurring_subscription_id',  $ecurring_subscription_id);
 
-        $confirmation_page = $response['data']['attributes']['confirmation_page'];
+        $confirmation_page = $subscription['data']['attributes']['confirmation_page'];
         $subscription_link = 'https://app.ecurring.com/subscriptions/'.explode('/',$confirmation_page)[5];
         update_post_meta( $order_id, '_ecurring_subscription_link', $subscription_link );
 
