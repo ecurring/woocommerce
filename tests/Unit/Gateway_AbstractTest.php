@@ -1,8 +1,6 @@
 <?php
 
-
 namespace eCurring\WooEcurringTests\Unit;
-
 
 use eCurring\WooEcurringTests\TestCase;
 use eCurring_WC_Exception_ApiClientException;
@@ -21,19 +19,32 @@ class Gateway_AbstractTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
+    /**
+     * Test process_payment() method.
+     * Tested case is subscription id found locally, but not found on eCurring server, so new subscription is created.
+     */
     public function testProcess_payment()
     {
         $orderId = 123;
         $ecurring_customer_id = '456';
         $ecurring_subscription_plan_id = '789';
         $product_id = 100;
+        $new_subscription_id = '1234';
         $order_key = 'abc';
-        $subscription_data = [];
+        $subscription_data = [
+            'data' => [
+                'id' => $new_subscription_id,
+                'attributes' => [
+                    'confirmation_page' => 'http://localtest.loc/some/page/url/'
+                ]
+            ],
+        ];
         $wcOrderMock = Mockery::mock(WC_Order::class);
         $wcOrderMock->shouldReceive('get_order_key')
             ->andReturn($order_key);
         $wcOrderMock->shouldReceive('get_id')
             ->andReturn($orderId);
+        $wcOrderMock->shouldReceive('add_order_note');
         $wcOrderItemMock = Mockery::mock(WC_Order_Item_Product::class);
         $wcOrderItemMock->shouldReceive('get_product_id')
             ->andReturn($product_id);
@@ -64,6 +75,7 @@ class Gateway_AbstractTest extends TestCase
         /** @var eCurring_WC_Gateway_Abstract&MockObject $sut */
         $sut = $this->getMockForAbstractClass(eCurring_WC_Gateway_Abstract::class, [], '', false);
         $sut->id = strtolower(get_class($sut));
+        $sut->method_title = '';
 
         expect('update_post_meta')->with(
             $orderId,
@@ -88,6 +100,12 @@ class Gateway_AbstractTest extends TestCase
         expect('is_plugin_active')
             ->with('polylang/polylang.php')
             ->andReturn(false);
+        expect('update_post_meta')->with($orderId, '_ecurring_subscription_id', $new_subscription_id);
+        expect('update_post_meta')->with(
+            $orderId,
+            '_ecurring_subscription_link',
+            'https://app.ecurring.com/subscriptions/url'
+        );
 
         define('ABSPATH', dirname(__DIR__) .  '/Stubs/');
         define('WOOECUR_PLUGIN_ID', 'woocommerce_ecurring');
