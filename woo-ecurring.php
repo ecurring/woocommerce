@@ -319,3 +319,25 @@ function errorNotice(string $message)
         );
     }
 }
+
+add_action('admin_menu', function () {
+    add_submenu_page(
+        'woocommerce',
+        'Subscriptions',
+        'Subscriptions',
+        'manage_options',
+        'ecurring-subscriptions', function () {
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $subscriptionTable = new \eCurring\WooEcurring\SubscriptionsTable($apiHelper);
+
+        $subscriptionTable->prepare_items();
+        ?>
+        <div class="wrap">
+            <h2>Subscription</h2>
+            <?php $subscriptionTable->display(); ?>
+        </div>
+        <?php
+
+    });
+});
