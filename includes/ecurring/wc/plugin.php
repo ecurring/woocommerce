@@ -738,7 +738,7 @@ class eCurring_WC_Plugin
 	 * Left only eCurring payment gateway if there is eCurring product, and hide payment gateway div.
 	 * Otherwise just exclude eCurring payment gateway.
 	 *
-	 * @param $gateway_list
+	 * @param WC_Payment_Gateway[] $gateway_list
 	 *
 	 * @return mixed
 	 */
