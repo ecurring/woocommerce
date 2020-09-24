@@ -743,16 +743,13 @@ class eCurring_WC_Plugin
 	 * @return WC_Payment_Gateway[] Filtered gateways list.
 	 */
 	public static function eCurringFilterGateways($gateway_list) {
-		if ( isset( WC()->cart ) ) {
-			$items = WC()->cart->get_cart();
-			foreach ( $items as $item ) {
-				if ( get_post_meta( $item['product_id'], '_ecurring_subscription_plan', true ) ) {
-					foreach ( $gateway_list as $gatewayId => $gateway ) {
-						if ( ! self::isMolliePaymentGateway($gateway) || ! $gateway->supports('subscriptions')) {
-							unset( $gateway_list[ $gatewayId ] );
-						}
-					}
-				}
+	    if(! self::eCurringSubscriptionIsInCart()) {
+	        return $gateway_list;
+        }
+
+		foreach ( $gateway_list as $gatewayId => $gateway ) {
+			if ( ! self::isMolliePaymentGateway($gateway) || ! $gateway->supports('subscriptions')) {
+				unset( $gateway_list[ $gatewayId ] );
 			}
 		}
 
