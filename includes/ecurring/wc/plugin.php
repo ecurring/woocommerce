@@ -738,9 +738,9 @@ class eCurring_WC_Plugin
 	 * Left only eCurring payment gateway if there is eCurring product, and hide payment gateway div.
 	 * Otherwise just exclude eCurring payment gateway.
 	 *
-	 * @param WC_Payment_Gateway[] $gateway_list
+	 * @param WC_Payment_Gateway[] $gateway_list Payment gateways from WooCommerce to filter.
 	 *
-	 * @return mixed
+	 * @return WC_Payment_Gateway[] Filtered gateways list.
 	 */
 	public static function eCurringFilterGateways($gateway_list) {
 		if ( isset( WC()->cart ) ) {
