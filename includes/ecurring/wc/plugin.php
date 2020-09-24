@@ -748,7 +748,7 @@ class eCurring_WC_Plugin
 			foreach ( $items as $item ) {
 				if ( get_post_meta( $item['product_id'], '_ecurring_subscription_plan', true ) ) {
 					foreach ( $gateway_list as $gateway => $data ) {
-						if ( $gateway != 'ecurring_wc_gateway_ecurring' && ! self::isMolliePaymentGateway($data)) {
+						if ( ! self::isMolliePaymentGateway($data)) {
 							unset( $gateway_list[ $gateway ] );
 						}
 					}
