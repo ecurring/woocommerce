@@ -752,8 +752,6 @@ class eCurring_WC_Plugin
 							unset( $gateway_list[ $gatewayId ] );
 						}
 					}
-				} else {
-					unset( $gateway_list['ecurring_wc_gateway_ecurring'] );
 				}
 			}
 		}
