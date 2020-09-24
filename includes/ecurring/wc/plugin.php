@@ -747,13 +747,9 @@ class eCurring_WC_Plugin
 	        return $gateway_list;
         }
 
-		foreach ( $gateway_list as $gatewayId => $gateway ) {
-			if ( ! self::isMolliePaymentGateway($gateway) || ! $gateway->supports('subscriptions')) {
-				unset( $gateway_list[ $gatewayId ] );
-			}
-		}
-
-		return $gateway_list;
+		return array_filter($gateway_list, function($gateway){
+		    return self::isMolliePaymentGateway($gateway) && $gateway->supports('subscriptions');
+        });
 	}
 
 	/**
