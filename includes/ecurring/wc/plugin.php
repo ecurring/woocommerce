@@ -759,6 +759,24 @@ class eCurring_WC_Plugin
 		return $gateway_list;
 	}
 
+	/**
+     * Check if cart contains at least one eCurring subscription product.
+     *
+	 * @return bool Is subscription found.
+	 */
+	public static function eCurringSubscriptionIsInCart() {
+		if ( isset( WC()->cart ) ) {
+			$items = WC()->cart->get_cart();
+			foreach ( $items as $item ) {
+				if ( get_post_meta( $item['product_id'], '_ecurring_subscription_plan', true ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+    }
+
     /**
      * Check if provided payment gateway instance was added by Mollie.
      *
