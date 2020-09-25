@@ -334,7 +334,7 @@ add_action('admin_menu', function () {
         $subscriptionTable->prepare_items();
         ?>
         <div class="wrap">
-            <h2>Subscription</h2>
+            <h2>Subscriptions</h2>
             <?php $subscriptionTable->display(); ?>
         </div>
         <?php
