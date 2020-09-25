@@ -339,5 +339,90 @@ add_action('admin_menu', function () {
         </div>
         <?php
 
-    });
-});
+    }
+    );
+}
+);
+
+add_action(
+    'admin_enqueue_scripts',
+    function ($hook) {
+        if ($hook !== 'woocommerce_page_ecurring-subscriptions') {
+            return;
+        }
+
+        wp_enqueue_script(
+            'ecurring_admin_subscriptions',
+            eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js'),
+            ['jquery'],
+            WOOECUR_PLUGIN_VERSION
+        );
+    }
+);
+
+add_action(
+    'wp_ajax_subscription_cancel',
+    function () {
+        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
+
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $subscriptionActions = new \eCurring\WooEcurring\SubscriptionActions(
+            $apiHelper,
+            $subscriptionId
+        );
+
+        $subscriptionActions->cancel();
+
+        wp_send_json(['subscription_id' => $subscriptionId]);
+        wp_die();
+    }
+);
+
+add_action(
+    'wp_ajax_subscription_pause',
+    function () {
+        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
+
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $subscriptionActions = new \eCurring\WooEcurring\SubscriptionActions(
+            $apiHelper,
+            $subscriptionId
+        );
+
+        $subscriptionActions->pause();
+
+        wp_send_json(['subscription_id' => $subscriptionId]);
+        wp_die();
+    }
+);
+
+add_action(
+    'wp_ajax_subscription_resume',
+    function () {
+        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
+
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $subscriptionActions = new \eCurring\WooEcurring\SubscriptionActions(
+            $apiHelper,
+            $subscriptionId
+        );
+
+        $subscriptionActions->resume();
+
+        wp_send_json(['subscription_id' => $subscriptionId]);
+        wp_die();
+    }
+);
+
+add_action(
+    'wp_ajax_subscription_switch',
+    function () {
+        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
+
+        wp_send_json(['subscription_id' => $subscriptionId]);
+        wp_die();
+    }
+);

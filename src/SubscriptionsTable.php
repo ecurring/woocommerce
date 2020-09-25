@@ -116,7 +116,7 @@ class SubscriptionsTable extends WP_List_Table
             case 'status':
                 return ucfirst($item[$column_name]);
             case 'actions':
-                return '<a id="ecurring-subscription-pause" href="#">Pause</a> | <a id="ecurring-subscription-switch" href="#">Switch</a> | <a id="ecurring-subscription-cancel" href="#">Cancel</a>';
+                return $this->subscriptionActions($item);
             default:
                 return print_r($item, true);
         }
@@ -142,5 +142,14 @@ class SubscriptionsTable extends WP_List_Table
         }
 
         return $data;
+    }
+
+    protected function subscriptionActions($item)
+    {
+
+        $pauseOrResume = $item['status'] === 'paused' ? 'Resume' : 'Pause';
+        $pauseOrResumeAction = $item['status'] === 'paused' ? 'resume' : 'pause';
+
+        return '<a class="ecurring-subscription-'.$pauseOrResumeAction.'" data-ecurring_subscription="'.$item['id'].'" href="#">'.$pauseOrResume.'</a> | <a class="ecurring-subscription-switch" data-ecurring_subscription="'.$item['id'].'" href="#">Switch</a> | <a class="ecurring-subscription-cancel" data-ecurring_subscription="'.$item['id'].'" href="#">Cancel</a>';
     }
 }
