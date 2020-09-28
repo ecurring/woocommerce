@@ -15,7 +15,7 @@
             "eCurring_WC_": "./includes"
         },
         "psr-4": {
-            "Ecurring/WooEcurring": "src/"
+            "Ecurring\\WooEcurring\\": "src/"
         }
     },
     "autoload-dev": {
