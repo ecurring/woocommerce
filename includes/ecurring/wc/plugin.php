@@ -18,8 +18,6 @@ class eCurring_WC_Plugin
         'eCurring_WC_Gateway_eCurring',
     );
 
-    private function __construct () {}
-
     /**
      * Initialize plugin
      */
