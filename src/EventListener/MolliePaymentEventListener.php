@@ -34,7 +34,12 @@ class MolliePaymentEventListener {
 
 		$this->apiClient = $apiClient;
 		$this->dataHelper = $dataHelper;
+	}
 
+	/**
+	 * Init event listener.
+	 */
+	public function init(){
 		add_action(Mollie_WC_Plugin::PLUGIN_ID . '_payment_created', [$this, 'onMolliePaymentCreated']);
 	}
 

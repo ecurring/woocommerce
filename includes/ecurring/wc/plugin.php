@@ -37,7 +37,8 @@ class eCurring_WC_Plugin
 		$settingsHelper = self::getSettingsHelper();
 
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
-		$molliePaymentEventListener = new MolliePaymentEventListener($apiClient, $data_helper);
+        (new MolliePaymentEventListener($apiClient, $data_helper))->init();
+
 
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
 		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
