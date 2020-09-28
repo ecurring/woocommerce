@@ -1,5 +1,7 @@
 <?php
 
+namespace Ecurring\WooEcurring\EventListener;
+
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Mollie\Api\Resources\Payment;
