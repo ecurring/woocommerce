@@ -27,9 +27,9 @@ class MolliePaymentEventListener {
 	public function __construct( ApiClient $apiClient, eCurring_WC_Helper_Data $dataHelper) {
 
 		$this->apiClient = $apiClient;
+		$this->dataHelper = $dataHelper;
 
 		add_action(Mollie_WC_Plugin::PLUGIN_ID . '_payment_created', [$this, 'onMolliePaymentCreated']);
-		$this->dataHelper = $dataHelper;
 	}
 
 	/**
