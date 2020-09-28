@@ -20,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 require_once 'includes/ecurring/wc/autoload.php';
+require_once 'vendor/autoload.php';
 
 /**
  * Plugin constants
