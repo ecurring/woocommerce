@@ -14,6 +14,8 @@
  */
 
 // Exit if accessed directly.
+use Ecurring\WooEcurring\EnvironmentChecker;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -95,6 +97,19 @@ function ecurring_wc_check_woocommerce_status() {
 	}
 }
 add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
+
+add_action('plugins_loaded', function(){
+	$environmentChecker = new EnvironmentChecker();
+	if(! $environmentChecker->isMollieActive()){
+		remove_action('init', 'ecurring_wc_plugin_init');
+		add_action('admin_notices', function () {
+			echo esc_html__(
+				'<div class="error"><p>Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first.</p></div>',
+				'woo-ecurring'
+			);
+		});
+	}
+});
 
 /**
  * Called when plugin is loaded
