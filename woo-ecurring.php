@@ -103,10 +103,12 @@ add_action('plugins_loaded', function(){
 	if(! $environmentChecker->isMollieActive()){
 		remove_action('init', 'ecurring_wc_plugin_init');
 		add_action('admin_notices', function () {
+			echo '<div class="error"><p>';
 			echo esc_html__(
-				'<div class="error"><p>Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first.</p></div>',
+				'Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first.',
 				'woo-ecurring'
 			);
+			echo '</p></div>';
 		});
 	}
 });
