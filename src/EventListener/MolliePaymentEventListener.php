@@ -4,7 +4,11 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
+use eCurring_WC_Helper_Data;
 use Mollie\Api\Resources\Payment;
+use Mollie_WC_Plugin;
+use WC_Order;
+use WC_Product;
 
 /**
  * Listens for the Mollie payment create action.
