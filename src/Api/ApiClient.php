@@ -19,14 +19,39 @@ class ApiClient {
 	/**
 	 * Send request for creating new eCurring subscription.
 	 *
-	 * @param array $data
+	 * @param        $ecurringCustomerId
+	 * @param        $subscriptionPlanId
+	 * @param string $subscriptionWebhookUrl
+	 * @param string $transactionWebhookUrl
 	 *
 	 * @return array API response body or error message.
 	 * @throws ApiClientException
 	 */
-	public function createSubscription(array $data)
-	{
-		return $this->apiCall('POST', 'https://api.ecurring.com/subscriptions', $data);
+	public function createSubscription(
+		$ecurringCustomerId,
+		$subscriptionPlanId,
+		$subscriptionWebhookUrl = '',
+		$transactionWebhookUrl = ''
+	) {
+		$requestData = [
+			'data' => [
+				'type'       => 'subscription',
+				'attributes' => [
+					'customer_id'              => $ecurringCustomerId,
+					'subscription_plan_id'     => $subscriptionPlanId,
+					'subscription_webhook_url' => $subscriptionWebhookUrl,
+					'transaction_webhook_url'  => $transactionWebhookUrl,
+					'confirmation_sent'        => 'true',
+					'metadata'                 => ['source' => 'woocommerce']
+				]
+			]
+		];
+
+		return $this->apiCall(
+			'POST',
+			'https://api.ecurring.com/subscriptions',
+			$requestData
+		);
 	}
 
 	/**

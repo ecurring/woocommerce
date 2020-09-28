@@ -71,33 +71,11 @@ class MolliePaymentEventListener {
 	 */
 	protected function createEcurringSubscriptionForProduct(WC_Order $order, WC_Product $product)
 	{
-		$requestData = $this->prepareCreateSubscriptionRequestData($order, $product);
-		$this->apiClient->createSubscription($requestData);
-	}
-
-	/**
-	 * Prepare parameters for the create subscription API call.
-	 *
-	 * @param WC_Order   $order
-	 * @param WC_Product $product
-	 *
-	 * @return array[]
-	 * @throws Exception
-	 */
-	protected function prepareCreateSubscriptionRequestData(WC_Order $order, WC_Product $product)
-	{
-		return array (
-			'data' => array (
-				'type'       => 'subscription',
-				'attributes' => array (
-					'customer_id'              => $this->dataHelper->getUsereCurringCustomerId($order),
-					'subscription_plan_id'     => $product->get_meta('_ecurring_subscription_plan', true),
-					'subscription_webhook_url' => add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
-					'transaction_webhook_url'  => add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) ),
-					'confirmation_sent'        => 'true',
-					'metadata'                 => array ( 'source' => 'woocommerce' )
-				)
-			)
+		$this->apiClient->createSubscription(
+			$this->dataHelper->getUsereCurringCustomerId($order),
+			$product->get_meta('_ecurring_subscription_plan', true),
+			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
+			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
 		);
 	}
 }
