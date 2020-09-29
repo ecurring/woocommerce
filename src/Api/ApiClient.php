@@ -110,7 +110,6 @@ class ApiClient {
 	 * @return mixed
 	 */
 	protected function doApiRequest($method, $url, $data = false){
-		$WP_Http = new WP_Http();
 		$args    = array (
 			'method'  => $method,
 			'headers' => array (
@@ -121,7 +120,7 @@ class ApiClient {
 			'body'    => $data ? json_encode( $data ) : ''
 		);
 
-		return $WP_Http->request( $url, $args );
+		return wp_remote_request( $url, $args );
 	}
 
 	/**
