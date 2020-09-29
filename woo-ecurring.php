@@ -4,7 +4,7 @@
  * Plugin URI: https://www.ecurring.com/
  * Description: Collect your subscription fees in WooCommerce with ease.
  * Version: 1.2.0
- * Author: eCurring
+ * Author: Mollie
  * Requires at least: 4.6
  * Tested up to: 5.3
  * Text Domain: woo-ecurring
