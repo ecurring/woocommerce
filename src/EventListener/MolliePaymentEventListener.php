@@ -91,11 +91,12 @@ class MolliePaymentEventListener {
 	 *
 	 * @param WC_Product $product
 	 *
+	 * @return array
+	 * @throws ApiClientException
 	 */
-	protected function createEcurringSubscriptionForProduct(WC_Order $order, WC_Product $product)
-	{
+	protected function createEcurringSubscriptionForProduct( WC_Order $order, WC_Product $product ) {
 
-		$this->apiClient->createSubscription(
+		return $this->apiClient->createSubscription(
 			$this->dataHelper->getUsereCurringCustomerId( $order ),
 			$product->get_meta( '_ecurring_subscription_plan', true ),
 			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
