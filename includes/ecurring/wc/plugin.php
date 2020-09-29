@@ -2,6 +2,7 @@
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -35,9 +36,10 @@ class eCurring_WC_Plugin
 		$plugin_basename = self::getPluginFile();
 		$data_helper     = self::getDataHelper();
 		$settingsHelper = self::getSettingsHelper();
+		$subscriptonCrud = new SubscriptionCrud();
 
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
-        (new MolliePaymentEventListener($apiClient, $data_helper))->init();
+        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptonCrud))->init();
 
 
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
