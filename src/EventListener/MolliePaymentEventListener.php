@@ -4,7 +4,7 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Helper_Data;
 use eCurring_WC_Plugin;
 use Exception;
@@ -28,7 +28,7 @@ class MolliePaymentEventListener {
 	 */
 	protected $dataHelper;
 	/**
-	 * @var SubscriptionCrud
+	 * @var SubscriptionCrudInterface
 	 */
 	protected $subscriptionCrud;
 
@@ -40,7 +40,7 @@ class MolliePaymentEventListener {
 	public function __construct(
 		ApiClient $apiClient,
 		eCurring_WC_Helper_Data $dataHelper,
-		SubscriptionCrud $subscriptionCrud
+		SubscriptionCrudInterface $subscriptionCrud
 	) {
 
 		$this->apiClient        = $apiClient;
