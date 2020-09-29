@@ -4,7 +4,7 @@ namespace Ecurring\WooEcurring\Subscription;
 
 use WC_Order;
 
-class SubscriptionCrud {
+class SubscriptionCrud implements SubscriptionCrudInterface {
 
 	/**
 	 * Save subscription data to the database.
