@@ -65,7 +65,7 @@ class MolliePaymentEventListener {
 				} catch ( Exception $exception ) {
 					eCurring_WC_Plugin::debug(
 						sprintf(
-							'Failed to create subscription on successfull Mollie payment. Caught exception with message: %1$s',
+							'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
 							$exception->getMessage()
 						)
 					);
