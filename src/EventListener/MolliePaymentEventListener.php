@@ -8,7 +8,6 @@ use eCurring_WC_Helper_Data;
 use eCurring_WC_Plugin;
 use Exception;
 use Mollie\Api\Resources\Payment;
-use Mollie_WC_Plugin;
 use WC_Order;
 use WC_Order_Item_Product;
 use WC_Product;
@@ -43,7 +42,7 @@ class MolliePaymentEventListener {
 	 * Init event listener.
 	 */
 	public function init(){
-		add_action(Mollie_WC_Plugin::PLUGIN_ID . '_payment_created', [$this, 'onMolliePaymentCreated']);
+		add_action('mollie-payments-for-woocommerce_payment_created', [$this, 'onMolliePaymentCreated']);
 	}
 
 	/**
