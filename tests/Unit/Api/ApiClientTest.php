@@ -1,7 +1,7 @@
 <?php
 
 
-namespace eCurring\WooEcurringTests\Unit;
+namespace eCurring\WooEcurringTests\Unit\Api;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use eCurring\WooEcurringTests\TestCase;
