@@ -52,16 +52,27 @@ class MolliePaymentEventListener {
 	 * @param Payment  $payment Created payment.
 	 * @param WC_Order $order   The order payment created for.
 	 */
-	public function onMolliePaymentCreated(Payment $payment, WC_Order $order)
-	{
-		foreach($order->get_items() as $item){
-			if($item instanceof WC_Order_Item_Product) {
-				$product = $item->get_product();
-				if($this->isProductIsEcurringSubscription($product)) {
-					$this->createEcurringSubscriptionForProduct($order, $product);
+	public function onMolliePaymentCreated( Payment $payment, WC_Order $order ) {
+
+		foreach ( $order->get_items() as $item ) {
+			if ( $item instanceof WC_Order_Item_Product ) {
+				try {
+					$product = $item->get_product();
+					if ( $this->isProductIsEcurringSubscription( $product ) ) {
+						$this->createEcurringSubscriptionForProduct( $order, $product );
+					}
+				} catch ( Exception $exception ) {
+					eCurring_WC_Plugin::debug(
+						sprintf(
+							'Failed to create subscription on successfull Mollie payment. Caught exception with message: %1$s',
+							$exception->getMessage()
+						)
+					);
 				}
 			}
 		}
+
+
 	}
 
 	/**
@@ -83,20 +94,12 @@ class MolliePaymentEventListener {
 	 */
 	protected function createEcurringSubscriptionForProduct(WC_Order $order, WC_Product $product)
 	{
-		try {
-			$this->apiClient->createSubscription(
-				$this->dataHelper->getUsereCurringCustomerId( $order ),
-				$product->get_meta( '_ecurring_subscription_plan', true ),
-				add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
-				add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
-			);
-		} catch ( Exception $exception) {
-			eCurring_WC_Plugin::debug(
-				sprintf(
-					'Failed to create subscription on successfull Mollie payment. Caught exception with message: %1$s',
-					$exception->getMessage()
-				)
-			);
-		}
+
+		$this->apiClient->createSubscription(
+			$this->dataHelper->getUsereCurringCustomerId( $order ),
+			$product->get_meta( '_ecurring_subscription_plan', true ),
+			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
+			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
+		);
 	}
 }
