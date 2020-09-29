@@ -3,6 +3,7 @@
 namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
+use Ecurring\WooEcurring\Api\ApiClientException;
 use eCurring_WC_Helper_Data;
 use eCurring_WC_Plugin;
 use Exception;
@@ -59,7 +60,8 @@ class MolliePaymentEventListener {
 				try {
 					$product = $item->get_product();
 					if ( $this->isProductIsEcurringSubscription( $product ) ) {
-						$this->createEcurringSubscriptionForProduct( $order, $product );
+						$subscriptionData = $this->createEcurringSubscriptionForProduct( $order, $product );
+						$this->updateOrderWithSubscriptionData($order, $subscriptionData);
 					}
 				} catch ( Exception $exception ) {
 					eCurring_WC_Plugin::debug(
@@ -71,8 +73,6 @@ class MolliePaymentEventListener {
 				}
 			}
 		}
-
-
 	}
 
 	/**
@@ -102,5 +102,31 @@ class MolliePaymentEventListener {
 			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
 			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
 		);
+	}
+
+	/**
+	 * Add subscription data to the order
+	 *
+	 * @param WC_Order $order
+	 * @param array    $subscriptionData
+	 */
+	protected function updateOrderWithSubscriptionData(WC_Order $order, array $subscriptionData)
+	{
+		$subscriptionId = $subscriptionData['data']['id'];
+
+		$order->add_meta_data('ecurring_woocommerce_mandate_accepted_date', date( 'Y-m-d H:i:s' ));
+		$order->add_meta_data('_ecurring_subscription_id', $subscriptionId);
+		$order->add_meta_data('', ['data']['attributes']['confirmation_page']);
+
+		$confirmationPage = $subscriptionData['data']['attributes']['confirmation_page'];
+		//todo: find a better way to do it.
+		$subscriptionLink = 'https://app.ecurring.com/subscriptions/'.explode('/',$confirmationPage)[5];
+		$order->add_meta_data('_ecurring_subscription_link', $subscriptionLink);
+
+		$order->add_order_note( sprintf(
+		/* translators: Placeholder 1: Payment method title, placeholder 2: payment ID */
+			__( 'Payment started for subscription ID %s.', 'woo-ecurring' ),
+			'<a href="'.$subscriptionLink.'" target="_blank">'. $subscriptionId .'</a>'
+		) );
 	}
 }
