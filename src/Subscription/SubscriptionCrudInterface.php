@@ -9,6 +9,8 @@ use WC_Order;
  */
 interface SubscriptionCrudInterface {
 
+	//todo: add meta fields names here as constants
+
 	/**
 	 * Save subscription to the database.
 	 *
