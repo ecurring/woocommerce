@@ -62,7 +62,7 @@ class MolliePaymentEventListener {
 	 * @param Payment  $payment Created payment.
 	 * @param WC_Order $order   The order payment created for.
 	 */
-	public function onMolliePaymentCreated( Payment $payment, WC_Order $order ) {
+	public function onMolliePaymentCreated($payment, WC_Order $order ) {
 
 		foreach ( $order->get_items() as $item ) {
 			if ( $item instanceof WC_Order_Item_Product ) {
