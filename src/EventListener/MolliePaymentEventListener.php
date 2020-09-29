@@ -3,11 +3,13 @@
 namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
-use Ecurring\WooEcurring\Api\ApiClientException;
 use eCurring_WC_Helper_Data;
+use eCurring_WC_Plugin;
+use Exception;
 use Mollie\Api\Resources\Payment;
 use Mollie_WC_Plugin;
 use WC_Order;
+use WC_Order_Item_Product;
 use WC_Product;
 
 /**
@@ -53,7 +55,7 @@ class MolliePaymentEventListener {
 	public function onMolliePaymentCreated(Payment $payment, WC_Order $order)
 	{
 		foreach($order->get_items() as $item){
-			if($item instanceof \WC_Order_Item_Product) {
+			if($item instanceof WC_Order_Item_Product) {
 				$product = $item->get_product();
 				if($this->isProductIsEcurringSubscription($product)) {
 					$this->createEcurringSubscriptionForProduct($order, $product);
@@ -78,15 +80,23 @@ class MolliePaymentEventListener {
 	 *
 	 * @param WC_Product $product
 	 *
-	 * @throws ApiClientException If cannot create subscription.
 	 */
 	protected function createEcurringSubscriptionForProduct(WC_Order $order, WC_Product $product)
 	{
-		$this->apiClient->createSubscription(
-			$this->dataHelper->getUsereCurringCustomerId($order),
-			$product->get_meta('_ecurring_subscription_plan', true),
-			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
-			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
-		);
+		try {
+			$this->apiClient->createSubscription(
+				$this->dataHelper->getUsereCurringCustomerId( $order ),
+				$product->get_meta( '_ecurring_subscription_plan', true ),
+				add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
+				add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
+			);
+		} catch ( Exception $exception) {
+			eCurring_WC_Plugin::debug(
+				sprintf(
+					'Failed to create subscription on successfull Mollie payment. Caught exception with message: %1$s',
+					$exception->getMessage()
+				)
+			);
+		}
 	}
 }
