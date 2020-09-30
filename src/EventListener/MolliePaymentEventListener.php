@@ -68,7 +68,8 @@ class MolliePaymentEventListener {
 			if ( $item instanceof WC_Order_Item_Product ) {
 				try {
 					$product = $item->get_product();
-					if ( $this->isProductIsEcurringSubscription( $product ) ) {
+					$subscriptionId = $this->subscriptionCrud->getProductSubscriptionId($product);
+					if ( $subscriptionId !== null ) {
 						$subscriptionData = $this->createEcurringSubscriptionForProduct( $order, $product );
 						$this->subscriptionCrud->saveSubscription($subscriptionData, $order);
 					}
@@ -82,17 +83,6 @@ class MolliePaymentEventListener {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Check if given product is eCurring subscription.
-	 *
-	 * @param WC_Product $product WC product to check.
-	 *
-	 * @return bool
-	 */
-	protected function isProductIsEcurringSubscription(WC_Product $product){
-		return $product->meta_exists(SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_PLAN_FIELD);
 	}
 
 	/**
