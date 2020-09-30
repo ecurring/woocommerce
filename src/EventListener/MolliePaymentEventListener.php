@@ -88,16 +88,17 @@ class MolliePaymentEventListener {
 	/**
 	 * Create an eCurring subscription on eCurring side using subscription product.
 	 *
-	 * @param WC_Product $product
+	 * @param WC_Order $order
+	 * @param string   $subscriptionId
 	 *
 	 * @return array
 	 * @throws ApiClientException
 	 */
-	protected function createEcurringSubscriptionForProduct( WC_Order $order, WC_Product $product ) {
+	protected function createEcurringSubscriptionForProduct( WC_Order $order, $subscriptionId ) {
 
 		return $this->apiClient->createSubscription(
 			$this->dataHelper->getUsereCurringCustomerId( $order ),
-			$this->subscriptionCrud->getProductSubscriptionId($product),
+			$subscriptionId,
 			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
 			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
 		);
