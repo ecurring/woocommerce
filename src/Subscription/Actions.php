@@ -1,10 +1,10 @@
 <?php
 
-namespace eCurring\WooEcurring;
+namespace eCurring\WooEcurring\Subscription;
 
 use eCurring_WC_Helper_Api;
 
-class SubscriptionActions
+class Actions
 {
     /**
      * @var eCurring_WC_Helper_Api
@@ -20,7 +20,7 @@ class SubscriptionActions
      * @param eCurring_WC_Helper_Api $apiHelper
      * @param string $subscriptionId
      */
-    public function __construct(eCurring_WC_Helper_Api $apiHelper, $subscriptionId)
+    public function __construct(eCurring_WC_Helper_Api $apiHelper, string $subscriptionId)
     {
         $this->apiHelper = $apiHelper;
         $this->subscriptionId = $subscriptionId;
@@ -28,7 +28,7 @@ class SubscriptionActions
 
     public function cancel()
     {
-        $this->apiHelper->apiCall(
+        return $this->apiHelper->apiCall(
             'PATCH',
             "https://api.ecurring.com/subscriptions/{$this->subscriptionId}",
             [

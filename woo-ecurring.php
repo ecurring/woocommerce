@@ -3,14 +3,14 @@
  * Plugin Name: WooCommerce eCurring gateway
  * Plugin URI: https://www.ecurring.com/
  * Description: Collect your subscription fees in WooCommerce with ease.
- * Version: 1.2.0
+ * Version: 2.0.0
  * Author: eCurring
  * Requires at least: 4.6
  * Tested up to: 5.3
  * Text Domain: woo-ecurring
  * License: GPLv2 or later
- * WC requires at least: 3.0.0
- * WC tested up to: 3.8
+ * WC requires at least: 4.0
+ * WC tested up to: 4.5
  */
 
 // Exit if accessed directly.
@@ -264,10 +264,11 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
-//        if (is_admin()) {
-//            $subscription = new \eCurring\WooEcurring\Subscriptions();
-//            $subscription->init();
-//        }
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $plugin = new \eCurring\WooEcurring\Plugin($apiHelper);
+
+        $plugin->init();
 
     } catch (Throwable $throwable) {
         handleException($throwable);
@@ -319,110 +320,3 @@ function errorNotice(string $message)
         );
     }
 }
-
-add_action('admin_menu', function () {
-    add_submenu_page(
-        'woocommerce',
-        'Subscriptions',
-        'Subscriptions',
-        'manage_options',
-        'ecurring-subscriptions', function () {
-        $settingsHelper = new eCurring_WC_Helper_Settings();
-        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $subscriptionTable = new \eCurring\WooEcurring\SubscriptionsTable($apiHelper);
-
-        $subscriptionTable->prepare_items();
-        ?>
-        <div class="wrap">
-            <h2>Subscriptions</h2>
-            <?php $subscriptionTable->display(); ?>
-        </div>
-        <?php
-
-    }
-    );
-}
-);
-
-add_action(
-    'admin_enqueue_scripts',
-    function ($hook) {
-        if ($hook !== 'woocommerce_page_ecurring-subscriptions') {
-            return;
-        }
-
-        wp_enqueue_script(
-            'ecurring_admin_subscriptions',
-            eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js'),
-            ['jquery'],
-            WOOECUR_PLUGIN_VERSION
-        );
-    }
-);
-
-add_action(
-    'wp_ajax_subscription_cancel',
-    function () {
-        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
-
-        $settingsHelper = new eCurring_WC_Helper_Settings();
-        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $subscriptionActions = new \eCurring\WooEcurring\SubscriptionActions(
-            $apiHelper,
-            $subscriptionId
-        );
-
-        $subscriptionActions->cancel();
-
-        wp_send_json(['subscription_id' => $subscriptionId]);
-        wp_die();
-    }
-);
-
-add_action(
-    'wp_ajax_subscription_pause',
-    function () {
-        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
-
-        $settingsHelper = new eCurring_WC_Helper_Settings();
-        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $subscriptionActions = new \eCurring\WooEcurring\SubscriptionActions(
-            $apiHelper,
-            $subscriptionId
-        );
-
-        $subscriptionActions->pause();
-
-        wp_send_json(['subscription_id' => $subscriptionId]);
-        wp_die();
-    }
-);
-
-add_action(
-    'wp_ajax_subscription_resume',
-    function () {
-        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
-
-        $settingsHelper = new eCurring_WC_Helper_Settings();
-        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $subscriptionActions = new \eCurring\WooEcurring\SubscriptionActions(
-            $apiHelper,
-            $subscriptionId
-        );
-
-        $subscriptionActions->resume();
-
-        wp_send_json(['subscription_id' => $subscriptionId]);
-        wp_die();
-    }
-);
-
-add_action(
-    'wp_ajax_subscription_switch',
-    function () {
-        $subscriptionId = filter_input(INPUT_POST, 'subscription_id', FILTER_SANITIZE_STRING);
-
-        wp_send_json(['subscription_id' => $subscriptionId]);
-        wp_die();
-    }
-);
