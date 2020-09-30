@@ -107,7 +107,7 @@ class MolliePaymentEventListener {
 
 		return $this->apiClient->createSubscription(
 			$this->dataHelper->getUsereCurringCustomerId( $order ),
-			$product->get_meta( SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_PLAN_FIELD, true ),
+			$this->subscriptionCrud->getProductSubscriptionId($product),
 			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
 			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
 		);
