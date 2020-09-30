@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: WooCommerce eCurring gateway
+ * Plugin Name: Mollie Subscriptions
  * Plugin URI: https://www.ecurring.com/
  * Description: Collect your subscription fees in WooCommerce with ease.
  * Version: 1.2.0
- * Author: eCurring
+ * Author: Mollie
  * Requires at least: 4.6
  * Tested up to: 5.3
  * Text Domain: woo-ecurring
@@ -166,7 +166,7 @@ function ecurring_wc_plugin_inactive_json_extension() {
 	}
 
 	echo '<div class="error"><p>';
-	echo esc_html__( 'WooCommerce eCurring gateway requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.', 'woo-ecurring' );
+	echo esc_html__( 'Mollie Subscriptions requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.', 'woo-ecurring' );
 	echo '</p></div>';
 
 	return false;
