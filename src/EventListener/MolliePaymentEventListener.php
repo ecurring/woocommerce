@@ -11,7 +11,6 @@ use Exception;
 use Mollie\Api\Resources\Payment;
 use WC_Order;
 use WC_Order_Item_Product;
-use WC_Product;
 
 /**
  * Listens for the Mollie payment create action.
@@ -69,8 +68,9 @@ class MolliePaymentEventListener {
 				try {
 					$product = $item->get_product();
 					$subscriptionId = $this->subscriptionCrud->getProductSubscriptionId($product);
+
 					if ( $subscriptionId !== null ) {
-						$subscriptionData = $this->createEcurringSubscriptionForProduct( $order, $product );
+						$subscriptionData = $this->createEcurringSubscriptionForProduct( $order, $subscriptionId );
 						$this->subscriptionCrud->saveSubscription($subscriptionData, $order);
 					}
 				} catch ( Exception $exception ) {
