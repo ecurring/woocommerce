@@ -14,6 +14,7 @@ use WC_Order_Item;
 use WC_Order_Item_Product;
 use WC_Product;
 use function Brain\Monkey\Functions\expect;
+use function Brain\Monkey\Functions\when;
 
 class MolliePaymentEventListenerTest extends TestCase {
 
@@ -90,13 +91,11 @@ class MolliePaymentEventListenerTest extends TestCase {
 			->method('getUsereCurringCustomerId')
 			->willReturn($ecurringCustomerId);
 
-		expect('add_query_arg')
-			->twice()
-			->andReturn('');
+		when('add_query_arg')
+			->justReturn('');
 
-		expect('home_url')
-			->twice()
-			->andReturn('');
+		when('home_url')
+			->justReturn('');
 
 		$apiClientMock->expects($this->once())
 			->method('createSubscription')
