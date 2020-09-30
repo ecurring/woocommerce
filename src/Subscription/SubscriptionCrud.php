@@ -3,6 +3,7 @@
 namespace Ecurring\WooEcurring\Subscription;
 
 use WC_Order;
+use WC_Product;
 
 class SubscriptionCrud implements SubscriptionCrudInterface {
 
@@ -31,5 +32,12 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 		) );
 
 		$subscriptionOrder->save();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getProductSubscriptionId( WC_Product $product) {
+		return $product->get_meta( self::ECURRING_SUBSCRIPTION_PLAN_FIELD, true );
 	}
 }

@@ -3,6 +3,7 @@
 namespace Ecurring\WooEcurring\Subscription;
 
 use WC_Order;
+use WC_Product;
 
 /**
  * Service able to save and get from the DB subscription data.
@@ -24,4 +25,13 @@ interface SubscriptionCrudInterface {
 	 * @param WC_Order $order The order subscription relates to.
 	 */
 	public function saveSubscription(array $subscriptionData, WC_Order $order);
+
+	/**
+	 * Get eCurring subscription id by subscription product.
+	 *
+	 * @param WC_Product $product Product to get subscription ID from.
+	 *
+	 * @return string|null eCurring Subscription ID or null if no subscription exists for this product.
+	 */
+	public function getProductSubscriptionId( WC_Product $product);
 }
