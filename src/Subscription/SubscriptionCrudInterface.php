@@ -9,7 +9,13 @@ use WC_Order;
  */
 interface SubscriptionCrudInterface {
 
-	//todo: add meta fields names here as constants
+	const MANDATE_ACCEPTED_FIELD = 'ecurring_woocommerce_mandate_accepted_date';
+
+	const ECURRING_SUBSCRIPTION_ID_FIELD = '_ecurring_subscription_id';
+
+	const ECURRING_SUBSCRIPTION_LINK_FIELD = '_ecurring_subscription_link';
+
+	const ECURRING_SUBSCRIPTION_PLAN_FIELD = '_ecurring_subscription_plan';
 
 	/**
 	 * Save subscription to the database.

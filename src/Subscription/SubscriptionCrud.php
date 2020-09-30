@@ -16,13 +16,13 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 	{
 		$subscriptionId = $subscriptionData['data']['id'];
 
-		$subscriptionOrder->add_meta_data('ecurring_woocommerce_mandate_accepted_date', date( 'Y-m-d H:i:s' ));
-		$subscriptionOrder->add_meta_data('_ecurring_subscription_id', $subscriptionId);
+		$subscriptionOrder->add_meta_data(self::MANDATE_ACCEPTED_FIELD, date( 'Y-m-d H:i:s' ));
+		$subscriptionOrder->add_meta_data(self::ECURRING_SUBSCRIPTION_ID_FIELD, $subscriptionId);
 		$confirmationPage = $subscriptionData['data']['attributes']['confirmation_page'];
 
 		//todo: find a better way to do it.
 		$subscriptionLink = 'https://app.ecurring.com/subscriptions/'.explode('/',$confirmationPage)[5];
-		$subscriptionOrder->add_meta_data('_ecurring_subscription_link', $subscriptionLink);
+		$subscriptionOrder->add_meta_data(self::ECURRING_SUBSCRIPTION_LINK_FIELD, $subscriptionLink);
 
 		$subscriptionOrder->add_order_note( sprintf(
 		/* translators: Placeholder 1: Payment method title, placeholder 2: payment ID */

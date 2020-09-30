@@ -92,7 +92,7 @@ class MolliePaymentEventListener {
 	 * @return bool
 	 */
 	protected function isProductIsEcurringSubscription(WC_Product $product){
-		return $product->meta_exists('_ecurring_subscription_plan');
+		return $product->meta_exists(SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_PLAN_FIELD);
 	}
 
 	/**
@@ -107,7 +107,7 @@ class MolliePaymentEventListener {
 
 		return $this->apiClient->createSubscription(
 			$this->dataHelper->getUsereCurringCustomerId( $order ),
-			$product->get_meta( '_ecurring_subscription_plan', true ),
+			$product->get_meta( SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_PLAN_FIELD, true ),
 			add_query_arg( 'ecurring-webhook', 'subscription', home_url( '/' ) ),
 			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
 		);
