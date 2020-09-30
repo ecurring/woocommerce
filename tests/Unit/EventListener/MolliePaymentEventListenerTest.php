@@ -66,21 +66,13 @@ class MolliePaymentEventListenerTest extends TestCase {
 			);
 
 		$productMock = $this->createMock( WC_Product::class);
-		$ecurringSubscriptionPlan = 'somesubscriptionplan';
-		$productMock->expects($this->once())
-			->method('get_meta')
-			->with('_ecurring_subscription_plan', true)
-			->willReturn($ecurringSubscriptionPlan);
 
-		$productMock->expects($this->once())
-			->method('meta_exists')
-			->with('_ecurring_subscription_plan')
-			->willReturn(true);
+		$ecurringSubscriptionId = 'ecurringsubscriptionid3463';
 
-		$productMock->expects($this->once())
-			->method('get_meta')
-			->with('_ecurring_subscription_plan')
-			->willReturn($ecurringSubscriptionPlan);
+		$subscriptionCrudMock->expects($this->once())
+			->method('getProductSubscriptionId')
+			->with($productMock)
+			->willReturn($ecurringSubscriptionId);
 
 		$orderItemProductMock->expects($this->once())
 			->method('get_product')
@@ -101,7 +93,7 @@ class MolliePaymentEventListenerTest extends TestCase {
 			->method('createSubscription')
 			->with(
 				$ecurringCustomerId,
-				$ecurringSubscriptionPlan,
+				$ecurringSubscriptionId,
 				'',
 				''
 			)
