@@ -748,13 +748,10 @@ class eCurring_WC_Plugin
 			foreach ( $items as $item ) {
 				if ( get_post_meta( $item['product_id'], '_ecurring_subscription_plan', true ) ) {
 					foreach ( $gateway_list as $gateway => $data ) {
-						if ( $gateway != 'ecurring_wc_gateway_ecurring' ) {
+						if ( $gateway != 'ecurring_wc_gateway_ecurring' && ! self::isMolliePaymentGateway($data)) {
 							unset( $gateway_list[ $gateway ] );
 						}
 					}
-                    if (is_checkout()) {
-                        wp_add_inline_style('ecurring_frontend_style', '.wc_payment_methods{display:none;}');
-                    }
 				} else {
 					unset( $gateway_list['ecurring_wc_gateway_ecurring'] );
 				}
@@ -763,6 +760,37 @@ class eCurring_WC_Plugin
 
 		return $gateway_list;
 	}
+
+    /**
+     * Check if provided payment gateway instance was added by Mollie.
+     *
+     * @param WC_Payment_Gateway $gateway
+     *
+     * @return bool Check result.
+     */
+	protected static function isMolliePaymentGateway(WC_Payment_Gateway $gateway)
+    {
+        return in_array(get_class($gateway), self::getMollieGatewaysClassNames(), true);
+    }
+
+
+    /**
+     * Get list of payment gateways class names added by Mollie Payments for WooCommerce plugin.
+     *
+     * This method has to be static for now because it called from another static method.
+     *
+     * @return array
+     */
+    protected static function getMollieGatewaysClassNames()
+    {
+        if (class_exists(Mollie_WC_Plugin::class) &&
+            isset(Mollie_WC_Plugin::$GATEWAYS) &&
+            is_array(Mollie_WC_Plugin::$GATEWAYS)) {
+            return Mollie_WC_Plugin::$GATEWAYS;
+        }
+
+        return [];
+    }
 
 	/**
 	 * eCurring add to cart Ajax redirect
