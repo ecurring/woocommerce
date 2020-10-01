@@ -51,7 +51,12 @@ class MolliePaymentEventListener {
 	 * Init event listener.
 	 */
 	public function init(){
-		add_action('mollie-payments-for-woocommerce_payment_created', [$this, 'onMolliePaymentCreated']);
+		add_action(
+			'mollie-payments-for-woocommerce_payment_created',
+			[$this, 'onMolliePaymentCreated'],
+			10,
+			2
+		);
 	}
 
 	/**
