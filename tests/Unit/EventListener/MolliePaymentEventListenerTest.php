@@ -35,7 +35,12 @@ class MolliePaymentEventListenerTest extends TestCase {
 
 		expect('add_action')
 		->once()
-		->with('mollie-payments-for-woocommerce_payment_created', [$sut, 'onMolliePaymentCreated']);
+		->with(
+			'mollie-payments-for-woocommerce_payment_created',
+			[$sut, 'onMolliePaymentCreated'],
+			10,
+			2
+		);
 
 		$sut->init();
 	}
