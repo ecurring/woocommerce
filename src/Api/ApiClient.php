@@ -17,7 +17,7 @@ class ApiClient {
 	}
 
 	/**
-	 * Send request for creating new eCurring subscription.
+	 * Send request for creating new eCurring subscription and activating it immediately.
 	 *
 	 * @param        $ecurringCustomerId
 	 * @param        $subscriptionPlanId
@@ -42,6 +42,7 @@ class ApiClient {
 					'subscription_webhook_url' => $subscriptionWebhookUrl,
 					'transaction_webhook_url'  => $transactionWebhookUrl, //todo: check if we still need this
 					'confirmation_sent'        => 'true', // todo: check if we need this
+					'status'                   => 'active',
 					'metadata'                 => ['source' => 'woocommerce']
 				]
 			]
