@@ -761,12 +761,12 @@ class eCurring_WC_Plugin
 		if ( isset( WC()->cart ) ) {
 			$items = WC()->cart->get_cart();
 			foreach ( $items as $item ) {
-				if ( get_post_meta( $item['product_id'], '_ecurring_subscription_plan', true ) ) {
+				$product = $item['data'];
+				if ( $product instanceof WC_Product && $product->meta_exists('_ecurring_subscription_plan') ) {
 					return true;
 				}
 			}
 		}
-
 		return false;
     }
 
