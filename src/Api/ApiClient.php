@@ -40,8 +40,8 @@ class ApiClient {
 					'customer_id'              => $ecurringCustomerId,
 					'subscription_plan_id'     => $subscriptionPlanId,
 					'subscription_webhook_url' => $subscriptionWebhookUrl,
-					'transaction_webhook_url'  => $transactionWebhookUrl,
-					'confirmation_sent'        => 'true',
+					'transaction_webhook_url'  => $transactionWebhookUrl, //todo: check if we still need this
+					'confirmation_sent'        => 'true', // todo: check if we need this
 					'metadata'                 => ['source' => 'woocommerce']
 				]
 			]
