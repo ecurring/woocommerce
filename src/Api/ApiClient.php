@@ -41,7 +41,9 @@ class ApiClient {
 					'subscription_plan_id'     => $subscriptionPlanId,
 					'subscription_webhook_url' => $subscriptionWebhookUrl,
 					'transaction_webhook_url'  => $transactionWebhookUrl, //todo: check if we still need this
-					'confirmation_sent'        => 'true', // todo: check if we need this
+					'confirmation_sent'        => 'true', // todo: check if we need this,
+					'mandate_accepted'         => 'true',
+					'mandate_accepted_date'    => date('c'),
 					'status'                   => 'active',
 					'metadata'                 => ['source' => 'woocommerce']
 				]
