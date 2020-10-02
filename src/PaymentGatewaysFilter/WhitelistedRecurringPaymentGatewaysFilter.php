@@ -6,7 +6,7 @@ namespace Ecurring\WooEcurring\PaymentGatewaysFilter;
 use WC_Payment_Gateway;
 
 /**
- * Filter WooCommerce payment gateways, return only whitelisted and supporting 'subscription' ones.
+ * Filter WooCommerce payment gateways, return only whitelisted and supporting 'subscriptions' ones.
  */
 class WhitelistedRecurringPaymentGatewaysFilter implements PaymentGatewaysFilterInterface {
 
@@ -28,7 +28,7 @@ class WhitelistedRecurringPaymentGatewaysFilter implements PaymentGatewaysFilter
 	 */
 	public function filter( array $gateways ): array {
 		return array_filter($gateways, function(WC_Payment_Gateway $gateway){
-			return $this->isGatewayClassWhitelisted($gateway) && $gateway->supports('subscription');
+			return $this->isGatewayClassWhitelisted($gateway) && $gateway->supports('subscriptions');
 		});
 	}
 
