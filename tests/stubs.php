@@ -19,6 +19,10 @@ class WC_Order
     {
     	return [];
     }
+
+    public function get_meta()
+    {
+    }
 }
 
 if(! class_exists(WC_Order_Item::class))
