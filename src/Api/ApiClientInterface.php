@@ -18,6 +18,8 @@ interface ApiClientInterface {
 	 * @param string $transactionWebhookUrl Webhook URL will be triggered by eCurring on transaction.
 	 *
 	 * @return array Created subscription data or error details.
+	 *
+	 * @throws ApiClientException If request failed.
 	 */
 	public function createSubscription(
 		string $customerId,
@@ -30,6 +32,8 @@ interface ApiClientInterface {
 	 * @param string $subscriptionId
 	 *
 	 * @return array Subscription data or request error details.
+	 *
+	 * @throws ApiClientException If request failed.
 	 */
 	public function getSubscriptionById(string $subscriptionId): array;
 
@@ -37,6 +41,8 @@ interface ApiClientInterface {
 	 * @param string $subscriptionId
 	 *
 	 * @return array Subscription data or request error details.
+	 *
+	 * @throws ApiClientException If request failed.
 	 */
 	public function activateSubscription(string $subscriptionId): array;
 
