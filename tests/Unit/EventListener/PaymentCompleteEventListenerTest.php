@@ -31,4 +31,16 @@ class PaymentCompleteEventListenerTest extends TestCase {
 
 		$sut->init();
 	}
+
+	public function testOnPaymentComplete()
+	{
+		$orderId = 123;
+		/** @var ApiClientInterface&MockObject $apiClientMock */
+		$apiClientMock = $this->createMock(ApiClientInterface::class);
+		$apiClientMock->expects($this->once())
+			->method('activateSubscription');
+		$sut = new PaymentCompleteEventListener($apiClientMock);
+
+		$sut->onPaymentComplete($orderId);
+	}
 }
