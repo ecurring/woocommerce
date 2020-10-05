@@ -1,8 +1,9 @@
 <?php
 
-// Require Webhook functions
+
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 
+// Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
 
 class eCurring_WC_Plugin
