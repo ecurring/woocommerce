@@ -749,7 +749,7 @@ class eCurring_WC_Plugin
 	        return $gatewayList;
         }
 
-	    $mollieGateways = self::getMollieGatewaysClassNames();
+	    $mollieGateways = apply_filters('mollie-payments-for-woocommerce_retrieve_payment_gateways', []);
 	    $mollieRecurringGatewaysFilter = new WhitelistedRecurringPaymentGatewaysFilter($mollieGateways);
 	    return $mollieRecurringGatewaysFilter->filter($gatewayList);
 	}
@@ -770,25 +770,6 @@ class eCurring_WC_Plugin
 			}
 		}
 		return false;
-    }
-
-
-    /**
-     * Get list of payment gateways class names added by Mollie Payments for WooCommerce plugin.
-     *
-     * This method has to be static for now because it called from another static method.
-     *
-     * @return array
-     */
-    protected static function getMollieGatewaysClassNames()
-    {
-        if (class_exists(Mollie_WC_Plugin::class) &&
-            isset(Mollie_WC_Plugin::$GATEWAYS) &&
-            is_array(Mollie_WC_Plugin::$GATEWAYS)) {
-            return Mollie_WC_Plugin::$GATEWAYS;
-        }
-
-        return [];
     }
 
 	/**
