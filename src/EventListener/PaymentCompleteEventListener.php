@@ -33,6 +33,9 @@ class PaymentCompleteEventListener {
 		$order = wc_get_order($orderId);
 		$subscriptionId = $order->get_meta(SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_ID_FIELD, true);
 
-		$this->apiClient->activateSubscription($subscriptionId);
+		if($subscriptionId){
+			$this->apiClient->activateSubscription($subscriptionId);
+		}
+
 	}
 }
