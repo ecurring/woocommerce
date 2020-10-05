@@ -65,4 +65,50 @@ class ApiClientTest extends TestCase {
 			$transactionWebhookUrl
 		);
 	}
+
+	public function testActivateSubscription()
+	{
+		$subscriptionId = 'subscription12345';
+		$apiKey = 'apikey098765';
+		$method = 'PATCH';
+
+		$requestData = [
+			'data' => [
+				'type' => 'subscription',
+				'id' => $subscriptionId,
+				'attributes' => [
+					'status' => 'active',
+					'mandate_accepted' => true,
+					'mandate_accepted_date' => date('c')
+				]
+			]
+		];
+
+		$requestArgs = [
+			'method'  => $method,
+			'headers' => [
+				'X-Authorization' => $apiKey,
+				'Content-Type'    => 'application/vnd.api+json',
+				'Accept'          => 'application/vnd.api+json'
+			],
+			'body' => json_encode($requestData)
+		];
+
+
+		expect('wp_remote_request')
+			->once()
+			->with(
+				'https://api.ecurring.com/subscriptions',
+				$requestArgs
+			)
+		->andReturn(
+			[
+				'body' => '{"field": "value"}'
+			]
+		);
+
+		$sut = new ApiClient($apiKey);
+
+		$sut->activateSubscription($subscriptionId);
+	}
 }
