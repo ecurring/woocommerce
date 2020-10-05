@@ -32,4 +32,12 @@ interface ApiClientInterface {
 	 * @return array Subscription data or request error details.
 	 */
 	public function getSubscriptionById(string $subscriptionId): array;
+
+	/**
+	 * @param string $subscriptionId
+	 *
+	 * @return array Subscription data or request error details.
+	 */
+	public function activateSubscription(string $subscriptionId): array;
+
 }

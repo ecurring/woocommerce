@@ -141,4 +141,28 @@ class ApiClient implements ApiClientInterface {
 
 		return $parsedResponse;
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function activateSubscription( string $subscriptionId ): array {
+
+		$requestData = [
+			'data' => [
+				'type' => 'subscription',
+				'id' => $subscriptionId,
+				'attributes' => [
+					'status' => 'active',
+					'mandate_accepted' => true,
+					'mandate_accepted_date' => date('c'), //todo: use the date from actual subscription data
+				]
+			]
+		];
+
+		return $this->apiCall(
+			'PATCH',
+			'https://api.ecurring.com/subscriptions',
+			$requestData
+		);
+	}
 }
