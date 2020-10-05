@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Ecurring\WooEcurring\EventListener;
-
 
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
