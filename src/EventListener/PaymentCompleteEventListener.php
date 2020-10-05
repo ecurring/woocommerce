@@ -2,8 +2,10 @@
 
 namespace Ecurring\WooEcurring\EventListener;
 
+use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
+use eCurring_WC_Plugin;
 
 class PaymentCompleteEventListener {
 	/**
@@ -34,7 +36,19 @@ class PaymentCompleteEventListener {
 		$subscriptionId = $order->get_meta(SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_ID_FIELD, true);
 
 		if($subscriptionId){
-			$this->apiClient->activateSubscription($subscriptionId);
+			try{
+				$this->apiClient->activateSubscription($subscriptionId);
+			} catch (ApiClientException $exception) {
+				eCurring_WC_Plugin::debug(
+					sprintf(
+						'Could not activate subscription, API request failed. Order id: %1$d, subscription id: %2$s, error code: %3$d, error message: %4$s.',
+						$orderId,
+						$subscriptionId,
+						$exception->getCode(),
+						$exception->getMessage()
+					)
+				);
+			}
 		}
 
 	}
