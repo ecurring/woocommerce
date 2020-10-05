@@ -39,6 +39,7 @@ class PaymentCompleteEventListener {
 			try{
 				$this->apiClient->activateSubscription($subscriptionId);
 			} catch (ApiClientException $exception) {
+				//todo: change order status?
 				eCurring_WC_Plugin::debug(
 					sprintf(
 						'Could not activate subscription, API request failed. Order id: %1$d, subscription id: %2$s, error code: %3$d, error message: %4$s.',
