@@ -14,18 +14,20 @@
  */
 
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+use eCurring\WooEcurring\Subscription\Actions;
+
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 require_once 'includes/ecurring/wc/autoload.php';
 
 /**
  * Plugin constants
  */
 
-if ( ! defined( 'WOOECUR_PLUGIN_ID' ) ) {
+if (!defined('WOOECUR_PLUGIN_ID')) {
 	define( 'WOOECUR_PLUGIN_ID', 'woo-ecurring' );
 }
 
@@ -269,6 +271,67 @@ function initialize()
         $plugin = new \eCurring\WooEcurring\Plugin($apiHelper);
 
         $plugin->init();
+
+        add_action(
+            'add_meta_boxes',
+            function () {
+                add_meta_box(
+                    'ecurring_subscription_details',
+                    'Details',
+                    function ($post) {
+                        (new \eCurring\WooEcurring\Subscription\Metabox\Display())->details($post);
+                    },
+                    'esubscriptions'
+                );
+                add_meta_box(
+                    'ecurring_subscription_options',
+                    'Options',
+                    function ($post) {
+                        (new \eCurring\WooEcurring\Subscription\Metabox\Display())->options($post);
+                    },
+                    'esubscriptions'
+                );
+            }
+        );
+
+        $actions = new Actions($apiHelper);
+        add_action(
+            'save_post',
+            function ($postId) use ($actions) {
+                (new \eCurring\WooEcurring\Subscription\Metabox\Save($actions))->save($postId);
+            }
+        );
+
+        add_action(
+            'admin_enqueue_scripts',
+            function () {
+                if (get_current_screen()->id !== 'esubscriptions') {
+                    return;
+                }
+
+                wp_enqueue_script(
+                    'ecurring_admin_subscriptions',
+                    eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js'),
+                    ['jquery'],
+                    filemtime(
+                        get_template_directory(
+                            eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js')
+                        )
+                    )
+                );
+
+                wp_enqueue_style(
+                    'ecurring_admin_subscriptions',
+                    eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css'),
+                    [],
+                    filemtime(
+                        get_template_directory(
+                            eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css')
+                        )
+                    )
+                );
+            }
+        );
 
     } catch (Throwable $throwable) {
         handleException($throwable);

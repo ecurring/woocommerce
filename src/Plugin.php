@@ -24,67 +24,7 @@ class Plugin
 
         //$this->importSubscriptions();
 
-        add_action(
-            'add_meta_boxes',
-            function () {
-                add_meta_box(
-                    'ecurring_subscription',
-                    'Subscription',
-                    function ($post) {
-                        $attributes = get_post_meta(
-                            $post->ID,
-                            '_ecurring_post_subscription_attributes',
-                            true
-                        );
-                        $status = $attributes->status;
-                        ?>
-                        <label for="ecurring_subscription_status">Status</label>
-                        <select name="ecurring_subscription_status" class="postbox">
-                            <option value="active" <?php selected($status, 'active'); ?>>Active
-                            </option>
-                            <option value="cancelled" <?php selected($status, 'cancelled'); ?>>
-                                Canceled
-                            </option>
-                            <option value="paused" <?php selected($status, 'paused'); ?>>Paused
-                            </option>
-                            <option value="unverified" <?php selected($status, 'unverified'); ?>>
-                                Unverified
-                            </option>
-                        </select>
-                    <?php },
-                    'esubscriptions'
-                );
-            }
-        );
-
-        add_action(
-            'save_post',
-            function ($postId) {
-
-                $status = filter_input(
-                    INPUT_POST,
-                    'ecurring_subscription_status',
-                    FILTER_SANITIZE_STRING
-                );
-
-                if ($status && in_array(
-                        $status,
-                        ['active', 'cancelled', 'paused', 'unverified'],
-                        true
-                    )) {
-
-                    $subscriptionId = get_post_meta($postId, '_ecurring_post_subscription_id', true);
-                    $actions = new Actions($this->api, $subscriptionId);
-
-                    switch ($status) {
-                        case 'cancelled':
-                            $result = $actions->cancel();
-
-                            // TODO grab status from response and update 'ecurring_subscription_status'
-                    }
-                }
-            }
-        );
+        $this->subscriptionListColumns();
     }
 
     protected function registerSubscriptionPostType()
@@ -157,5 +97,53 @@ class Plugin
                 );
             }
         }
+    }
+
+    protected function subscriptionListColumns()
+    {
+        add_filter(
+            'manage_esubscriptions_posts_columns',
+            function ($columns) {
+                unset($columns['date']);
+
+                $columns['product'] = 'Product';
+                $columns['status'] = 'Status';
+
+                return $columns;
+            }
+        );
+
+        add_action(
+            'manage_esubscriptions_posts_custom_column',
+            function ($column, $postId) {
+                $attributes = get_post_meta(
+                    $postId,
+                    '_ecurring_post_subscription_attributes',
+                    true
+                );
+                switch ($column) {
+                    case 'status':
+                        echo esc_attr(ucfirst($attributes->status));
+                        break;
+                    case 'product':
+                        echo 'product here...';
+                        break;
+                }
+
+            },
+            10,
+            2
+        );
+    }
+
+    /**
+     * @param $postId
+     * @param $response
+     */
+    protected function updatePostSubscriptionStatus($postId, $response)
+    {
+        $attributes = get_post_meta($postId, '_ecurring_post_subscription_attributes', true);
+        $attributes->status = $response->data->attributes->status;
+        update_post_meta($postId, '_ecurring_post_subscription_attributes', $attributes);
     }
 }

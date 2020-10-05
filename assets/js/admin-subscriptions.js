@@ -1,68 +1,31 @@
 jQuery(window).load(function () {
 
-  jQuery('.ecurring-subscription-cancel').click(function (event) {
-    event.preventDefault()
+  function hideOptions ()
+  {
+    jQuery('#pause-form').removeClass('ecurring-show').addClass('ecurring-hide')
+    jQuery('#switch-form').removeClass('ecurring-show').addClass('ecurring-hide')
+    jQuery('#cancel-form').removeClass('ecurring-show').addClass('ecurring-hide')
+  }
 
-    jQuery.post(
-      ajaxurl,
-      {
-        'action': 'subscription_cancel',
-        'subscription_id': jQuery(this).data('ecurring_subscription')
-      },
-      function (response) {
-        console.log(response)
-      },
-    )
+  hideOptions()
+
+  jQuery('#ecurring_subscription_options').on('change', function () {
+    var option = jQuery(this).find(':selected').val()
+    switch (option) {
+      case 'pause':
+        hideOptions()
+        jQuery('#pause-form').addClass('ecurring-show')
+        break
+      case 'switch':
+        hideOptions()
+        jQuery('#switch-form').addClass('ecurring-show')
+        break
+      case 'cancel':
+        hideOptions()
+        jQuery('#cancel-form').addClass('ecurring-show')
+        break
+    }
   })
-
-  jQuery('.ecurring-subscription-pause').click(function (event) {
-    event.preventDefault()
-
-    jQuery.post(
-      ajaxurl,
-      {
-        'action': 'subscription_pause',
-        'subscription_id': jQuery(this).data('ecurring_subscription')
-      },
-      function (response) {
-        console.log(response)
-      },
-    )
-  })
-
-  jQuery('.ecurring-subscription-resume').click(function (event) {
-    event.preventDefault()
-
-    jQuery.post(
-      ajaxurl,
-      {
-        'action': 'subscription_resume',
-        'subscription_id': jQuery(this).data('ecurring_subscription')
-      },
-      function (response) {
-        console.log(response)
-      },
-    )
-  })
-
-
-
-  jQuery('.ecurring-subscription-switch').click(function (event) {
-    event.preventDefault()
-
-    jQuery.post(
-      ajaxurl,
-      {
-        'action': 'subscription_switch',
-        'subscription_id': jQuery(this).data('ecurring_subscription')
-      },
-      function (response) {
-        console.log(response)
-      },
-    )
-  })
-
-
-
 })
+
 

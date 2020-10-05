@@ -18,6 +18,6 @@ class Import
 
     public function import()
     {
-        return '';
+        return $this->api->apiCall('GET', 'https://api.ecurring.com/subscriptions');
     }
 }

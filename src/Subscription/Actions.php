@@ -12,29 +12,22 @@ class Actions
     private $apiHelper;
 
     /**
-     * @var string
-     */
-    private $subscriptionId;
-
-    /**
      * @param eCurring_WC_Helper_Api $apiHelper
-     * @param string $subscriptionId
      */
-    public function __construct(eCurring_WC_Helper_Api $apiHelper, string $subscriptionId)
+    public function __construct(eCurring_WC_Helper_Api $apiHelper)
     {
         $this->apiHelper = $apiHelper;
-        $this->subscriptionId = $subscriptionId;
     }
 
-    public function cancel()
+    public function cancel($subscriptionId)
     {
         return $this->apiHelper->apiCall(
             'PATCH',
-            "https://api.ecurring.com/subscriptions/{$this->subscriptionId}",
+            "https://api.ecurring.com/subscriptions/{$subscriptionId}",
             [
                 'data' => [
                     'type' => 'subscription',
-                    'id' => $this->subscriptionId,
+                    'id' => $subscriptionId,
                     'attributes' => [
                         'status' => 'cancelled',
                     ],
@@ -43,15 +36,15 @@ class Actions
         );
     }
 
-    public function pause()
+    public function pause($subscriptionId)
     {
-        $this->apiHelper->apiCall(
+        return $this->apiHelper->apiCall(
             'PATCH',
-            "https://api.ecurring.com/subscriptions/{$this->subscriptionId}",
+            "https://api.ecurring.com/subscriptions/{$subscriptionId}",
             [
                 'data' => [
                     'type' => 'subscription',
-                    'id' => $this->subscriptionId,
+                    'id' => $subscriptionId,
                     'attributes' => [
                         'status' => 'paused',
                         //'resume_date' => '',
@@ -61,15 +54,15 @@ class Actions
         );
     }
 
-    public function resume()
+    public function resume($subscriptionId)
     {
         $this->apiHelper->apiCall(
             'PATCH',
-            "https://api.ecurring.com/subscriptions/{$this->subscriptionId}",
+            "https://api.ecurring.com/subscriptions/{$subscriptionId}",
             [
                 'data' => [
                     'type' => 'subscription',
-                    'id' => $this->subscriptionId,
+                    'id' => $subscriptionId,
                     'attributes' => [
                         'status' => 'active',
                     ],
