@@ -19,7 +19,7 @@ class PaymentCompleteEventListener {
 		$this->apiClient = $apiClient;
 	}
 
-	public function init()
+	public function init(): void
 	{
 		add_action('woocommerce_payment_complete', [$this, 'onPaymentComplete']);
 	}
