@@ -32,7 +32,7 @@ class ApiClientTest extends TestCase {
 					'subscription_plan_id'     => $subscriptionPlanId,
 					'subscription_webhook_url' => $subscriptionWebhookUrl,
 					'transaction_webhook_url'  => $transactionWebhookUrl,
-					'confirmation_sent'        => 'true',
+					'confirmation_sent'        => true,
 					'mandate_accepted'         => true,
 					'mandate_accepted_date'    => date('c'),
 					'status'                   => 'active',
