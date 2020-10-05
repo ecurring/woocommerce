@@ -2,7 +2,7 @@
 
 namespace Ecurring\WooEcurring\Api;
 
-class ApiClient {
+class ApiClient implements ApiClientInterface {
 
 	/**
 	 * @var string
@@ -17,22 +17,14 @@ class ApiClient {
 	}
 
 	/**
-	 * Send request for creating new eCurring subscription.
-	 *
-	 * @param        $ecurringCustomerId
-	 * @param        $subscriptionPlanId
-	 * @param string $subscriptionWebhookUrl
-	 * @param string $transactionWebhookUrl
-	 *
-	 * @return array API response body or error message.
-	 * @throws ApiClientException
+	 * @inheritDoc
 	 */
 	public function createSubscription(
-		$ecurringCustomerId,
-		$subscriptionPlanId,
-		$subscriptionWebhookUrl = '',
-		$transactionWebhookUrl = ''
-	) {
+		string $ecurringCustomerId,
+		string $subscriptionPlanId,
+		string $subscriptionWebhookUrl = '',
+		string $transactionWebhookUrl = ''
+	): array {
 		$requestData = [
 			'data' => [
 				'type'       => 'subscription',
@@ -55,17 +47,9 @@ class ApiClient {
 	}
 
 	/**
-	 * Get subscription data using subscription id.
-	 *
-	 * @param string $subscription_id The id of subscription to get from eCurring API.
-	 *
-	 * @return array Subscription data.
-	 *
-	 * @see https://docs.ecurring.com/subscriptions/get Response data structure.
-	 *
-	 * @throws ApiClientException If cannot parse response.
+	 * @inheritDoc
 	 */
-	public function getSubscriptionById($subscription_id)
+	public function getSubscriptionById($subscription_id): array
 	{
 		$url = 'https://api.ecurring.com/subscriptions/'.$subscription_id;
 
@@ -83,7 +67,7 @@ class ApiClient {
 	 *
 	 * @throws ApiClientException
 	 */
-	public function apiCall( $method, $url, $data = false ) {
+	public function apiCall( $method, $url, $data = false ): array {
 
 		$rawResponse = $this->doApiRequest($method, $url, $data);
 
