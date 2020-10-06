@@ -75,7 +75,7 @@ class MolliePaymentEventListener {
 					$subscriptionId = $this->subscriptionCrud->getProductSubscriptionId($product);
 
 					if ( $subscriptionId !== null && ! $this->subscriptionForOrderExists($order)) {
-						$subscriptionData = $this->createEcurringSubscriptionForProduct( $order, $subscriptionId );
+						$subscriptionData = $this->createEcurringSubscription( $order, $subscriptionId );
 						$this->subscriptionCrud->saveSubscription($subscriptionData, $order);
 					}
 				} catch ( Exception $exception ) {
@@ -117,7 +117,7 @@ class MolliePaymentEventListener {
 	 * @return array
 	 * @throws ApiClientException
 	 */
-	protected function createEcurringSubscriptionForProduct( WC_Order $order, $subscriptionId ) {
+	protected function createEcurringSubscription( WC_Order $order, $subscriptionId ) {
 
 		return $this->apiClient->createSubscription(
 			$this->dataHelper->getUsereCurringCustomerId( $order ),
