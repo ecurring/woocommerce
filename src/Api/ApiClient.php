@@ -12,7 +12,7 @@ class ApiClient implements ApiClientInterface {
 	/**
 	 * @param string $apiKey Key required for authentication.
 	 */
-	public function __construct($apiKey) {
+	public function __construct(string $apiKey) {
 		$this->apiKey = $apiKey;
 	}
 
