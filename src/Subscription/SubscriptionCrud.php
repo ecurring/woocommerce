@@ -19,10 +19,8 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 
 		$subscriptionOrder->update_meta_data(self::MANDATE_ACCEPTED_DATE_FIELD, date( 'Y-m-d H:i:s' ));
 		$subscriptionOrder->update_meta_data(self::ECURRING_SUBSCRIPTION_ID_FIELD, $subscriptionId);
-		$confirmationPage = $subscriptionData['data']['attributes']['confirmation_page'];
 
-		//todo: find a better way to do it.
-		$subscriptionLink = 'https://app.ecurring.com/subscriptions/'.explode('/',$confirmationPage)[5];
+		$subscriptionLink = $this->buildSubscriptionUrl($subscriptionData['links']['self']);
 		$subscriptionOrder->update_meta_data(self::ECURRING_SUBSCRIPTION_LINK_FIELD, $subscriptionLink);
 
 		$subscriptionOrder->add_order_note( sprintf(
@@ -52,5 +50,22 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 		$subscriptionId = $order->get_meta(self::ECURRING_SUBSCRIPTION_ID_FIELD, true);
 
 		return $subscriptionId ?: null;
+	}
+
+	/**
+	 * Return url of the subscription page.
+	 *
+	 * @param string $subscriptionApiUrl URL of subscription JSON API.
+	 *
+	 * @return string Url of the subscription page.
+	 */
+	protected function buildSubscriptionUrl(string $subscriptionApiUrl) {
+		$id = basename($subscriptionApiUrl);
+
+		return sprintf(
+			'https://app.ecurring.com/subscriptions/%1$s',
+			$id
+		);
+
 	}
 }
