@@ -74,7 +74,7 @@ class MolliePaymentEventListener {
 					$product = $item->get_product();
 					$subscriptionId = $this->subscriptionCrud->getProductSubscriptionId($product);
 
-					if ( $subscriptionId !== null ) {
+					if ( $subscriptionId !== null && ! $this->subscriptionForOrderExists($order)) {
 						$subscriptionData = $this->createEcurringSubscriptionForProduct( $order, $subscriptionId );
 						$this->subscriptionCrud->saveSubscription($subscriptionData, $order);
 					}
@@ -88,6 +88,24 @@ class MolliePaymentEventListener {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Check if subscription already created for given order.
+	 *
+	 * @param WC_Order $order
+	 *
+	 * @return bool
+	 */
+	protected function subscriptionForOrderExists(WC_Order $order): bool
+	{
+		$subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
+
+		if($subscriptionId === null){
+			return false;
+		}
+
+		return isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription';
 	}
 
 	/**
