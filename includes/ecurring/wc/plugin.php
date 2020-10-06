@@ -765,7 +765,11 @@ class eCurring_WC_Plugin
 			$items = WC()->cart->get_cart();
 			foreach ( $items as $item ) {
 				$product = $item['data'];
-				if ( $product instanceof WC_Product && $product->meta_exists('_ecurring_subscription_plan') ) {
+
+				// we need to use !empty check instead of just meta_exists because
+                // previously this field was added to non-eCurring products
+                // with value '0'.
+				if ( $product instanceof WC_Product && ! empty($product->get_meta('_ecurring_subscription_plan', true)) ) {
 					return true;
 				}
 			}
