@@ -10,7 +10,7 @@ use WC_Product;
  */
 interface SubscriptionCrudInterface {
 
-	const MANDATE_ACCEPTED_FIELD = 'ecurring_woocommerce_mandate_accepted_date';
+	const MANDATE_ACCEPTED_DATE_FIELD = 'ecurring_woocommerce_mandate_accepted_date';
 
 	const ECURRING_SUBSCRIPTION_ID_FIELD = '_ecurring_subscription_id';
 
