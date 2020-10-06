@@ -1,5 +1,8 @@
 <?php
 
+
+use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
+
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
 
@@ -738,58 +741,40 @@ class eCurring_WC_Plugin
 	 * Left only eCurring payment gateway if there is eCurring product, and hide payment gateway div.
 	 * Otherwise just exclude eCurring payment gateway.
 	 *
-	 * @param $gateway_list
+	 * @param WC_Payment_Gateway[] $gatewayList Payment gateways from WooCommerce to filter.
 	 *
-	 * @return mixed
+	 * @return WC_Payment_Gateway[] Filtered gateways list.
 	 */
-	public static function eCurringFilterGateways($gateway_list) {
+	public static function eCurringFilterGateways($gatewayList) {
+	    if(! self::eCurringSubscriptionIsInCart()) {
+	        return $gatewayList;
+        }
+
+	    $mollieGateways = apply_filters('mollie-payments-for-woocommerce_retrieve_payment_gateways', []);
+	    $mollieRecurringGatewaysFilter = new WhitelistedRecurringPaymentGatewaysFilter($mollieGateways);
+	    return $mollieRecurringGatewaysFilter->filter($gatewayList);
+	}
+
+	/**
+     * Check if cart contains at least one eCurring subscription product.
+     *
+	 * @return bool Is subscription found.
+	 */
+	public static function eCurringSubscriptionIsInCart() {
 		if ( isset( WC()->cart ) ) {
 			$items = WC()->cart->get_cart();
 			foreach ( $items as $item ) {
-				if ( get_post_meta( $item['product_id'], '_ecurring_subscription_plan', true ) ) {
-					foreach ( $gateway_list as $gateway => $data ) {
-						if ( $gateway != 'ecurring_wc_gateway_ecurring' && ! self::isMolliePaymentGateway($data)) {
-							unset( $gateway_list[ $gateway ] );
-						}
-					}
-				} else {
-					unset( $gateway_list['ecurring_wc_gateway_ecurring'] );
+				$product = $item['data'];
+
+				// we need to use !empty check instead of just meta_exists because
+                // previously this field was added to non-eCurring products
+                // with value '0'.
+				if ( $product instanceof WC_Product && ! empty($product->get_meta('_ecurring_subscription_plan', true)) ) {
+					return true;
 				}
 			}
 		}
-
-		return $gateway_list;
-	}
-
-    /**
-     * Check if provided payment gateway instance was added by Mollie.
-     *
-     * @param WC_Payment_Gateway $gateway
-     *
-     * @return bool Check result.
-     */
-	protected static function isMolliePaymentGateway(WC_Payment_Gateway $gateway)
-    {
-        return in_array(get_class($gateway), self::getMollieGatewaysClassNames(), true);
-    }
-
-
-    /**
-     * Get list of payment gateways class names added by Mollie Payments for WooCommerce plugin.
-     *
-     * This method has to be static for now because it called from another static method.
-     *
-     * @return array
-     */
-    protected static function getMollieGatewaysClassNames()
-    {
-        if (class_exists(Mollie_WC_Plugin::class) &&
-            isset(Mollie_WC_Plugin::$GATEWAYS) &&
-            is_array(Mollie_WC_Plugin::$GATEWAYS)) {
-            return Mollie_WC_Plugin::$GATEWAYS;
-        }
-
-        return [];
+		return false;
     }
 
 	/**
