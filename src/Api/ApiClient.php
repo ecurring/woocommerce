@@ -161,7 +161,7 @@ class ApiClient implements ApiClientInterface {
 
 		return $this->apiCall(
 			'PATCH',
-			'https://api.ecurring.com/subscriptions',
+			sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
 			$requestData
 		);
 	}
