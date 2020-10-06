@@ -56,31 +56,31 @@ class SubscriptionCrudTest extends TestCase {
 			[
 				[
 					"links" => [
-						"self" => "https=>//api.ecurring.com/subscriptions/1"
+						"self" => "https://api.ecurring.com/subscriptions/1"
 					],
 					"data"  => [
 						"type"          => "subscription",
 						"id"            => $subscriptionId,
 						"links"         => [
-							"self" => "https=>//api.ecurring.com/subscriptions/1"
+							"self" => "https://api.ecurring.com/subscriptions/1"
 						],
 						"attributes"    => [
 							"mandate_code"             => "ECUR-1",
 							"mandate_accepted"         => true,
 							"mandate_accepted_date"    => $mandateAcceptedDate,
-							"start_date"               => "2017-21-11T22=>11=>57+01=>00",
+							"start_date"               => "2017-21-11T22:11:57+01:00",
 							"status"                   => "active",
 							"cancel_date"              => null,
 							"resume_date"              => null,
-							"confirmation_page"        => "https=>//app.ecurring.com/mandate/accept/1/ECUR-1",
+							"confirmation_page"        => "https://app.ecurring.com/mandate/accept/1/ECUR-1",
 							"confirmation_sent"        => false,
 							"subscription_webhook_url" => null,
 							"transaction_webhook_url"  => null,
 							"success_redirect_url"     => null,
 							"metadata"                 => [],
 							"archived"                 => false,
-							"created_at"               => "2017-02-01T11=>21=>09+01=>00",
-							"updated_at"               => "2017-02-11T00=>00=>00+01=>00"
+							"created_at"               => "2017-02-01T11:21:09+01:00",
+							"updated_at"               => "2017-02-11T00:00:00+01:00"
 						],
 						"relationships" => [
 							"subscription-plan" => [
@@ -97,7 +97,7 @@ class SubscriptionCrudTest extends TestCase {
 							],
 							"transactions"      => [
 								"links" => [
-									"related" => "https=>//api.ecurring.com/subscriptions/1/transactions"
+									"related" => "https://api.ecurring.com/subscriptions/1/transactions"
 								],
 								"data"  => [
 									[
