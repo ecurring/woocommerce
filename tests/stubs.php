@@ -13,6 +13,10 @@ class WC_Payment_Gateway
 
 class WC_Order
 {
+	public function get_id()
+	{
+	}
+
     public function get_customer_id()
     {
         return 1;

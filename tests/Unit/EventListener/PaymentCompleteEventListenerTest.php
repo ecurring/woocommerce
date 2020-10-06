@@ -7,6 +7,7 @@ namespace eCurring\WooEcurringTests\Unit\EventListener;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring\WooEcurringTests\TestCase;
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
 use WC_Order;
@@ -43,6 +44,8 @@ class PaymentCompleteEventListenerTest extends TestCase {
 		$subscriptionId = 'subscription321';
 
 		$wcOrderMock = $this->createMock( WC_Order::class);
+		$wcOrderMock->method('get_id')
+			->willReturn($orderId);
 
 		expect('wc_get_order')
 			->once()
@@ -60,6 +63,10 @@ class PaymentCompleteEventListenerTest extends TestCase {
 			->method('getSubscriptionIdByOrder')
 			->with($wcOrderMock)
 			->willReturn($subscriptionId);
+
+		//Prevent calling static eCurring_WC_Plugin::debug() method.
+		$pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
+		$pluginMock->shouldReceive('debug');
 
 		$sut = new PaymentCompleteEventListener($apiClientMock, $subscriptionCrudMock);
 
