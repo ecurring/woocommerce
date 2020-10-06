@@ -48,15 +48,18 @@ class PaymentCompleteEventListener {
 					$subscriptionId
 				)
 			);
+			$mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
+
 			try{
-				$this->apiClient->activateSubscription($subscriptionId);
+				$this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate);
 			} catch (ApiClientException $exception) {
 				//todo: change order status?
 				eCurring_WC_Plugin::debug(
 					sprintf(
-						'Could not activate subscription, API request failed. Order id: %1$d, subscription id: %2$s, error code: %3$d, error message: %4$s.',
+						'Could not activate subscription, API request failed. Order id: %1$d, subscription id: %2$s, mandate accepted date: %3$s, error code: %4$d, error message: %5$s.',
 						$orderId,
 						$subscriptionId,
+						$mandateAcceptedDate,
 						$exception->getCode(),
 						$exception->getMessage()
 					)

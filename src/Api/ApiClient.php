@@ -145,7 +145,7 @@ class ApiClient implements ApiClientInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function activateSubscription( string $subscriptionId ): array {
+	public function activateSubscription( string $subscriptionId, string $mandateAcceptedDate ): array {
 
 		$requestData = [
 			'data' => [
@@ -154,7 +154,7 @@ class ApiClient implements ApiClientInterface {
 				'attributes' => [
 					'status' => 'active',
 					'mandate_accepted' => true,
-					'mandate_accepted_date' => date('c'), //todo: use the date from actual subscription data
+					'mandate_accepted_date' => $mandateAcceptedDate
 				]
 			]
 		];
