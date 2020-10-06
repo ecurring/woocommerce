@@ -41,6 +41,13 @@ class PaymentCompleteEventListener {
 		$subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
 
 		if($subscriptionId){
+			eCurring_WC_Plugin::debug(
+				sprintf(
+					'Payment completed for order %1$d. Subscription id is %1$s, trying to activate it.',
+					$order->get_id(),
+					$subscriptionId
+				)
+			);
 			try{
 				$this->apiClient->activateSubscription($subscriptionId);
 			} catch (ApiClientException $exception) {
