@@ -42,7 +42,7 @@ interface ApiClientInterface {
 	 *
 	 * @param string $mandateAcceptedDate Date string formatted according to ISO 8601.
 	 *
-	 * @return array Subscription data or request error details.
+	 * @return array Subscription data.
 	 *
 	 * @throws ApiClientException If request failed.
 	 */
