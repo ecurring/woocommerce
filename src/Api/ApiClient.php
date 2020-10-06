@@ -57,6 +57,30 @@ class ApiClient implements ApiClientInterface {
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function activateSubscription( string $subscriptionId, string $mandateAcceptedDate ): array {
+
+		$requestData = [
+			'data' => [
+				'type' => 'subscription',
+				'id' => $subscriptionId,
+				'attributes' => [
+					'status' => 'active',
+					'mandate_accepted' => true,
+					'mandate_accepted_date' => $mandateAcceptedDate
+				]
+			]
+		];
+
+		return $this->apiCall(
+			'PATCH',
+			sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
+			$requestData
+		);
+	}
+
+	/**
 	 * Make eCurring API request call.
 	 *
 	 * @param string     $method HTTP Method, one of the GET, POST, PATH, DELETE.
@@ -140,29 +164,5 @@ class ApiClient implements ApiClientInterface {
 		}
 
 		return $parsedResponse;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function activateSubscription( string $subscriptionId, string $mandateAcceptedDate ): array {
-
-		$requestData = [
-			'data' => [
-				'type' => 'subscription',
-				'id' => $subscriptionId,
-				'attributes' => [
-					'status' => 'active',
-					'mandate_accepted' => true,
-					'mandate_accepted_date' => $mandateAcceptedDate
-				]
-			]
-		];
-
-		return $this->apiCall(
-			'PATCH',
-			sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
-			$requestData
-		);
 	}
 }
