@@ -72,10 +72,19 @@ class Actions
     }
 
     /**
-    “switch subscription” means the current subscription is cancelled with chosen ‘switch date’ and new subscription has start date on ‘switch date’.
-    The mandate of the current subscription can be copied to the new subscription.
+     * “switch subscription” means the current subscription is cancelled with chosen ‘switch date’ and new subscription has start date on ‘switch date’.
+     * The mandate of the current subscription can be copied to the new subscription.
      */
     public function change()
     {
+    }
+
+    public function import($page)
+    {
+        return $this->apiHelper->apiCall(
+            'GET',
+            "https://api.ecurring.com/subscriptions?page[number]={$page}",
+            true
+        );
     }
 }

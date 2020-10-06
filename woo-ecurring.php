@@ -268,7 +268,8 @@ function initialize()
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $plugin = new \eCurring\WooEcurring\Plugin($apiHelper);
+        $actions = new Actions($apiHelper);
+        $plugin = new \eCurring\WooEcurring\Plugin($actions);
 
         $plugin->init();
 

@@ -3,26 +3,25 @@
 namespace eCurring\WooEcurring;
 
 use eCurring\WooEcurring\Subscription\Actions;
-use eCurring\WooEcurring\Subscription\Import;
-use eCurring_WC_Helper_Api;
+use WC_Logger;
 
 class Plugin
 {
     /**
-     * @var eCurring_WC_Helper_Api
+     * @var Actions Subscription actions.
      */
-    private $api;
+    private $actions;
 
-    public function __construct(eCurring_WC_Helper_Api $api)
+    public function __construct(Actions $actions)
     {
-        $this->api = $api;;
+        $this->actions = $actions;
     }
 
     public function init()
     {
         $this->registerSubscriptionPostType();
 
-        //$this->importSubscriptions();
+        $this->importSubscriptionsJob();
 
         $this->subscriptionListColumns();
     }
@@ -49,12 +48,12 @@ class Plugin
         );
     }
 
-    protected function importSubscriptions()
+    /**
+     * Create posts as subscription post type
+     */
+    protected function createSubscriptions($subscriptions)
     {
-        $import = new Import($this->api);
-
-        $subscriptions = json_decode($import->import());
-
+        // TODO use WP_Query instead of get_posts
         $subscriptionPosts = get_posts(
             [
                 'post_type' => 'esubscriptions',
@@ -145,5 +144,58 @@ class Plugin
         $attributes = get_post_meta($postId, '_ecurring_post_subscription_attributes', true);
         $attributes->status = $response->data->attributes->status;
         update_post_meta($postId, '_ecurring_post_subscription_attributes', $attributes);
+    }
+
+    protected function importSubscriptionsJob()
+    {
+        add_action(
+            'init',
+            function () {
+                if (wp_doing_ajax()) {
+                    return;
+                }
+
+                if (get_option('ecurring_import_finished') === '1') {
+                    as_unschedule_all_actions('ecurring_import_subscriptions');
+                    return;
+                }
+
+                if (as_next_scheduled_action('ecurring_import_subscriptions') === false) {
+                    as_schedule_recurring_action(
+                        strtotime('now'),
+                        10,
+                        'ecurring_import_subscriptions'
+                    );
+                }
+            }
+        );
+
+        add_action(
+            'ecurring_import_subscriptions',
+            function () {
+
+                $log = new WC_Logger();
+
+                $page = get_option('ecurring_subscriptions_page', 1);
+                $log->add('ecurring-import-subscriptions', 'page: ' . $page);
+
+                $subscriptions = json_decode($this->actions->import((int)$page));
+
+                $parts = parse_url($subscriptions->links->next);
+                parse_str($parts['query'], $query);
+                $nextPage = $query['page']['number'];
+
+                $this->createSubscriptions($subscriptions);
+
+                update_option('ecurring_subscriptions_page', $nextPage);
+                $log->add('ecurring-import-subscriptions', 'next: ' . $nextPage);
+
+                if (!$nextPage) {
+                    update_option('ecurring_import_finished', true);
+
+                    $log->add('ecurring-import-subscriptions', 'unscheduled');
+                }
+            }
+        );
     }
 }
