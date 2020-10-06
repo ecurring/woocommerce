@@ -161,10 +161,10 @@ class Plugin
                 }
 
                 if (as_next_scheduled_action('ecurring_import_subscriptions') === false) {
-                    as_schedule_recurring_action(
-                        strtotime('now'),
-                        10,
-                        'ecurring_import_subscriptions'
+                    as_enqueue_async_action(
+                        'ecurring_import_subscriptions',
+                        [],
+                        'ecurring'
                     );
                 }
             }
@@ -174,26 +174,20 @@ class Plugin
             'ecurring_import_subscriptions',
             function () {
 
-                $log = new WC_Logger();
-
                 $page = get_option('ecurring_subscriptions_page', 1);
-                $log->add('ecurring-import-subscriptions', 'page: ' . $page);
 
                 $subscriptions = json_decode($this->actions->import((int)$page));
+
+                $this->createSubscriptions($subscriptions);
 
                 $parts = parse_url($subscriptions->links->next);
                 parse_str($parts['query'], $query);
                 $nextPage = $query['page']['number'];
 
-                $this->createSubscriptions($subscriptions);
-
                 update_option('ecurring_subscriptions_page', $nextPage);
-                $log->add('ecurring-import-subscriptions', 'next: ' . $nextPage);
 
                 if (!$nextPage) {
                     update_option('ecurring_import_finished', true);
-
-                    $log->add('ecurring-import-subscriptions', 'unscheduled');
                 }
             }
         );
