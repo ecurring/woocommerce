@@ -68,13 +68,25 @@ class MolliePaymentEventListener {
 	 */
 	public function onMolliePaymentCreated($payment, WC_Order $order ) {
 
+		if( $this->subscriptionForOrderExists($order) )
+		{
+			eCurring_WC_Plugin::debug(
+				sprintf(
+					'Subscription already exists for order %1$d. New subscription will not be created.',
+					$order->get_id()
+				)
+			);
+
+			return;
+		}
+
 		foreach ( $order->get_items() as $item ) {
 			if ( $item instanceof WC_Order_Item_Product ) {
 				try {
 					$product = $item->get_product();
 					$subscriptionId = $this->subscriptionCrud->getProductSubscriptionId($product);
 
-					if ( $subscriptionId !== null && ! $this->subscriptionForOrderExists($order)) {
+					if ( $subscriptionId !== null ) {
 						$subscriptionData = $this->createEcurringSubscription( $order, $subscriptionId );
 						$this->subscriptionCrud->saveSubscription($subscriptionData, $order);
 					}
