@@ -6,6 +6,9 @@ if (!defined('WC_VERSION')) {
 
 class WC_Payment_Gateway
 {
+	public function supports()
+	{
+	}
 }
 
 class WC_Order
