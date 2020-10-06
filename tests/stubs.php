@@ -30,6 +30,18 @@ class WC_Order
     public function get_meta()
     {
     }
+
+    public function update_meta_data()
+    {
+    }
+
+    public function add_order_note()
+    {
+    }
+
+    public function save()
+    {
+    }
 }
 
 if(! class_exists(WC_Order_Item::class))
