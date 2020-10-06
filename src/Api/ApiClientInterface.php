@@ -24,7 +24,6 @@ interface ApiClientInterface {
 	public function createSubscription(
 		string $customerId,
 		string $subscriptionId,
-		string $subscriptionWebhookUrl = '',
 		string $transactionWebhookUrl = ''
 	): array;
 

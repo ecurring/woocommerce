@@ -18,7 +18,6 @@ class ApiClientTest extends TestCase {
 		$apiKey = 'someapikey135';
 		$ecurringCustomerId = 'ecurringcustomer123';
 		$subscriptionPlanId = 'subscription564';
-		$subscriptionWebhookUrl = 'http://ecurring.loc/subscription';
 		$transactionWebhookUrl = 'http://ecurring.loc/transaction';
 		$method = 'POST';
 
@@ -30,7 +29,6 @@ class ApiClientTest extends TestCase {
 				'attributes' => [
 					'customer_id'              => $ecurringCustomerId,
 					'subscription_plan_id'     => $subscriptionPlanId,
-					'subscription_webhook_url' => $subscriptionWebhookUrl,
 					'transaction_webhook_url'  => $transactionWebhookUrl,
 					'confirmation_sent'        => true,
 					'metadata'                 => ['source' => 'woocommerce']
@@ -61,7 +59,6 @@ class ApiClientTest extends TestCase {
 		$sut->createSubscription(
 			$ecurringCustomerId,
 			$subscriptionPlanId,
-			$subscriptionWebhookUrl,
 			$transactionWebhookUrl
 		);
 	}

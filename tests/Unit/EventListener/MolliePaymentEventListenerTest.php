@@ -99,7 +99,6 @@ class MolliePaymentEventListenerTest extends TestCase {
 			->with(
 				$ecurringCustomerId,
 				$ecurringSubscriptionId,
-				'',
 				''
 			)
 			->willReturn([]);

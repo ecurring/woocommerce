@@ -40,6 +40,11 @@ class PaymentCompleteEventListenerTest extends TestCase {
 
 	public function testOnPaymentComplete()
 	{
+		//Prevent calling static eCurring_WC_Plugin::debug() method.
+		$pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
+		$pluginMock->shouldReceive('debug');
+
+
 		$orderId = 123;
 		$subscriptionId = 'subscription321';
 		$mandateAcceptedDate = date('c');
@@ -68,10 +73,6 @@ class PaymentCompleteEventListenerTest extends TestCase {
 			->method('getSubscriptionIdByOrder')
 			->with($wcOrderMock)
 			->willReturn($subscriptionId);
-
-		//Prevent calling static eCurring_WC_Plugin::debug() method.
-		$pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
-		$pluginMock->shouldReceive('debug');
 
 		$sut = new PaymentCompleteEventListener($apiClientMock, $subscriptionCrudMock);
 
