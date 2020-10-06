@@ -38,6 +38,9 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 	 * @inheritDoc
 	 */
 	public function getProductSubscriptionId( WC_Product $product) {
-		return $product->get_meta( self::ECURRING_SUBSCRIPTION_PLAN_FIELD, true );
+		$subscriptionId = $product->get_meta( self::ECURRING_SUBSCRIPTION_PLAN_FIELD, true );
+
+		//Previously plugin saved subscription id '0' for non-eCurring products.
+		return $subscriptionId ?: null;
 	}
 }
