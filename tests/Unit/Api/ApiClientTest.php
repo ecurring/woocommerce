@@ -71,6 +71,7 @@ class ApiClientTest extends TestCase {
 		$subscriptionId = 'subscription12345';
 		$apiKey = 'apikey098765';
 		$method = 'PATCH';
+		$mandateAcceptedDate = date('c');
 
 		$requestData = [
 			'data' => [
@@ -79,7 +80,7 @@ class ApiClientTest extends TestCase {
 				'attributes' => [
 					'status' => 'active',
 					'mandate_accepted' => true,
-					'mandate_accepted_date' => date('c')
+					'mandate_accepted_date' => $mandateAcceptedDate
 				]
 			]
 		];
@@ -109,6 +110,6 @@ class ApiClientTest extends TestCase {
 
 		$sut = new ApiClient($apiKey);
 
-		$sut->activateSubscription($subscriptionId);
+		$sut->activateSubscription($subscriptionId, $mandateAcceptedDate);
 	}
 }

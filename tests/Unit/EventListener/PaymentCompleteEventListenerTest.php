@@ -42,10 +42,15 @@ class PaymentCompleteEventListenerTest extends TestCase {
 	{
 		$orderId = 123;
 		$subscriptionId = 'subscription321';
+		$mandateAcceptedDate = date('c');
 
 		$wcOrderMock = $this->createMock( WC_Order::class);
 		$wcOrderMock->method('get_id')
 			->willReturn($orderId);
+
+		$wcOrderMock->method('get_meta')
+			->with(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD)
+			->willReturn($mandateAcceptedDate);
 
 		expect('wc_get_order')
 			->once()
@@ -69,6 +74,7 @@ class PaymentCompleteEventListenerTest extends TestCase {
 		$pluginMock->shouldReceive('debug');
 
 		$sut = new PaymentCompleteEventListener($apiClientMock, $subscriptionCrudMock);
+
 
 		$sut->onPaymentComplete($orderId);
 	}
