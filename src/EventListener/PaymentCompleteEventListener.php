@@ -43,7 +43,7 @@ class PaymentCompleteEventListener {
 		if($subscriptionId){
 			eCurring_WC_Plugin::debug(
 				sprintf(
-					'Payment completed for order %1$d. Subscription id is %1$s, trying to activate it.',
+					'Payment completed for order %1$d. Subscription id is %2$s, trying to activate it.',
 					$order->get_id(),
 					$subscriptionId
 				)
