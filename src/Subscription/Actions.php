@@ -83,8 +83,7 @@ class Actions
     {
         return $this->apiHelper->apiCall(
             'GET',
-            "https://api.ecurring.com/subscriptions?page[number]={$page}",
-            true
+            "https://api.ecurring.com/subscriptions?page[number]={$page}"
         );
     }
 }

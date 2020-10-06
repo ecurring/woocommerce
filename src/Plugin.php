@@ -3,7 +3,6 @@
 namespace eCurring\WooEcurring;
 
 use eCurring\WooEcurring\Subscription\Actions;
-use WC_Logger;
 
 class Plugin
 {
@@ -68,6 +67,10 @@ class Plugin
         }
 
         foreach ($subscriptions->data as $subscription) {
+
+            if (!$this->orderSubscriptionExist($subscription)) {
+                continue;
+            }
 
             if (in_array($subscription->id, $subscriptionIds, true)) {
                 continue;
@@ -191,5 +194,33 @@ class Plugin
                 }
             }
         );
+    }
+
+    /**
+     * Check if subscription id exist in orders post meta.
+     * @param $subscription
+     * @return bool
+     */
+    protected function orderSubscriptionExist($subscription): bool
+    {
+        $orders = wc_get_orders(
+            [
+                'posts_per_page' => -1,
+            ]
+        );
+
+        foreach ($orders as $order) {
+            $subscriptionId = get_post_meta(
+                $order->get_id(),
+                '_ecurring_subscription_id',
+                true
+            );
+
+            if ($subscriptionId === $subscription->id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
