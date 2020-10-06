@@ -22,7 +22,10 @@ class PaymentCompleteEventListenerTest extends TestCase {
 		/** @var ApiClientInterface&MockObject $apiClientMock */
 		$apiClientMock = $this->createMock(ApiClientInterface::class);
 
-		$sut = new PaymentCompleteEventListener($apiClientMock);
+		/** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
+		$subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
+
+		$sut = new PaymentCompleteEventListener($apiClientMock, $subscriptionCrudMock);
 
 		expect('add_action')
 			->once()
@@ -40,9 +43,6 @@ class PaymentCompleteEventListenerTest extends TestCase {
 		$subscriptionId = 'subscription321';
 
 		$wcOrderMock = $this->createMock( WC_Order::class);
-		$wcOrderMock->method('get_meta')
-			->with(SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_ID_FIELD, true)
-			->willReturn($subscriptionId);
 
 		expect('wc_get_order')
 			->once()
@@ -53,7 +53,15 @@ class PaymentCompleteEventListenerTest extends TestCase {
 		$apiClientMock = $this->createMock(ApiClientInterface::class);
 		$apiClientMock->expects($this->once())
 			->method('activateSubscription');
-		$sut = new PaymentCompleteEventListener($apiClientMock);
+
+		/** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
+		$subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
+		$subscriptionCrudMock->expects($this->once())
+			->method('getSubscriptionIdByOrder')
+			->with($wcOrderMock)
+			->willReturn($subscriptionId);
+
+		$sut = new PaymentCompleteEventListener($apiClientMock, $subscriptionCrudMock);
 
 		$sut->onPaymentComplete($orderId);
 	}
