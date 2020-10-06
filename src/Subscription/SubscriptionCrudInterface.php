@@ -34,4 +34,13 @@ interface SubscriptionCrudInterface {
 	 * @return string|null eCurring Subscription ID or null if no subscription exists for this product.
 	 */
 	public function getProductSubscriptionId( WC_Product $product);
+
+	/**
+	 * Get subscription id related to the given order.
+	 *
+	 * @param WC_Order $order Order to get subscription id from.
+	 *
+	 * @return string|null Subscription id or null if not exists.
+	 */
+	public function getSubscriptionIdByOrder(WC_Order $order);
 }

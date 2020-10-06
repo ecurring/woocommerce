@@ -43,4 +43,14 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 		//Previously plugin saved subscription id '0' for non-eCurring products.
 		return $subscriptionId ?: null;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getSubscriptionIdByOrder( WC_Order $order )
+	{
+		$subscriptionId = $order->get_meta(self::ECURRING_SUBSCRIPTION_ID_FIELD, true);
+
+		return $subscriptionId ?: null;
+	}
 }
