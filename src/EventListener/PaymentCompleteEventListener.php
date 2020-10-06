@@ -12,13 +12,19 @@ class PaymentCompleteEventListener {
 	 * @var ApiClientInterface
 	 */
 	protected $apiClient;
+	/**
+	 * @var SubscriptionCrudInterface
+	 */
+	protected $subscriptionCrud;
 
 	/**
-	 * @param ApiClientInterface $apiClient To make eCurring API calls.
+	 * @param ApiClientInterface        $apiClient To make eCurring API calls.
+	 * @param SubscriptionCrudInterface $subscriptionCrud Service able to read subscription data.
 	 */
-	public function __construct(ApiClientInterface $apiClient){
+	public function __construct(ApiClientInterface $apiClient, SubscriptionCrudInterface $subscriptionCrud){
 
 		$this->apiClient = $apiClient;
+		$this->subscriptionCrud = $subscriptionCrud;
 	}
 
 	public function init(): void
@@ -31,9 +37,8 @@ class PaymentCompleteEventListener {
 	 */
 	public function onPaymentComplete(int $orderId)
 	{
-		//todo: find a better way to get a subscription id.
 		$order = wc_get_order($orderId);
-		$subscriptionId = $order->get_meta(SubscriptionCrudInterface::ECURRING_SUBSCRIPTION_ID_FIELD, true);
+		$subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
 
 		if($subscriptionId){
 			try{
