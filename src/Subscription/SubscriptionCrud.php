@@ -17,7 +17,7 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 	{
 		$subscriptionId = $subscriptionData['data']['id'];
 
-		$subscriptionOrder->update_meta_data(self::MANDATE_ACCEPTED_DATE_FIELD, date( 'Y-m-d H:i:s' ));
+		$subscriptionOrder->update_meta_data(self::MANDATE_ACCEPTED_DATE_FIELD, date( 'c' ));
 		$subscriptionOrder->update_meta_data(self::ECURRING_SUBSCRIPTION_ID_FIELD, $subscriptionId);
 
 		$subscriptionLink = $this->buildSubscriptionUrl($subscriptionData['links']['self']);
