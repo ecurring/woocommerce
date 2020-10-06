@@ -1,6 +1,7 @@
 <?php
 
 
+use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
@@ -42,6 +43,7 @@ class eCurring_WC_Plugin
 
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptonCrud))->init();
+        (new PaymentCompleteEventListener($apiClient, $subscriptonCrud))->init();
 
 
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
