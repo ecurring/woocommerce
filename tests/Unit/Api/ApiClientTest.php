@@ -98,7 +98,7 @@ class ApiClientTest extends TestCase {
 		expect('wp_remote_request')
 			->once()
 			->with(
-				'https://api.ecurring.com/subscriptions',
+				sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
 				$requestArgs
 			)
 		->andReturn(
