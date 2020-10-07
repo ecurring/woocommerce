@@ -119,6 +119,8 @@ class MolliePaymentEventListener {
 			return false;
 		}
 
+		$subscriptionData = $this->apiClient->getSubscriptionById($subscriptionId);
+
 		return isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription';
 	}
 
