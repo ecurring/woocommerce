@@ -266,6 +266,9 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
+        require_once 'includes/ecurring/wc/helper/settings.php';
+        require_once 'includes/ecurring/wc/helper/api.php';
+
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
         $actions = new Actions($apiHelper);
@@ -331,6 +334,37 @@ function initialize()
                         )
                     )
                 );
+            }
+        );
+
+        add_filter(
+            'request',
+            function ($request) use ($apiHelper) {
+                $webhook = filter_input(INPUT_GET, 'ecurring-webhook', FILTER_SANITIZE_STRING);
+                if ($webhook === 'subscription') {
+                    $response = json_decode(file_get_contents('php://input'));
+                    $subscription_id = filter_var(
+                        $response->subscription_id,
+                        FILTER_SANITIZE_STRING
+                    );
+
+                    $subscription = json_decode(
+                        $apiHelper->apiCall(
+                            'GET',
+                            "https://api.ecurring.com/subscriptions/{$subscription_id}"
+                        )
+                    );
+                    $postSubscription = new eCurring\WooEcurring\Subscription\Subscription();
+                    $postSubscription->update($subscription);
+
+                    $log = new WC_Logger();
+                    $log->add(
+                        'subscription-webhook',
+                        "subscription-webhook {$subscription_id} was received"
+                    );
+                }
+
+                return $request;
             }
         );
 

@@ -28,9 +28,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
      */
     protected $display_logo;
 
-    /**
-     *
-     */
     public function __construct ()
     {
         // No plugin id, gateway id is unique enough
@@ -304,17 +301,25 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 				if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
 					eCurring_WC_Plugin::debug( $this->id . ': Subscription ' . $response['data']['id'] . ' created for order ' . $order->id );
 				} else {
-					eCurring_WC_Plugin::debug( $this->id . ': Subscription ' . $response['data']['id'] . ' created for order ' . $order->get_id() );
-				}
+                    eCurring_WC_Plugin::debug(
+                        $this->id . ': Subscription ' . $response['data']['id'] . ' created for order ' . $order->get_id(
+                        )
+                    );
+                }
 
-				$order->add_order_note( sprintf(
-				/* translators: Placeholder 1: Payment method title, placeholder 2: payment ID */
-					__( 'Manual %s payment started for subscription ID %s.', 'woo-ecurring' ),
-					$this->method_title,
-					'<a href="'.$subscription_link.'" target="_blank">'.$response['data']['id'].'</a>'
-				) );
+                $order->add_order_note(
+                    sprintf(
+                    /* translators: Placeholder 1: Payment method title, placeholder 2: payment ID */
+                        __('Manual %s payment started for subscription ID %s.', 'woo-ecurring'),
+                        $this->method_title,
+                        '<a href="' . $subscription_link . '" target="_blank">' . $response['data']['id'] . '</a>'
+                    )
+                );
 
-			}
+                $subscription = new eCurring\WooEcurring\Subscription\Subscription();
+                $subscriptionResponse = json_decode($request);
+                $subscription->create($subscriptionResponse->data);
+            }
 
 			if ( isset( $response['errors'] ) ) {
 				eCurring_WC_Plugin::debug( 'Creating eCurring subscription failed with error ' . print_r($response['errors'], TRUE ) );

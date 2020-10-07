@@ -3,6 +3,7 @@
 namespace eCurring\WooEcurring;
 
 use eCurring\WooEcurring\Subscription\Actions;
+use eCurring\WooEcurring\Subscription\Subscription;
 
 class Plugin
 {
@@ -76,28 +77,8 @@ class Plugin
                 continue;
             }
 
-            $postId = wp_insert_post(
-                [
-                    'post_type' => 'esubscriptions',
-                    'post_title' => $subscription->id,
-                    'post_status' => 'publish',
-                ]
-            );
-
-            if ($postId) {
-                add_post_meta($postId, '_ecurring_post_subscription_id', $subscription->id);
-                add_post_meta($postId, '_ecurring_post_subscription_links', $subscription->links);
-                add_post_meta(
-                    $postId,
-                    '_ecurring_post_subscription_attributes',
-                    $subscription->attributes
-                );
-                add_post_meta(
-                    $postId,
-                    '_ecurring_post_subscription_relationships',
-                    $subscription->relationships
-                );
-            }
+            $postSubscription = new Subscription();
+            $postSubscription->create($subscription);
         }
     }
 
@@ -125,6 +106,7 @@ class Plugin
                 );
                 switch ($column) {
                     case 'status':
+                        // TODO check if status exists first
                         echo esc_attr(ucfirst($attributes->status));
                         break;
                     case 'product':
