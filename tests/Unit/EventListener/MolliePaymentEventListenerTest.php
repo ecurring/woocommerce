@@ -45,7 +45,7 @@ class MolliePaymentEventListenerTest extends TestCase {
 		$sut->init();
 	}
 
-	public function testOnMollieSubscription()
+	public function testOnMolliePaymentCreated()
 	{
 		/** @var ApiClient&MockObject $apiClientMock */
 		$apiClientMock = $this->createMock(ApiClient::class);
