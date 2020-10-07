@@ -49,9 +49,6 @@ class eCurring_WC_Plugin
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
 		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
 
-		// Add eCurring gateways
-		add_filter( 'woocommerce_payment_gateways', array ( __CLASS__, 'addGateways' ) );
-
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
 
@@ -253,39 +250,6 @@ class eCurring_WC_Plugin
             }
         }
     }
-
-    /**
-     * Add eCurring gateways
-     *
-     * @param array $gateways
-     * @return array
-     */
-	public static function addGateways( array $gateways ) {
-
-		$gateways = array_merge( $gateways, self::$GATEWAYS );
-
-		// Return if function get_current_screen() is not defined
-		if ( ! function_exists( 'get_current_screen' ) ) {
-			return $gateways;
-		}
-
-		// Try getting get_current_screen()
-		$current_screen = get_current_screen();
-
-		// Return if get_current_screen() isn't set
-		if ( ! $current_screen ) {
-			return $gateways;
-		}
-
-		// Remove old MisterCash (only) from WooCommerce Payment settings
-		if ( is_admin() && ! empty( $current_screen->base ) && $current_screen->base == 'woocommerce_page_wc-settings' ) {
-			if ( ( $key = array_search( 'eCurring_WC_Gateway_MisterCash', $gateways ) ) !== false ) {
-				unset( $gateways[ $key ] );
-			}
-		}
-
-		return $gateways;
-	}
 
 	/**
 	 * Add a WooCommerce notification message
