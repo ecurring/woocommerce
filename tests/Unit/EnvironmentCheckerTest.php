@@ -4,9 +4,12 @@ namespace eCurring\WooEcurringTests\Unit;
 
 use Ecurring\WooEcurring\EnvironmentChecker;
 use eCurring\WooEcurringTests\TestCase;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use function Brain\Monkey\Functions\expect;
 
 class EnvironmentCheckerTest extends TestCase {
+
+	use MockeryPHPUnitIntegration; //to count Mockery expectations properly as assertions
 
 	/**
 	 * Test if isMolliePluginActive functions correctly checks for that plugin and returns correct result.

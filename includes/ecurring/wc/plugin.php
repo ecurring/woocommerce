@@ -1,7 +1,11 @@
 <?php
 
 
+use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
+use Ecurring\WooEcurring\Api\ApiClient;
+use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -21,8 +25,6 @@ class eCurring_WC_Plugin
         'eCurring_WC_Gateway_eCurring',
     );
 
-    private function __construct () {}
-
     /**
      * Initialize plugin
      */
@@ -36,6 +38,13 @@ class eCurring_WC_Plugin
 
 		$plugin_basename = self::getPluginFile();
 		$data_helper     = self::getDataHelper();
+		$settingsHelper = self::getSettingsHelper();
+		$subscriptonCrud = new SubscriptionCrud();
+
+		$apiClient = new ApiClient($settingsHelper->getApiKey());
+        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptonCrud))->init();
+        (new PaymentCompleteEventListener($apiClient, $subscriptonCrud))->init();
+
 
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
 		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
