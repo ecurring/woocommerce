@@ -19,13 +19,6 @@ class eCurring_WC_Plugin
     private static $initiated = false;
 
     /**
-     * @var array
-     */
-    public static $GATEWAYS = array(
-        'eCurring_WC_Gateway_eCurring',
-    );
-
-    /**
      * Initialize plugin
      */
 	public static function init() {
