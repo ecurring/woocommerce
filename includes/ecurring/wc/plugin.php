@@ -39,11 +39,11 @@ class eCurring_WC_Plugin
 		$plugin_basename = self::getPluginFile();
 		$data_helper     = self::getDataHelper();
 		$settingsHelper = self::getSettingsHelper();
-		$subscriptonCrud = new SubscriptionCrud();
+		$subscriptionCrud = new SubscriptionCrud();
 
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
-        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptonCrud))->init();
-        (new PaymentCompleteEventListener($apiClient, $subscriptonCrud))->init();
+        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
+        (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
 
 
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
