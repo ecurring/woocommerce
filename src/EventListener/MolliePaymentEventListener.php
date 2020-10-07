@@ -119,7 +119,18 @@ class MolliePaymentEventListener {
 			return false;
 		}
 
-		$subscriptionData = $this->apiClient->getSubscriptionById($subscriptionId);
+		try{
+			$subscriptionData = $this->apiClient->getSubscriptionById($subscriptionId);
+		} catch (ApiClientException $exception)
+		{
+			eCurring_WC_Plugin::debug(
+				sprintf(
+					'Failed to check if subscription %1$s exists, caught API client exception. Exception message: %2$s',
+					$subscriptionId,
+					$exception->getMessage()
+				)
+			);
+		}
 
 		return isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription';
 	}
