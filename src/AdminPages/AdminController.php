@@ -51,7 +51,7 @@ class AdminController {
 	 */
 	public function renderPluginSettingsPage(): void
 	{
-		$this->adminSettingsPageRenderer->render();
+		echo $this->adminSettingsPageRenderer->render();
 	}
 
 
