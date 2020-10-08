@@ -89,7 +89,6 @@ class Plugin
             function ($columns) {
                 unset($columns['date']);
 
-                $columns['product'] = 'Product';
                 $columns['status'] = 'Status';
 
                 return $columns;

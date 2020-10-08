@@ -2,17 +2,31 @@
 
 namespace eCurring\WooEcurring\Subscription\Metabox;
 
+use DateTime;
+
 class Display
 {
     public function details($post)
     {
-        $attributes = get_post_meta(
-            $post->ID,
-            '_ecurring_post_subscription_attributes',
-            true
-        );
+        $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
+        $relationships = get_post_meta($post->ID, '_ecurring_post_subscription_relationships', true);
+        $productId = $relationships->{'subscription-plan'}->data->id;
+        $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
+        $startDate = $attributes->start_date;
+        $activatedOn = $attributes->created_at;
+        $canceledOn = $attributes->cancel_date;
+        $mandateId = $attributes->mandate_code;
+        ?>
+        <ul>
+            <li>Subscription ID: <?php echo esc_attr($subscriptionId);?></li>
+            <li>Product ID: <?php echo esc_attr($productId);?></li>
+            <li>Start date: <?php echo esc_attr((new DateTime($startDate))->format('d-m-Y'));?></li>
+            <li>Activated on: <?php echo esc_attr((new DateTime($activatedOn))->format('d-m-Y H:i:s'));?></li>
+            <li>(Will be) cancelled on: <?php echo esc_attr($canceledOn);?></li>
+            <li>Mandate ID: <?php echo esc_attr($mandateId);?></li>
+        </ul>
 
-        echo esc_attr(ucfirst($attributes->status));
+        <?php
     }
 
     public function options($post)
