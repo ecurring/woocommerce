@@ -14,7 +14,7 @@ class AdminController {
 	 */
 	public function init()
 	{
-		add_action('woocommerce_settings_tabs_array', [$this, 'registerPluginSettingsTab']);
+		add_action('woocommerce_settings_tabs_array', [$this, 'registerPluginSettingsTab'], 100);
 		add_action('woocommerce_settings_tabs' . self::PLUGIN_SETTINGS_TAB_SLUG, [$this, 'renderPluginSettingsPage']);
 	}
 
