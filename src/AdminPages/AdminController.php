@@ -2,7 +2,11 @@
 
 namespace Ecurring\WooEcurring\AdminPages;
 
-use Dhii\Output\RendererInterface;
+use ChriCo\Fields\Element\ElementInterface;
+use ChriCo\Fields\ElementFactory;
+use Dhii\Output\Template\TemplateInterface;
+use eCurring_WC_Plugin;
+use Exception;
 
 /**
  * Handle admin pages requests.
@@ -11,12 +15,14 @@ class AdminController {
 
 	private const PLUGIN_SETTINGS_TAB_SLUG = 'mollie_subscriptions';
 	/**
-	 * @var RendererInterface
+	 * @var TemplateInterface
 	 */
 	protected $adminSettingsPageRenderer;
 
 	/**
-	 * @param RendererInterface $adminSettingsPageRenderer To render admin settings page content.
+	 * @param TemplateInterface $adminSettingsPageRenderer To render admin settings page content.
+	 * @param ElementFactory    $elementFactory
+	 * @param array             $adminSettingsFormConfiguration
 	 */
 	public function __construct(RendererInterface $adminSettingsPageRenderer)
 	{
