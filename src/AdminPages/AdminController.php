@@ -18,15 +18,28 @@ class AdminController {
 	 * @var TemplateInterface
 	 */
 	protected $adminSettingsPageRenderer;
+	/**
+	 * @var ElementFactory
+	 */
+	protected $elementFactory;
+	/**
+	 * @var array
+	 */
+	protected $adminSettingsFormConfiguration;
 
 	/**
 	 * @param TemplateInterface $adminSettingsPageRenderer To render admin settings page content.
 	 * @param ElementFactory    $elementFactory
 	 * @param array             $adminSettingsFormConfiguration
 	 */
-	public function __construct(RendererInterface $adminSettingsPageRenderer)
-	{
+	public function __construct(
+		TemplateInterface $adminSettingsPageRenderer,
+		ElementFactory $elementFactory,
+		array $adminSettingsFormConfiguration
+	) {
 		$this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
+		$this->elementFactory = $elementFactory;
+		$this->adminSettingsFormConfiguration = $adminSettingsFormConfiguration;
 	}
 
 	/**
@@ -57,7 +70,25 @@ class AdminController {
 	 */
 	public function renderPluginSettingsPage(): void
 	{
-		echo $this->adminSettingsPageRenderer->render();
+		$context = ['form' => $this->buildAdminSettingsForm()];
+
+		try {
+			echo $this->adminSettingsPageRenderer->render($context);
+		}catch (Exception $exception) {
+			eCurring_WC_Plugin::debug(
+				sprintf(
+					'Failed to render plugin settings form. Exception was caught with code %1$d and message: %2$s',
+					$exception->getCode(),
+					$exception->getMessage()
+				)
+			);
+		}
+
+	}
+
+	protected function buildAdminSettingsForm():ElementInterface
+	{
+		return $this->elementFactory->create($this->adminSettingsFormConfiguration);
 	}
 
 
