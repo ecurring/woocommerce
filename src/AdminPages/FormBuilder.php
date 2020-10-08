@@ -4,6 +4,7 @@
 namespace Ecurring\WooEcurring\AdminPages;
 
 
+use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\Element\FormInterface;
 use ChriCo\Fields\ElementFactory;
@@ -24,27 +25,35 @@ class FormBuilder implements FormBuilderInterface {
 	 * @var ElementFactory
 	 */
 	protected $elementFactory;
+	/**
+	 * @var array
+	 */
+	protected $formFields;
+	/**
+	 * @var NonceInterface
+	 */
+	protected $nonce;
 
 	/**
 	 * @param ElementFactory $elementFactory
 	 * @param ViewFactory    $viewFactory
-	 * @param array          $settingsFormConfiguration
+	 * @param array          $formFields
 	 */
 	public function __construct(
 		ElementFactory $elementFactory,
 		ViewFactory $viewFactory,
-		array $settingsFormConfiguration
+		array $formFields
 	) {
 		$this->elementFactory = $elementFactory;
 		$this->viewFactory = $viewFactory;
-		$this->settingsFormConfiguration = $settingsFormConfiguration;
+		$this->formFields = $formFields;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function buildForm(): ElementInterface {
-		return $this->elementFactory->create($this->settingsFormConfiguration);
+		return $this->elementFactory->create($this->formFields);
 	}
 
 	/**

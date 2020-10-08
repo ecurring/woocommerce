@@ -49,7 +49,7 @@ class eCurring_WC_Plugin
             $formConfig = require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php';
             $viewFactory = new ViewFactory();
             $formBuilder = new FormBuilder($elementFactory, $viewFactory, $formConfig);
-            (new AdminController($wcBasedSettingsTemplate, $formBuilder, $formConfig ))->init();
+            (new AdminController($wcBasedSettingsTemplate, $formBuilder))->init();
         });
 
 

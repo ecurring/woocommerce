@@ -20,7 +20,8 @@ interface FormBuilderInterface {
 	 *
 	 * @return ElementInterface Form instance.
 	 *
-	 * @throws UnknownTypeException|MissingAttributeException
+	 * @throws UnknownTypeException
+	 * @throws MissingAttributeException
 	 */
 	public function buildForm(): ElementInterface;
 
