@@ -2,12 +2,26 @@
 
 namespace Ecurring\WooEcurring\AdminPages;
 
+use Dhii\Output\RendererInterface;
+
 /**
  * Handle admin pages requests.
  */
 class AdminController {
 
 	private const PLUGIN_SETTINGS_TAB_SLUG = 'mollie_subscriptions';
+	/**
+	 * @var RendererInterface
+	 */
+	protected $adminSettingsPageRenderer;
+
+	/**
+	 * @param RendererInterface $adminSettingsPageRenderer To render admin settings page content.
+	 */
+	public function __construct(RendererInterface $adminSettingsPageRenderer)
+	{
+		$this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
+	}
 
 	/**
 	 * Initialize hooks listeners.
@@ -33,11 +47,11 @@ class AdminController {
 	}
 
 	/**
-	 *
+	 * Render admin settings page content.
 	 */
 	public function renderPluginSettingsPage(): void
 	{
-		//todo
+		$this->adminSettingsPageRenderer->render();
 	}
 
 
