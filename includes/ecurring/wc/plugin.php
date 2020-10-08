@@ -7,6 +7,7 @@ use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewa
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+use Ecurring\WooEcurring\Template\WcBasedAdminSettingsTemplate;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -40,7 +41,7 @@ class eCurring_WC_Plugin
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
 
         add_action('admin_init', function(){
-            (new AdminController())->init();
+            (new AdminController(new WcBasedAdminSettingsTemplate()))->init();
         });
 
 
