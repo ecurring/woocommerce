@@ -3,8 +3,10 @@
     "description": "Collect your subscription fees in WooCommerce with ease.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "dhii/output-renderer-interface": " ^0.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^5 || ^7.1",
