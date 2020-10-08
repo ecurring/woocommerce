@@ -70,9 +70,8 @@ class AdminController {
 	 */
 	public function renderPluginSettingsPage(): void
 	{
-		$context = ['form' => $this->buildAdminSettingsForm()];
-
 		try {
+			$context = ['form' => $this->buildAdminSettingsForm()];
 			echo $this->adminSettingsPageRenderer->render($context);
 		}catch ( Throwable $exception) {
 			eCurring_WC_Plugin::debug(
@@ -83,7 +82,7 @@ class AdminController {
 				)
 			);
 
-			esc_html_x(
+			echo esc_html_x(
 				'Failed to render plugin settings form. Please, check logs for more details.',
 				'Error message if cannot render plugin settings page',
 				'woo-ecurring'
