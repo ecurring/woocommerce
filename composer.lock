@@ -4,8 +4,58 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "73dc10d0671701c3081dbc711cd4230a",
+    "content-hash": "c1e2908e87932e4099ad051f9e4b948e",
     "packages": [
+        {
+            "name": "brain/nonces",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Brain-WP/Nonces.git",
+                "reference": "c800c04e2d563ebc137b7d2a441206cca3dc82d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Brain-WP/Nonces/zipball/c800c04e2d563ebc137b7d2a441206cca3dc82d3",
+                "reference": "c800c04e2d563ebc137b7d2a441206cca3dc82d3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "brain/monkey": "~1.4",
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "Brain\\Nonces\\": "src/"
+                },
+                "files": [
+                    "inc/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giuseppe Mazzapica",
+                    "email": "giuseppe.mazzapica@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "OOP package for WordPress to deal with nonces.",
+            "keywords": [
+                "nonce",
+                "security",
+                "wordpress",
+                "wordpress nonce"
+            ],
+            "time": "2016-11-17T13:04:21+00:00"
+        },
         {
             "name": "chrico/wp-fields",
             "version": "1.0",
