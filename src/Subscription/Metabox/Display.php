@@ -8,16 +8,18 @@ class Display
 {
     public function details($post)
     {
+        $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
+        $status = $attributes->status;
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         $relationships = get_post_meta($post->ID, '_ecurring_post_subscription_relationships', true);
         $productId = $relationships->{'subscription-plan'}->data->id;
-        $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
         $startDate = $attributes->start_date;
         $activatedOn = $attributes->created_at;
         $canceledOn = $attributes->cancel_date;
         $mandateId = $attributes->mandate_code;
         ?>
         <ul>
+            <li>Status: <?php echo esc_attr(ucfirst($status));?></li>
             <li>Subscription ID: <?php echo esc_attr($subscriptionId);?></li>
             <li>Product ID: <?php echo esc_attr($productId);?></li>
             <li>Start date: <?php echo esc_attr((new DateTime($startDate))->format('d-m-Y'));?></li>
