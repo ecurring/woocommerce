@@ -6,6 +6,8 @@ namespace Ecurring\WooEcurring\AdminPages;
 
 use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\Element\FormInterface;
+use ChriCo\Fields\Exception\MissingAttributeException;
+use ChriCo\Fields\Exception\UnknownTypeException;
 use ChriCo\Fields\View\RenderableElementInterface;
 
 /**
@@ -17,9 +19,10 @@ interface FormBuilderInterface {
 	 * Build a settings form instance from configuration.
 	 *
 	 * @return ElementInterface Form instance.
+	 *
+	 * @throws UnknownTypeException|MissingAttributeException
 	 */
 	public function buildForm(): ElementInterface;
-
 
 	/**
 	 * Build a renderable form view instance.
@@ -27,6 +30,8 @@ interface FormBuilderInterface {
 	 * @param FormInterface $form Form to create a view from.
 	 *
 	 * @return RenderableElementInterface Form view ready to be rendered.
+	 *
+	 * @throws UnknownTypeException
 	 */
 	public function buildFormView(FormInterface $form): RenderableElementInterface;
 }

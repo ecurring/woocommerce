@@ -7,7 +7,6 @@ namespace Ecurring\WooEcurring\AdminPages;
 use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\Element\FormInterface;
 use ChriCo\Fields\ElementFactory;
-use ChriCo\Fields\Exception\UnknownTypeException;
 use ChriCo\Fields\View\RenderableElementInterface;
 use ChriCo\Fields\ViewFactory;
 
@@ -42,21 +41,14 @@ class FormBuilder implements FormBuilderInterface {
 	}
 
 	/**
-	 * @return FormInterface
-	 *
+	 * @inheritDoc
 	 */
 	public function buildForm(): ElementInterface {
 		return $this->elementFactory->create($this->settingsFormConfiguration);
 	}
 
 	/**
-	 * Create renderable form view
-	 *
-	 * @param FormInterface $form
-	 *
-	 * @return RenderableElementInterface
-	 *
-	 * @throws UnknownTypeException
+	 * @inheritDoc
 	 */
 	public function buildFormView(FormInterface $form): RenderableElementInterface {
 		return $this->viewFactory->create('form');
