@@ -4,8 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "325ef01dc4b7b84e87e5c33ab0a65eb6",
+    "content-hash": "73dc10d0671701c3081dbc711cd4230a",
     "packages": [
+        {
+            "name": "chrico/wp-fields",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Chrico/wp-fields.git",
+                "reference": "b6c86917a942e919b89704f7db7f4fd122258732"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Chrico/wp-fields/zipball/b6c86917a942e919b89704f7db7f4fd122258732",
+                "reference": "b6c86917a942e919b89704f7db7f4fd122258732",
+                "shasum": ""
+            },
+            "require": {
+                "inpsyde/filter": "~1.0",
+                "inpsyde/validator": "~1.2",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "brain/monkey": "^2",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.2",
+                "inpsyde/php-coding-standards": "~0.13.1",
+                "php": ">=7.0",
+                "phpunit/phpunit": "6.3.*",
+                "pimple/pimple": "~3.0",
+                "squizlabs/php_codesniffer": "~3.2.3"
+            },
+            "suggest": {
+                "pimple/pimple": "Allows using Pimple, a small Dependency Injection Container for PHP"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ChriCo\\Fields\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Brückner",
+                    "email": "chris@chrico.info",
+                    "homepage": "https://www.chrico.info",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Package which provides some re-usable fields for WordPress.",
+            "time": "2018-06-15T09:22:34+00:00"
+        },
         {
             "name": "dhii/output-renderer-interface",
             "version": "0.4.x-dev",
@@ -99,6 +151,101 @@
             ],
             "description": "Interoperability interface for objects that can be cast to string",
             "time": "2017-01-23T15:08:20+00:00"
+        },
+        {
+            "name": "inpsyde/filter",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/inpsyde/inpsyde-filter.git",
+                "reference": "777a6208ea4dfbeed89e6d0712a35dc25eab498b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/inpsyde/inpsyde-filter/zipball/777a6208ea4dfbeed89e6d0712a35dc25eab498b",
+                "reference": "777a6208ea4dfbeed89e6d0712a35dc25eab498b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "brain/monkey": "~1.0",
+                "mockery/mockery": "~0.9",
+                "php": ">=5.5.0",
+                "phpunit/phpunit": "~4.8|~5.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Inpsyde\\Filter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Brückner",
+                    "email": "chris@chrico.info",
+                    "homepage": "https://www.chrico.info",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Inpsyde Filter library.",
+            "time": "2017-10-13T09:47:13+00:00"
+        },
+        {
+            "name": "inpsyde/validator",
+            "version": "1.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/inpsyde/inpsyde-validator.git",
+                "reference": "54ec04efaa00fbde88f3562d04cd2b472e232143"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/inpsyde/inpsyde-validator/zipball/54ec04efaa00fbde88f3562d04cd2b472e232143",
+                "reference": "54ec04efaa00fbde88f3562d04cd2b472e232143",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "brain/monkey": "~1.4.0",
+                "mockery/mockery": "~0.9.0",
+                "phpunit/phpunit": "~4.8.0|~5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Inpsyde\\Validator\\": "src/"
+                },
+                "files": [
+                    "inc/i18n.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Brückner",
+                    "email": "chris@chrico.info",
+                    "homepage": "https://www.chrico.info",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Giuseppe Mazzapica",
+                    "email": "giuseppe.mazzapica@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Inpsyde Validator library.",
+            "time": "2020-05-06T10:01:39+00:00"
         }
     ],
     "packages-dev": [
