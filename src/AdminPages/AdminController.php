@@ -6,7 +6,7 @@ use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\ElementFactory;
 use Dhii\Output\Template\TemplateInterface;
 use eCurring_WC_Plugin;
-use Exception;
+use Throwable;
 
 /**
  * Handle admin pages requests.
@@ -74,13 +74,19 @@ class AdminController {
 
 		try {
 			echo $this->adminSettingsPageRenderer->render($context);
-		}catch (Exception $exception) {
+		}catch ( Throwable $exception) {
 			eCurring_WC_Plugin::debug(
 				sprintf(
 					'Failed to render plugin settings form. Exception was caught with code %1$d and message: %2$s',
 					$exception->getCode(),
 					$exception->getMessage()
 				)
+			);
+
+			esc_html_x(
+				'Failed to render plugin settings form. Please, check logs for more details.',
+				'Error message if cannot render plugin settings page',
+				'woo-ecurring'
 			);
 		}
 
