@@ -46,7 +46,8 @@ class eCurring_WC_Plugin
         add_action('admin_init', function(){
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new WcBasedAdminSettingsTemplate();
-            $formConfig = require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php';
+            $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')();
+
             $viewFactory = new ViewFactory();
             $formBuilder = new FormBuilder($elementFactory, $viewFactory, $formConfig);
             (new AdminController($wcBasedSettingsTemplate, $formBuilder))->init();
