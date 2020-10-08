@@ -92,6 +92,11 @@ class AdminController {
 
 	}
 
+	/**
+	 * Build form for plugin settings page.
+	 *
+	 * @return ElementInterface Created form.
+	 */
 	protected function buildAdminSettingsForm():ElementInterface
 	{
 		return $this->elementFactory->create($this->adminSettingsFormConfiguration);
