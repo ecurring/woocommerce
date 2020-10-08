@@ -1,5 +1,7 @@
 <?php
 
+namespace Ecurring\WooEcurring\AdminPages;
+
 /**
  * Handle admin pages requests.
  */
