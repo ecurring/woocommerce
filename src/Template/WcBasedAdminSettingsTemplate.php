@@ -2,22 +2,27 @@
 
 namespace Ecurring\WooEcurring\Template;
 
+use ChriCo\Fields\Element\FormInterface;
+use ChriCo\Fields\View\RenderableElementInterface;
 use Dhii\Output\Template\TemplateInterface;
-use function wc_get_template_html;
 
 class WcBasedAdminSettingsTemplate implements TemplateInterface {
-
-	protected const VIEW_DIR_PATH = WOOECUR_PLUGIN_DIR . 'view/';
 
 	/**
 	 * @inheritDoc
 	 */
 	public function render($context = null) {
-		return wc_get_template_html(
-			'mollie-subscriptions-settings.php',
-			$context,
-			'',
-			self::VIEW_DIR_PATH
-		);
+
+		/**
+		 * @var FormInterface $form
+		 */
+		$form = $context['form'];
+
+		/**
+		 * @var RenderableElementInterface
+		 */
+		$view = $context['view'];
+
+		return $view->render($form);
 	}
 }

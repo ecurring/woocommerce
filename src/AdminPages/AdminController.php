@@ -4,6 +4,7 @@ namespace Ecurring\WooEcurring\AdminPages;
 
 use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\ElementFactory;
+use ChriCo\Fields\ViewFactory;
 use Dhii\Output\Template\TemplateInterface;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -26,20 +27,27 @@ class AdminController {
 	 * @var array
 	 */
 	protected $adminSettingsFormConfiguration;
+	/**
+	 * @var ViewFactory
+	 */
+	protected $viewFactory;
 
 	/**
 	 * @param TemplateInterface $adminSettingsPageRenderer To render admin settings page content.
 	 * @param ElementFactory    $elementFactory
+	 * @param ViewFactory       $viewFactory
 	 * @param array             $adminSettingsFormConfiguration
 	 */
 	public function __construct(
 		TemplateInterface $adminSettingsPageRenderer,
 		ElementFactory $elementFactory,
+		ViewFactory $viewFactory,
 		array $adminSettingsFormConfiguration
 	) {
 		$this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
 		$this->elementFactory = $elementFactory;
 		$this->adminSettingsFormConfiguration = $adminSettingsFormConfiguration;
+		$this->viewFactory = $viewFactory;
 	}
 
 	/**
@@ -71,7 +79,9 @@ class AdminController {
 	public function renderPluginSettingsPage(): void
 	{
 		try {
-			$context = ['form' => $this->buildAdminSettingsForm()];
+			$form = $this->buildAdminSettingsForm();
+			$formView = $this->viewFactory->create('form');
+			$context = ['view' => $formView, 'form' => $form];
 			echo $this->adminSettingsPageRenderer->render($context);
 		}catch ( Throwable $exception) {
 			eCurring_WC_Plugin::debug(

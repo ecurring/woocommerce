@@ -2,6 +2,7 @@
 
 
 use ChriCo\Fields\ElementFactory;
+use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
@@ -44,7 +45,9 @@ class eCurring_WC_Plugin
         add_action('admin_init', function(){
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new WcBasedAdminSettingsTemplate();
-            (new AdminController($wcBasedSettingsTemplate, $elementFactory, []))->init();
+            $formConfig = require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php';
+            $viewFactory = new ViewFactory();
+            (new AdminController($wcBasedSettingsTemplate, $elementFactory, $viewFactory, $formConfig ))->init();
         });
 
 
