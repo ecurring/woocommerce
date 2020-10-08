@@ -1,6 +1,7 @@
 <?php
 
 
+use ChriCo\Fields\ElementFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
@@ -41,7 +42,9 @@ class eCurring_WC_Plugin
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
 
         add_action('admin_init', function(){
-            (new AdminController(new WcBasedAdminSettingsTemplate()))->init();
+            $elementFactory = new ElementFactory();
+            $wcBasedSettingsTemplate = new WcBasedAdminSettingsTemplate();
+            (new AdminController($wcBasedSettingsTemplate, $elementFactory, []))->init();
         });
 
 
