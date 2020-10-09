@@ -2,6 +2,7 @@
 
 namespace eCurring\WooEcurring\Subscription\Metabox;
 
+use DateTime;
 use eCurring\WooEcurring\Subscription\Actions;
 
 class Save
@@ -30,6 +31,22 @@ class Save
             FILTER_SANITIZE_STRING
         );
 
+        $pauseSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_pause_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $resumeDate = '';
+        if ($pauseSubscription === 'specific-date') {
+            $resumeDate = filter_input(
+                INPUT_POST,
+                'ecurring_resume_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
+        }
+
         if (!$subscriptionType || !in_array(
                 $subscriptionType,
                 ['pause', 'switch', 'cancel'],
@@ -40,7 +57,12 @@ class Save
 
         switch ($subscriptionType) {
             case 'pause':
-                $response = json_decode($this->actions->pause($subscriptionId));
+                $response = json_decode(
+                    $this->actions->pause(
+                        $subscriptionId,
+                        $resumeDate
+                    )
+                );
                 $this->updateStatus($postId, $response);
                 break;
             case 'switch':

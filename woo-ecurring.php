@@ -341,6 +341,49 @@ function initialize()
             'request',
             function ($request) use ($apiHelper) {
                 $webhook = filter_input(INPUT_GET, 'ecurring-webhook', FILTER_SANITIZE_STRING);
+
+                if($webhook === 'transaction') {
+                    $log = new WC_Logger();
+                    $log->add(
+                        'transaction',
+                        "transaction just received..."
+                    );
+
+                    $response = json_decode(file_get_contents('php://input'));
+                    $transaction_id = filter_var(
+                        $response->transaction_id,
+                        FILTER_SANITIZE_STRING
+                    );
+                    $log->add(
+                        'transaction',
+                        "transaction {$transaction_id} webhook received in transaction webhook"
+                    );
+
+                    $subscription_id = filter_var(
+                        $response->subscription_id,
+                        FILTER_SANITIZE_STRING
+                    );
+                    $log->add(
+                        'transaction',
+                        "subscription {$subscription_id} webhook received in transaction webhook"
+                    );
+
+                    $subscription = json_decode(
+                        $apiHelper->apiCall(
+                            'GET',
+                            "https://api.ecurring.com/subscriptions/{$subscription_id}"
+                        )
+                    );
+                    $postSubscription = new eCurring\WooEcurring\Subscription\Subscription();
+                    $postSubscription->update($subscription);
+
+                    $log->add(
+                        'transaction',
+                        "transaction {$transaction_id} and subscription {$subscription_id} webhook were received"
+                    );
+                }
+
+
                 if ($webhook === 'subscription') {
                     $response = json_decode(file_get_contents('php://input'));
                     $subscription_id = filter_var(

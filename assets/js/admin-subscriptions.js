@@ -24,6 +24,8 @@ jQuery(window).load(function () {
         hideOptions()
         jQuery('#cancel-form').addClass('ecurring-show')
         break
+      default:
+        hideOptions()
     }
   })
 })

@@ -36,7 +36,7 @@ class Actions
         );
     }
 
-    public function pause($subscriptionId)
+    public function pause($subscriptionId, $resumeDate)
     {
         return $this->apiHelper->apiCall(
             'PATCH',
@@ -47,7 +47,7 @@ class Actions
                     'id' => $subscriptionId,
                     'attributes' => [
                         'status' => 'paused',
-                        //'resume_date' => '',
+                        'resume_date' => $resumeDate,
                     ],
                 ],
             ]

@@ -9,9 +9,10 @@ class Display
     public function details($post)
     {
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
-        $status = $attributes->status;
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         $relationships = get_post_meta($post->ID, '_ecurring_post_subscription_relationships', true);
+
+        $status = $attributes->status;
         $productId = $relationships->{'subscription-plan'}->data->id;
         $startDate = $attributes->start_date;
         $activatedOn = $attributes->created_at;
@@ -24,7 +25,7 @@ class Display
             <li>Product ID: <?php echo esc_attr($productId);?></li>
             <li>Start date: <?php echo esc_attr((new DateTime($startDate))->format('d-m-Y'));?></li>
             <li>Activated on: <?php echo esc_attr((new DateTime($activatedOn))->format('d-m-Y H:i:s'));?></li>
-            <li>(Will be) cancelled on: <?php echo esc_attr($canceledOn);?></li>
+            <li>(Will be) cancelled on: <?php echo esc_attr((new DateTime($canceledOn))->format('d-m-Y'));?></li>
             <li>Mandate ID: <?php echo esc_attr($mandateId);?></li>
         </ul>
 
@@ -44,16 +45,17 @@ class Display
             <option value="cancel">Cancel subscription</option>
         </select>
         <div class="ecurring-hide" id="pause-form">
-            <h3>Pause subscription - 2125431460</h3>
+            <h3>Pause subscription - <?php echo esc_attr($subscriptionId);?></h3>
             <p>Please select until when this subscription should be paused.</p>
             <h4>Pause until</h4>
-            <label><input name="pause_subscription" type="radio" value="infinite" class="tog"
+            <label><input name="ecurring_pause_subscription" type="radio" value="infinite" class="tog"
                           checked="checked"/>Infinite</label>
-            <label><input name="pause_subscription" type="radio" value="specific-date" class="tog"/>Specific
+            <label><input name="ecurring_pause_subscription" type="radio" value="specific-date" class="tog"/>Specific
                 date</label>
+            <input name="ecurring_resume_date" type="date" value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d'));?>">
         </div>
         <div class="ecurring-hide" id="switch-form">
-            <h3>Switch subscription - 2125431460</h3>
+            <h3>Switch subscription - <?php echo esc_attr($subscriptionId);?></h3>
             <p>This form allows you to automatically switch a subscription to a different plan on a
                 desired date. The current mandate will be used for the new subscription, no
                 confirmation from the client is necessary.
@@ -73,7 +75,7 @@ class Display
                           class="tog"/>Specific date</label>
         </div>
         <div class="ecurring-hide" id="cancel-form">
-            <h3>Cancel subscription - 2125431460</h3>
+            <h3>Cancel subscription - <?php echo esc_attr($subscriptionId);?></h3>
             <p>Please choose when to cancel the subscription.</p>
             <h4>Cancel on</h4>
             <label><input name="cancel_subscription" type="radio" value="infinite" class="tog"
