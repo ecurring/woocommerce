@@ -300,9 +300,10 @@ function initialize()
 
         $actions = new Actions($apiHelper);
         add_action(
-            'save_post',
+            'post_updated',
             function ($postId) use ($actions) {
                 (new \eCurring\WooEcurring\Subscription\Metabox\Save($actions))->save($postId);
+
             }
         );
 
@@ -374,7 +375,7 @@ function initialize()
                             "https://api.ecurring.com/subscriptions/{$subscription_id}"
                         )
                     );
-                    $postSubscription = new eCurring\WooEcurring\Subscription\Subscription();
+                    $postSubscription = new eCurring\WooEcurring\Subscription\Repository();
                     $postSubscription->update($subscription);
 
                     $log->add(
@@ -397,7 +398,7 @@ function initialize()
                             "https://api.ecurring.com/subscriptions/{$subscription_id}"
                         )
                     );
-                    $postSubscription = new eCurring\WooEcurring\Subscription\Subscription();
+                    $postSubscription = new eCurring\WooEcurring\Subscription\Repository();
                     $postSubscription->update($subscription);
 
                     $log = new WC_Logger();

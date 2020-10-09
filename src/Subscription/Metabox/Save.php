@@ -4,6 +4,7 @@ namespace eCurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
 use eCurring\WooEcurring\Subscription\Actions;
+use eCurring\WooEcurring\Subscription\Repository;
 
 class Save
 {
@@ -47,9 +48,27 @@ class Save
             $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
         }
 
+        $cancelSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_cancel_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $cancelDate = '';
+        if ($cancelSubscription === 'specific-date') {
+            $cancelDate = filter_input(
+                INPUT_POST,
+                'ecurring_cancel_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
+        }
+
+
+
         if (!$subscriptionType || !in_array(
                 $subscriptionType,
-                ['pause', 'switch', 'cancel'],
+                ['pause', 'resume', 'switch', 'cancel'],
                 true
             ) || !$subscriptionId) {
             return;
@@ -63,13 +82,57 @@ class Save
                         $resumeDate
                     )
                 );
-                $this->updateStatus($postId, $response);
+                $this->updateSubscription($postId, $response);
+                break;
+            case 'resume':
+                $response = json_decode($this->actions->resume($subscriptionId));
+                $this->updateSubscription($postId, $response);
                 break;
             case 'switch':
+                $cancel = json_decode($this->actions->cancel($subscriptionId));
+                $this->updateSubscription($postId, $cancel);
+
+                $productId = filter_input(
+                    INPUT_POST,
+                    'ecurring_subscription_plan',
+                    FILTER_SANITIZE_STRING
+                );
+
+                $subscriptionWebhookUrl = add_query_arg(
+                    'ecurring-webhook',
+                    'subscription',
+                    home_url('/')
+                );
+                $transactionWebhookUrl = add_query_arg(
+                    'ecurring-webhook',
+                    'transaction',
+                    home_url('/')
+                );
+
+                $create = json_decode($this->actions->create(
+                    [
+                        'data' => [
+                            'type' => 'subscription',
+                            'attributes' => [
+                                'customer_id' => $cancel->data->relationships->customer->data->id,
+                                'subscription_plan_id' => $productId,
+                                'mandate_code' => $cancel->data->attributes->mandate_code,
+                                'mandate_accepted' => $cancel->data->attributes->mandate_accepted,
+                                'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
+                                'confirmation_sent' => 'true',
+                                'subscription_webhook_url' => $subscriptionWebhookUrl,
+                                'transaction_webhook_url' => $transactionWebhookUrl,
+                            ],
+                        ],
+                    ]
+                ));
+
+                $postSubscription = new Repository();
+                $postSubscription->create($create->data);
                 break;
             case 'cancel':
-                $response = json_decode($this->actions->cancel($subscriptionId));
-                $this->updateStatus($postId, $response);
+                $response = json_decode($this->actions->cancel($subscriptionId, $cancelDate));
+                $this->updateSubscription($postId, $response);
                 break;
         }
     }
@@ -78,14 +141,8 @@ class Save
      * @param $postId
      * @param $response
      */
-    protected function updateStatus($postId, $response)
+    protected function updateSubscription($postId, $response)
     {
-        $attributes = get_post_meta(
-            $postId,
-            '_ecurring_post_subscription_attributes',
-            true
-        );
-        $attributes->status = $response->data->attributes->status;
-        update_post_meta($postId, '_ecurring_post_subscription_attributes', $attributes);
+        update_post_meta($postId, '_ecurring_post_subscription_attributes', $response->data->attributes);
     }
 }

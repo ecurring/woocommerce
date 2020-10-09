@@ -19,8 +19,13 @@ class Actions
         $this->apiHelper = $apiHelper;
     }
 
-    public function cancel($subscriptionId)
+    public function cancel($subscriptionId, $cancelDate)
     {
+        $attributes = ['status' => 'cancelled'];
+        if ($cancelDate) {
+            $attributes = ['cancel_date' => $cancelDate];
+        }
+
         return $this->apiHelper->apiCall(
             'PATCH',
             "https://api.ecurring.com/subscriptions/{$subscriptionId}",
@@ -28,9 +33,7 @@ class Actions
                 'data' => [
                     'type' => 'subscription',
                     'id' => $subscriptionId,
-                    'attributes' => [
-                        'status' => 'cancelled',
-                    ],
+                    'attributes' => $attributes,
                 ],
             ]
         );
@@ -56,7 +59,7 @@ class Actions
 
     public function resume($subscriptionId)
     {
-        $this->apiHelper->apiCall(
+        return $this->apiHelper->apiCall(
             'PATCH',
             "https://api.ecurring.com/subscriptions/{$subscriptionId}",
             [
@@ -71,12 +74,13 @@ class Actions
         );
     }
 
-    /**
-     * “switch subscription” means the current subscription is cancelled with chosen ‘switch date’ and new subscription has start date on ‘switch date’.
-     * The mandate of the current subscription can be copied to the new subscription.
-     */
-    public function change()
+    public function create($data)
     {
+        return $this->apiHelper->apiCall(
+            'POST',
+            'https://api.ecurring.com/subscriptions',
+            $data
+        );
     }
 
     public function import($page)

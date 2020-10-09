@@ -3,7 +3,7 @@
 namespace eCurring\WooEcurring;
 
 use eCurring\WooEcurring\Subscription\Actions;
-use eCurring\WooEcurring\Subscription\Subscription;
+use eCurring\WooEcurring\Subscription\Repository;
 
 class Plugin
 {
@@ -77,7 +77,7 @@ class Plugin
                 continue;
             }
 
-            $postSubscription = new Subscription();
+            $postSubscription = new Repository();
             $postSubscription->create($subscription);
         }
     }

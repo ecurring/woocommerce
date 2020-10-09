@@ -2,7 +2,7 @@
 
 namespace eCurring\WooEcurring\Subscription;
 
-class Subscription
+class Repository
 {
     public function create($subscription)
     {

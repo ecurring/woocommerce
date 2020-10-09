@@ -316,7 +316,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
                     )
                 );
 
-                $subscription = new eCurring\WooEcurring\Subscription\Subscription();
+                $subscription = new eCurring\WooEcurring\Subscription\Repository();
                 $subscriptionResponse = json_decode($request);
                 $subscription->create($subscriptionResponse->data);
             }
