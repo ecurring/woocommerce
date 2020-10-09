@@ -5,7 +5,7 @@ use Brain\Nonces\NonceInterface;
 defined( 'ABSPATH' ) || die;
 
 
-return function ( NonceInterface $nonce): array {
+return function ( NonceInterface $nonce, string $formAction): array {
 	return [
 		'attributes' => [
 			'name' => 'mollie-subscriptions-settings-form',
@@ -47,6 +47,15 @@ return function ( NonceInterface $nonce): array {
 						'type' => 'hidden',
 						'value' => (string) $nonce,
 					],
+			],
+
+			[
+				'attributes' =>
+					[
+						'name' => 'action',
+						'type' => 'hidden',
+						'value' => $formAction
+					]
 			]
 
 		],
