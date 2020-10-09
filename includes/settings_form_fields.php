@@ -1,9 +1,11 @@
 <?php
 
+use Brain\Nonces\NonceInterface;
+
 defined( 'ABSPATH' ) || die;
 
 
-return function (): array {
+return function ( NonceInterface $nonce): array {
 	return [
 		'attributes' => [
 			'name' => 'mollie-subscriptions-settings-form',
@@ -16,7 +18,7 @@ return function (): array {
 					'type'        => 'text',
 					'placeholder' => _x( 'API key', 'Plugin settings', 'woo-ecurring' ),
 					'pattern'     => '^\w{40,}$',
-					'default'     => get_option( 'woo-ecurring_live_api_key' ) //todo: replace this.
+					'default'     => get_option( 'woo-ecurring_live_api_key' ), //todo: replace this.
 				],
 				'label'            => esc_html_x( 'API key', 'Name of the settings page button', 'woo-ecurring' ),
 				'label_attributes' => [ 'for' => 'api_key' ]
@@ -37,6 +39,15 @@ return function (): array {
 				],
 				'label'      => esc_html_x( 'Debug Log', 'Plugin settings', 'woo-ecurring' ),
 			],
+
+			[
+				'attributes' =>
+					[
+						'name' => $nonce->action(),
+						'type' => 'hidden',
+						'value' => (string) $nonce,
+					],
+			]
 
 		],
 	];
