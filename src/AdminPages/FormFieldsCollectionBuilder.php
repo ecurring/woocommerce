@@ -52,7 +52,7 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
 	/**
 	 * @inheritDoc
 	 */
-	public function buildForm(): ElementInterface {
+	public function buildFieldsCollection(): ElementInterface {
 		return $this->elementFactory->create($this->formFields);
 	}
 

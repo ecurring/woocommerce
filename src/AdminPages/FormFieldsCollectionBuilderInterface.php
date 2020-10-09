@@ -19,12 +19,12 @@ interface FormFieldsCollectionBuilderInterface {
 	/**
 	 * Build a settings form instance from configuration.
 	 *
-	 * @return ElementInterface Form instance.
+	 * @return ElementInterface Form fields collection instance.
 	 *
 	 * @throws UnknownTypeException
 	 * @throws MissingAttributeException
 	 */
-	public function buildForm(): ElementInterface;
+	public function buildFieldsCollection(): ElementInterface;
 
 	/**
 	 * Build a renderable form view instance.

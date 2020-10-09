@@ -86,7 +86,7 @@ class AdminController {
 	public function renderPluginSettingsPage(): void
 	{
 		try {
-			$form = $this->formBuilder->buildForm();
+			$form = $this->formBuilder->buildFieldsCollection();
 			$formView = $this->formBuilder->buildFormFieldsCollectionView($form);
 			$context = ['view' => $formView, 'form' => $form];
 			echo $this->adminSettingsPageRenderer->render($context);
