@@ -19,7 +19,6 @@ class eCurring_WC_Helper_Api
 	/**
 	 * @param $method
 	 * @param $url
-	 * @param $apiKey
 	 * @param bool|array $data
 	 *
 	 * @return mixed
