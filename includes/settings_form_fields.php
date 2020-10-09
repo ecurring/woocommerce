@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || die;
 return function ( NonceInterface $nonce, string $formAction): array {
 	return [
 		'attributes' => [
-			'name' => 'mollie-subscriptions-settings-form',
+			'name' => esc_attr($formAction),
 			'type' => 'collection'
 		],
 		'elements'   => [
