@@ -50,9 +50,9 @@ class SettingsCrud implements SettingsCrudInterface {
 	}
 
 	/**
-	 * Save options array to the database.
+	 * @inheritDoc
 	 */
-	protected function persist(): void
+	public function persist(): void
 	{
 		update_option(self::OPTIONS_STORAGE_KEY, $this->options);
 	}

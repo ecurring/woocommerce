@@ -12,6 +12,9 @@ interface SettingsCrudInterface {
 	/**
 	 * Update existing option or add new.
 	 *
+	 * This method doesn't perform actual saving to the DB.
+	 * Use {@link persist()} method after updating option to save it.
+	 *
 	 * @param string $optionName
 	 * @param        $optionValue
 	 */
@@ -31,4 +34,9 @@ interface SettingsCrudInterface {
 	 * Delete all plugin settings.
 	 */
 	public function clearSettings(): void;
+
+	/**
+	 * Save options to the database.
+	 */
+	public function persist(): void;
 }
