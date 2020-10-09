@@ -52,7 +52,7 @@ class eCurring_WC_Plugin
 
             $viewFactory = new ViewFactory();
             $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
-            (new AdminController($wcBasedSettingsTemplate, $formBuilder))->init();
+            (new AdminController($wcBasedSettingsTemplate, $formBuilder, $settingsFormAction))->init();
         });
 
 

@@ -29,15 +29,23 @@ class AdminController {
 	protected $formBuilder;
 
 	/**
+	 * @var string
+	 */
+	protected $fieldsCollectionName;
+
+	/**
 	 * @param TemplateInterface           $adminSettingsPageRenderer To render admin settings page content.
 	 * @param FormFieldsCollectionBuilder $formBuilder
+	 * @param string                      $fieldsCollectionName
 	 */
 	public function __construct(
 		TemplateInterface $adminSettingsPageRenderer,
-		FormFieldsCollectionBuilder $formBuilder
+		FormFieldsCollectionBuilder $formBuilder,
+		string $fieldsCollectionName
 	) {
 		$this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
 		$this->formBuilder = $formBuilder;
+		$this->fieldsCollectionName = $fieldsCollectionName;
 	}
 
 	/**
