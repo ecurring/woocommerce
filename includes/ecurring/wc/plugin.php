@@ -9,6 +9,7 @@ use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 
@@ -52,7 +53,14 @@ class eCurring_WC_Plugin
 
             $viewFactory = new ViewFactory();
             $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
-            (new AdminController($wcBasedSettingsTemplate, $formBuilder, $settingsFormAction))->init();
+            $settingsCrud = new SettingsCrud();
+            (new AdminController(
+                    $wcBasedSettingsTemplate,
+                    $formBuilder,
+	                $settingsCrud,
+                    $settingsFormAction
+            )
+            )->init();
         });
 
 

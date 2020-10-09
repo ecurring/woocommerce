@@ -4,6 +4,7 @@ namespace Ecurring\WooEcurring\AdminPages;
 
 use ChriCo\Fields\ViewFactory;
 use Dhii\Output\Template\TemplateInterface;
+use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring_WC_Plugin;
 use Throwable;
 
@@ -32,20 +33,27 @@ class AdminController {
 	 * @var string
 	 */
 	protected $fieldsCollectionName;
+	/**
+	 * @var SettingsCrudInterface
+	 */
+	protected $settingsCrud;
 
 	/**
 	 * @param TemplateInterface           $adminSettingsPageRenderer To render admin settings page content.
 	 * @param FormFieldsCollectionBuilder $formBuilder
+	 * @param SettingsCrudInterface       $settingsCrud
 	 * @param string                      $fieldsCollectionName
 	 */
 	public function __construct(
 		TemplateInterface $adminSettingsPageRenderer,
 		FormFieldsCollectionBuilder $formBuilder,
+		SettingsCrudInterface $settingsCrud,
 		string $fieldsCollectionName
 	) {
 		$this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
 		$this->formBuilder = $formBuilder;
 		$this->fieldsCollectionName = $fieldsCollectionName;
+		$this->settingsCrud = $settingsCrud;
 	}
 
 	/**
@@ -55,6 +63,7 @@ class AdminController {
 	{
 		add_action('woocommerce_settings_tabs_array', [$this, 'registerPluginSettingsTab'], 100);
 		add_action('woocommerce_settings_tabs_' . self::PLUGIN_SETTINGS_TAB_SLUG, [$this, 'renderPluginSettingsPage']);
+		add_action('admin_init', [$this, 'saveSettings'], 11);
 	}
 
 	/**
@@ -97,5 +106,22 @@ class AdminController {
 			);
 		}
 
+	}
+
+	/**
+	 * Save plugin settings on form submit.
+	 */
+	public function saveSettings()
+	{
+		if(! isset($_POST[$this->fieldsCollectionName])){
+			return;
+		}
+
+		foreach ( $_POST[$this->fieldsCollectionName] as $optionName => $optionValue )
+		{
+			$this->settingsCrud->updateOption($optionName, $optionValue);
+		}
+
+		$this->settingsCrud->persist();
 	}
 }
