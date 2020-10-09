@@ -6,7 +6,6 @@ namespace Ecurring\WooEcurring\AdminPages;
 
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
-use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\View\RenderableElementInterface;
 use ChriCo\Fields\ViewFactory;
