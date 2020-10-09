@@ -10,7 +10,7 @@ use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewa
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
-use Ecurring\WooEcurring\Template\WcBasedAdminSettingsTemplate;
+use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -45,7 +45,7 @@ class eCurring_WC_Plugin
 
         add_action('admin_init', function(){
             $elementFactory = new ElementFactory();
-            $wcBasedSettingsTemplate = new WcBasedAdminSettingsTemplate();
+            $wcBasedSettingsTemplate = new SettingsFormTemplate();
             $settingsFormNonceAction = 'mollie-subscriptions-settings-form-submit';
             $nonce = new Brain\Nonces\WpNonce($settingsFormNonceAction);
             $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($nonce);

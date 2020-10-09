@@ -6,7 +6,7 @@ use ChriCo\Fields\Element\FormInterface;
 use ChriCo\Fields\View\RenderableElementInterface;
 use Dhii\Output\Template\TemplateInterface;
 
-class WcBasedAdminSettingsTemplate implements TemplateInterface {
+class SettingsFormTemplate implements TemplateInterface {
 
 	/**
 	 * @inheritDoc
