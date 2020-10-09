@@ -9,7 +9,7 @@ use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 
-class PaymentCompleteEventListener {
+class PaymentCompleteEventListener implements EventListenerInterface {
 	/**
 	 * @var ApiClientInterface
 	 */
