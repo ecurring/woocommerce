@@ -47,15 +47,6 @@ return function ( NonceInterface $nonce, string $formAction): array {
 						'type' => 'hidden',
 						'value' => (string) $nonce,
 					],
-			],
-
-			[
-				'attributes' =>
-					[
-						'name' => 'action',
-						'type' => 'hidden',
-						'value' => $formAction
-					]
 			]
 
 		],
