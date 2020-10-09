@@ -113,13 +113,17 @@ class AdminController {
 	 */
 	public function saveSettings()
 	{
-		if(! isset($_POST[$this->fieldsCollectionName])){
+		$formData = $_POST[$this->fieldsCollectionName] ?? null;
+
+		if($formData === null){
 			return;
 		}
 
-		foreach ( $_POST[$this->fieldsCollectionName] as $optionName => $optionValue )
+		$fieldsCollection = $this->formBuilder->buildFieldsCollection();
+
+		foreach ($fieldsCollection->elements() as $element)
 		{
-			$this->settingsCrud->updateOption($optionName, $optionValue);
+			$this->settingsCrud->updateOption($element->name(), $formData[$element->name()] ?? null);
 		}
 
 		$this->settingsCrud->persist();
