@@ -49,11 +49,11 @@ class eCurring_WC_Plugin
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
             $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
             $nonce = new Brain\Nonces\WpNonce($settingsFormAction);
-            $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($nonce, $settingsFormAction);
+	        $settingsCrud = new SettingsCrud();
+	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($nonce, $settingsFormAction, $settingsCrud);
 
-            $viewFactory = new ViewFactory();
-            $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
-            $settingsCrud = new SettingsCrud();
+	        $viewFactory = new ViewFactory();
+	        $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
             (new AdminController(
                     $wcBasedSettingsTemplate,
                     $formBuilder,

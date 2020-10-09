@@ -1,11 +1,12 @@
 <?php
 
 use Brain\Nonces\NonceInterface;
+use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 
 defined( 'ABSPATH' ) || die;
 
 
-return function ( NonceInterface $nonce, string $formAction): array {
+return function ( NonceInterface $nonce, string $formAction, SettingsCrudInterface $settings): array {
 	return [
 		'attributes' => [
 			'name' => esc_attr($formAction),
@@ -18,7 +19,7 @@ return function ( NonceInterface $nonce, string $formAction): array {
 					'type'        => 'text',
 					'placeholder' => _x( 'API key', 'Plugin settings', 'woo-ecurring' ),
 					'pattern'     => '^\w{40,}$',
-					'default'     => get_option( 'woo-ecurring_live_api_key' ), //todo: replace this.
+					'value' => $settings->getOption('api_key'),
 				],
 				'label'            => esc_html_x( 'API key', 'Name of the settings page button', 'woo-ecurring' ),
 				'label_attributes' => [ 'for' => 'api_key' ]
@@ -28,7 +29,7 @@ return function ( NonceInterface $nonce, string $formAction): array {
 				'attributes' => [
 					'name'    => 'debug',
 					'type'    => 'checkbox',
-					'default' => 'yes',
+					'value'   => $settings->getOption('debug') ? 'enabled' : ''
 				],
 				'choices'    => [
 					'enabled' => esc_html_x(
