@@ -4,6 +4,7 @@
 namespace Ecurring\WooEcurring\AdminPages;
 
 
+use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\Element\FormInterface;
 use ChriCo\Fields\Exception\MissingAttributeException;
@@ -13,7 +14,7 @@ use ChriCo\Fields\View\RenderableElementInterface;
 /**
  * Service able to build settings form.
  */
-interface FormBuilderInterface {
+interface FormFieldsCollectionBuilderInterface {
 
 	/**
 	 * Build a settings form instance from configuration.
@@ -34,5 +35,5 @@ interface FormBuilderInterface {
 	 *
 	 * @throws UnknownTypeException
 	 */
-	public function buildFormView(FormInterface $form): RenderableElementInterface;
+	public function buildFormFieldsCollectionView(CollectionElementInterface $form): RenderableElementInterface;
 }

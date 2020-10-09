@@ -9,7 +9,7 @@ return function ( NonceInterface $nonce, string $formAction): array {
 	return [
 		'attributes' => [
 			'name' => 'mollie-subscriptions-settings-form',
-			'type' => 'form'
+			'type' => 'collection'
 		],
 		'elements'   => [
 			[

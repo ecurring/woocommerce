@@ -24,17 +24,17 @@ class AdminController {
 	protected $viewFactory;
 
 	/**
-	 * @var FormBuilder
+	 * @var FormFieldsCollectionBuilder
 	 */
 	protected $formBuilder;
 
 	/**
-	 * @param TemplateInterface $adminSettingsPageRenderer To render admin settings page content.
-	 * @param FormBuilder       $formBuilder
+	 * @param TemplateInterface           $adminSettingsPageRenderer To render admin settings page content.
+	 * @param FormFieldsCollectionBuilder $formBuilder
 	 */
 	public function __construct(
 		TemplateInterface $adminSettingsPageRenderer,
-		FormBuilder $formBuilder
+		FormFieldsCollectionBuilder $formBuilder
 	) {
 		$this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
 		$this->formBuilder = $formBuilder;
@@ -70,7 +70,7 @@ class AdminController {
 	{
 		try {
 			$form = $this->formBuilder->buildForm();
-			$formView = $this->formBuilder->buildFormView($form);
+			$formView = $this->formBuilder->buildFormFieldsCollectionView($form);
 			$context = ['view' => $formView, 'form' => $form];
 			echo $this->adminSettingsPageRenderer->render($context);
 		}catch ( Throwable $exception) {

@@ -5,13 +5,13 @@ namespace Ecurring\WooEcurring\AdminPages;
 
 
 use Brain\Nonces\NonceInterface;
+use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\Element\ElementInterface;
-use ChriCo\Fields\Element\FormInterface;
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\View\RenderableElementInterface;
 use ChriCo\Fields\ViewFactory;
 
-class FormBuilder implements FormBuilderInterface {
+class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterface {
 
 	/**
 	 * @var ViewFactory
@@ -59,7 +59,7 @@ class FormBuilder implements FormBuilderInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function buildFormView(FormInterface $form): RenderableElementInterface {
-		return $this->viewFactory->create('form');
+	public function buildFormFieldsCollectionView(CollectionElementInterface $form): RenderableElementInterface {
+		return $this->viewFactory->create('collection');
 	}
 }
