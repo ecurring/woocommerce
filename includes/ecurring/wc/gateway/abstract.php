@@ -198,22 +198,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
     }
 
 	/**
-	 * Check if the gateway is available for use
-	 *
-	 * @return bool
-	 */
-	public function is_available() {
-
-		// In WooCommerce check if the gateway is available for use (WooCommerce settings)
-		if ( $this->enabled != 'yes' ) {
-
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	 * @param int $order_id
 	 *
 	 * @throws Exception
