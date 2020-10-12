@@ -471,26 +471,13 @@ class eCurring_WC_Plugin
 	public static function setOrderPaidByOtherGateway( $order_id ) {
 
 		$order = wc_get_order( $order_id );
+		$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
+		$order_payment_method = $order->get_payment_method();
 
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
 
-			$ecurring_payment_id    = get_post_meta( $order_id, '_ecurring_payment_id', $single = true );
-			$order_payment_method = get_post_meta( $order_id, '_payment_method', $single = true );
-
-			if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-				update_post_meta( $order->id, '_ecurring_paid_by_other_gateway', '1' );
-			}
-
-		} else {
-
-			$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
-			$order_payment_method = $order->get_payment_method();
-
-			if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-
-				$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
-				$order->save();
-			}
+			$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
+			$order->save();
 		}
 
 		return true;
