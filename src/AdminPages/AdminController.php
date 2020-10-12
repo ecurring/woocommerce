@@ -8,7 +8,7 @@ use Brain\Nonces\ArrayContext;
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\ViewFactory;
 use Dhii\Output\Template\TemplateInterface;
-use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
+use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -30,7 +30,7 @@ class AdminController {
 	protected $viewFactory;
 
 	/**
-	 * @var FormFieldsCollectionBuilder
+	 * @var FormFieldsCollectionBuilderInterface
 	 */
 	protected $formFieldsCollectionBuilder;
 
@@ -49,14 +49,14 @@ class AdminController {
 
 	/**
 	 * @param TemplateInterface           $adminSettingsPageRenderer To render admin settings page content.
-	 * @param FormFieldsCollectionBuilder $formBuilder
+	 * @param FormFieldsCollectionBuilderInterface $formBuilder
 	 * @param SettingsCrudInterface       $settingsCrud
 	 * @param string                      $fieldsCollectionName
 	 * @param NonceInterface              $nonce
 	 */
 	public function __construct(
 		TemplateInterface $adminSettingsPageRenderer,
-		FormFieldsCollectionBuilder $formBuilder,
+		FormFieldsCollectionBuilderInterface $formBuilder,
 		SettingsCrudInterface $settingsCrud,
 		string $fieldsCollectionName,
 		NonceInterface $nonce
