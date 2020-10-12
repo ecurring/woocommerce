@@ -57,14 +57,12 @@ class FormFieldsNonceConfigurator implements FormFieldsConfiguratorInterface {
 	 */
 	protected function buildNonceField( NonceInterface $nonce ): ElementInterface {
 		return $this->elementFactory->create( [
-			[
-				'attributes' =>
-					[
-						'name'  => $nonce->action(),
-						'type'  => 'hidden',
-						'value' => (string) $nonce,
-					],
-			]
+			'attributes' =>
+				[
+					'name'  => $nonce->action(),
+					'type'  => 'hidden',
+					'value' => (string) $nonce,
+				],
 		] );
 	}
 }
