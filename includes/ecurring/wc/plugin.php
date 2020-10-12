@@ -1,6 +1,7 @@
 <?php
 
 
+use Brain\Nonces\WpNonce;
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
@@ -49,7 +50,7 @@ class eCurring_WC_Plugin
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
             $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
-            $nonce = new Brain\Nonces\WpNonce($settingsFormAction);
+            $nonce = new WpNonce($settingsFormAction);
 	        $settingsCrud = new SettingsCrud();
 	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($settingsFormAction, $settingsCrud);
             $nonceFieldsConfigurator = new FormFieldsNonceConfigurator($nonce, $elementFactory);
@@ -60,7 +61,8 @@ class eCurring_WC_Plugin
                     $wcBasedSettingsTemplate,
                     $formBuilder,
 	                $settingsCrud,
-                    $settingsFormAction
+                    $settingsFormAction,
+                    $nonce
             )
             )->init();
         });

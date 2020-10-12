@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\AdminPages;
 
+use Brain\Nonces\ArrayContext;
+use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\ViewFactory;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
@@ -40,23 +42,30 @@ class AdminController {
 	 * @var SettingsCrudInterface
 	 */
 	protected $settingsCrud;
+	/**
+	 * @var NonceInterface
+	 */
+	protected $nonce;
 
 	/**
 	 * @param TemplateInterface           $adminSettingsPageRenderer To render admin settings page content.
 	 * @param FormFieldsCollectionBuilder $formBuilder
 	 * @param SettingsCrudInterface       $settingsCrud
 	 * @param string                      $fieldsCollectionName
+	 * @param NonceInterface              $nonce
 	 */
 	public function __construct(
 		TemplateInterface $adminSettingsPageRenderer,
 		FormFieldsCollectionBuilder $formBuilder,
 		SettingsCrudInterface $settingsCrud,
-		string $fieldsCollectionName
+		string $fieldsCollectionName,
+		NonceInterface $nonce
 	) {
 		$this->adminSettingsPageRenderer   = $adminSettingsPageRenderer;
 		$this->formFieldsCollectionBuilder = $formBuilder;
 		$this->fieldsCollectionName        = $fieldsCollectionName;
 		$this->settingsCrud                = $settingsCrud;
+		$this->nonce = $nonce;
 	}
 
 	/**
@@ -122,6 +131,12 @@ class AdminController {
 			return;
 		}
 
+		if(! $this->isNonceValid($formData))
+		{
+			//todo: add admin notice here.
+			return;
+		}
+
 		$fieldsCollection = $this->formFieldsCollectionBuilder->buildFieldsCollection();
 
 		foreach ($fieldsCollection->elements() as $element)
@@ -141,5 +156,20 @@ class AdminController {
 	{
 		wp_safe_redirect(admin_url('admin.php?page=wc-settings&tab=' . self::PLUGIN_SETTINGS_TAB_SLUG));
 		die;
+	}
+
+	/**
+	 * Validate nonce from posted form.
+	 *
+	 * @param array $formData
+	 *
+	 * @return bool
+	 *
+	 * @todo: move this to the separate class.
+	 */
+	protected function isNonceValid(array $formData): bool
+	{
+		$context = new ArrayContext($formData);
+		return $this->nonce->validate($context);
 	}
 }
