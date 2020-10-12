@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\AdminPages\Form;
 
-
-use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\View\RenderableElementInterface;
@@ -17,10 +15,6 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
 	 */
 	protected $viewFactory;
 	/**
-	 * @var array
-	 */
-	protected $settingsFormConfiguration;
-	/**
 	 * @var ElementFactory
 	 */
 	protected $elementFactory;
@@ -28,10 +22,6 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
 	 * @var array
 	 */
 	protected $formFields;
-	/**
-	 * @var NonceInterface
-	 */
-	protected $nonce;
 
 
 	/**
