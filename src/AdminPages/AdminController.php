@@ -27,7 +27,7 @@ class AdminController {
 	/**
 	 * @var FormFieldsCollectionBuilder
 	 */
-	protected $formBuilder;
+	protected $formFieldsCollectionBuilder;
 
 	/**
 	 * @var string
@@ -50,16 +50,16 @@ class AdminController {
 		SettingsCrudInterface $settingsCrud,
 		string $fieldsCollectionName
 	) {
-		$this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
-		$this->formBuilder = $formBuilder;
-		$this->fieldsCollectionName = $fieldsCollectionName;
-		$this->settingsCrud = $settingsCrud;
+		$this->adminSettingsPageRenderer   = $adminSettingsPageRenderer;
+		$this->formFieldsCollectionBuilder = $formBuilder;
+		$this->fieldsCollectionName        = $fieldsCollectionName;
+		$this->settingsCrud                = $settingsCrud;
 	}
 
 	/**
 	 * Initialize hooks listeners.
 	 */
-	public function init()
+	public function init(): void
 	{
 		add_action('woocommerce_settings_tabs_array', [$this, 'registerPluginSettingsTab'], 100);
 		add_action('woocommerce_settings_tabs_' . self::PLUGIN_SETTINGS_TAB_SLUG, [$this, 'renderPluginSettingsPage']);
@@ -86,8 +86,8 @@ class AdminController {
 	public function renderPluginSettingsPage(): void
 	{
 		try {
-			$form = $this->formBuilder->buildFieldsCollection();
-			$formView = $this->formBuilder->buildFormFieldsCollectionView($form);
+			$form = $this->formFieldsCollectionBuilder->buildFieldsCollection();
+			$formView = $this->formFieldsCollectionBuilder->buildFormFieldsCollectionView($form);
 			$context = ['view' => $formView, 'form' => $form];
 			echo $this->adminSettingsPageRenderer->render($context);
 		}catch ( Throwable $exception) {
@@ -111,7 +111,7 @@ class AdminController {
 	/**
 	 * Save plugin settings on form submit.
 	 */
-	public function saveSettings()
+	public function saveSettings(): void
 	{
 		$formData = $_POST[$this->fieldsCollectionName] ?? null;
 
@@ -119,7 +119,7 @@ class AdminController {
 			return;
 		}
 
-		$fieldsCollection = $this->formBuilder->buildFieldsCollection();
+		$fieldsCollection = $this->formFieldsCollectionBuilder->buildFieldsCollection();
 
 		foreach ($fieldsCollection->elements() as $element)
 		{
