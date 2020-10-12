@@ -127,5 +127,16 @@ class AdminController {
 		}
 
 		$this->settingsCrud->persist();
+
+		$this->redirectToSettingsPage();
+	}
+
+	/**
+	 * Do redirect to the plugin settings page.
+	 */
+	protected function redirectToSettingsPage(): void
+	{
+		wp_safe_redirect(admin_url('admin.php?page=wc-settings&tab=' . self::PLUGIN_SETTINGS_TAB_SLUG));
+		die;
 	}
 }
