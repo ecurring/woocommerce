@@ -10,6 +10,7 @@ use ChriCo\Fields\View\RenderableElementInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
+use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -40,13 +41,17 @@ class AdminControllerTest extends TestCase {
 		/** @var NonceInterface&MockObject $nonceMock */
 		$nonceMock = $this->createMock(NonceInterface::class);
 
+		/** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
+		$nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
+
 
 		$sut = new AdminController(
 			$adminSettingsPageRendererMock,
 			$formBuilderMock,
 			$settingsCrudMock,
 			'',
-			$nonceMock
+			$nonceMock,
+			$nonceFieldBuilderMock
 		);
 
 		when('_x')->returnArg();
@@ -92,13 +97,16 @@ class AdminControllerTest extends TestCase {
 		/** @var NonceInterface&MockObject $nonceMock */
 		$nonceMock = $this->createMock(NonceInterface::class);
 
+		/** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
+		$nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
 
 		$sut = new AdminController(
 			$adminSettingsPageRendererMock,
 			$formBuilderMock,
 			$settingsCrudMock,
 			'',
-			$nonceMock
+			$nonceMock,
+			$nonceFieldBuilderMock
 		);
 
 		$this->expectOutputString($renderedContent);
