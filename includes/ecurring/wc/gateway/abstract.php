@@ -50,10 +50,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
         $this->_initDescription();
 
-        if(!has_action('woocommerce_thankyou_' . $this->id)) {
-            add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
-        }
-
         add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
         add_action('woocommerce_email_after_order_table', array($this, 'displayInstructions'), 10, 3);
 
@@ -500,28 +496,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
 		return $this->get_return_url( $order );
 	}
-
-    /**
-     * Output for the order received page.
-     */
-    public function thankyou_page ($order_id)
-    {
-        $order = eCurring_WC_Plugin::getDataHelper()->getWcOrder($order_id);
-
-        // Order not found
-        if (!$order)
-        {
-            return;
-        }
-
-        // Empty cart
-        if (WC()->cart) {
-            WC()->cart->empty_cart();
-        }
-
-        // Same as email instructions, just run that
-        $this->displayInstructions($order, $admin_instructions = false, $plain_text = false);
-    }
 
     /**
      * Add content to the WC emails.
