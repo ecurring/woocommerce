@@ -108,7 +108,9 @@ class AdminController {
 		try {
 			$form = $this->formFieldsCollectionBuilder->buildFieldsCollection();
 			$formView = $this->formFieldsCollectionBuilder->buildFormFieldsCollectionView();
-			$context = ['view' => $formView, 'form' => $form];
+			$nonceField = $this->nonceFieldBuilder->buildNonceField($this->nonce);
+			$nonceFieldView = $this->nonceFieldBuilder->buildNonceFieldView();
+			$context = ['view' => $formView, 'form' => $form, 'nonceField' => $nonceField, 'nonceFieldView' => $nonceFieldView];
 			echo $this->adminSettingsPageRenderer->render($context);
 		}catch ( Throwable $exception) {
 			eCurring_WC_Plugin::debug(
