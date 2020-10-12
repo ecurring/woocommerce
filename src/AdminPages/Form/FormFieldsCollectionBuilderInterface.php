@@ -28,11 +28,9 @@ interface FormFieldsCollectionBuilderInterface {
 	/**
 	 * Build a renderable form view instance.
 	 *
-	 * @param CollectionElementInterface $form Form to create a view from.
-	 *
 	 * @return RenderableElementInterface Form view ready to be rendered.
 	 *
 	 * @throws UnknownTypeException
 	 */
-	public function buildFormFieldsCollectionView(CollectionElementInterface $form): RenderableElementInterface;
+	public function buildFormFieldsCollectionView(): RenderableElementInterface;
 }

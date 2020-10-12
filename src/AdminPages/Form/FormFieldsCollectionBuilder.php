@@ -93,7 +93,7 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
 	/**
 	 * @inheritDoc
 	 */
-	public function buildFormFieldsCollectionView(CollectionElementInterface $form): RenderableElementInterface {
+	public function buildFormFieldsCollectionView(): RenderableElementInterface {
 		return $this->viewFactory->create('collection');
 	}
 }

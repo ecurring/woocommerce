@@ -99,7 +99,7 @@ class AdminController {
 	{
 		try {
 			$form = $this->formFieldsCollectionBuilder->buildFieldsCollection();
-			$formView = $this->formFieldsCollectionBuilder->buildFormFieldsCollectionView($form);
+			$formView = $this->formFieldsCollectionBuilder->buildFormFieldsCollectionView();
 			$context = ['view' => $formView, 'form' => $form];
 			echo $this->adminSettingsPageRenderer->render($context);
 		}catch ( Throwable $exception) {
