@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\AdminPages\Form;
 
@@ -37,11 +37,13 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
 	 * @param ElementFactory $elementFactory
 	 * @param ViewFactory    $viewFactory
 	 * @param array          $formFields
+	 * @param array          $formConfigurators
 	 */
 	public function __construct(
 		ElementFactory $elementFactory,
 		ViewFactory $viewFactory,
-		array $formFields
+		array $formFields,
+		array $formConfigurators
 	) {
 		$this->elementFactory = $elementFactory;
 		$this->viewFactory = $viewFactory;
