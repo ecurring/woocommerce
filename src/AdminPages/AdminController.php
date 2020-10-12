@@ -9,6 +9,7 @@ use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\ViewFactory;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
+use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -46,26 +47,33 @@ class AdminController {
 	 * @var NonceInterface
 	 */
 	protected $nonce;
+	/**
+	 * @var NonceFieldBuilderInterface
+	 */
+	protected $nonceFieldBuilder;
 
 	/**
-	 * @param TemplateInterface           $adminSettingsPageRenderer To render admin settings page content.
+	 * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
 	 * @param FormFieldsCollectionBuilderInterface $formBuilder
-	 * @param SettingsCrudInterface       $settingsCrud
-	 * @param string                      $fieldsCollectionName
-	 * @param NonceInterface              $nonce
+	 * @param SettingsCrudInterface                $settingsCrud
+	 * @param string                               $fieldsCollectionName
+	 * @param NonceInterface                       $nonce
+	 * @param NonceFieldBuilderInterface           $nonceFieldBuilder
 	 */
 	public function __construct(
 		TemplateInterface $adminSettingsPageRenderer,
 		FormFieldsCollectionBuilderInterface $formBuilder,
 		SettingsCrudInterface $settingsCrud,
 		string $fieldsCollectionName,
-		NonceInterface $nonce
+		NonceInterface $nonce,
+		NonceFieldBuilderInterface $nonceFieldBuilder
 	) {
 		$this->adminSettingsPageRenderer   = $adminSettingsPageRenderer;
 		$this->formFieldsCollectionBuilder = $formBuilder;
 		$this->fieldsCollectionName        = $fieldsCollectionName;
 		$this->settingsCrud                = $settingsCrud;
 		$this->nonce = $nonce;
+		$this->nonceFieldBuilder = $nonceFieldBuilder;
 	}
 
 	/**

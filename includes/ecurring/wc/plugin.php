@@ -6,6 +6,7 @@ use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
+use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
@@ -52,15 +53,17 @@ class eCurring_WC_Plugin
             $nonce = new WpNonce($settingsFormAction);
 	        $settingsCrud = new SettingsCrud();
 	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($settingsFormAction, $settingsCrud);
-
 	        $viewFactory = new ViewFactory();
+
 	        $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
-            (new AdminController(
+	        $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
+	        (new AdminController(
                     $wcBasedSettingsTemplate,
                     $formBuilder,
 	                $settingsCrud,
                     $settingsFormAction,
-                    $nonce
+                    $nonce,
+                    $nonceFieldBuilder
             )
             )->init();
         });
