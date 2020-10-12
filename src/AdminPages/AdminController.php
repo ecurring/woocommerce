@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\AdminPages;
 
-use Brain\Nonces\ArrayContext;
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\ViewFactory;
 use Dhii\Output\Template\TemplateInterface;
@@ -141,7 +140,7 @@ class AdminController {
 			return;
 		}
 
-		if(! $this->isNonceValid($formData))
+		if(! $this->isNonceValid())
 		{
 			//todo: add admin notice here.
 			return;
@@ -171,15 +170,12 @@ class AdminController {
 	/**
 	 * Validate nonce from posted form.
 	 *
-	 * @param array $formData
-	 *
 	 * @return bool
 	 *
 	 * @todo: move this to the separate class.
 	 */
-	protected function isNonceValid(array $formData): bool
+	protected function isNonceValid(): bool
 	{
-		$context = new ArrayContext($formData);
-		return $this->nonce->validate($context);
+		return $this->nonce->validate();
 	}
 }
