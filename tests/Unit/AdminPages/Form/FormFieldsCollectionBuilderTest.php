@@ -8,7 +8,6 @@ use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\View\RenderableElementInterface;
 use ChriCo\Fields\ViewFactory;
-use Ecurring\WooEcurring\AdminPages\Form\Configurator\FormFieldsConfiguratorInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use eCurring\WooEcurringTests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -32,41 +31,13 @@ class FormFieldsCollectionBuilderTest extends TestCase {
 
 		$formFields = [];
 
-		/** @var CollectionElementInterface&MockObject $configuredElementMock */
-		$configuredElementMock = $this->createMock(CollectionElementInterface::class);
-
-		/** @var CollectionElementInterface&MockObject $fullyConfiguredElementMock */
-		$fullyConfiguredElementMock = $this->createMock(CollectionElementInterface::class);
-
-		/** @var FormFieldsConfiguratorInterface&MockObject $configurator1 */
-		$configurator1 = $this->createMock(FormFieldsConfiguratorInterface::class);
-
-		/** @var FormFieldsConfiguratorInterface&MockObject $configurator2 */
-		$configurator2 = $this->createMock(FormFieldsConfiguratorInterface::class);
-
-		$configurator1->expects($this->once())
-			->method('configure')
-			->with($elementMock)
-			->willReturn($configuredElementMock);
-
-		$configurator2->expects($this->once())
-			->method('configure')
-			->with($configuredElementMock)
-			->willReturn($fullyConfiguredElementMock);
-
-		$formConfigurators = [
-			$configurator1,
-			$configurator2
-		];
-
 		$sut = new FormFieldsCollectionBuilder(
 			$elementFactoryMock,
 			$viewFactoryMock,
-			$formFields,
-			$formConfigurators
+			$formFields
 		);
 
-		$this->assertSame($fullyConfiguredElementMock, $sut->buildFieldsCollection());
+		$this->assertSame($elementMock, $sut->buildFieldsCollection());
 	}
 
 	public function testBuildFormFieldsCollectionView()
@@ -86,13 +57,10 @@ class FormFieldsCollectionBuilderTest extends TestCase {
 
 		$formFields = [];
 
-		$formConfigurators = [];
-
 		$sut = new FormFieldsCollectionBuilder(
 			$elementFactoryMock,
 			$viewFactoryMock,
-			$formFields,
-			$formConfigurators
+			$formFields
 		);
 
 		$this->assertSame($collectionViewMock, $sut->buildFormFieldsCollectionView());
