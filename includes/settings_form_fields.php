@@ -1,12 +1,11 @@
 <?php
 
-use Brain\Nonces\NonceInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 
 defined( 'ABSPATH' ) || die;
 
 
-return function ( NonceInterface $nonce, string $formAction, SettingsCrudInterface $settings): array {
+return function (string $formAction, SettingsCrudInterface $settings): array {
 	return [
 		'attributes' => [
 			'name' => esc_attr($formAction),
@@ -40,16 +39,6 @@ return function ( NonceInterface $nonce, string $formAction, SettingsCrudInterfa
 				],
 				'label'      => esc_html_x( 'Debug Log', 'Plugin settings', 'woo-ecurring' ),
 			],
-
-			[
-				'attributes' =>
-					[
-						'name' => $nonce->action(),
-						'type' => 'hidden',
-						'value' => (string) $nonce,
-					],
-			]
-
 		],
 	];
 };

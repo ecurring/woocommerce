@@ -51,7 +51,7 @@ class eCurring_WC_Plugin
             $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
             $nonce = new Brain\Nonces\WpNonce($settingsFormAction);
 	        $settingsCrud = new SettingsCrud();
-	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($nonce, $settingsFormAction, $settingsCrud);
+	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($settingsFormAction, $settingsCrud);
             $nonceFieldsConfigurator = new FormFieldsNonceConfigurator($nonce, $elementFactory);
 
 	        $viewFactory = new ViewFactory();
