@@ -8,6 +8,9 @@ use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\ElementFactory;
+use ChriCo\Fields\Exception\InvalidClassException;
+use ChriCo\Fields\Exception\MissingAttributeException;
+use ChriCo\Fields\Exception\UnknownTypeException;
 
 /**
  * Service able to add nonce to the fields collection.
@@ -48,6 +51,9 @@ class FormFieldsNonceConfigurator implements FormFieldsConfiguratorInterface {
 	 * @param NonceInterface $nonce Nonce to take data from.
 	 *
 	 * @return ElementInterface Nonce field element.
+	 *
+	 * @throws InvalidClassException
+	 * @throws UnknownTypeException|MissingAttributeException
 	 */
 	protected function buildNonceField( NonceInterface $nonce ): ElementInterface {
 		return $this->elementFactory->create( [

@@ -7,6 +7,9 @@ namespace Ecurring\WooEcurring\AdminPages\Form;
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\ElementFactory;
+use ChriCo\Fields\Exception\InvalidClassException;
+use ChriCo\Fields\Exception\MissingAttributeException;
+use ChriCo\Fields\Exception\UnknownTypeException;
 use ChriCo\Fields\View\RenderableElementInterface;
 use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\Form\Configurator\FormFieldsConfiguratorInterface;
@@ -72,6 +75,9 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
 	 * @param CollectionElementInterface $fieldsCollection Collection to apply configurators to.
 	 *
 	 * @return CollectionElementInterface
+	 *
+	 * @throws InvalidClassException
+	 * @throws UnknownTypeException|MissingAttributeException
 	 */
 	protected function applyConfigurators(CollectionElementInterface $fieldsCollection): CollectionElementInterface
 	{
