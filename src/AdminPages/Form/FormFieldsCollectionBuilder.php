@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Ecurring\WooEcurring\AdminPages;
+namespace Ecurring\WooEcurring\AdminPages\Form;
 
 
 use Brain\Nonces\NonceInterface;

@@ -4,7 +4,7 @@
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
-use Ecurring\WooEcurring\AdminPages\FormFieldsCollectionBuilder;
+use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
