@@ -41,9 +41,6 @@ class eCurring_WC_Plugin
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
 
-		// Show eCurring instructions on order details page
-		add_action( 'woocommerce_order_details_after_order_table', array ( __CLASS__, 'onOrderDetails' ), 10, 1 );
-
 		// Enqueue scripts and styles
 		add_action( 'wp_enqueue_scripts', array ( __CLASS__, 'eCurringEnqueueScriptsAndStyles' ) );
 
@@ -127,34 +124,6 @@ class eCurring_WC_Plugin
 		// Mark plugin initiated
 		self::$initiated = true;
 	}
-
-    /**
-     * @param WC_Order $order
-     */
-    public static function onOrderDetails (WC_Order $order)
-    {
-        if (eCurring_WC_Plugin::getDataHelper()->is_order_received_page())
-        {
-            /**
-             * Do not show instruction again below details on order received page
-             * Instructions already displayed on top of order received page by $gateway->thankyou_page()
-             *
-             * @see eCurring_WC_Gateway_Abstract::thankyou_page
-             */
-            return;
-        }
-
-        $gateway = eCurring_WC_Plugin::getDataHelper()->getWcPaymentGatewayByOrder($order);
-
-        if (!$gateway || !($gateway instanceof eCurring_WC_Gateway_Abstract))
-        {
-            return;
-        }
-
-        /** @var eCurring_WC_Gateway_Abstract $gateway */
-
-        $gateway->displayInstructions($order);
-    }
 
     /**
      * Set HTTP status code

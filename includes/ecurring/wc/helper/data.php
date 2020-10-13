@@ -170,42 +170,6 @@ class eCurring_WC_Helper_Data {
 	}
 
 	/**
-	 * Get payment gateway class by order data.
-	 *
-	 * @param int|WC_Order $order
-	 *
-	 * @return WC_Payment_Gateway|bool
-	 */
-	public function getWcPaymentGatewayByOrder( $order ) {
-		if ( function_exists( 'wc_get_payment_gateway_by_order' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return wc_get_payment_gateway_by_order( $order );
-		}
-
-		if ( WC()->payment_gateways() ) {
-			$payment_gateways = WC()
-				->payment_gateways
-				->payment_gateways();
-		} else {
-			$payment_gateways = array ();
-		}
-
-		if ( ! ( $order instanceof WC_Order ) ) {
-			$order = $this->getWcOrder( $order );
-
-			if ( ! $order ) {
-				return false;
-			}
-		}
-
-		$order_payment_method = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $order->payment_method : $order->get_payment_method();
-
-		return isset( $payment_gateways[ $order_payment_method ] ) ? $payment_gateways[ $order_payment_method ] : false;
-	}
-
-	/**
 	 * Get eCurring subscription from cache or load from eCurring
 	 * Skip cache by setting $use_cache to false
 	 *
