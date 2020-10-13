@@ -102,6 +102,8 @@ class AddToCartEventListenerTest extends TestCase {
 
 		expect('wc_add_notice')->never();
 
+		when('_x')->returnArg();
+
 		$addedToCart = $sut->onAddToCart(true, $productId, 1);
 
 		$this->assertSame(true, $addedToCart);
