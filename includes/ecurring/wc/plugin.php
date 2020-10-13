@@ -45,9 +45,6 @@ class eCurring_WC_Plugin
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
 
-		// Listen to return URL call
-		add_action( 'woocommerce_api_ecurring_return', array ( __CLASS__, 'eCurringReturn' ) );
-
 		// Show eCurring instructions on order details page
 		add_action( 'woocommerce_order_details_after_order_table', array ( __CLASS__, 'onOrderDetails' ), 10, 1 );
 
@@ -137,64 +134,6 @@ class eCurring_WC_Plugin
 		// Mark plugin initiated
 		self::$initiated = true;
 	}
-
-    /**
-     * Payment return url callback
-     */
-    public static function eCurringReturn ()
-    {
-
-        $data_helper = self::getDataHelper();
-
-	    $order_id = ! empty( $_GET['order_id'] ) ? sanitize_text_field( $_GET['order_id'] ) : null;
-	    $key      = ! empty( $_GET['key'] ) ? sanitize_text_field( $_GET['key'] ) : null;
-
-        $order    = $data_helper->getWcOrder($order_id);
-
-        if (!$order)
-        {
-            self::setHttpResponseCode(404);
-            self::debug(__METHOD__ . ":  Could not find order $order_id.");
-            return;
-        }
-
-        if (!$order->key_is_valid($key))
-        {
-            self::setHttpResponseCode(401);
-            self::debug(__METHOD__ . ":  Invalid key $key for order $order_id.");
-            return;
-        }
-
-        $gateway = $data_helper->getWcPaymentGatewayByOrder($order);
-
-        if (!$gateway)
-        {
-            self::setHttpResponseCode(404);
-
-            self::debug(__METHOD__ . ":  Could not find gateway for order $order_id.");
-            return;
-        }
-
-        if (!($gateway instanceof eCurring_WC_Gateway_Abstract))
-        {
-            self::setHttpResponseCode(400);
-            self::debug(__METHOD__ . ": Invalid gateway " . get_class($gateway) . " for this plugin. Order $order_id.");
-            return;
-        }
-
-        /** @var eCurring_WC_Gateway_Abstract $gateway */
-
-        $redirect_url = $gateway->getReturnRedirectUrlForOrder($order);
-
-        // Add utm_nooverride query string
-        $redirect_url = add_query_arg(array(
-            'utm_nooverride' => 1,
-        ), $redirect_url);
-
-        self::debug(__METHOD__ . ": Redirect url on return order " . $gateway->id . ", order $order_id: $redirect_url");
-
-        wp_safe_redirect($redirect_url);
-    }
 
     /**
      * @param WC_Order $order
@@ -445,25 +384,13 @@ class eCurring_WC_Plugin
 
 		$order = wc_get_order( $order_id );
 
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
+		$order_payment_method = $order->get_payment_method();
 
-			$ecurring_payment_id    = get_post_meta( $order_id, '_ecurring_payment_id', $single = true );
-			$order_payment_method = get_post_meta( $order_id, '_payment_method', $single = true );
+		if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
 
-			if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-				update_post_meta( $order->id, '_ecurring_paid_by_other_gateway', '1' );
-			}
-
-		} else {
-
-			$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
-			$order_payment_method = $order->get_payment_method();
-
-			if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-
-				$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
-				$order->save();
-			}
+			$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
+			$order->save();
 		}
 
 		return true;
