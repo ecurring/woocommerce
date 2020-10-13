@@ -629,10 +629,6 @@ class eCurring_WC_Helper_Data {
 		}
 	}
 
-    public function deleteTransients() {
-
-    }
-
 	/**
 	 * Check if the current page is the order received page
 	 *

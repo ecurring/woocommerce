@@ -38,10 +38,6 @@ class eCurring_WC_Plugin
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
 
-
-		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
-		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
-
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
 
