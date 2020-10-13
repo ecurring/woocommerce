@@ -2,17 +2,6 @@
 
 abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 {
-	/**
-	 * WooCommerce default statuses
-	 */
-	const STATUS_PENDING = 'pending';
-	const STATUS_PROCESSING = 'processing';
-	const STATUS_ON_HOLD = 'on-hold';
-	const STATUS_COMPLETED = 'completed';
-	const STATUS_CANCELLED = 'cancelled'; // Mollie uses canceled (US English spelling), WooCommerce and this plugin use cancelled.
-	const STATUS_FAILED = 'failed';
-	const STATUS_REFUNDED = 'refunded';
-
     /**
      * @var string
      */
@@ -33,18 +22,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
      */
     public function __construct ()
     {
-        // No plugin id, gateway id is unique enough
-        $this->plugin_id    = '';
-        // Use gateway class name as gateway id
-        $this->id           = strtolower(get_class($this));
-        // Set gateway title (visible in admin)
-        $this->method_title = $this->getDefaultTitle();
-        $this->method_description = $this->getSettingsDescription();
-
-        $this->title        = $this->get_option('title');
-        $this->display_logo = $this->get_option('display_logo') == 'yes';
-
-        add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
         add_action('woocommerce_email_after_order_table', array($this, 'displayInstructions'), 10, 3);
 
 	    // Adjust title and text on Order Received page in some cases, see issue #166
