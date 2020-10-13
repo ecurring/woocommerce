@@ -554,46 +554,6 @@ class eCurring_WC_Helper_Data {
 	}
 
 	/**
-	 * @param WC_Order $order
-	 */
-	public function restoreOrderStock( WC_Order $order ) {
-		foreach ( $order->get_items() as $item ) {
-			if ( $item['product_id'] > 0 ) {
-				$product = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $order->get_product_from_item( $item ) : $item->get_product();
-
-				if ( $product && $product->exists() && $product->managing_stock() ) {
-					$old_stock = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $product->stock : $product->get_stock_quantity();
-
-					$qty = apply_filters( 'woocommerce_order_item_quantity', $item['qty'], $order, $item );
-
-					$new_quantity = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $product->increase_stock( $qty ) : wc_update_product_stock( $product, $qty, 'increase' );
-
-					do_action( 'woocommerce_auto_stock_restored', $product, $item );
-
-					$order->add_order_note( sprintf(
-						__( 'Item #%s stock incremented from %s to %s.', 'woocommerce' ),
-						$item['product_id'],
-						$old_stock,
-						$new_quantity
-					) );
-
-					if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-						$order->send_stock_notifications( $product, $new_quantity, $item['qty'] );
-					}
-				}
-			}
-		}
-
-		// Mark order stock as not-reduced
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			delete_post_meta( $order->id, '_order_stock_reduced' );
-		} else {
-			$order->delete_meta_data( '_order_stock_reduced' );
-			$order->save();
-		}
-	}
-
-	/**
 	 * Check if the current page is the order received page
 	 *
 	 * @since WooCommerce 2.3.3
