@@ -7,7 +7,7 @@ namespace Ecurring\WooEcurring\EventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 
-class AddToCartEventListener {
+class AddToCartValidationEventListener {
 
 	/**
 	 * @var SubscriptionCrudInterface
