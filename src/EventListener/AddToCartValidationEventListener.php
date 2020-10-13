@@ -65,7 +65,7 @@ class AddToCartValidationEventListener {
 
 		wc_add_notice(
 			_x(
-				'It\s not possible to have more than one subscription product in the cart. Please, purchase or remove from the cart subscription product so you will be able to add to cart another one.',
+				'It\'s not possible to have more than one subscription product in the cart. Please, purchase or remove from the cart subscription product so you will be able to add to cart another one.',
 				'Notice on adding second subscription product to the cart.',
 				'woo-ecurring'
 			),
