@@ -19,6 +19,9 @@ class Actions
         $this->apiHelper = $apiHelper;
     }
 
+    /**
+     * @param false|string $cancelDate
+     */
     public function cancel($subscriptionId, $cancelDate)
     {
         $attributes = ['status' => 'cancelled'];
@@ -39,6 +42,9 @@ class Actions
         );
     }
 
+    /**
+     * @param false|string $resumeDate
+     */
     public function pause($subscriptionId, $resumeDate)
     {
         return $this->apiHelper->apiCall(
@@ -74,7 +80,10 @@ class Actions
         );
     }
 
-    public function create($data)
+    /**
+     * @param ((bool|mixed|string)[]|string)[][] $data
+     */
+    public function create(array $data)
     {
         return $this->apiHelper->apiCall(
             'POST',
@@ -83,7 +92,7 @@ class Actions
         );
     }
 
-    public function import($page)
+    public function import(int $page)
     {
         return $this->apiHelper->apiCall(
             'GET',

@@ -9,7 +9,10 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5 || ^7.1",
-        "brain/monkey": "^2.4"
+        "brain/monkey": "^2.4",
+        "vimeo/psalm": "^3.17",
+        "roots/wordpress": "@stable",
+        "woocommerce/woocommerce": "^4.5"
     },
     "autoload": {
         "psr-0": {
@@ -23,5 +26,8 @@
         "psr-4": {
             "eCurring\\WooEcurringTests\\": "tests"
         }
+    },
+    "extra": {
+        "wordpress-install-dir": "vendor/wordpress/wordpress"
     }
 }
