@@ -48,9 +48,7 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
         add_action('woocommerce_email_after_order_table', array($this, 'displayInstructions'), 10, 3);
 
 	    // Adjust title and text on Order Received page in some cases, see issue #166
-	    add_filter( 'the_title', array ( $this, 'onOrderReceivedTitle' ), 10, 2 );
-	    add_filter( 'woocommerce_thankyou_order_received_text', array( $this, 'onOrderReceivedText'), 10, 2 );
-    }
+	    add_filter( 'the_title', array ( $this, 'onOrderReceivedTitle' ), 10, 2 );}
 
     /**
      * @param $order
@@ -295,114 +293,11 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
 	/**
 	 * @param WC_Order $order
-	 */
-	public function onOrderReceivedText( $text, $order ) {
-		if ( !is_a( $order, 'WC_Order' ) ) {
-			return $text;
-		}
-
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$order_payment_method = $order->payment_method;
-		} else {
-			$order_payment_method = $order->get_payment_method();
-		}
-
-		// Invalid gateway
-		if ( $this->id !== $order_payment_method ) {
-			return $text;
-		}
-
-		if ( $order->has_status( 'cancelled' ) ) {
-			$text = __( 'Your order has been cancelled.', 'woo-ecurring' );
-
-			return $text;
-		}
-
-		return $text;
-
-	}
-
-	/**
-	 * @param WC_Order $order
 	 * @return bool|string
 	 */
 	protected function getInitialOrderStatus (WC_Order $order) {
 		$initial_order = $order->get_parent_id();
 		return $initial_order != 0 ? wc_get_order($initial_order)->get_status() : false;
-	}
-
-	/**
-	 * Check if any multi language plugins are enabled and return the correct site url.
-	 *
-	 * @return string
-	 */
-	protected function getSiteUrlWithLanguage() {
-		/**
-		 * function is_plugin_active() is not available. Lets include it to use it.
-		 */
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-		$site_url          = get_site_url();
-		$polylang_fallback = false;
-
-		if ( is_plugin_active( 'polylang/polylang.php' ) || is_plugin_active( 'polylang-pro/polylang.php' ) ) {
-
-			$lang = PLL()->model->get_language( pll_current_language() );
-
-			if ( empty ( $lang->search_url ) ) {
-				$polylang_fallback = true;
-			} else {
-				$polylang_url = $lang->search_url;
-				$site_url     = str_replace( $site_url, $polylang_url, $site_url );
-			}
-		}
-
-		if ( $polylang_fallback == true || is_plugin_active( 'mlang/mlang.php' ) || is_plugin_active( 'mlanguage/mlanguage.php' ) ) {
-
-			$slug = get_bloginfo( 'language' );
-			$pos  = strpos( $slug, '-' );
-			if ( $pos !== false ) {
-				$slug = substr( $slug, 0, $pos );
-			}
-			$slug     = '/' . $slug;
-			$site_url = str_replace( $site_url, $site_url . $slug, $site_url );
-
-		}
-
-		return $site_url;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	protected function isOrderPaidAndProcessed( WC_Order $order ) {
-
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$order_id           = $order->id;
-			$paid_and_processed = get_post_meta( $order_id, '_ecurring_paid_and_processed', $single = true );
-		} else {
-			$paid_and_processed = $order->get_meta( '_ecurring_paid_and_processed', true );
-		}
-
-		return $paid_and_processed;
-
-	}
-
-	/**
-	 * @return bool
-	 */
-	protected function isOrderPaidByOtherGateway( WC_Order $order ) {
-
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$order_id           = $order->id;
-			$paid_by_other_gateway = get_post_meta( $order_id, '_ecurring_paid_by_other_gateway', $single = true );
-		} else {
-			$paid_by_other_gateway = $order->get_meta( '_ecurring_paid_by_other_gateway', true );
-		}
-
-		return $paid_by_other_gateway;
-
 	}
 
 }
