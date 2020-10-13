@@ -324,44 +324,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
 	/**
 	 * @param WC_Order $order
-	 *
-	 * @return bool
-	 */
-	protected function orderNeedsPayment( WC_Order $order ) {
-
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$order_id = $order->id;
-		} else {
-			$order_id = $order->get_id();
-		}
-		// Check whether the order is processed and paid via another gateway
-		if ( $this->isOrderPaidByOtherGateway( $order ) ) {
-			eCurring_WC_Plugin::debug( $this->id . ': Order ' . $order_id . ' orderNeedsPayment check: no, processed by other (non-eCurring) gateway.', true );
-			return false;
-		}
-
-		// Check whether the order is processed and paid via eCurring
-		if ( ! $this->isOrderPaidAndProcessed( $order ) ) {
-			eCurring_WC_Plugin::debug( $this->id . ': Order ' . $order_id . ' orderNeedsPayment check: yes, not processed by eCurring gateway.', true );
-			return true;
-		}
-
-		if ( $order->needs_payment() ) {
-			eCurring_WC_Plugin::debug( $this->id . ': Order ' . $order_id . ' orderNeedsPayment check: yes, WooCommerce thinks order needs payment.', true );
-			return true;
-		}
-
-		// Has initial order status 'on-hold'
-		if ( $this->getInitialOrderStatus($order) === self::STATUS_ON_HOLD && eCurring_WC_Plugin::getDataHelper()->hasOrderStatus( $order, self::STATUS_ON_HOLD ) ) {
-			eCurring_WC_Plugin::debug( $this->id . ': Order ' . $order_id . ' orderNeedsPayment check: yes, has status On-Hold. ', true );
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param WC_Order $order
 	 * @return bool|string
 	 */
 	protected function getInitialOrderStatus (WC_Order $order) {
@@ -414,22 +376,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 	/**
 	 * @return bool
 	 */
-	protected function setOrderPaidAndProcessed( WC_Order $order ) {
-
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$order_id = $order->id;
-			update_post_meta( $order_id, '_ecurring_paid_and_processed', '1' );
-		} else {
-			$order->update_meta_data( '_ecurring_paid_and_processed', '1' );
-			$order->save();
-		}
-		return true;
-	}
-
-
-	/**
-	 * @return bool
-	 */
 	protected function isOrderPaidAndProcessed( WC_Order $order ) {
 
 		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
@@ -457,64 +403,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
 
 		return $paid_by_other_gateway;
 
-	}
-
-	/**
-	 * @return bool
-	 */
-	protected function isOrderPaymentStartedByOtherGateway( WC_Order $order ) {
-
-		$order_id = $order->get_id();
-
-		// Get the current payment method id for the order
-		$payment_method_id = get_post_meta( $order_id, '_payment_method', $single = true );
-
-		// If the current payment method id for the order is not eCurring, return true
-		if ( ( strpos( $payment_method_id, 'ecurring' ) === false ) ) {
-
-			return true;
-		}
-
-		return false;
-
-	}
-
-
-    /**
-     * @return mixed
-     */
-    abstract public function getMethodId ();
-
-    /**
-     * @return string
-     */
-    abstract public function getDefaultTitle ();
-
-    /**
-     * @return string
-     */
-    abstract protected function getSettingsDescription ();
-
-    /**
-     * @return string
-     */
-    abstract protected function getDefaultDescription ();
-
-	/**
-	 * Get the transaction URL.
-	 *
-	 * @param  WC_Order $order
-	 *
-	 * @return string
-	 */
-	public function get_transaction_url( $order ) {
-
-		if (is_numeric($order->get_transaction_id())) {
-			$this->view_transaction_url = $order->get_meta('_ecurring_subscription_link',true);
-		}
-		else $this->view_transaction_url = 'https://app.ecurring.com/transactions/%s';
-
-		return parent::get_transaction_url( $order );
 	}
 
 }
