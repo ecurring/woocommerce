@@ -1072,9 +1072,14 @@ class eCurring_WC_Plugin
 
 				if ( $subscription_status == 'unverified' ) {
 					echo "<td class='order-actions'><a class='button' href='" . $subscription['attributes']['confirmation_page'] . "'>" . __('ACTIVATE', 'woo-ecurring') . "</a></td>";
-				} elseif ( $subscription_status != 'cancelled' ) {
-					echo "<td class='order-actions'><a class='button' id='ecurring_cancel_subscription_" . $subscription['id'] . "' onclick='canceleCurringSubscriptionWithID(this)' data-ecurring-subscription-id='" . $subscription['id'] . "'>" . __('CANCEL', 'woo-ecurring') . "</a></td>";
-				} else {
+                } elseif ($subscription_status != 'cancelled') {
+                    if (get_option('ecurring_customer_subscription_cancel') === '1') {
+                        echo "<td class='order-actions'><a class='button' id='ecurring_cancel_subscription_" . $subscription['id'] . "' onclick='canceleCurringSubscriptionWithID(this)' data-ecurring-subscription-id='" . $subscription['id'] . "'>" . __(
+                                'CANCEL',
+                                'woo-ecurring'
+                            ) . "</a></td>";
+                    }
+                } else {
 					echo "<td class='order-actions'></td>";
 				}
 

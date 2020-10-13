@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a502913d4483a405768f82174e85204",
+    "content-hash": "194070932b401da6541b9dc5a641281a",
     "packages": [],
     "packages-dev": [
         {
@@ -53,16 +53,16 @@
         },
         {
             "name": "brain/monkey",
-            "version": "2.4.2",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Brain-WP/BrainMonkey.git",
-                "reference": "a11f7a0e703ff92a91b67bbf9ea384ab0ec2c863"
+                "reference": "f2295a57da59ff88621cd959dbdb4b288feefd19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Brain-WP/BrainMonkey/zipball/a11f7a0e703ff92a91b67bbf9ea384ab0ec2c863",
-                "reference": "a11f7a0e703ff92a91b67bbf9ea384ab0ec2c863",
+                "url": "https://api.github.com/repos/Brain-WP/BrainMonkey/zipball/f2295a57da59ff88621cd959dbdb4b288feefd19",
+                "reference": "f2295a57da59ff88621cd959dbdb4b288feefd19",
                 "shasum": ""
             },
             "require": {
@@ -115,7 +115,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2020-10-05T08:24:45+00:00"
+            "time": "2020-10-09T06:55:33+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -1705,7 +1705,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^5.6.40 | ^7.0",
+        "php": "^7.2",
         "ext-json": "*"
     },
     "platform-dev": []

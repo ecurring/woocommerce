@@ -15,9 +15,3 @@ class WC_Order
         return 1;
     }
 }
-
-if (!function_exists('add_filter')) {
-    function add_filter()
-    {
-    }
-}
