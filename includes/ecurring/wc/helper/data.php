@@ -609,17 +609,6 @@ class eCurring_WC_Helper_Data {
 		return apply_filters('woocommerce_date_format', get_option('date_format'));
 	}
 
-	/**
-	 * @since WooCommerce 2.2.0
-	 *
-	 * @param string $string
-	 *
-	 * @return string
-	 */
-	public function untrailingslashit($string) {
-		return rtrim($string, '/');
-	}
-
     /**
      * @param WC_Order $order
      * @return array
