@@ -45,7 +45,7 @@ class AddToCartValidationEventListener {
 		}
 
 		$errorMessage = _x(
-			'Please complete your current purchase first before adding another subscription product',
+			'Please complete your current purchase first before adding another subscription product.',
 			'woo-ecurring'
 		);
 
