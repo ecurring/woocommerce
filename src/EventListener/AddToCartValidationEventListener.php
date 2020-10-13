@@ -50,7 +50,8 @@ class AddToCartValidationEventListener {
 					'You are trying to add more than one subscription product to the cart. Sadly, at the moment it\'s not possible to purchase more than one subscription at once.',
 					'Notice on trying to add more than one subscription to the cart',
 					'woo-ecurring'
-				)
+				),
+				'error'
 			);
 
 			return false;
@@ -67,7 +68,8 @@ class AddToCartValidationEventListener {
 				'It\s not possible to have more than one subscription product in the cart. Please, purchase or remove from the cart subscription product so you will be able to add to cart another one.',
 				'Notice on adding second subscription product to the cart.',
 				'woo-ecurring'
-			)
+			),
+			'error'
 		);
 
 		return $validationPassed;
