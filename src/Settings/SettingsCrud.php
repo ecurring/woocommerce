@@ -16,7 +16,7 @@ namespace Ecurring\WooEcurring\Settings;
  */
 class SettingsCrud implements SettingsCrudInterface {
 
-	protected const OPTIONS_STORAGE_KEY = 'ecurring_wc_gateway_ecurring_settings_test';
+	protected const OPTIONS_STORAGE_KEY = 'ecurring_wc_gateway_ecurring_settings';
 
 	/**
 	 * @var array
