@@ -40,6 +40,10 @@ class AddToCartValidationEventListener {
 	{
 		$productToAdd = wc_get_product($productId);
 
+		if($this->subscriptionCrud->getProductSubscriptionId($productToAdd) === null){
+			return $validationPassed;
+		}
+
 		if($quantity > 1) {
 			wc_add_notice(
 				_x(
@@ -50,10 +54,6 @@ class AddToCartValidationEventListener {
 			);
 
 			return false;
-		}
-
-		if($this->subscriptionCrud->getProductSubscriptionId($productToAdd) === null){
-			return $validationPassed;
 		}
 
 		if(! eCurring_WC_Plugin::eCurringSubscriptionIsInCart()){
