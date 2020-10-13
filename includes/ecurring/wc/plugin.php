@@ -1,6 +1,7 @@
 <?php
 
 
+use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
@@ -37,6 +38,7 @@ class eCurring_WC_Plugin
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
+        (new AddToCartValidationEventListener($subscriptionCrud))->init();
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
