@@ -1,7 +1,6 @@
 <?php
 
 
-use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
@@ -38,7 +37,6 @@ class eCurring_WC_Plugin
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
-        (new AddToCartValidationEventListener($subscriptionCrud))->init();
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
@@ -57,6 +55,10 @@ class eCurring_WC_Plugin
 
 		// Save eCurring product in the product post meta - "_ecurring_subscription_plan"
 		add_action('woocommerce_process_product_meta', array ( __CLASS__, 'eCurringProcessProductMetaFieldsSave'));
+
+		// Empty cart if adding eCurring subscription product.
+		// Or if adding non-eCurring product to cart, where an eCurring product was already added
+		add_filter('woocommerce_add_cart_item_data', array ( __CLASS__, 'eCurringCartUpdate'), 10, 3);
 
 		// Hide coupon in cart and checkout if there is eCurring product
 		add_filter('woocommerce_coupons_enabled', array ( __CLASS__, 'eCurringHideCouponField'));
@@ -470,6 +472,33 @@ class eCurring_WC_Plugin
 	    if (isset($_POST['_woo_ecurring_product_data'])) {
 			update_post_meta($post_id, '_ecurring_subscription_plan', $_POST['_woo_ecurring_product_data']);
 		}
+	}
+
+	/**
+	 * Empty cart if adding eCurring subscription product.
+	 * Or if adding not eCurring product to cart, where already is eCurring product
+	 *
+	 * @param $cart_item_data
+	 * @param $product_id
+	 * @param $variation_id
+	 *
+	 * @return mixed
+	 */
+	public static function eCurringCartUpdate($cart_item_data, $product_id, $variation_id) {
+		$items = WC()->cart->get_cart();
+
+		$subscription_plan_id = get_post_meta($product_id, '_ecurring_subscription_plan', true);
+		foreach ($items as $item) {
+			if (get_post_meta($item['product_id'], '_ecurring_subscription_plan', true)) {
+				WC()->cart->empty_cart();
+			}
+		}
+
+		if ($subscription_plan_id) {
+			WC()->cart->empty_cart();
+		}
+
+		return $cart_item_data;
 	}
 
 	/**
