@@ -103,10 +103,12 @@ class Display
             <p>Indicate the date on which the new subscription should start. The current
                 subscription will automatically be terminated on this date</p>
             <h4>Switch on</h4>
-            <label><input name="switch_subscription" type="radio" value="immediately" class="tog"
+            <label><input name="ecurring_switch_subscription" type="radio" value="immediately" class="tog"
                           checked="checked"/>Immediately</label>
-            <label><input name="switch_subscription" type="radio" value="specific-date"
+            <label><input name="ecurring_switch_subscription" type="radio" value="specific-date"
                           class="tog"/>Specific date</label>
+            <input name="ecurring_switch_date" type="date"
+                   value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
         </div>
         <div class="ecurring-hide" id="cancel-form">
             <h3>Cancel subscription - <?php echo esc_attr($subscriptionId);?></h3>

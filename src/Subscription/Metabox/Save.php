@@ -64,7 +64,21 @@ class Save
             $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
         }
 
+        $switchSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_switch_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $switchDate = '';
+        if ($switchSubscription === 'specific-date') {
+            $switchDate = filter_input(
+                INPUT_POST,
+                'ecurring_switch_date',
+                FILTER_SANITIZE_STRING
+            );
 
+            $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
+        }
 
         if (!$subscriptionType || !in_array(
                 $subscriptionType,
@@ -89,7 +103,7 @@ class Save
                 $this->updateSubscription($postId, $response);
                 break;
             case 'switch':
-                $cancel = json_decode($this->actions->cancel($subscriptionId));
+                $cancel = json_decode($this->actions->cancel($subscriptionId, $switchDate));
                 $this->updateSubscription($postId, $cancel);
 
                 $productId = filter_input(
@@ -117,11 +131,13 @@ class Save
                                 'customer_id' => $cancel->data->relationships->customer->data->id,
                                 'subscription_plan_id' => $productId,
                                 'mandate_code' => $cancel->data->attributes->mandate_code,
-                                'mandate_accepted' => $cancel->data->attributes->mandate_accepted,
+                                'mandate_accepted' => true,
                                 'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
                                 'confirmation_sent' => 'true',
                                 'subscription_webhook_url' => $subscriptionWebhookUrl,
                                 'transaction_webhook_url' => $transactionWebhookUrl,
+                                'status' => 'active',
+                                "start_date" => $switchDate
                             ],
                         ],
                     ]
