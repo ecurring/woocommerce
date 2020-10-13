@@ -48,9 +48,6 @@ class eCurring_WC_Plugin
 		// Show eCurring instructions on order details page
 		add_action( 'woocommerce_order_details_after_order_table', array ( __CLASS__, 'onOrderDetails' ), 10, 1 );
 
-		// Set order to paid and processed when eventually completed without eCurring
-		add_action( 'woocommerce_payment_complete', array ( __CLASS__, 'setOrderPaidByOtherGateway' ), 10, 1 );
-
 		// Enqueue scripts and styles
 		add_action( 'wp_enqueue_scripts', array ( __CLASS__, 'eCurringEnqueueScriptsAndStyles' ) );
 
@@ -373,28 +370,6 @@ class eCurring_WC_Plugin
 		}
 
 		return $ecurring_subscription;
-	}
-
-	/**
-	 * If an order is paid with another payment method (gateway) after a first payment was
-	 * placed with eCurring, set a flag, so status updates (like expired) aren't processed by
-	 * eCurring for WooCommerce.
-	 */
-	public static function setOrderPaidByOtherGateway( $order_id ) {
-
-		$order = wc_get_order( $order_id );
-
-		$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
-		$order_payment_method = $order->get_payment_method();
-
-		if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-
-			$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
-			$order->save();
-		}
-
-		return true;
-
 	}
 
 	/**
