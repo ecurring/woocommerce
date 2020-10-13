@@ -24,7 +24,7 @@ class AddToCartValidationEventListener {
 
 	public function init(): void
 	{
-		add_filter('woocommerce_add_to_cart_validation', [$this, 'onAddToCart'], 10, 2);
+		add_filter('woocommerce_add_to_cart_validation', [$this, 'onAddToCart'], 10, 3);
 	}
 
 	/**
