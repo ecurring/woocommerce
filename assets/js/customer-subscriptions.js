@@ -5,6 +5,8 @@ jQuery(window).load(function () {
     jQuery('div[data-subscription="' + subscription + '"]').
       removeClass('ecurring-show').
       addClass('ecurring-hide')
+
+    jQuery('.resume-update').removeClass('ecurring-show').addClass('ecurring-hide')
   }
 
   jQuery('.ecurring_subscription_options').on('change', function () {
@@ -16,6 +18,10 @@ jQuery(window).load(function () {
       case 'pause':
         hideOptions(subscription)
         jQuery(this).parent().find('.pause-form').addClass('ecurring-show')
+        break
+      case 'resume':
+        hideOptions(subscription)
+        jQuery(this).parent().find('.resume-update').addClass('ecurring-show')
         break
       case 'switch':
         hideOptions(subscription)
@@ -73,10 +79,10 @@ jQuery(window).load(function () {
         'ecurring_switch_date': switch_resume_date,
         'ecurring_subscription_plan': ecurring_subscription_plan,
         'ecurring_cancel_subscription': ecurring_cancel_subscription,
-        'ecurring_cancel_date': ecurring_cancel_date
+        'ecurring_cancel_date': ecurring_cancel_date,
       },
-      function (response) {
-        console.log('The server responded: ', response)
+      function () {
+        window.location.reload()
       },
     )
   })

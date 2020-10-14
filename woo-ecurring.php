@@ -699,7 +699,7 @@ function doSubscriptionAction(Actions $actions): void
             break;
     }
 
-    wp_send_json(['response' => $response]);
+    //wp_send_json(['response' => $response]);
     wp_die();
 }
 

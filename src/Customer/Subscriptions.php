@@ -87,6 +87,7 @@ class Subscriptions
                                        ); ?>">
                                 <button>Update</button>
                             </div>
+                            <button class="resume-update ecurring-hide">Update</button>
                             <div class="ecurring-hide switch-form"
                                  data-subscription="<?php echo $subscription->id; ?>">
                                 <select class="ecurring_subscription_plan"
