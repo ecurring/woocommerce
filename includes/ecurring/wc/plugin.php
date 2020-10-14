@@ -119,16 +119,6 @@ class eCurring_WC_Plugin
 
 		add_filter( 'woocommerce_account_menu_items', array ( __CLASS__, 'eCurringSubscriptionsMyAccount'), 10, 1 );
 
-		add_filter( 'query_vars', array ( __CLASS__, 'eCurringSubscriptionsQueryVars' ), 0 );
-
-		add_action( 'woocommerce_account_ecurring-subscriptions_endpoint', array ( __CLASS__,'eCurringSubscriptionsContent' ));
-
-		add_filter( 'the_title', array( __CLASS__, 'eCurringSubscriptionsUpdateTitle'), 10, 2 );
-
-		// Cancel My Account > Subscriptions
-		add_action('wp_ajax_ecurring_my_account_cancel_subscription', array ( __CLASS__, 'eCurringSubscriptionsCancelSubscription'));
-		add_action('wp_ajax_nopriv_ecurring_my_account_cancel_subscription', array ( __CLASS__, 'eCurringSubscriptionsCancelSubscription'));
-
 		// Add 'eCurring details' metabox to WooCommerce Order Edit
 		add_action( 'add_meta_boxes', array ( __CLASS__, 'eCurringAddOrdersMetaBox') );
 

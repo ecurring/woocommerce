@@ -14,7 +14,7 @@ class Repository
             ]
         );
 
-        if ($postId) {
+        if ($postId && is_int($postId)) {
             add_post_meta($postId, '_ecurring_post_subscription_id', $subscription->id);
             add_post_meta($postId, '_ecurring_post_subscription_links', $subscription->links);
             add_post_meta(

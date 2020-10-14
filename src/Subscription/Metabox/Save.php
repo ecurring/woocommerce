@@ -69,7 +69,7 @@ class Save
             'ecurring_switch_subscription',
             FILTER_SANITIZE_STRING
         );
-        $switchDate = '';
+        $switchDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
         if ($switchSubscription === 'specific-date') {
             $switchDate = filter_input(
                 INPUT_POST,
