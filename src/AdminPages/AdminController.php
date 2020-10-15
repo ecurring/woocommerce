@@ -142,8 +142,7 @@ class AdminController {
 
 		if(! $this->isNonceValid())
 		{
-			//todo: add admin notice here.
-			return;
+			wp_nonce_ays($this->nonce->action());
 		}
 
 		$fieldsCollection = $this->formFieldsCollectionBuilder->buildFieldsCollection();
