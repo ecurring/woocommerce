@@ -29,7 +29,7 @@ class PaymentCompleteEventListener {
 		$this->subscriptionCrud = $subscriptionCrud;
 	}
 
-	public function init(): void
+	public function init()
 	{
 		add_action('woocommerce_payment_complete', [$this, 'onPaymentComplete']);
 	}

@@ -49,7 +49,7 @@ class ApiClient implements ApiClientInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getSubscriptionById($subscription_id): array
+	public function getSubscriptionById(string $subscription_id): array
 	{
 		$url = 'https://api.ecurring.com/subscriptions/'.$subscription_id;
 

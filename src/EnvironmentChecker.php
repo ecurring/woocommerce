@@ -15,6 +15,6 @@ class EnvironmentChecker {
 	 */
 	public function isMollieActive()
 	{
-		return is_plugin_active('mollie/mollie-payments-for-woocommerce.php');
+		return is_plugin_active('mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php');
 	}
 }

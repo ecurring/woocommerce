@@ -27,6 +27,7 @@ use Ecurring\WooEcurring\Assets;
 use Ecurring\WooEcurring\WebHook;
 use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
+use Ecurring\WooEcurring\Customer\Subscriptions;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -303,6 +304,7 @@ function initialize()
         $repository = new Repository();
         $display = new Display();
         $save = new Save($actions);
+        $subscriptions = new Subscriptions($apiHelper);
 
         (new SubscriptionsJob($actions, $repository))->init();
         (new Metabox($display, $save))->init();
@@ -310,7 +312,7 @@ function initialize()
         (new Assets())->init();
         (new WebHook($apiHelper, $repository))->init();
         (new Settings())->init();
-        (new MyAccount($apiHelper, $actions, $repository))->init();
+        (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
 
     } catch (Throwable $throwable) {
         handleException($throwable);

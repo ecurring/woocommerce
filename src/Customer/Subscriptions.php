@@ -49,19 +49,19 @@ class Subscriptions
             <?php foreach ($subscriptions->data as $subscription) { ?>
                 <tr class="woocommerce-orders-table__row order">
                     <td class="woocommerce-orders-table__cell" data-title="Subscription">
-                        <?php echo $subscription->id; ?>
+                        <?php echo esc_attr($subscription->id); ?>
                     </td>
                     <td class="woocommerce-orders-table__cell" data-title="Product">
-                        <?php echo $products[$subscription->relationships->{'subscription-plan'}->data->id]; ?>
+                        <?php echo esc_attr($products[$subscription->relationships->{'subscription-plan'}->data->id]); ?>
                     </td>
                     <td class="woocommerce-orders-table__cell" data-title="Status">
-                        <?php echo ucfirst($subscription->attributes->status); ?>
+                        <?php echo esc_attr(ucfirst($subscription->attributes->status)); ?>
                     </td>
                     <td class="woocommerce-orders-table__cell" data-title="Options">
-                        <form class="subscription-options" data-subscription="<?php echo $subscription->id; ?>">
+                        <form class="subscription-options" data-subscription="<?php echo esc_attr($subscription->id); ?>">
                             <select style="width:100%;" name="ecurring_subscription"
                                     class="ecurring_subscription_options"
-                                    data-subscription="<?php echo $subscription->id; ?>">
+                                    data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                 <option value="">Select an option</option>
                                 <?php if ($subscription->attributes->status === 'paused') { ?>
                                     <option value="resume">Resume subscription</option>
@@ -72,7 +72,7 @@ class Subscriptions
                                 <option value="cancel">Cancel subscription</option>
                             </select>
                             <div class="ecurring-hide pause-form"
-                                 data-subscription="<?php echo $subscription->id; ?>">
+                                 data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                 <label><input name="ecurring_pause_subscription" type="radio"
                                               value="infinite"
                                               class="tog"
@@ -89,7 +89,7 @@ class Subscriptions
                             </div>
                             <button class="resume-update ecurring-hide">Update</button>
                             <div class="ecurring-hide switch-form"
-                                 data-subscription="<?php echo $subscription->id; ?>">
+                                 data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                 <select class="ecurring_subscription_plan"
                                         name="ecurring_subscription_plan">
                                     <?php foreach ($products as $key => $value) { ?>
@@ -114,7 +114,7 @@ class Subscriptions
                                 <button>Update</button>
                             </div>
                             <div class="ecurring-hide cancel-form"
-                                 data-subscription="<?php echo $subscription->id; ?>">
+                                 data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                 <label><input name="ecurring_cancel_subscription" type="radio"
                                               value="infinite" class="tog"
                                               checked="checked"/>Infinite</label>

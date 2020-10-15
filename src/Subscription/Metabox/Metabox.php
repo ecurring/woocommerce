@@ -24,25 +24,22 @@ class Metabox
 
     public function init()
     {
-        $display = $this->display;
-        $save = $this->save;
-
         add_action(
             'add_meta_boxes',
-            function () use ($display) {
+            function (){
                 add_meta_box(
                     'ecurring_subscription_details',
                     'Details',
-                    function ($post) use($display) {
-                        $display->details($post);
+                    function ($post)  {
+                        $this->display->details($post);
                     },
                     'esubscriptions'
                 );
                 add_meta_box(
                     'ecurring_subscription_options',
                     'Options',
-                    function ($post) use($display) {
-                        $display->options($post);
+                    function ($post) {
+                        $this->display->options($post);
                     },
                     'esubscriptions'
                 );
@@ -51,8 +48,8 @@ class Metabox
 
         add_action(
             'post_updated',
-            function ($postId) use($save) {
-                $save->save($postId);
+            function ($postId) {
+                $this->save->save($postId);
             }
         );
     }

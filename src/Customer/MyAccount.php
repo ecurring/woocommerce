@@ -25,23 +25,29 @@ class MyAccount
      */
     private $repository;
 
+    /**
+     * @var Subscriptions
+     */
+    private $subscriptions;
+
     public function __construct(
         eCurring_WC_Helper_Api $api,
         Actions $actions,
-        Repository $repository
+        Repository $repository,
+        Subscriptions $subscriptions
     ) {
         $this->api = $api;
         $this->actions = $actions;
         $this->repository = $repository;
+        $this->subscriptions = $subscriptions;
     }
 
     public function init()
     {
-        $api = $this->api;
         add_action(
             'woocommerce_account_ecurring-subscriptions_endpoint',
-            function () use ($api) {
-                (new \Ecurring\WooEcurring\Customer\Subscriptions($api))->display();
+            function () {
+                $this->subscriptions->display();
             }
         );
 
@@ -68,17 +74,16 @@ class MyAccount
             2
         );
 
-        $actions = $this->actions;
         add_action(
             'wp_ajax_ecurring_customer_subscriptions',
-            function () use ($actions) {
-                $this->doSubscriptionAction($actions);
+            function () {
+                $this->doSubscriptionAction($this->actions);
             }
         );
         add_action(
             'wp_ajax_nopriv_ecurring_customer_subscriptions',
-            function () use ($actions) {
-                $this->doSubscriptionAction($actions);
+            function () {
+                $this->doSubscriptionAction($this->actions);
             }
         );
     }
