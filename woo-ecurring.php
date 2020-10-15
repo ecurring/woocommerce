@@ -16,17 +16,17 @@
 
 // Exit if accessed directly.
 use Ecurring\WooEcurring\EnvironmentChecker;
-use eCurring\WooEcurring\Subscription\Actions;
-use eCurring\WooEcurring\Subscription\Repository;
-use eCurring\WooEcurring\SubscriptionsJob;
-use eCurring\WooEcurring\Subscription\PostType;
-use eCurring\WooEcurring\Subscription\Metabox\Display;
-use eCurring\WooEcurring\Subscription\Metabox\Save;
-use eCurring\WooEcurring\Subscription\Metabox\Metabox;
-use eCurring\WooEcurring\Assets;
-use eCurring\WooEcurring\WebHook;
-use eCurring\WooEcurring\Settings;
-use eCurring\WooEcurring\Customer\MyAccount;
+use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\SubscriptionsJob;
+use Ecurring\WooEcurring\Subscription\PostType;
+use Ecurring\WooEcurring\Subscription\Metabox\Display;
+use Ecurring\WooEcurring\Subscription\Metabox\Save;
+use Ecurring\WooEcurring\Subscription\Metabox\Metabox;
+use Ecurring\WooEcurring\Assets;
+use Ecurring\WooEcurring\WebHook;
+use Ecurring\WooEcurring\Settings;
+use Ecurring\WooEcurring\Customer\MyAccount;
 
 if (!defined('ABSPATH')) {
     exit;
