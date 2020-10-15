@@ -45,7 +45,7 @@ class eCurring_WC_Plugin
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
-
+    
         add_action('admin_init', function(){
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
@@ -75,15 +75,6 @@ class eCurring_WC_Plugin
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
-
-		// Listen to return URL call
-		add_action( 'woocommerce_api_ecurring_return', array ( __CLASS__, 'eCurringReturn' ) );
-
-		// Show eCurring instructions on order details page
-		add_action( 'woocommerce_order_details_after_order_table', array ( __CLASS__, 'onOrderDetails' ), 10, 1 );
-
-		// Set order to paid and processed when eventually completed without eCurring
-		add_action( 'woocommerce_payment_complete', array ( __CLASS__, 'setOrderPaidByOtherGateway' ), 10, 1 );
 
 		// Enqueue scripts and styles
 		add_action( 'wp_enqueue_scripts', array ( __CLASS__, 'eCurringEnqueueScriptsAndStyles' ) );
@@ -168,92 +159,6 @@ class eCurring_WC_Plugin
 		// Mark plugin initiated
 		self::$initiated = true;
 	}
-
-    /**
-     * Payment return url callback
-     */
-    public static function eCurringReturn ()
-    {
-
-        $data_helper = self::getDataHelper();
-
-	    $order_id = ! empty( $_GET['order_id'] ) ? sanitize_text_field( $_GET['order_id'] ) : null;
-	    $key      = ! empty( $_GET['key'] ) ? sanitize_text_field( $_GET['key'] ) : null;
-
-        $order    = $data_helper->getWcOrder($order_id);
-
-        if (!$order)
-        {
-            self::setHttpResponseCode(404);
-            self::debug(__METHOD__ . ":  Could not find order $order_id.");
-            return;
-        }
-
-        if (!$order->key_is_valid($key))
-        {
-            self::setHttpResponseCode(401);
-            self::debug(__METHOD__ . ":  Invalid key $key for order $order_id.");
-            return;
-        }
-
-        $gateway = $data_helper->getWcPaymentGatewayByOrder($order);
-
-        if (!$gateway)
-        {
-            self::setHttpResponseCode(404);
-
-            self::debug(__METHOD__ . ":  Could not find gateway for order $order_id.");
-            return;
-        }
-
-        if (!($gateway instanceof eCurring_WC_Gateway_Abstract))
-        {
-            self::setHttpResponseCode(400);
-            self::debug(__METHOD__ . ": Invalid gateway " . get_class($gateway) . " for this plugin. Order $order_id.");
-            return;
-        }
-
-        /** @var eCurring_WC_Gateway_Abstract $gateway */
-
-        $redirect_url = $gateway->getReturnRedirectUrlForOrder($order);
-
-        // Add utm_nooverride query string
-        $redirect_url = add_query_arg(array(
-            'utm_nooverride' => 1,
-        ), $redirect_url);
-
-        self::debug(__METHOD__ . ": Redirect url on return order " . $gateway->id . ", order $order_id: $redirect_url");
-
-        wp_safe_redirect($redirect_url);
-    }
-
-    /**
-     * @param WC_Order $order
-     */
-    public static function onOrderDetails (WC_Order $order)
-    {
-        if (eCurring_WC_Plugin::getDataHelper()->is_order_received_page())
-        {
-            /**
-             * Do not show instruction again below details on order received page
-             * Instructions already displayed on top of order received page by $gateway->thankyou_page()
-             *
-             * @see eCurring_WC_Gateway_Abstract::thankyou_page
-             */
-            return;
-        }
-
-        $gateway = eCurring_WC_Plugin::getDataHelper()->getWcPaymentGatewayByOrder($order);
-
-        if (!$gateway || !($gateway instanceof eCurring_WC_Gateway_Abstract))
-        {
-            return;
-        }
-
-        /** @var eCurring_WC_Gateway_Abstract $gateway */
-
-        $gateway->displayInstructions($order);
-    }
 
     /**
      * Set HTTP status code
@@ -465,27 +370,6 @@ class eCurring_WC_Plugin
 		}
 
 		return $ecurring_subscription;
-	}
-
-	/**
-	 * If an order is paid with another payment method (gateway) after a first payment was
-	 * placed with eCurring, set a flag, so status updates (like expired) aren't processed by
-	 * eCurring for WooCommerce.
-	 */
-	public static function setOrderPaidByOtherGateway( $order_id ) {
-
-		$order = wc_get_order( $order_id );
-		$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
-		$order_payment_method = $order->get_payment_method();
-
-		if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-
-			$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
-			$order->save();
-		}
-
-		return true;
-
 	}
 
 	/**
