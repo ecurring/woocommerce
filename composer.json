@@ -12,14 +12,15 @@
         "brain/monkey": "^2.4",
         "vimeo/psalm": "^3.17",
         "roots/wordpress": "@stable",
-        "woocommerce/woocommerce": "^4.5"
+        "woocommerce/woocommerce": "^4.5",
+        "antecedent/patchwork": " ^2.1"
     },
     "autoload": {
         "psr-0": {
             "eCurring_WC_": "./includes"
         },
         "psr-4": {
-            "eCurring\\WooEcurring\\": "src/"
+            "Ecurring\\WooEcurring\\": "src/"
         }
     },
     "autoload-dev": {

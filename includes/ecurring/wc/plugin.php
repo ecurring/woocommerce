@@ -1,5 +1,12 @@
 <?php
 
+
+use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
+use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
+use Ecurring\WooEcurring\Api\ApiClient;
+use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
 
@@ -18,8 +25,6 @@ class eCurring_WC_Plugin
         'eCurring_WC_Gateway_eCurring',
     );
 
-    private function __construct () {}
-
     /**
      * Initialize plugin
      */
@@ -33,6 +38,13 @@ class eCurring_WC_Plugin
 
 		$plugin_basename = self::getPluginFile();
 		$data_helper     = self::getDataHelper();
+		$settingsHelper = self::getSettingsHelper();
+		$subscriptonCrud = new SubscriptionCrud();
+
+		$apiClient = new ApiClient($settingsHelper->getApiKey());
+        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptonCrud))->init();
+        (new PaymentCompleteEventListener($apiClient, $subscriptonCrud))->init();
+
 
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
 		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
@@ -728,31 +740,41 @@ class eCurring_WC_Plugin
 	 * Left only eCurring payment gateway if there is eCurring product, and hide payment gateway div.
 	 * Otherwise just exclude eCurring payment gateway.
 	 *
-	 * @param $gateway_list
+	 * @param WC_Payment_Gateway[] $gatewayList Payment gateways from WooCommerce to filter.
 	 *
-	 * @return mixed
+	 * @return WC_Payment_Gateway[] Filtered gateways list.
 	 */
-	public static function eCurringFilterGateways($gateway_list) {
+	public static function eCurringFilterGateways($gatewayList) {
+	    if(! self::eCurringSubscriptionIsInCart()) {
+	        return $gatewayList;
+        }
+
+	    $mollieGateways = apply_filters('mollie-payments-for-woocommerce_retrieve_payment_gateways', []);
+	    $mollieRecurringGatewaysFilter = new WhitelistedRecurringPaymentGatewaysFilter($mollieGateways);
+	    return $mollieRecurringGatewaysFilter->filter($gatewayList);
+	}
+
+	/**
+     * Check if cart contains at least one eCurring subscription product.
+     *
+	 * @return bool Is subscription found.
+	 */
+	public static function eCurringSubscriptionIsInCart() {
 		if ( isset( WC()->cart ) ) {
 			$items = WC()->cart->get_cart();
 			foreach ( $items as $item ) {
-				if ( get_post_meta( $item['product_id'], '_ecurring_subscription_plan', true ) ) {
-					foreach ( $gateway_list as $gateway => $data ) {
-						if ( $gateway != 'ecurring_wc_gateway_ecurring' ) {
-							unset( $gateway_list[ $gateway ] );
-						}
-					}
-                    if (is_checkout()) {
-                        wp_add_inline_style('ecurring_frontend_style', '.wc_payment_methods{display:none;}');
-                    }
-				} else {
-					unset( $gateway_list['ecurring_wc_gateway_ecurring'] );
+				$product = $item['data'];
+
+				// we need to use !empty check instead of just meta_exists because
+                // previously this field was added to non-eCurring products
+                // with value '0'.
+				if ( $product instanceof WC_Product && ! empty($product->get_meta('_ecurring_subscription_plan', true)) ) {
+					return true;
 				}
 			}
 		}
-
-		return $gateway_list;
-	}
+		return false;
+    }
 
 	/**
 	 * eCurring add to cart Ajax redirect

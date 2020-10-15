@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: WooCommerce eCurring gateway
+ * Plugin Name: Mollie Subscriptions
  * Plugin URI: https://www.ecurring.com/
  * Description: Collect your subscription fees in WooCommerce with ease.
- * Version: 2.0.0
- * Author: eCurring
+ * Version: 1.2.0
+ * Author: Mollie
  * Requires at least: 4.6
  * Requires PHP: 7.2
  * Tested up to: 5.3
@@ -15,6 +15,7 @@
  */
 
 // Exit if accessed directly.
+use Ecurring\WooEcurring\EnvironmentChecker;
 use eCurring\WooEcurring\Subscription\Actions;
 use eCurring\WooEcurring\Subscription\Repository;
 use eCurring\WooEcurring\SubscriptionsJob;
@@ -33,6 +34,7 @@ if (!defined('ABSPATH')) {
 
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 require_once 'includes/ecurring/wc/autoload.php';
+require_once 'vendor/autoload.php';
 
 /**
  * Plugin constants
@@ -108,6 +110,21 @@ function ecurring_wc_check_woocommerce_status() {
 }
 add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
+add_action('plugins_loaded', function(){
+	$environmentChecker = new EnvironmentChecker();
+	if(! $environmentChecker->isMollieActive()){
+		remove_action('init', 'ecurring_wc_plugin_init');
+		add_action('admin_notices', function () {
+			echo '<div class="error"><p>';
+			echo esc_html__(
+				'Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first.',
+				'woo-ecurring'
+			);
+			echo '</p></div>';
+		});
+	}
+});
+
 /**
  * Called when plugin is loaded
  */
@@ -161,7 +178,7 @@ function ecurring_wc_plugin_inactive_json_extension() {
 	}
 
 	echo '<div class="error"><p>';
-	echo esc_html__( 'WooCommerce eCurring gateway requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.', 'woo-ecurring' );
+	echo esc_html__( 'Mollie Subscriptions requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.', 'woo-ecurring' );
 	echo '</p></div>';
 
 	return false;
