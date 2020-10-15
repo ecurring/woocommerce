@@ -1,10 +1,10 @@
 <?php
 
-namespace eCurring\WooEcurring\Customer;
+namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
-use eCurring\WooEcurring\Subscription\Actions;
-use eCurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Repository;
 use eCurring_WC_Helper_Api;
 use Exception;
 
@@ -41,7 +41,7 @@ class MyAccount
         add_action(
             'woocommerce_account_ecurring-subscriptions_endpoint',
             function () use ($api) {
-                (new \eCurring\WooEcurring\Customer\Subscriptions($api))->display();
+                (new \Ecurring\WooEcurring\Customer\Subscriptions($api))->display();
             }
         );
 

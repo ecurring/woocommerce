@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurring;
+namespace Ecurring\WooEcurring;
 
 use eCurring_WC_Plugin;
 

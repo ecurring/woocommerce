@@ -1,8 +1,8 @@
 <?php
 
-namespace eCurring\WooEcurring\Subscription\Metabox;
+namespace Ecurring\WooEcurring\Subscription\Metabox;
 
-use eCurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Actions;
 
 class Metabox
 {

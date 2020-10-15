@@ -1,8 +1,8 @@
 <?php
 
-namespace eCurring\WooEcurring;
+namespace Ecurring\WooEcurring;
 
-use eCurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\Repository;
 use eCurring_WC_Helper_Api;
 use WC_Logger;
 
@@ -64,7 +64,7 @@ class WebHook
                             "https://api.ecurring.com/subscriptions/{$subscription_id}"
                         )
                     );
-                    $postSubscription = new eCurring\WooEcurring\Subscription\Repository();
+                    $postSubscription = new Ecurring\WooEcurring\Subscription\Repository();
                     $postSubscription->update($subscription);
 
                     $log->add(

@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurring;
+namespace Ecurring\WooEcurring;
 
 class Settings
 {

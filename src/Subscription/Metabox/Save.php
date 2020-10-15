@@ -1,10 +1,10 @@
 <?php
 
-namespace eCurring\WooEcurring\Subscription\Metabox;
+namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
-use eCurring\WooEcurring\Subscription\Actions;
-use eCurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Repository;
 
 class Save
 {

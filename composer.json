@@ -25,7 +25,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "eCurring\\WooEcurringTests\\": "tests"
+            "Ecurring\\WooEcurringTests\\": "tests"
         }
     },
     "extra": {

@@ -1,9 +1,9 @@
 <?php
 
-namespace eCurring\WooEcurringTests\Unit;
+namespace Ecurring\WooEcurringTests\Unit;
 
 use Ecurring\WooEcurring\EnvironmentChecker;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use function Brain\Monkey\Functions\expect;
 

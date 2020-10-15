@@ -1,9 +1,9 @@
 <?php
 
-namespace eCurring\WooEcurringTests\Unit;
+namespace Ecurring\WooEcurringTests\Unit;
 
 use eCurring_WC_Helper_Data;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use ReflectionMethod;
 use WC_Order;
 

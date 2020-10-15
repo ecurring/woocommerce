@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurring\Customer;
+namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
 use eCurring_WC_Helper_Api;

@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurring\Subscription\Metabox;
+namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
 use eCurring_WC_Helper_Api;

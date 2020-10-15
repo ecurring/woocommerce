@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurring\Subscription;
+namespace Ecurring\WooEcurring\Subscription;
 
 use eCurring_WC_Helper_Api;
 

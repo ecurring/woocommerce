@@ -1,9 +1,9 @@
 <?php
 
-namespace eCurring\WooEcurring;
+namespace Ecurring\WooEcurring;
 
-use eCurring\WooEcurring\Subscription\Actions;
-use eCurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Repository;
 
 class SubscriptionsJob
 {
