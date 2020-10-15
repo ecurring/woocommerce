@@ -1,11 +1,19 @@
 <?php
 
 
+use Brain\Nonces\WpNonce;
+use ChriCo\Fields\ElementFactory;
+use ChriCo\Fields\ViewFactory;
+use Ecurring\WooEcurring\AdminPages\AdminController;
+use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
+use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -37,6 +45,33 @@ class eCurring_WC_Plugin
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
+    
+        add_action('admin_init', function(){
+            $elementFactory = new ElementFactory();
+            $wcBasedSettingsTemplate = new SettingsFormTemplate();
+            $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
+            $nonceAction = 'mollie-subscriptions-settings-nonce-action';
+            $nonce = new WpNonce($nonceAction);
+	        $settingsCrud = new SettingsCrud();
+	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($settingsFormAction, $settingsCrud);
+	        $viewFactory = new ViewFactory();
+
+	        $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
+	        $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
+	        (new AdminController(
+                    $wcBasedSettingsTemplate,
+                    $formBuilder,
+	                $settingsCrud,
+                    $settingsFormAction,
+                    $nonce,
+                    $nonceFieldBuilder
+            )
+            )->init();
+        });
+
+
+		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
+		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );

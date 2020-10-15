@@ -17,7 +17,7 @@ use WC_Order_Item_Product;
 /**
  * Listens for the Mollie payment create action.
  */
-class MolliePaymentEventListener {
+class MolliePaymentEventListener implements EventListenerInterface {
 
 	/**
 	 * @var ApiClient
@@ -52,7 +52,7 @@ class MolliePaymentEventListener {
 	/**
 	 * Init event listener.
 	 */
-	public function init(){
+	public function init(): void{
 		add_action(
 			'mollie-payments-for-woocommerce_payment_created',
 			[$this, 'onMolliePaymentCreated'],
