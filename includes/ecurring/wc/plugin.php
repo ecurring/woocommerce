@@ -1,11 +1,19 @@
 <?php
 
 
+use Brain\Nonces\WpNonce;
+use ChriCo\Fields\ElementFactory;
+use ChriCo\Fields\ViewFactory;
+use Ecurring\WooEcurring\AdminPages\AdminController;
+use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
+use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -17,13 +25,6 @@ class eCurring_WC_Plugin
      * @var bool
      */
     private static $initiated = false;
-
-    /**
-     * @var array
-     */
-    public static $GATEWAYS = array(
-        'eCurring_WC_Gateway_eCurring',
-    );
 
     /**
      * Initialize plugin
@@ -39,18 +40,38 @@ class eCurring_WC_Plugin
 		$plugin_basename = self::getPluginFile();
 		$data_helper     = self::getDataHelper();
 		$settingsHelper = self::getSettingsHelper();
-		$subscriptonCrud = new SubscriptionCrud();
+		$subscriptionCrud = new SubscriptionCrud();
 
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
-        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptonCrud))->init();
-        (new PaymentCompleteEventListener($apiClient, $subscriptonCrud))->init();
+        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
+        (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
+
+        add_action('admin_init', function(){
+            $elementFactory = new ElementFactory();
+            $wcBasedSettingsTemplate = new SettingsFormTemplate();
+            $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
+            $nonceAction = 'mollie-subscriptions-settings-nonce-action';
+            $nonce = new WpNonce($nonceAction);
+	        $settingsCrud = new SettingsCrud();
+	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($settingsFormAction, $settingsCrud);
+	        $viewFactory = new ViewFactory();
+
+	        $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
+	        $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
+	        (new AdminController(
+                    $wcBasedSettingsTemplate,
+                    $formBuilder,
+	                $settingsCrud,
+                    $settingsFormAction,
+                    $nonce,
+                    $nonceFieldBuilder
+            )
+            )->init();
+        });
 
 
 		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
 		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
-
-		// Add eCurring gateways
-		add_filter( 'woocommerce_payment_gateways', array ( __CLASS__, 'addGateways' ) );
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
@@ -254,39 +275,6 @@ class eCurring_WC_Plugin
         }
     }
 
-    /**
-     * Add eCurring gateways
-     *
-     * @param array $gateways
-     * @return array
-     */
-	public static function addGateways( array $gateways ) {
-
-		$gateways = array_merge( $gateways, self::$GATEWAYS );
-
-		// Return if function get_current_screen() is not defined
-		if ( ! function_exists( 'get_current_screen' ) ) {
-			return $gateways;
-		}
-
-		// Try getting get_current_screen()
-		$current_screen = get_current_screen();
-
-		// Return if get_current_screen() isn't set
-		if ( ! $current_screen ) {
-			return $gateways;
-		}
-
-		// Remove old MisterCash (only) from WooCommerce Payment settings
-		if ( is_admin() && ! empty( $current_screen->base ) && $current_screen->base == 'woocommerce_page_wc-settings' ) {
-			if ( ( $key = array_search( 'eCurring_WC_Gateway_MisterCash', $gateways ) ) !== false ) {
-				unset( $gateways[ $key ] );
-			}
-		}
-
-		return $gateways;
-	}
-
 	/**
 	 * Add a WooCommerce notification message
 	 *
@@ -487,26 +475,13 @@ class eCurring_WC_Plugin
 	public static function setOrderPaidByOtherGateway( $order_id ) {
 
 		$order = wc_get_order( $order_id );
+		$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
+		$order_payment_method = $order->get_payment_method();
 
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
 
-			$ecurring_payment_id    = get_post_meta( $order_id, '_ecurring_payment_id', $single = true );
-			$order_payment_method = get_post_meta( $order_id, '_payment_method', $single = true );
-
-			if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-				update_post_meta( $order->id, '_ecurring_paid_by_other_gateway', '1' );
-			}
-
-		} else {
-
-			$ecurring_payment_id    = $order->get_meta( '_ecurring_payment_id', $single = true );
-			$order_payment_method = $order->get_payment_method();
-
-			if ( $ecurring_payment_id !== '' && ( strpos( $order_payment_method, 'ecurring' ) === false ) ) {
-
-				$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
-				$order->save();
-			}
+			$order->update_meta_data( '_ecurring_paid_by_other_gateway', '1' );
+			$order->save();
 		}
 
 		return true;
