@@ -315,10 +315,6 @@ abstract class eCurring_WC_Gateway_Abstract extends WC_Payment_Gateway
                         '<a href="' . $subscription_link . '" target="_blank">' . $response['data']['id'] . '</a>'
                     )
                 );
-
-                $subscription = new eCurring\WooEcurring\Subscription\Repository();
-                $subscriptionResponse = json_decode($request);
-                $subscription->create($subscriptionResponse->data);
             }
 
 			if ( isset( $response['errors'] ) ) {

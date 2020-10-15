@@ -297,6 +297,7 @@ function initialize()
 
         require_once 'includes/ecurring/wc/helper/settings.php';
         require_once 'includes/ecurring/wc/helper/api.php';
+        require_once 'includes/ecurring/wc/plugin.php';
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
@@ -313,6 +314,25 @@ function initialize()
         (new WebHook($apiHelper, $repository))->init();
         (new Settings())->init();
         (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
+
+        add_action(
+            'woocommerce_payment_complete',
+            function (int $orderId) use ($repository, $apiHelper) {
+                $order = wc_get_order($orderId);
+                $subscriptionId = $order->get_meta('_ecurring_subscription_id', true);
+
+                if ($subscriptionId) {
+                    $response = json_decode(
+                        $apiHelper->apiCall(
+                            'GET',
+                            "https://api.ecurring.com/subscriptions/{$subscriptionId}"
+                        )
+                    );
+
+                    $repository->create($response->data);
+                }
+            }
+        );
 
     } catch (Throwable $throwable) {
         handleException($throwable);

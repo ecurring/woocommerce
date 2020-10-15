@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c6bca4df97850db0a4d5d7360958be5e",
+    "content-hash": "c40f741eef178cdacd64c68b0cd02bcd",
     "packages": [],
     "packages-dev": [
         {
@@ -1984,7 +1984,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.5.1",
-                "reference": null,
+                "reference": "5.5.1",
                 "shasum": null
             },
             "require": {
