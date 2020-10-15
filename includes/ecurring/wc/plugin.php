@@ -1,12 +1,19 @@
 <?php
 
 
-use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
+use Brain\Nonces\WpNonce;
+use ChriCo\Fields\ElementFactory;
+use ChriCo\Fields\ViewFactory;
+use Ecurring\WooEcurring\AdminPages\AdminController;
+use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
+use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -38,7 +45,33 @@ class eCurring_WC_Plugin
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
-        (new AddToCartValidationEventListener($subscriptionCrud))->init();
+    
+        add_action('admin_init', function(){
+            $elementFactory = new ElementFactory();
+            $wcBasedSettingsTemplate = new SettingsFormTemplate();
+            $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
+            $nonceAction = 'mollie-subscriptions-settings-nonce-action';
+            $nonce = new WpNonce($nonceAction);
+	        $settingsCrud = new SettingsCrud();
+	        $formConfig = (require WOOECUR_PLUGIN_DIR . 'includes/settings_form_fields.php')($settingsFormAction, $settingsCrud);
+	        $viewFactory = new ViewFactory();
+
+	        $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
+	        $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
+	        (new AdminController(
+                    $wcBasedSettingsTemplate,
+                    $formBuilder,
+	                $settingsCrud,
+                    $settingsFormAction,
+                    $nonce,
+                    $nonceFieldBuilder
+            )
+            )->init();
+        });
+
+
+		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
+		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
@@ -57,6 +90,10 @@ class eCurring_WC_Plugin
 
 		// Save eCurring product in the product post meta - "_ecurring_subscription_plan"
 		add_action('woocommerce_process_product_meta', array ( __CLASS__, 'eCurringProcessProductMetaFieldsSave'));
+
+		// Empty cart if adding eCurring subscription product.
+		// Or if adding non-eCurring product to cart, where an eCurring product was already added
+		add_filter('woocommerce_add_cart_item_data', array ( __CLASS__, 'eCurringCartUpdate'), 10, 3);
 
 		// Hide coupon in cart and checkout if there is eCurring product
 		add_filter('woocommerce_coupons_enabled', array ( __CLASS__, 'eCurringHideCouponField'));
@@ -470,6 +507,33 @@ class eCurring_WC_Plugin
 	    if (isset($_POST['_woo_ecurring_product_data'])) {
 			update_post_meta($post_id, '_ecurring_subscription_plan', $_POST['_woo_ecurring_product_data']);
 		}
+	}
+
+	/**
+	 * Empty cart if adding eCurring subscription product.
+	 * Or if adding not eCurring product to cart, where already is eCurring product
+	 *
+	 * @param $cart_item_data
+	 * @param $product_id
+	 * @param $variation_id
+	 *
+	 * @return mixed
+	 */
+	public static function eCurringCartUpdate($cart_item_data, $product_id, $variation_id) {
+		$items = WC()->cart->get_cart();
+
+		$subscription_plan_id = get_post_meta($product_id, '_ecurring_subscription_plan', true);
+		foreach ($items as $item) {
+			if (get_post_meta($item['product_id'], '_ecurring_subscription_plan', true)) {
+				WC()->cart->empty_cart();
+			}
+		}
+
+		if ($subscription_plan_id) {
+			WC()->cart->empty_cart();
+		}
+
+		return $cart_item_data;
 	}
 
 	/**
