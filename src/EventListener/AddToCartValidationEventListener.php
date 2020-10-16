@@ -55,6 +55,8 @@ class AddToCartValidationEventListener {
 				),
 				'error'
 			);
+
+			return false;
 		}
 
 		return $validationPassed;
