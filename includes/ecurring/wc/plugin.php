@@ -10,7 +10,7 @@ use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
-use Ecurring\WooEcurring\EventListener\MollieRecurringPaymentCreatedEventListener;
+use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
 use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
@@ -43,7 +43,7 @@ class eCurring_WC_Plugin
 		$subscriptionCrud = new SubscriptionCrud();
 
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
-        (new MollieRecurringPaymentCreatedEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
+        (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
     
         add_action('admin_init', function(){

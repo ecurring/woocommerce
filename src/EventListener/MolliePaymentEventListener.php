@@ -17,7 +17,7 @@ use WC_Order_Item_Product;
 /**
  * Listens for the Mollie payment create action.
  */
-class MollieRecurringPaymentCreatedEventListener implements EventListenerInterface {
+class MolliePaymentEventListener implements EventListenerInterface {
 
 	/**
 	 * @var ApiClient
@@ -34,7 +34,7 @@ class MollieRecurringPaymentCreatedEventListener implements EventListenerInterfa
 	protected $subscriptionCrud;
 
 	/**
-	 * MollieRecurringPaymentCreatedEventListener constructor.
+	 * MolliePaymentEventListener constructor.
 	 *
 	 * @param ApiClient $apiClient Service able to perform actions against eCurring API.
 	 */
