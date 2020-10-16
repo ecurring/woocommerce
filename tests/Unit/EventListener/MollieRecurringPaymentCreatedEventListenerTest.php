@@ -103,6 +103,6 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase {
 			)
 			->willReturn([]);
 
-		$sut->onMolliePaymentCreated(null, $orderMock);
+		$sut->onMollieMandateCreated(null, $orderMock);
 	}
 }
