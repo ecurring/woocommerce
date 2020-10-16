@@ -24,7 +24,7 @@ class EnvironmentChecker
      */
     public function isMollieMinimalVersion(): bool
     {
-        if (!defined(M4W_FILE)) {
+        if (!defined('M4W_FILE')) {
             return false;
         }
 
