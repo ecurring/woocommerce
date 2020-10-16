@@ -44,29 +44,16 @@ class AddToCartValidationEventListener {
 			return $validationPassed;
 		}
 
-		$errorMessage = _x(
-			'Please complete your current purchase first before adding another subscription product.',
-			'woo-ecurring'
-		);
-
-		if($quantity > 1) {
+		if($quantity > 1 || eCurring_WC_Plugin::eCurringSubscriptionIsInCart()) {
 			wc_add_notice(
-				$errorMessage,
+				_x(
+					'Please complete your current purchase first before adding another subscription product.',
+					'woo-ecurring'
+				),
 				'error'
 			);
-
-			return false;
 		}
 
-		if(! eCurring_WC_Plugin::eCurringSubscriptionIsInCart()){
-			return $validationPassed;
-		}
-
-		wc_add_notice(
-			$errorMessage,
-			'error'
-		);
-
-		return false;
+		return $validationPassed;
 	}
 }
