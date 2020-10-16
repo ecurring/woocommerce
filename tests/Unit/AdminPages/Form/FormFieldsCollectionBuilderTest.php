@@ -1,7 +1,7 @@
 <?php
 
 
-namespace eCurring\WooEcurringTests\AdminPages\Form;
+namespace Ecurring\WooEcurringTests\AdminPages\Form;
 
 
 use ChriCo\Fields\Element\CollectionElementInterface;
@@ -9,7 +9,7 @@ use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\View\RenderableElementInterface;
 use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class FormFieldsCollectionBuilderTest extends TestCase {
