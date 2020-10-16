@@ -3,7 +3,7 @@
 namespace eCurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
-use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
+use Ecurring\WooEcurring\EventListener\MollieRecurringPaymentCreatedEventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring\WooEcurringTests\TestCase;
 use eCurring_WC_Helper_Data;
@@ -16,7 +16,7 @@ use WC_Product;
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 
-class MolliePaymentEventListenerTest extends TestCase {
+class MollieRecurringPaymentCreatedEventListenerTest extends TestCase {
 
 	use MockeryPHPUnitIntegration;
 
@@ -31,7 +31,7 @@ class MolliePaymentEventListenerTest extends TestCase {
 		/** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
 		$subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
 
-		$sut = new MolliePaymentEventListener($apiClientMock, $dataHelperMock, $subscriptionCrudMock);
+		$sut = new MollieRecurringPaymentCreatedEventListener($apiClientMock, $dataHelperMock, $subscriptionCrudMock);
 
 		expect('add_action')
 		->once()
@@ -56,7 +56,7 @@ class MolliePaymentEventListenerTest extends TestCase {
 		/** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
 		$subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
 
-		$sut = new MolliePaymentEventListener($apiClientMock, $dataHelperMock, $subscriptionCrudMock);
+		$sut = new MollieRecurringPaymentCreatedEventListener($apiClientMock, $dataHelperMock, $subscriptionCrudMock);
 		$orderMock = $this->createMock( WC_Order::class);
 
 		$orderItemProductMock = $this->createMock( WC_Order_Item_Product::class);
