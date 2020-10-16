@@ -170,42 +170,6 @@ class eCurring_WC_Helper_Data {
 	}
 
 	/**
-	 * Get payment gateway class by order data.
-	 *
-	 * @param int|WC_Order $order
-	 *
-	 * @return WC_Payment_Gateway|bool
-	 */
-	public function getWcPaymentGatewayByOrder( $order ) {
-		if ( function_exists( 'wc_get_payment_gateway_by_order' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return wc_get_payment_gateway_by_order( $order );
-		}
-
-		if ( WC()->payment_gateways() ) {
-			$payment_gateways = WC()
-				->payment_gateways
-				->payment_gateways();
-		} else {
-			$payment_gateways = array ();
-		}
-
-		if ( ! ( $order instanceof WC_Order ) ) {
-			$order = $this->getWcOrder( $order );
-
-			if ( ! $order ) {
-				return false;
-			}
-		}
-
-		$order_payment_method = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $order->payment_method : $order->get_payment_method();
-
-		return isset( $payment_gateways[ $order_payment_method ] ) ? $payment_gateways[ $order_payment_method ] : false;
-	}
-
-	/**
 	 * Get eCurring subscription from cache or load from eCurring
 	 * Skip cache by setting $use_cache to false
 	 *
@@ -590,50 +554,6 @@ class eCurring_WC_Helper_Data {
 	}
 
 	/**
-	 * @param WC_Order $order
-	 */
-	public function restoreOrderStock( WC_Order $order ) {
-		foreach ( $order->get_items() as $item ) {
-			if ( $item['product_id'] > 0 ) {
-				$product = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $order->get_product_from_item( $item ) : $item->get_product();
-
-				if ( $product && $product->exists() && $product->managing_stock() ) {
-					$old_stock = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $product->stock : $product->get_stock_quantity();
-
-					$qty = apply_filters( 'woocommerce_order_item_quantity', $item['qty'], $order, $item );
-
-					$new_quantity = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $product->increase_stock( $qty ) : wc_update_product_stock( $product, $qty, 'increase' );
-
-					do_action( 'woocommerce_auto_stock_restored', $product, $item );
-
-					$order->add_order_note( sprintf(
-						__( 'Item #%s stock incremented from %s to %s.', 'woocommerce' ),
-						$item['product_id'],
-						$old_stock,
-						$new_quantity
-					) );
-
-					if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-						$order->send_stock_notifications( $product, $new_quantity, $item['qty'] );
-					}
-				}
-			}
-		}
-
-		// Mark order stock as not-reduced
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			delete_post_meta( $order->id, '_order_stock_reduced' );
-		} else {
-			$order->delete_meta_data( '_order_stock_reduced' );
-			$order->save();
-		}
-	}
-
-    public function deleteTransients() {
-
-    }
-
-	/**
 	 * Check if the current page is the order received page
 	 *
 	 * @since WooCommerce 2.3.3
@@ -647,17 +567,6 @@ class eCurring_WC_Helper_Data {
 
 	public function wc_date_format() {
 		return apply_filters('woocommerce_date_format', get_option('date_format'));
-	}
-
-	/**
-	 * @since WooCommerce 2.2.0
-	 *
-	 * @param string $string
-	 *
-	 * @return string
-	 */
-	public function untrailingslashit($string) {
-		return rtrim($string, '/');
 	}
 
     /**
