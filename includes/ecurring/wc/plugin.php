@@ -144,6 +144,8 @@ class eCurring_WC_Plugin
 		// Add 'eCurring details' metabox to WooCommerce Order Edit
 		add_action( 'add_meta_boxes', array ( __CLASS__, 'eCurringAddOrdersMetaBox') );
 
+		add_filter('mollie-payments-for-woocommerce_is_subscription_payment', [__CLASS__, 'eCurringSubscriptionIsInCart']);
+
 		// Mark plugin initiated
 		self::$initiated = true;
 	}
