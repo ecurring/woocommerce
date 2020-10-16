@@ -7,6 +7,9 @@ namespace Ecurring\WooEcurring\EventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 
+/**
+ * Add to cart validation. Disallow to add to the cart more than one subscription.
+ */
 class AddToCartValidationEventListener {
 
 	/**
@@ -15,7 +18,7 @@ class AddToCartValidationEventListener {
 	protected $subscriptionCrud;
 
 	/**
-	 * @param SubscriptionCrudInterface $subscriptionCrud
+	 * @param SubscriptionCrudInterface $subscriptionCrud To check if product is subscription product.
 	 */
 	public function __construct(SubscriptionCrudInterface $subscriptionCrud) {
 
