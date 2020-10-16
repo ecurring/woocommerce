@@ -14,7 +14,7 @@ use WC_Order;
 use function Brain\Monkey\Functions\expect;
 use Ecurring\WooEcurring\EventListener\MollieRecurringPaymentCreatedEventListener;
 
-class PaymentCompleteEventListenerTest extends TestCase {
+class MollieRecurringPaymentCreatedEventListenerTest extends TestCase {
 
 	use MockeryPHPUnitIntegration;	//to properly count Mockery expectations as assertions.
 
