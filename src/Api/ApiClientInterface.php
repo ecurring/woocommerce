@@ -14,7 +14,6 @@ interface ApiClientInterface {
 	 *
 	 * @param string $customerId eCurring customer id.
 	 * @param string $subscriptionId eCurring subscription product id.
-	 * @param string $subscriptionWebhookUrl Webhook URL will be triggered by eCurring on subscription changes.
 	 * @param string $transactionWebhookUrl Webhook URL will be triggered by eCurring on transaction.
 	 *
 	 * @return array Created subscription data or error details.
