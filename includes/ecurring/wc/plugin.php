@@ -447,7 +447,7 @@ class eCurring_WC_Plugin
 		}
 
 		$subscription_plans    = [];
-		$subscription_plans[0] = '- Select product -';
+		$subscription_plans[0] = '- No subscription plan -';
 		foreach ($subscription_plans_data as $subscription_plan) {
 			if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment' ) {
 				$subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
