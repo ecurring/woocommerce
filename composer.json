@@ -3,13 +3,18 @@
     "description": "Collect your subscription fees in WooCommerce with ease.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "dhii/output-renderer-interface": " ^0.4",
+        "chrico/wp-fields": " ^1.0",
+        "brain/nonces": " ^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5 || ^7.1",
         "brain/monkey": "^2.4",
-        "antecedent/patchwork": " ^2.1"
+        "antecedent/patchwork": " ^2.1",
+        "johnpbloch/wordpress-core": "^5.5"
     },
     "autoload": {
         "psr-0": {
