@@ -38,13 +38,13 @@ interface ApiClientInterface {
 
 	/**
 	 * @param string $subscriptionId Id of the subscription to activate.
-	 *
+	 * @param string $mandateCode Code of the mandate created on first payment.
 	 * @param string $mandateAcceptedDate Date string formatted according to ISO 8601.
 	 *
 	 * @return array Subscription data.
 	 *
 	 * @throws ApiClientException If request failed.
 	 */
-	public function activateSubscription(string $subscriptionId, string $mandateAcceptedDate): array;
+	public function activateSubscription(string $subscriptionId, string $mandateCode, string $mandateAcceptedDate): array;
 
 }
