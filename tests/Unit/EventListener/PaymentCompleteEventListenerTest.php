@@ -12,7 +12,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
 use WC_Order;
 use function Brain\Monkey\Functions\expect;
-use Ecurring\WooEcurring\EventListener\PaymentCompleteEventListener;
+use Ecurring\WooEcurring\EventListener\MollieRecurringPaymentCreatedEventListener;
 
 class PaymentCompleteEventListenerTest extends TestCase {
 
@@ -26,7 +26,7 @@ class PaymentCompleteEventListenerTest extends TestCase {
 		/** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
 		$subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
 
-		$sut = new PaymentCompleteEventListener($apiClientMock, $subscriptionCrudMock);
+		$sut = new MollieRecurringPaymentCreatedEventListener($apiClientMock, $subscriptionCrudMock);
 
 		expect('add_action')
 			->once()
@@ -74,7 +74,7 @@ class PaymentCompleteEventListenerTest extends TestCase {
 			->with($wcOrderMock)
 			->willReturn($subscriptionId);
 
-		$sut = new PaymentCompleteEventListener($apiClientMock, $subscriptionCrudMock);
+		$sut = new MollieRecurringPaymentCreatedEventListener($apiClientMock, $subscriptionCrudMock);
 
 
 		$sut->onPaymentComplete($orderId);
