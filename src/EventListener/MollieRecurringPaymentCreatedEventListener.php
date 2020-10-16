@@ -54,21 +54,21 @@ class MollieRecurringPaymentCreatedEventListener implements EventListenerInterfa
 	 */
 	public function init(): void{
 		add_action(
-			'mollie-payments-for-woocommerce_after_mandate_created',
-			[$this, 'onMollieMandateCreated' ],
+			'mollie-payments-for-woocommerce_payment_created',
+			[$this, 'onMolliePaymentCreated'],
 			10,
-			3
+			2
 		);
 	}
 
 	/**
-	 * Create an eCurring subscription after Mollie mandate created if at order contains at least one subscription
+	 * Create an eCurring subscription after Mollie payment created if at order contains at least one subscription
 	 * product.
 	 *
 	 * @param Payment  $payment Created payment.
 	 * @param WC_Order $order   The order payment created for.
 	 */
-	public function onMollieMandateCreated($payment, WC_Order $order, string $mandateCode ) {
+	public function onMolliePaymentCreated($payment, WC_Order $order ) {
 
 		if( $this->subscriptionForOrderExists($order) )
 		{
