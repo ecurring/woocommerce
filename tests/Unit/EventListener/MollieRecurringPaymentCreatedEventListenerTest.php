@@ -31,14 +31,16 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase {
 		expect('add_action')
 			->once()
 			->with(
-				'woocommerce_payment_complete',
-				[$sut, 'onPaymentComplete']
+				'mollie-payments-for-woocommerce_after_mandate_created',
+				[$sut, 'onMandateCreated'],
+				10,
+				3
 			);
 
 		$sut->init();
 	}
 
-	public function testOnPaymentComplete()
+	public function testOnMandateCreated()
 	{
 		//Prevent calling static eCurring_WC_Plugin::debug() method.
 		$pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
@@ -47,8 +49,10 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase {
 
 		$orderId = 123;
 		$subscriptionId = 'subscription321';
+		$mandateCode = 'somemandatecode456';
 		$mandateAcceptedDate = date('c');
 
+		/** @var WC_Order&MockObject $wcOrderMock */
 		$wcOrderMock = $this->createMock( WC_Order::class);
 		$wcOrderMock->method('get_id')
 			->willReturn($orderId);
@@ -56,11 +60,6 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase {
 		$wcOrderMock->method('get_meta')
 			->with(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD)
 			->willReturn($mandateAcceptedDate);
-
-		expect('wc_get_order')
-			->once()
-			->with($orderId)
-			->andReturn($wcOrderMock);
 
 		/** @var ApiClientInterface&MockObject $apiClientMock */
 		$apiClientMock = $this->createMock(ApiClientInterface::class);
@@ -76,7 +75,6 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase {
 
 		$sut = new MollieRecurringPaymentCreatedEventListener($apiClientMock, $subscriptionCrudMock);
 
-
-		$sut->onPaymentComplete($orderId);
+		$sut->onMandateCreated(false, $wcOrderMock, $mandateCode);
 	}
 }
