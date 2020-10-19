@@ -469,18 +469,6 @@ class eCurring_WC_Helper_Data {
 		return ! empty( $cancelled_payment_id );
 	}
 
-	/**
-	 * Check if the current page is the order received page
-	 *
-	 * @since WooCommerce 2.3.3
-	 * @return bool
-	 */
-    public function is_order_received_page() {
-		global $wp;
-
-		return is_page(wc_get_page_id('checkout')) && isset($wp->query_vars['order-received']);
-	}
-
     /**
      * @param WC_Order $order
      * @return array
