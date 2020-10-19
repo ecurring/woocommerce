@@ -416,15 +416,13 @@ class eCurring_WC_Helper_Data {
 
 	/**
 	 * @param int $order_id
-	 * @param bool $use_cache
 	 *
 	 * @return bool|null |null
 	 */
-	public function getActiveSubscription( $order_id, $use_cache = true ) {
+	public function getActiveSubscription( $order_id ) {
 		if ( $this->hasActiveSubscription( $order_id ) ) {
 			return $this->getSubscription(
-				$this->getActiveSubscriptionId( $order_id ),
-				$use_cache
+				$this->getActiveSubscriptionId( $order_id )
 			);
 		}
 
