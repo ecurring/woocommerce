@@ -8,6 +8,7 @@ use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
+use WC_Order;
 
 class MollieRecurringPaymentCreatedEventListener implements EventListenerInterface {
 	/**
@@ -31,15 +32,16 @@ class MollieRecurringPaymentCreatedEventListener implements EventListenerInterfa
 
 	public function init(): void
 	{
-		add_action('woocommerce_payment_complete', [$this, 'onPaymentComplete']);
+		add_action('mollie-payments-for-woocommerce_after_mandate_created', [$this, 'onMandateCreated' ]);
 	}
 
 	/**
-	 * @param int $orderId
+	 * @param object|false $payment Payment object or false (note: we cannot rely on this parameter for now).
+	 * @param WC_Order $order
+	 * @param string   $mandateCode
 	 */
-	public function onPaymentComplete(int $orderId)
+	public function onMandateCreated($payment, WC_Order $order, string $mandateCode)
 	{
-		$order = wc_get_order($orderId);
 		$subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
 
 		if($subscriptionId){
@@ -53,13 +55,13 @@ class MollieRecurringPaymentCreatedEventListener implements EventListenerInterfa
 			$mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
 
 			try{
-				$this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate);
+				$this->apiClient->activateSubscription($subscriptionId, $mandateCode, $mandateAcceptedDate);
 			} catch (ApiClientException $exception) {
 				//todo: change order status?
 				eCurring_WC_Plugin::debug(
 					sprintf(
 						'Could not activate subscription, API request failed. Order id: %1$d, subscription id: %2$s, mandate accepted date: %3$s, error code: %4$d, error message: %5$s.',
-						$orderId,
+						$order->get_id(),
 						$subscriptionId,
 						$mandateAcceptedDate,
 						$exception->getCode(),
