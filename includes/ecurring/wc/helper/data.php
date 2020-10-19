@@ -112,23 +112,10 @@ class eCurring_WC_Helper_Data {
 	 *
 	 * @param int $order_id Order ID
 	 *
-	 * @return WC_Order|bool
+	 * @return WC_Order|WC_Order_Refund|bool
 	 */
 	public function getWcOrder( $order_id ) {
-		if ( function_exists( 'wc_get_order' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return wc_get_order( $order_id );
-		}
-
-		$order = new WC_Order();
-
-		if ( $order->get_order( $order_id ) ) {
-			return $order;
-		}
-
-		return false;
+		return wc_get_order( $order_id );
 	}
 
 	/**
@@ -137,14 +124,7 @@ class eCurring_WC_Helper_Data {
 	 * @return string
 	 */
 	public function getOrderStatus( WC_Order $order ) {
-		if ( method_exists( $order, 'get_status' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return $order->get_status();
-		}
-
-		return $order->status;
+		return $order->get_status();
 	}
 
 	/**
@@ -155,18 +135,7 @@ class eCurring_WC_Helper_Data {
 	 * @return bool
 	 */
 	public function hasOrderStatus( WC_Order $order, $status ) {
-		if ( method_exists( $order, 'has_status' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return $order->has_status( $status );
-		}
-
-		if ( ! is_array( $status ) ) {
-			$status = array ( $status );
-		}
-
-		return in_array( $this->getOrderStatus( $order ), $status );
+		return $order->has_status( $status );
 	}
 
 	/**
