@@ -512,10 +512,6 @@ class eCurring_WC_Helper_Data {
 		return is_page(wc_get_page_id('checkout')) && isset($wp->query_vars['order-received']);
 	}
 
-	public function wc_date_format() {
-		return apply_filters('woocommerce_date_format', get_option('date_format'));
-	}
-
     /**
      * @param WC_Order $order
      * @return array
