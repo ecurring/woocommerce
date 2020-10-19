@@ -213,12 +213,8 @@ class eCurring_WC_Plugin
             '<a href="' . self::getSettingsHelper()->getGlobalSettingsUrl() . '">' . __('eCurring settings', 'woo-ecurring') . '</a>',
         );
 
-        // Add link to log files viewer for WooCommerce >= 2.2.0
-        if (version_compare(self::getStatusHelper()->getWooCommerceVersion(), '2.2.0', ">="))
-        {
-            // Add link to WooCommerce logs
-            $action_links[] = '<a href="' . self::getSettingsHelper()->getLogsUrl() . '">' . __('Logs', 'woo-ecurring') . '</a>';
-        }
+    // Add link to WooCommerce logs
+	    $action_links[] = '<a href="' . self::getSettingsHelper()->getLogsUrl() . '">' . __('Logs', 'woo-ecurring') . '</a>';
 
         return array_merge($action_links, $links);
     }
