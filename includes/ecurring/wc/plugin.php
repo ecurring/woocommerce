@@ -148,26 +148,6 @@ class eCurring_WC_Plugin
 		self::$initiated = true;
 	}
 
-    /**
-     * Set HTTP status code
-     *
-     * @param int $status_code
-     */
-    public static function setHttpResponseCode ($status_code)
-    {
-        if (PHP_SAPI !== 'cli' && !headers_sent())
-        {
-            if (function_exists("http_response_code"))
-            {
-                http_response_code($status_code);
-            }
-            else
-            {
-                header(" ", TRUE, $status_code);
-            }
-        }
-    }
-
 	/**
 	 * Add a WooCommerce notification message
 	 *
