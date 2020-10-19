@@ -445,7 +445,10 @@ class eCurring_WC_Plugin
 		}
 
 		$subscription_plans    = [];
-		$subscription_plans[0] = '- Select product -';
+		$subscription_plans[0] = sprintf(
+		        '- %1$s -',
+                _x('No subscription plan', 'Option text for subscription plan select on product page', 'woo-ecurring')
+        );
 		foreach ($subscription_plans_data as $subscription_plan) {
 			if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment' ) {
 				$subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
@@ -498,13 +501,23 @@ class eCurring_WC_Plugin
 	/**
 	 * Save eCurring product in the product post meta - "_ecurring_subscription_plan"
 	 *
-	 * @param $post_id
+	 * @param $postId
 	 */
-	public static function eCurringProcessProductMetaFieldsSave($post_id) {
+	public static function eCurringProcessProductMetaFieldsSave($postId) {
 
-	    if (isset($_POST['_woo_ecurring_product_data'])) {
-			update_post_meta($post_id, '_ecurring_subscription_plan', $_POST['_woo_ecurring_product_data']);
-		}
+	    $subscriptionPlan = filter_input(
+	            INPUT_POST,
+                '_woo_ecurring_product_data',
+                FILTER_SANITIZE_STRING
+        );
+
+	    if(is_string($subscriptionPlan) && $subscriptionPlan !== '0'){
+		    update_post_meta($postId, '_ecurring_subscription_plan', $subscriptionPlan);
+
+		    return;
+        }
+
+	    delete_post_meta($postId, '_ecurring_subscription_plan');
 	}
 
 	/**
