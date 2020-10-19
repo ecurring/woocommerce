@@ -129,9 +129,6 @@ class eCurring_WC_Plugin
 		// Disable "Pay" button/action on My Account for orders with eCurring
 		add_filter( 'woocommerce_my_account_my_orders_actions', array ( __CLASS__, 'eCurringRemovePayFromMyAccountOrders' ), 10, 2 );
 
-		// Disable eCurring on "Pay for order" page
-		add_filter( 'woocommerce_available_payment_gateways', array ( __CLASS__, 'disableeCurringOnPayForOrder' ), 10, 1 );
-
 		// Add eCurring Subscriptions to WooCommerce My Account
 		add_action( 'init', array ( __CLASS__, 'eCurringSubscriptionsEndpoint' ), 10, 2 );
 
@@ -761,27 +758,6 @@ class eCurring_WC_Plugin
 		}
 
 		return $actions;
-	}
-
-	/**
-	 * Don't show eCurring payment method on Pay for order page
-	 */
-	public static function disableeCurringOnPayForOrder( $available_gateways ) {
-
-		// Can't use $wp->request or is_wc_endpoint_url() to check page,
-		// because slugs/endpoints can be translated (with WPML) and other plugins.
-		// So disabling on is_account_page (if not checkout, bug in WC) and $_GET['pay_for_order'] for now.
-
-			// Do not disable if account page is also checkout (workaround for bug in WC), do disable on change payment method page (param)
-			if ( ( ! is_checkout() && is_account_page() ) || ! empty( $_GET['pay_for_order'] ) ) {
-				foreach ( $available_gateways as $key => $value ) {
-					if ( strpos( $key, 'ecurring_' ) !== false ) {
-						unset( $available_gateways[ $key ] );
-					}
-				}
-			}
-
-		return $available_gateways;
 	}
 
 	/**
