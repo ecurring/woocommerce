@@ -170,15 +170,13 @@ class eCurring_WC_Helper_Data {
 	}
 
 	/**
-	 * Get eCurring subscription from cache or load from eCurring
-	 * Skip cache by setting $use_cache to false
+	 * Get eCurring subscription from eCurring
 	 *
 	 * @param string $subscription_id
-	 * @param bool $use_cache (default: true)
 	 *
 	 * @return array|bool|null
 	 */
-	public function getSubscription( $subscription_id, $use_cache = true ) {
+	public function getSubscription( $subscription_id ) {
 		try {
 			$api = $this->api_helper;
 			$response = json_decode($api->apiCall('GET','https://api.ecurring.com/subscriptions/'.$subscription_id),true);
