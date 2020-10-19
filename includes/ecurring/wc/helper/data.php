@@ -386,7 +386,7 @@ class eCurring_WC_Helper_Data {
 	/**
 	 * @param int $order_id
 	 *
-	 * @return bool|null |null
+	 * @return bool|null
 	 */
 	public function getActiveSubscription( $order_id ) {
 		if ( $this->hasActiveSubscription( $order_id ) ) {
