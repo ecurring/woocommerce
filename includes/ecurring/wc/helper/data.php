@@ -511,7 +511,7 @@ class eCurring_WC_Helper_Data {
     public function is_order_received_page() {
 		global $wp;
 
-		return ( is_page(wc_get_page_id('checkout')) && isset($wp->query_vars['order-received']) ) ? true : false;
+		return is_page(wc_get_page_id('checkout')) && isset($wp->query_vars['order-received']);
 	}
 
 	public function wc_date_format() {
