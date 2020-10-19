@@ -514,8 +514,7 @@ class eCurring_WC_Plugin
 	}
 
 	/**
-	 * Left only eCurring payment gateway if there is eCurring product, and hide payment gateway div.
-	 * Otherwise just exclude eCurring payment gateway.
+	 * If subscription product is in the cart, allow only gateways coming not from Mollie plugin.
 	 *
 	 * @param WC_Payment_Gateway[] $gatewayList Payment gateways from WooCommerce to filter.
 	 *
