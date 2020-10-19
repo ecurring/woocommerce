@@ -159,7 +159,7 @@ class eCurring_WC_Plugin
         // Convert message to string
         if (!is_string($message))
         {
-            $message = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? print_r($message, true) : wc_print_r($message, true);
+            $message = wc_print_r($message, true);
         }
 
         // Set debug header
@@ -171,25 +171,11 @@ class eCurring_WC_Plugin
 	    // Log message
 	    if ( self::getSettingsHelper()->isDebugEnabled() ) {
 
-		    if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		    $logger = wc_get_logger();
 
-			    static $logger;
+		    $context = array ( 'source' => WOOECUR_PLUGIN_ID . '-' . date( 'Y-m-d' ) );
 
-			    if ( empty( $logger ) ) {
-				    $logger = new WC_Logger();
-			    }
-
-			    $logger->add( WOOECUR_PLUGIN_ID . '-' . date( 'Y-m-d' ), $message );
-
-		    } else {
-
-			    $logger = wc_get_logger();
-
-			    $context = array ( 'source' => WOOECUR_PLUGIN_ID . '-' . date( 'Y-m-d' ) );
-
-			    $logger->debug( $message, $context );
-
-		    }
+		    $logger->debug( $message, $context );
 
 	    }
     }
