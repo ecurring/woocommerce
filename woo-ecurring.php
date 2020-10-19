@@ -6,11 +6,11 @@
  * Version: 1.2.0
  * Author: Mollie
  * Requires at least: 4.6
- * Tested up to: 5.3
+ * Tested up to: 5.5
  * Text Domain: woo-ecurring
  * License: GPLv2 or later
- * WC requires at least: 3.0.0
- * WC tested up to: 3.8
+ * WC requires at least: 4.0
+ * WC tested up to: 4.6
  */
 
 // Exit if accessed directly.
