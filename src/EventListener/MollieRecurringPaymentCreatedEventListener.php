@@ -32,7 +32,7 @@ class MollieRecurringPaymentCreatedEventListener implements EventListenerInterfa
 
 	public function init(): void
 	{
-		add_action('mollie-payments-for-woocommerce_after_mandate_created', [$this, 'onMandateCreated' ]);
+		add_action('mollie-payments-for-woocommerce_after_mandate_created', [$this, 'onMandateCreated' ], 10, 3);
 	}
 
 	/**
