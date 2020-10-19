@@ -126,9 +126,6 @@ class eCurring_WC_Plugin
 		// eCurring add to cart button text
 		add_filter('woocommerce_is_sold_individually', array ( __CLASS__, 'eCurringDisableQuantity'), 10, 2);
 
-		// Disable "Pay" button/action on My Account for orders with eCurring
-		add_filter( 'woocommerce_my_account_my_orders_actions', array ( __CLASS__, 'eCurringRemovePayFromMyAccountOrders' ), 10, 2 );
-
 		// Add eCurring Subscriptions to WooCommerce My Account
 		add_action( 'init', array ( __CLASS__, 'eCurringSubscriptionsEndpoint' ), 10, 2 );
 
@@ -734,31 +731,6 @@ class eCurring_WC_Plugin
 
 		return get_post_meta($product->get_id(), '_ecurring_subscription_plan', true) ? true : $default;
     }
-
-	/**
-	 * Don't show a "Pay" button in My account when payment method is eCurring
-	 */
-	public static function eCurringRemovePayFromMyAccountOrders( $actions, WC_Order $order ) {
-
-		// Can't use $wp->request or is_wc_endpoint_url() to check if this code only runs on My Account,
-		// because slugs/endpoints can be translated (with WPML) and other plugins.
-		// So disabling on is_account_page (if not checkout, bug in WC) and $_GET['change_payment_method'] for now.
-
-		// Do not disable if account page is also checkout (workaround for bug in WC), do disable on change payment method page (param)
-		if ( ( ! is_checkout() && is_account_page() ) || ! empty( $_GET['change_payment_method'] ) ) {
-
-			// Does the order have eCurring as payment method?
-			if ( $order->get_payment_method() == 'ecurring_wc_gateway_ecurring' ) {
-
-				// If pay actiuon is set, unset it
-				if ( isset( $actions['pay'] ) ) {
-					unset( $actions['pay'] );
-				}
-			}
-		}
-
-		return $actions;
-	}
 
 	/**
 	 * eCurring Subscriptions - Add query vars
