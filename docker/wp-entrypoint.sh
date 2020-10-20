@@ -4,9 +4,6 @@ set -e
 if wait-for-it.sh "${WORDPRESS_DB_HOST}" -t 60; then
   docker-entrypoint.sh apache2 -v
 
-  # WP_CLI is-* commands returns 0 if plugin is active, 1 otherwise
-  # https://developer.wordpress.org/cli/commands/plugin/is-active/
-  # https://developer.wordpress.org/cli/commands/core/is-installed/
   wp core is-installed --allow-root || \
   wp core install \
     --allow-root \
