@@ -14,8 +14,15 @@
         "phpunit/phpunit": "^5 || ^7.1",
         "brain/monkey": "^2.4",
         "antecedent/patchwork": " ^2.1",
-        "johnpbloch/wordpress-core": "^5.5"
+        "johnpbloch/wordpress-core": "^5.5",
+        "mollie/mollie-woocommerce": "dev-develop"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/mollie/WooCommerce"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "eCurring_WC_": "./includes"
