@@ -88,6 +88,13 @@ services:
     volumes:
       -  ${BASE_PATH}:${BUILD_ROOT_PATH}
 
+  composer:
+    image: library/composer:latest
+    container_name: "${PROJECT_NAME}_composer"
+    working_dir: ${PROJECT_MOUNT_PATH}
+    volumes:
+      - ${BASE_PATH}:${PROJECT_MOUNT_PATH}
+
 volumes:
   wordpress:
   db:
