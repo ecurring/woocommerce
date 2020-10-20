@@ -88,6 +88,13 @@ services:
     volumes:
       -  ${BASE_PATH}:${BUILD_ROOT_PATH}
 
+  wpcli:
+    image: library/wordpress:cli-php${PHP_TEST_VERSION}
+    container_name: "${PROJECT_NAME}_wpcli"
+    working_dir: ${DOCROOT_PATH}
+    volumes:
+      - wordpress:${DOCROOT_PATH}
+
 volumes:
   wordpress:
   db:
