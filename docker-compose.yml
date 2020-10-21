@@ -90,7 +90,7 @@ services:
     container_name: "${PROJECT_NAME}_test"
     working_dir: ${BUILD_ROOT_PATH}
     volumes:
-      -  ${BASE_PATH}:${BUILD_ROOT_PATH}
+      - ${BASE_PATH}:${BUILD_ROOT_PATH}
       - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
       - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
