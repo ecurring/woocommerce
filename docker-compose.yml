@@ -94,7 +94,7 @@ services:
       - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
       - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
-  wpcli:
+  wp:
     image: library/wordpress:cli-php${PHP_TEST_VERSION}
     container_name: "${PROJECT_NAME}_wpcli"
     working_dir: ${DOCROOT_PATH}
