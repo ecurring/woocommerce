@@ -32,6 +32,8 @@ services:
     volumes:
       - wordpress:${DOCROOT_PATH}
       - ${BASE_PATH}:${PROJECT_MOUNT_PATH}
+      - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
+      - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
     ports:
       - 80:80
 
@@ -74,6 +76,8 @@ services:
     working_dir: ${BUILD_ROOT_PATH}
     volumes:
       -  ${BASE_PATH}:${BUILD_ROOT_PATH}
+      - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
+      - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
   test:
     build:
@@ -87,6 +91,8 @@ services:
     working_dir: ${BUILD_ROOT_PATH}
     volumes:
       -  ${BASE_PATH}:${BUILD_ROOT_PATH}
+      - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
+      - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
 volumes:
   wordpress:
