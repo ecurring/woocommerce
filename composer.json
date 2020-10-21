@@ -39,7 +39,7 @@
     },
     "extra": {
         "installer-paths": {
-            "vendor/{$name}": ["type:wordpress-plugin"]
+            "vendor/{$vendor}/{$name}": ["type:wordpress-plugin"]
         }
     }
 }
