@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dbd6e539f58283ae0e7e2db63739a4e6",
+    "content-hash": "f9fc4c2c4b49ee89cf6a6940384dc93f",
     "packages": [
         {
             "name": "brain/nonces",
