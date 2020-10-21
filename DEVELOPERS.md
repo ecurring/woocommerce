@@ -12,16 +12,36 @@ steps described below to set everything up.
     ```
     docker-compose run --rm build composer install
     ```
+   If this is the first time you setting up this environment the image will be built first. 
+   This procedure doesn't require any additional actions from your side.
 
-   Alternatively, use PHPStorm to install dependencies (requires step 2).
 4. Build assets in the required Mollie Payments for Woocommerce plugin:
 
     ```
     yarn --cwd vendor/mollie/mollie-woocommerce install
     yarn --cwd vendor/mollie/mollie-woocommerce build
     ```
+5. Add to your `hosts` file:
+   
+   ```
+   127.0.0.1   woo-ecurring.loc
+   ```
+   
 6. Bring up the environment.
 
     ```
     docker-compose up -d
+    ```
+
+Images will be built at this step (if not built yet).
+After that you will have the site available at [http://woo-ecurring.loc](http://woo-ecurring.loc) (or at another URL you specified in the `.env` file)
+
+## WP_CLI
+Although `WP_CLI` is installed in the `wp_dev` service, it also available as `wp` service for convenience.
+
+To run `WP_CLI` command use `docker-compose run --rm wp ...`.
+For example, to show installed plugins:
+
+    ```
+    docker-compose run --rm wp plugin list
     ```
