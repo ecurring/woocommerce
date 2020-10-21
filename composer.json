@@ -15,7 +15,8 @@
         "brain/monkey": "^2.4",
         "antecedent/patchwork": " ^2.1",
         "johnpbloch/wordpress-core": "^5.5",
-        "mollie/mollie-woocommerce": "dev-develop"
+        "mollie/mollie-woocommerce": "dev-develop",
+        "woocommerce/woocommerce": "^4"
     },
     "repositories": [
         {
