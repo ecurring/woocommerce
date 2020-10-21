@@ -76,6 +76,7 @@ services:
     working_dir: ${BUILD_ROOT_PATH}
     volumes:
       -  ${BASE_PATH}:${BUILD_ROOT_PATH}
+      - ${BASE_PATH}:${PROJECT_MOUNT_PATH}
       - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
       - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
@@ -100,6 +101,7 @@ services:
     working_dir: ${DOCROOT_PATH}
     volumes:
       - wordpress:${DOCROOT_PATH}
+      - ${BASE_PATH}:${PROJECT_MOUNT_PATH}
       - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
       - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
