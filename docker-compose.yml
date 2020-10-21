@@ -100,6 +100,8 @@ services:
     working_dir: ${DOCROOT_PATH}
     volumes:
       - wordpress:${DOCROOT_PATH}
+      - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
+      - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
 volumes:
   wordpress:
