@@ -140,7 +140,7 @@ class ApiClient implements ApiClientInterface {
 	 *
 	 * @throws ApiClientException
 	 */
-	protected function parseResponse($rawResponseBody)
+	protected function parseResponse(string $rawResponseBody): array
 	{
 		$parsedResponse = json_decode($rawResponseBody, true);
 

@@ -26,7 +26,7 @@ interface SubscriptionCrudInterface {
 	 * @param array    $subscriptionData Data to save.
 	 * @param WC_Order $order The order subscription relates to.
 	 */
-	public function saveSubscription(array $subscriptionData, WC_Order $order);
+	public function saveSubscription(array $subscriptionData, WC_Order $order): void;
 
 	/**
 	 * Get eCurring subscription id by subscription product.
@@ -35,7 +35,7 @@ interface SubscriptionCrudInterface {
 	 *
 	 * @return string|null eCurring Subscription ID or null if no subscription exists for this product.
 	 */
-	public function getProductSubscriptionId( WC_Product $product);
+	public function getProductSubscriptionId( WC_Product $product): ?string;
 
 	/**
 	 * Get subscription id related to the given order.
@@ -44,5 +44,5 @@ interface SubscriptionCrudInterface {
 	 *
 	 * @return string|null Subscription id or null if not exists.
 	 */
-	public function getSubscriptionIdByOrder(WC_Order $order);
+	public function getSubscriptionIdByOrder(WC_Order $order): ?string;
 }

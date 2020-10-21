@@ -14,7 +14,8 @@ class SettingsFormTemplate implements TemplateInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function render($context = null) {
+	public function render($context = null): string
+    {
 
 		/**
 		 * @var FormInterface $form
