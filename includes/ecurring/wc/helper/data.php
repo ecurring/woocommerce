@@ -112,23 +112,10 @@ class eCurring_WC_Helper_Data {
 	 *
 	 * @param int $order_id Order ID
 	 *
-	 * @return WC_Order|bool
+	 * @return WC_Order|WC_Order_Refund|bool
 	 */
 	public function getWcOrder( $order_id ) {
-		if ( function_exists( 'wc_get_order' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return wc_get_order( $order_id );
-		}
-
-		$order = new WC_Order();
-
-		if ( $order->get_order( $order_id ) ) {
-			return $order;
-		}
-
-		return false;
+		return wc_get_order( $order_id );
 	}
 
 	/**
@@ -137,14 +124,7 @@ class eCurring_WC_Helper_Data {
 	 * @return string
 	 */
 	public function getOrderStatus( WC_Order $order ) {
-		if ( method_exists( $order, 'get_status' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return $order->get_status();
-		}
-
-		return $order->status;
+		return $order->get_status();
 	}
 
 	/**
@@ -155,30 +135,17 @@ class eCurring_WC_Helper_Data {
 	 * @return bool
 	 */
 	public function hasOrderStatus( WC_Order $order, $status ) {
-		if ( method_exists( $order, 'has_status' ) ) {
-			/**
-			 * @since WooCommerce 2.2
-			 */
-			return $order->has_status( $status );
-		}
-
-		if ( ! is_array( $status ) ) {
-			$status = array ( $status );
-		}
-
-		return in_array( $this->getOrderStatus( $order ), $status );
+		return $order->has_status( $status );
 	}
 
 	/**
-	 * Get eCurring subscription from cache or load from eCurring
-	 * Skip cache by setting $use_cache to false
+	 * Get eCurring subscription from eCurring
 	 *
 	 * @param string $subscription_id
-	 * @param bool $use_cache (default: true)
 	 *
 	 * @return array|bool|null
 	 */
-	public function getSubscription( $subscription_id, $use_cache = true ) {
+	public function getSubscription( $subscription_id ) {
 		try {
 			$api = $this->api_helper;
 			$response = json_decode($api->apiCall('GET','https://api.ecurring.com/subscriptions/'.$subscription_id),true);
@@ -238,28 +205,17 @@ class eCurring_WC_Helper_Data {
 	 * @return $this
 	 */
 	public function setActiveeCurringPayment( $order_id, $payment ) {
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			update_post_meta( $order_id, '_ecurring_payment_id', $payment->id, $single = true );
+		$order = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
 
-			delete_post_meta( $order_id, '_ecurring_cancelled_payment_id' );
+		$order->update_meta_data( '_ecurring_payment_id', $payment->id );
 
-			if ( $payment->customerId ) {
-				update_post_meta( $order_id, '_ecurring_customer_id', $payment->customerId, $single = true );
-			}
+		$order->delete_meta_data( '_ecurring_cancelled_payment_id' );
 
-		} else {
-			$order = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
-
-			$order->update_meta_data( '_ecurring_payment_id', $payment->id );
-
-			$order->delete_meta_data( '_ecurring_cancelled_payment_id' );
-
-			if ( $payment->customerId ) {
-				$order->update_meta_data( '_ecurring_customer_id', $payment->customerId );
-			}
-
-			$order->save();
+		if ( $payment->customerId ) {
+			$order->update_meta_data( '_ecurring_customer_id', $payment->customerId );
 		}
+
+		$order->save();
 
 		return $this;
 	}
@@ -306,16 +262,12 @@ class eCurring_WC_Helper_Data {
 	 */
 	public function getUsereCurringCustomerId( WC_Order $order) {
 
-		$user_id = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? $order->customer_user : $order->get_customer_id();
+		$user_id = $order->get_customer_id();
 
         $api = $this->api_helper;
 
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$customer_id = get_user_meta( $user_id, 'ecurring_customer_id', $single = true );
-		} else {
-			$customer    = new WC_Customer( $user_id );
-			$customer_id = $customer->get_meta( 'ecurring_customer_id' );
-		}
+		$customer    = new WC_Customer( $user_id );
+		$customer_id = $customer->get_meta( 'ecurring_customer_id' );
 
 		// If there is a eCurring Customer ID set,
 		// check that customer ID is valid for this API key and update the customer at eCurring
@@ -406,24 +358,13 @@ class eCurring_WC_Helper_Data {
 	 */
 	public function unsetActivePayment( $order_id, $payment_id = null ) {
 
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		// Only remove eCurring payment details if they belong to this payment, not when a new payment was already placed
+		$order               = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
+		$ecurring_payment_id = $order->get_meta( '_ecurring_payment_id', true );
 
-			// Only remove eCurring payment details if they belong to this payment, not when a new payment was already placed
-			$ecurring_payment_id = get_post_meta( $order_id, '_ecurring_payment_id', $single = true );
-
-			if ( $ecurring_payment_id == $payment_id ) {
-				delete_post_meta( $order_id, '_ecurring_payment_id' );
-			}
-		} else {
-
-			// Only remove eCurring payment details if they belong to this payment, not when a new payment was already placed
-			$order               = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
-			$ecurring_payment_id = $order->get_meta( '_ecurring_payment_id', true );
-
-			if ( $ecurring_payment_id == $payment_id ) {
-				$order->delete_meta_data( '_ecurring_payment_id' );
-				$order->save();
-			}
+		if ( $ecurring_payment_id == $payment_id ) {
+			$order->delete_meta_data( '_ecurring_payment_id' );
+			$order->save();
 		}
 
 		return $this;
@@ -437,27 +378,20 @@ class eCurring_WC_Helper_Data {
 	 * @return string
 	 */
 	public function getActiveSubscriptionId( $order_id ) {
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$ecurring_payment_id = get_post_meta( $order_id, '_ecurring_subscription_id', $single = true );
-		} else {
-			$order               = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
-			$ecurring_payment_id = $order->get_meta( '_ecurring_subscription_id', true );
-		}
+		$order               = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
 
-		return $ecurring_payment_id;
+		return $order->get_meta( '_ecurring_subscription_id', true );
 	}
 
 	/**
 	 * @param int $order_id
-	 * @param bool $use_cache
 	 *
-	 * @return bool|null |null
+	 * @return bool|null
 	 */
-	public function getActiveSubscription( $order_id, $use_cache = true ) {
+	public function getActiveSubscription( $order_id ) {
 		if ( $this->hasActiveSubscription( $order_id ) ) {
 			return $this->getSubscription(
-				$this->getActiveSubscriptionId( $order_id ),
-				$use_cache
+				$this->getActiveSubscriptionId( $order_id )
 			);
 		}
 
@@ -484,13 +418,9 @@ class eCurring_WC_Helper_Data {
 	 * @return $this
 	 */
 	public function setCancelledPaymentId( $order_id, $payment_id ) {
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			add_post_meta( $order_id, '_ecurring_cancelled_payment_id', $payment_id, $single = true );
-		} else {
-			$order = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
-			$order->update_meta_data( '_ecurring_cancelled_payment_id', $payment_id );
-			$order->save();
-		}
+		$order = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
+		$order->update_meta_data( '_ecurring_cancelled_payment_id', $payment_id );
+		$order->save();
 
 		return $this;
 	}
@@ -503,22 +433,13 @@ class eCurring_WC_Helper_Data {
 	public function unsetCancelledPaymentId( $order_id ) {
 
 		// If this order contains a cancelled (previous) payment, remove it.
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$ecurring_cancelled_payment_id = get_post_meta( $order_id, '_ecurring_cancelled_payment_id', $single = true );
+		$order                         = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
+		$ecurring_cancelled_payment_id = $order->get_meta( '_ecurring_cancelled_payment_id', true );
 
-			if ( ! empty( $ecurring_cancelled_payment_id ) ) {
-				delete_post_meta( $order_id, '_ecurring_cancelled_payment_id' );
-			}
-		} else {
-
-			$order                         = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
-			$ecurring_cancelled_payment_id = $order->get_meta( '_ecurring_cancelled_payment_id', true );
-
-			if ( ! empty( $ecurring_cancelled_payment_id ) ) {
-				$order = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
-				$order->delete_meta_data( '_ecurring_cancelled_payment_id' );
-				$order->save();
-			}
+		if ( ! empty( $ecurring_cancelled_payment_id ) ) {
+			$order = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
+			$order->delete_meta_data( '_ecurring_cancelled_payment_id' );
+			$order->save();
 		}
 
 		return null;
@@ -530,14 +451,9 @@ class eCurring_WC_Helper_Data {
 	 * @return string|false
 	 */
 	public function getCancelledPaymentId( $order_id ) {
-		if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
-			$ecurring_cancelled_payment_id = get_post_meta( $order_id, '_ecurring_cancelled_payment_id', $single = true );
-		} else {
-			$order                         = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
-			$ecurring_cancelled_payment_id = $order->get_meta( '_ecurring_cancelled_payment_id', true );
-		}
+		$order                         = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
 
-		return $ecurring_cancelled_payment_id;
+		return $order->get_meta( '_ecurring_cancelled_payment_id', true );
 	}
 
 	/**
@@ -551,22 +467,6 @@ class eCurring_WC_Helper_Data {
 		$cancelled_payment_id = $this->getCancelledPaymentId( $order_id );
 
 		return ! empty( $cancelled_payment_id );
-	}
-
-	/**
-	 * Check if the current page is the order received page
-	 *
-	 * @since WooCommerce 2.3.3
-	 * @return bool
-	 */
-    public function is_order_received_page() {
-		global $wp;
-
-		return ( is_page(wc_get_page_id('checkout')) && isset($wp->query_vars['order-received']) ) ? true : false;
-	}
-
-	public function wc_date_format() {
-		return apply_filters('woocommerce_date_format', get_option('date_format'));
 	}
 
     /**
@@ -606,9 +506,7 @@ class eCurring_WC_Helper_Data {
      */
     protected function getCustomerLanguage(WC_Order $order)
     {
-        $userId = (version_compare(WC_VERSION, '3.0', '<'))
-            ? $order->customer_user
-            : $order->get_customer_id();
+        $userId = $order->get_customer_id();
 
         if (isset($userId)) {
             $userLocale = get_user_locale($userId);
