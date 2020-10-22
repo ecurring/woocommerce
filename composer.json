@@ -8,15 +8,18 @@
         "php": "^7.2",
         "dhii/output-renderer-interface": " ^0.4",
         "chrico/wp-fields": " ^1.0",
-        "brain/nonces": " ^1.0"
+        "brain/nonces": " ^1.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^5 || ^7.1",
         "brain/monkey": "^2.4",
         "antecedent/patchwork": " ^2.1",
         "johnpbloch/wordpress-core": "^5.5",
-        "mollie/mollie-woocommerce": "dev-develop",
-        "woocommerce/woocommerce": "^4"
+        "vimeo/psalm": "^3.17",
+        "roots/wordpress": "@stable",
+        "woocommerce/woocommerce": "^4.5",
+        "mollie/mollie-woocommerce": "dev-develop"
     },
     "repositories": [
         {
@@ -34,12 +37,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "eCurring\\WooEcurringTests\\": "tests"
+            "Ecurring\\WooEcurringTests\\": "tests"
         }
     },
     "extra": {
         "installer-paths": {
             "vendor/{$vendor}/{$name}": ["type:wordpress-plugin"]
-        }
+        },
+        "wordpress-install-dir": "vendor/wordpress/wordpress"
     }
 }
