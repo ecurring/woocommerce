@@ -100,14 +100,30 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker();
-    if (!$environmentChecker->isMollieActive() || !$environmentChecker->isMollieMinimalVersion()) {
+	$isMollieActive = $environmentChecker->isMollieActive();
+	$isMollieMinimalVersion = false;
+	$mollieNotActiveMessage = __(
+        'Mollie Subscriptions plugin is inactive. Please, install and activate Mollie Payments for WooCommerce plugin first.',
+        'woo-ecurring'
+    );
+	$mollieIsNotMinimalVersionMessage = __(
+        'Mollie Subscriptions plugin is inactive. Please, update Mollie Payments for WooCommerce plugin first.',
+        'woo-ecurring'
+    );
+
+	if($isMollieActive) {
+	    $isMollieMinimalVersion = $environmentChecker->isMollieMinimalVersion();
+    }
+
+    if (! $isMollieActive || ! $isMollieMinimalVersion) {
 		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action('admin_notices', function () {
+		add_action('admin_notices', function () use (
+		    $isMollieActive,
+            $mollieNotActiveMessage,
+            $mollieIsNotMinimalVersionMessage
+        ) {
 			echo '<div class="error"><p>';
-			echo esc_html__(
-				'Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first.',
-				'woo-ecurring'
-			);
+			echo $isMollieActive ? esc_html($mollieIsNotMinimalVersionMessage) : esc_html($mollieNotActiveMessage);
 			echo '</p></div>';
 		});
 	}
