@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurringTests;
+namespace Ecurring\WooEcurringTests;
 
 use Brain\Monkey;
 use Mockery;

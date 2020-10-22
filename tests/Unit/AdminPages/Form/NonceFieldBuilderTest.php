@@ -1,7 +1,7 @@
 <?php
 
 
-namespace eCurring\WooEcurringTests\AdminPages\Form;
+namespace Ecurring\WooEcurringTests\AdminPages\Form;
 
 
 use Brain\Nonces\NonceInterface;
@@ -10,7 +10,7 @@ use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\View\RenderableElementInterface;
 use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
 

@@ -1,12 +1,12 @@
 <?php
 
 
-namespace eCurring\WooEcurringTests\Unit\EventListener;
+namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;

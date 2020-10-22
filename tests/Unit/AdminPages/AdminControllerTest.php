@@ -1,7 +1,7 @@
 <?php
 
 
-namespace eCurring\WooEcurringTests\AdminPages;
+namespace Ecurring\WooEcurringTests\AdminPages;
 
 
 use Brain\Nonces\NonceInterface;
@@ -12,7 +12,7 @@ use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
 use function Brain\Monkey\Functions\when;

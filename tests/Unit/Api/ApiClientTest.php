@@ -1,10 +1,10 @@
 <?php
 
 
-namespace eCurring\WooEcurringTests\Unit\Api;
+namespace Ecurring\WooEcurringTests\Unit\Api;
 
 use Ecurring\WooEcurring\Api\ApiClient;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use function Brain\Monkey\Functions\expect;
 
