@@ -14,7 +14,7 @@ class EnvironmentChecker
     /**
      * @return bool Whether Mollie plugin is active.
      */
-    public function isMollieActive()
+    public function isMollieActive(): bool
     {
         return is_plugin_active('mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php');
     }
@@ -30,7 +30,6 @@ class EnvironmentChecker
 
         $molliePluginData = get_plugin_data(M4W_FILE);
         $currentMollieVersion = $molliePluginData['Version'];
-
         return version_compare(
             $currentMollieVersion,
             self::MOLLIE_MINIMUM_VERSION,

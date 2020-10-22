@@ -39,7 +39,8 @@ class WhitelistedRecurringPaymentGatewaysFilter implements PaymentGatewaysFilter
 	 *
 	 * @return bool
 	 */
-	protected function isGatewayClassWhitelisted( WC_Payment_Gateway $gateway ) {
+	protected function isGatewayClassWhitelisted( WC_Payment_Gateway $gateway ): bool
+    {
 		return in_array(get_class($gateway), $this->whiteList, true);
 	}
 }
