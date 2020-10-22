@@ -6,7 +6,7 @@ class eCurring_WC_Helper_Status
      *
      * @var string
      */
-    const MIN_WOOCOMMERCE_VERSION = '3.0.0';
+    const MIN_WOOCOMMERCE_VERSION = '4.0.0';
 
     /**
      * @var string[]

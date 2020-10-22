@@ -3,10 +3,10 @@ class eCurring_WC_Helper_Settings
 {
     const DEFAULT_TIME_PAYMENT_CONFIRMATION_CHECK = '3:00';
 
-    protected $ecurring_gateway_settings;
+    protected $ecurringSettings;
 
 	public function __construct() {
-		$this->ecurring_gateway_settings = get_option('ecurring_wc_gateway_ecurring_settings');
+		$this->ecurringSettings = get_option('ecurring_wc_gateway_ecurring_settings');
 	}
 
     /**
@@ -14,7 +14,7 @@ class eCurring_WC_Helper_Settings
      */
     public function getApiKey ()
     {
-        return isset($this->ecurring_gateway_settings['api_key']) ? trim($this->ecurring_gateway_settings['api_key']) : '';
+        return isset($this->ecurringSettings['api_key']) ? trim($this->ecurringSettings['api_key']) : '';
     }
 
     /**
@@ -34,8 +34,8 @@ class eCurring_WC_Helper_Settings
 	 */
 	public function getOrderStatusCancelledPayments ()
 	{
-		return isset($this->ecurring_gateway_settings['order_status_cancelled_payments']) ?
-			trim($this->ecurring_gateway_settings['order_status_cancelled_payments']) : 'pending';
+		return isset($this->ecurringSettings['order_status_cancelled_payments']) ?
+			trim($this->ecurringSettings['order_status_cancelled_payments']) : 'pending';
 	}
 
     /**
@@ -43,7 +43,7 @@ class eCurring_WC_Helper_Settings
      */
     public function isDebugEnabled ()
     {
-		return isset($this->ecurring_gateway_settings['debug']) ? $this->ecurring_gateway_settings['debug'] === 'yes' : true;
+		return isset($this->ecurringSettings['debug']) ? $this->ecurringSettings['debug'] === 'yes' : true;
     }
 
     /**
