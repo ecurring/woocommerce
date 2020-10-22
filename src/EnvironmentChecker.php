@@ -16,7 +16,13 @@ class EnvironmentChecker
      */
     public function isMollieActive(): bool
     {
-        return is_plugin_active('mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php');
+        if (!defined('M4W_FILE')) {
+            return false;
+        }
+
+        $baseName = plugin_basename(M4W_FILE);
+
+        return is_plugin_active($baseName);
     }
 
     /**
