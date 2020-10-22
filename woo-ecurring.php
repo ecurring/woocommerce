@@ -132,8 +132,13 @@ add_action('plugins_loaded', function(){
             $mollieNotActiveMessage,
             $mollieIsNotMinimalVersionMessage
         ) {
+		    $ksesParams = [
+		        'a' => [
+		            'href' => [],
+                ],
+            ];
 			echo '<div class="error"><p>';
-			echo $isMollieActive ? esc_html($mollieIsNotMinimalVersionMessage) : esc_html($mollieNotActiveMessage);
+			echo $isMollieActive ? wp_kses($mollieIsNotMinimalVersionMessage, $ksesParams) : wp_kses($mollieNotActiveMessage, $ksesParams);
 			echo '</p></div>';
 		});
 	}
