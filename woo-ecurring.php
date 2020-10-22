@@ -100,7 +100,7 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker();
-	if(! $environmentChecker->isMollieActive()){
+    if (!$environmentChecker->isMollieActive() || !$environmentChecker->isMollieMinimalVersion()) {
 		remove_action('init', 'ecurring_wc_plugin_init');
 		add_action('admin_notices', function () {
 			echo '<div class="error"><p>';
