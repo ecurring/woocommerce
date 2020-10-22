@@ -14,8 +14,16 @@
         "phpunit/phpunit": "^5 || ^7.1",
         "brain/monkey": "^2.4",
         "antecedent/patchwork": " ^2.1",
-        "johnpbloch/wordpress-core": "^5.5"
+        "johnpbloch/wordpress-core": "^5.5",
+        "mollie/mollie-woocommerce": "dev-develop",
+        "woocommerce/woocommerce": "^4"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/mollie/WooCommerce"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "eCurring_WC_": "./includes"
@@ -27,6 +35,11 @@
     "autoload-dev": {
         "psr-4": {
             "eCurring\\WooEcurringTests\\": "tests"
+        }
+    },
+    "extra": {
+        "installer-paths": {
+            "vendor/{$vendor}/{$name}": ["type:wordpress-plugin"]
         }
     }
 }

@@ -71,10 +71,6 @@ class eCurring_WC_Plugin
             )->init();
         });
 
-
-		// When page 'WooCommerce -> Checkout -> Checkout Options' is saved
-		add_action( 'woocommerce_settings_save_checkout', array ( $data_helper, 'deleteTransients' ) );
-
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . $plugin_basename, array ( __CLASS__, 'addPluginActionLinks' ) );
 
@@ -130,12 +126,6 @@ class eCurring_WC_Plugin
 		// eCurring add to cart button text
 		add_filter('woocommerce_is_sold_individually', array ( __CLASS__, 'eCurringDisableQuantity'), 10, 2);
 
-		// Disable "Pay" button/action on My Account for orders with eCurring
-		add_filter( 'woocommerce_my_account_my_orders_actions', array ( __CLASS__, 'eCurringRemovePayFromMyAccountOrders' ), 10, 2 );
-
-		// Disable eCurring on "Pay for order" page
-		add_filter( 'woocommerce_available_payment_gateways', array ( __CLASS__, 'disableeCurringOnPayForOrder' ), 10, 1 );
-
 		// Add eCurring Subscriptions to WooCommerce My Account
 		add_action( 'init', array ( __CLASS__, 'eCurringSubscriptionsEndpoint' ), 10, 2 );
 
@@ -161,54 +151,6 @@ class eCurring_WC_Plugin
 	}
 
     /**
-     * Set HTTP status code
-     *
-     * @param int $status_code
-     */
-    public static function setHttpResponseCode ($status_code)
-    {
-        if (PHP_SAPI !== 'cli' && !headers_sent())
-        {
-            if (function_exists("http_response_code"))
-            {
-                http_response_code($status_code);
-            }
-            else
-            {
-                header(" ", TRUE, $status_code);
-            }
-        }
-    }
-
-	/**
-	 * Add a WooCommerce notification message
-	 *
-	 * @param string $message Notification message
-	 * @param string $type    One of notice, error or success (default notice)
-	 *
-	 * @return $this
-	 */
-	public static function addNotice( $message, $type = 'notice' ) {
-		$type = in_array( $type, array ( 'notice', 'error', 'success' ) ) ? $type : 'notice';
-
-		// Check for existence of new notification api (WooCommerce >= 2.1)
-		if ( function_exists( 'wc_add_notice' ) ) {
-			wc_add_notice( $message, $type );
-		} else {
-			$woocommerce = WooCommerce::instance();
-
-			switch ( $type ) {
-				case 'error' :
-					$woocommerce->add_error( $message );
-					break;
-				default :
-					$woocommerce->add_message( $message );
-					break;
-			}
-		}
-	}
-
-    /**
      * Log messages to WooCommerce log
      *
      * @param mixed $message
@@ -219,7 +161,7 @@ class eCurring_WC_Plugin
         // Convert message to string
         if (!is_string($message))
         {
-            $message = ( version_compare( WC_VERSION, '3.0', '<' ) ) ? print_r($message, true) : wc_print_r($message, true);
+            $message = wc_print_r($message, true);
         }
 
         // Set debug header
@@ -231,25 +173,11 @@ class eCurring_WC_Plugin
 	    // Log message
 	    if ( self::getSettingsHelper()->isDebugEnabled() ) {
 
-		    if ( version_compare( WC_VERSION, '3.0', '<' ) ) {
+		    $logger = wc_get_logger();
 
-			    static $logger;
+		    $context = array ( 'source' => WOOECUR_PLUGIN_ID . '-' . date( 'Y-m-d' ) );
 
-			    if ( empty( $logger ) ) {
-				    $logger = new WC_Logger();
-			    }
-
-			    $logger->add( WOOECUR_PLUGIN_ID . '-' . date( 'Y-m-d' ), $message );
-
-		    } else {
-
-			    $logger = wc_get_logger();
-
-			    $context = array ( 'source' => WOOECUR_PLUGIN_ID . '-' . date( 'Y-m-d' ) );
-
-			    $logger->debug( $message, $context );
-
-		    }
+		    $logger->debug( $message, $context );
 
 	    }
     }
@@ -287,12 +215,8 @@ class eCurring_WC_Plugin
             '<a href="' . self::getSettingsHelper()->getGlobalSettingsUrl() . '">' . __('eCurring settings', 'woo-ecurring') . '</a>',
         );
 
-        // Add link to log files viewer for WooCommerce >= 2.2.0
-        if (version_compare(self::getStatusHelper()->getWooCommerceVersion(), '2.2.0', ">="))
-        {
-            // Add link to WooCommerce logs
-            $action_links[] = '<a href="' . self::getSettingsHelper()->getLogsUrl() . '">' . __('Logs', 'woo-ecurring') . '</a>';
-        }
+    // Add link to WooCommerce logs
+	    $action_links[] = '<a href="' . self::getSettingsHelper()->getLogsUrl() . '">' . __('Logs', 'woo-ecurring') . '</a>';
 
         return array_merge($action_links, $links);
     }
@@ -592,8 +516,7 @@ class eCurring_WC_Plugin
 	}
 
 	/**
-	 * Left only eCurring payment gateway if there is eCurring product, and hide payment gateway div.
-	 * Otherwise just exclude eCurring payment gateway.
+	 * If subscription product is in the cart, allow only gateways coming not from Mollie plugin.
 	 *
 	 * @param WC_Payment_Gateway[] $gatewayList Payment gateways from WooCommerce to filter.
 	 *
@@ -743,52 +666,6 @@ class eCurring_WC_Plugin
 
 		return get_post_meta($product->get_id(), '_ecurring_subscription_plan', true) ? true : $default;
     }
-
-	/**
-	 * Don't show a "Pay" button in My account when payment method is eCurring
-	 */
-	public static function eCurringRemovePayFromMyAccountOrders( $actions, WC_Order $order ) {
-
-		// Can't use $wp->request or is_wc_endpoint_url() to check if this code only runs on My Account,
-		// because slugs/endpoints can be translated (with WPML) and other plugins.
-		// So disabling on is_account_page (if not checkout, bug in WC) and $_GET['change_payment_method'] for now.
-
-		// Do not disable if account page is also checkout (workaround for bug in WC), do disable on change payment method page (param)
-		if ( ( ! is_checkout() && is_account_page() ) || ! empty( $_GET['change_payment_method'] ) ) {
-
-			// Does the order have eCurring as payment method?
-			if ( $order->get_payment_method() == 'ecurring_wc_gateway_ecurring' ) {
-
-				// If pay actiuon is set, unset it
-				if ( isset( $actions['pay'] ) ) {
-					unset( $actions['pay'] );
-				}
-			}
-		}
-
-		return $actions;
-	}
-
-	/**
-	 * Don't show eCurring payment method on Pay for order page
-	 */
-	public static function disableeCurringOnPayForOrder( $available_gateways ) {
-
-		// Can't use $wp->request or is_wc_endpoint_url() to check page,
-		// because slugs/endpoints can be translated (with WPML) and other plugins.
-		// So disabling on is_account_page (if not checkout, bug in WC) and $_GET['pay_for_order'] for now.
-
-			// Do not disable if account page is also checkout (workaround for bug in WC), do disable on change payment method page (param)
-			if ( ( ! is_checkout() && is_account_page() ) || ! empty( $_GET['pay_for_order'] ) ) {
-				foreach ( $available_gateways as $key => $value ) {
-					if ( strpos( $key, 'ecurring_' ) !== false ) {
-						unset( $available_gateways[ $key ] );
-					}
-				}
-			}
-
-		return $available_gateways;
-	}
 
 	/**
 	 * eCurring Subscriptions - Add query vars

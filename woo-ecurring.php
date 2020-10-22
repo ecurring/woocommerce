@@ -6,11 +6,11 @@
  * Version: 1.2.0
  * Author: Mollie
  * Requires at least: 4.6
- * Tested up to: 5.3
+ * Tested up to: 5.5
  * Text Domain: woo-ecurring
  * License: GPLv2 or later
- * WC requires at least: 3.0.0
- * WC tested up to: 3.8
+ * WC requires at least: 4.0
+ * WC tested up to: 4.6
  */
 
 // Exit if accessed directly.
@@ -78,7 +78,7 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_json_extension' );
  * Pro-actively check and communicate PHP version incompatibility for eCurring for WooCommerce
  */
 function ecurring_wc_check_php_version() {
-	if ( ! version_compare( PHP_VERSION, '5.6.0', ">=" ) ) {
+	if ( ! version_compare( PHP_VERSION, '7.2', ">=" ) ) {
 		remove_action( 'init', 'ecurring_wc_plugin_init' );
 		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive_php' );
 		return;
@@ -100,7 +100,7 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker();
-	if(! $environmentChecker->isMollieActive()){
+    if (!$environmentChecker->isMollieActive() || !$environmentChecker->isMollieMinimalVersion()) {
 		remove_action('init', 'ecurring_wc_plugin_init');
 		add_action('admin_notices', function () {
 			echo '<div class="error"><p>';
@@ -180,7 +180,7 @@ function ecurring_wc_plugin_inactive_php() {
 	}
 
 	echo '<div class="error"><p>';
-	echo __( 'eCurring for WooCommerce requires PHP 5.6 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
+	echo __( 'eCurring for WooCommerce requires PHP 7.2 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
 	echo '</p></div>';
 
 	return false;
