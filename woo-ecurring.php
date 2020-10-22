@@ -111,7 +111,7 @@ add_action('plugins_loaded', function(){
 	$mollieNotActiveMessage = sprintf(
 	    /* translators: %1$s is replaced with Mollie plugin installation page url. */
 	    __(
-        'Mollie Subscriptions plugin is inactive. Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+        '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
         'woo-ecurring'
         ),
         esc_url($molliePluginPageUrl)
@@ -119,7 +119,7 @@ add_action('plugins_loaded', function(){
 	$mollieIsNotMinimalVersionMessage = sprintf(
         /* translators: %1$s is replaced with Mollie plugin installation page url. */
         __(
-        'Mollie Subscriptions plugin is inactive. Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+        '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
         'woo-ecurring'
         ),
         $molliePluginPageUrl
@@ -140,6 +140,7 @@ add_action('plugins_loaded', function(){
 		        'a' => [
 		            'href' => [],
                 ],
+                'strong' => []
             ];
 			echo '<div class="error"><p>';
 			echo $isMollieActive ? wp_kses($mollieIsNotMinimalVersionMessage, $ksesParams) : wp_kses($mollieNotActiveMessage, $ksesParams);
