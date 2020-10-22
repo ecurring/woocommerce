@@ -102,9 +102,19 @@ add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker();
 	$isMollieActive = $environmentChecker->isMollieActive();
 	$isMollieMinimalVersion = false;
-	$mollieNotActiveMessage = __(
-        'Mollie Subscriptions plugin is inactive. Please, install and activate Mollie Payments for WooCommerce plugin first.',
+	$pluginInstallUrl = http_build_query([
+	    'tab'=> 'plugin-information',
+        'plugin' => 'mollie-payments-for-woocommerce'
+    ]);
+	$pluginInstallUrl = admin_url('plugin-install.php?' . $pluginInstallUrl);
+
+	$mollieNotActiveMessage = sprintf(
+	    /* translators: %1$s is replaced with Mollie plugin installation page url. */
+	    __(
+        'Mollie Subscriptions plugin is inactive. Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
         'woo-ecurring'
+        ),
+        esc_url($pluginInstallUrl)
     );
 	$mollieIsNotMinimalVersionMessage = __(
         'Mollie Subscriptions plugin is inactive. Please, update Mollie Payments for WooCommerce plugin first.',
