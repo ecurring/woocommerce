@@ -26,15 +26,40 @@ class EnvironmentCheckerTest extends TestCase {
 		$this->assertSame($isActive, $sut->isMollieActive());
 	}
 
-	/**
-	 * Return possible options for Mollie Payments for Woocommerce plugin states: true for active, false for inactive.
-	 */
-	public function isMollieActiveDataProvider() {
-		return [
-			[true],
-			[false]
-		];
-	}
+    /**
+     * Return possible options for Mollie Payments for Woocommerce plugin states: true for active, false for inactive.
+     */
+    public function isMollieActiveDataProvider()
+    {
+        return [
+            [true],
+            [false]
+        ];
+    }
 
+    /** @dataProvider isMinimalVersionDataProvider */
+    public function testIsMollieMinimalVersion($mollieCurrentVersion, $isMinimal)
+    {
+        if (!defined('M4W_FILE')) {
+            define('M4W_FILE', 'foo/bar.baz');
+        }
 
+        $sut = new EnvironmentChecker();
+
+        expect('get_plugin_data')
+            ->once()
+            ->andReturn([
+                'Version' => $mollieCurrentVersion,
+            ]);
+
+        $this->assertSame($isMinimal, $sut->isMollieMinimalVersion());
+    }
+
+    public function isMinimalVersionDataProvider()
+    {
+        return [
+            ['5.9.0', false],
+            ['6.0.0', true],
+        ];
+    }
 }

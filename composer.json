@@ -18,8 +18,15 @@
         "johnpbloch/wordpress-core": "^5.5",
         "vimeo/psalm": "^3.17",
         "roots/wordpress": "@stable",
-        "woocommerce/woocommerce": "^4.5"
+        "woocommerce/woocommerce": "^4.5",
+        "mollie/mollie-woocommerce": "dev-develop"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/mollie/WooCommerce"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "eCurring_WC_": "./includes"
@@ -34,6 +41,9 @@
         }
     },
     "extra": {
+        "installer-paths": {
+            "vendor/{$vendor}/{$name}": ["type:wordpress-plugin"]
+        },
         "wordpress-install-dir": "vendor/wordpress/wordpress"
     }
 }
