@@ -46,4 +46,17 @@ interface ApiClientInterface {
 	 */
 	public function activateSubscription(string $subscriptionId, string $mandateCode, string $mandateAcceptedDate): array;
 
+
+    /**
+     * Add Mollie mandate id to the eCurring customer.
+     *
+     * @param string $customerId      eCurring customer id to add mandate to.
+     * @param string $mollieMandateId Mollie mandate id to add.
+     *
+     * @return array Data accepted by the API.
+     *
+     * @throws ApiClientException If request failed.
+     */
+	public function addMollieMandateToTheCustomer(string $customerId, string $mollieMandateId): array;
+
 }
