@@ -2,8 +2,22 @@
 
 namespace Ecurring\WooEcurring\Subscription;
 
+use DateTime;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
+use eCurring_WC_Helper_Api;
+
 class PostType
 {
+    /**
+     * @var eCurring_WC_Helper_Api
+     */
+    private $api;
+
+    public function __construct(eCurring_WC_Helper_Api $api)
+    {
+        $this->api = $api;
+    }
+
     public function init()
     {
         $this->register();
@@ -39,6 +53,10 @@ class PostType
             function ($columns) {
                 unset($columns['date']);
 
+                $columns['title'] = 'Subscription ID';
+                $columns['customer'] = 'Customer';
+                $columns['product'] = 'Product';
+                $columns['start_date'] = 'Start Date';
                 $columns['status'] = 'Status';
 
                 return $columns;
@@ -53,16 +71,38 @@ class PostType
                     '_ecurring_post_subscription_attributes',
                     true
                 );
+
                 switch ($column) {
-                    case 'status':
-                        // TODO check if status exists first
-                        echo esc_attr(ucfirst($attributes->status));
+                    case 'customer':
+                        $customer = get_post_meta($postId, '_ecurring_post_subscription_customer', true);
+                        echo esc_attr($customer->data->attributes->first_name) . ' '
+                            . esc_attr($customer->data->attributes->last_name);
                         break;
                     case 'product':
-                        echo 'product here...';
+                        $subscriptionPlans = (new SubscriptionPlans(
+                            $this->api
+                        ))->getSubscriptionPlans();
+                        $products = [];
+                        foreach ($subscriptionPlans->data as $product) {
+                            $products[$product->id] = $product->attributes->name ?: '';
+                        }
+
+                        $relationships = get_post_meta(
+                            $postId,
+                            '_ecurring_post_subscription_relationships',
+                            true
+                        );
+                        $productId = $relationships->{'subscription-plan'}->data->id;
+                        echo esc_attr($products[$productId]);
+                        break;
+                    case 'start_date':
+                        $startDate = $attributes->start_date;
+                        echo esc_attr((new DateTime($startDate))->format('d-m-Y'));
+                        break;
+                    case 'status':
+                        echo esc_attr(ucfirst($attributes->status));
                         break;
                 }
-
             },
             10,
             2

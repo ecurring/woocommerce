@@ -4,6 +4,7 @@ namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
 use eCurring_WC_Helper_Api;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 
 class Subscriptions
 {
@@ -27,11 +28,9 @@ class Subscriptions
             )
         );
 
-        $productsResponse = json_decode(
-            $this->api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
-        );
+        $subscriptionPlans = (new SubscriptionPlans($this->api))->getSubscriptionPlans();
         $products = [];
-        foreach ($productsResponse->data as $product) {
+        foreach ($subscriptionPlans->data as $product) {
             $products[$product->id] = $product->attributes->name;
         }
         ?>

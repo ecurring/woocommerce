@@ -47,7 +47,7 @@ class eCurring_WC_Plugin
         (new MolliePaymentEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new PaymentCompleteEventListener($apiClient, $subscriptionCrud))->init();
         (new AddToCartValidationEventListener($subscriptionCrud))->init();
-    
+
         add_action('admin_init', function(){
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
@@ -125,11 +125,6 @@ class eCurring_WC_Plugin
 
 		// eCurring add to cart button text
 		add_filter('woocommerce_is_sold_individually', array ( __CLASS__, 'eCurringDisableQuantity'), 10, 2);
-
-		// Add eCurring Subscriptions to WooCommerce My Account
-		add_action( 'init', array ( __CLASS__, 'eCurringSubscriptionsEndpoint' ), 10, 2 );
-
-		add_filter( 'woocommerce_account_menu_items', array ( __CLASS__, 'eCurringSubscriptionsMyAccount'), 10, 1 );
 
 		// Add 'eCurring details' metabox to WooCommerce Order Edit
 		add_action( 'add_meta_boxes', array ( __CLASS__, 'eCurringAddOrdersMetaBox') );
@@ -664,29 +659,6 @@ class eCurring_WC_Plugin
 		$vars[] = 'ecurring-subscriptions';
 
 		return $vars;
-	}
-
-	/**
-	 * eCurring Subscriptions - Add to My account menu
-	 *
-	 * @param $items
-	 *
-	 * @return array
-	 */
-	public static function eCurringSubscriptionsMyAccount( $items ) {
-
-		$new_items                           = array ();
-		$new_items['ecurring-subscriptions'] = __( 'Subscriptions', 'woo-ecurring' );
-
-		// Search for the item position and +1 since is after the selected item key.
-		$position = array_search( 'orders', array_keys( $items ) ) + 1;
-
-		// Insert the new item.
-		$final_items = array_slice( $items, 0, $position, true );
-		$final_items += $new_items;
-		$final_items += array_slice( $items, $position, count( $items ) - $position, true );
-
-		return $final_items;
 	}
 
 	/**

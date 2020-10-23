@@ -113,7 +113,7 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker();
-    if (!$environmentChecker->isMollieActive() || !$environmentChecker->isMollieMinimalVersion()) {
+    if (!$environmentChecker->isMollieActive()) { // || !$environmentChecker->isMollieMinimalVersion()
 		remove_action('init', 'ecurring_wc_plugin_init');
 		add_action('admin_notices', function () {
 			echo '<div class="error"><p>';
@@ -295,9 +295,9 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
-        require_once 'includes/ecurring/wc/helper/settings.php';
-        require_once 'includes/ecurring/wc/helper/api.php';
-        require_once 'includes/ecurring/wc/plugin.php';
+        require_once __DIR__ . '/includes/ecurring/wc/helper/settings.php';
+        require_once __DIR__ . '/includes/ecurring/wc/helper/api.php';
+        require_once __DIR__ . '/includes/ecurring/wc/plugin.php';
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
@@ -309,7 +309,7 @@ function initialize()
 
         (new SubscriptionsJob($actions, $repository))->init();
         (new Metabox($display, $save))->init();
-        (new PostType())->init();
+        (new PostType($apiHelper))->init();
         (new Assets())->init();
         (new WebHook($apiHelper, $repository))->init();
         (new Settings())->init();

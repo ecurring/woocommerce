@@ -44,6 +44,21 @@ class MyAccount
 
     public function init()
     {
+        add_filter(
+            'woocommerce_account_menu_items',
+            function ($items) {
+                $newItems = [];
+                $newItems['ecurring-subscriptions'] = __('Subscriptions', 'woo-ecurring');
+                $position = array_search('orders', array_keys($items), true) + 1;
+
+                $finalItems = array_slice($items, 0, $position, true);
+                $finalItems += $newItems;
+                $finalItems += array_slice($items, $position, count($items) - $position, true);
+
+                return $finalItems;
+            }
+        );
+
         add_action(
             'woocommerce_account_ecurring-subscriptions_endpoint',
             function () {

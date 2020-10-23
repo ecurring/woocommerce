@@ -2,6 +2,10 @@
 
 namespace Ecurring\WooEcurring\Subscription;
 
+use Ecurring\WooEcurring\Api\Customer;
+use eCurring_WC_Helper_Api;
+use eCurring_WC_Helper_Settings;
+
 class Repository
 {
     /**
@@ -49,6 +53,12 @@ class Repository
         );
 
         if ($postId && is_int($postId)) {
+            $customer = $this->getCustomerApi();
+            $customerDetails = $customer->getCustomerById(
+                $subscription->relationships->customer->data->id
+            );
+            add_post_meta($postId, '_ecurring_post_subscription_customer', $customerDetails);
+
             add_post_meta($postId, '_ecurring_post_subscription_id', $subscription->id);
             add_post_meta($postId, '_ecurring_post_subscription_links', $subscription->links);
             add_post_meta(
@@ -78,6 +88,12 @@ class Repository
             $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
 
             if ($postSubscriptionId && $postSubscriptionId === $subscription->data->id) {
+                $customer = $this->getCustomerApi();
+                $customerDetails = $customer->getCustomerById(
+                    $subscription->relationships->customer->data->id
+                );
+                update_post_meta($post->ID, '_ecurring_post_subscription_customer', $customerDetails);
+
                 update_post_meta($post->ID, '_ecurring_post_subscription_id', $subscription->data->id);
                 update_post_meta(
                     $post->ID,
@@ -124,5 +140,16 @@ class Repository
         }
 
         return false;
+    }
+
+    /**
+     * @return Customer
+     */
+    protected function getCustomerApi(): Customer
+    {
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $api = new eCurring_WC_Helper_Api($settingsHelper);
+        $customer = new Customer($api);
+        return $customer;
     }
 }

@@ -3,6 +3,7 @@
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use eCurring_WC_Helper_Api;
 use eCurring_WC_Helper_Settings;
 
@@ -53,9 +54,7 @@ class Display
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $api = new eCurring_WC_Helper_Api($settingsHelper);
-        $productsResponse = json_decode(
-            $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
-        );
+        $productsResponse = (new SubscriptionPlans($api))->getSubscriptionPlans();
         $products = [];
         foreach ($productsResponse->data as $product) {
             $products[$product->id] = $product->attributes->name;
