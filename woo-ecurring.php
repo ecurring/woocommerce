@@ -6,21 +6,34 @@
  * Version: 1.2.0
  * Author: Mollie
  * Requires at least: 4.6
- * Tested up to: 5.3
+ * Requires PHP: 7.2
+ * Tested up to: 5.5
  * Text Domain: woo-ecurring
  * License: GPLv2 or later
- * WC requires at least: 3.0.0
- * WC tested up to: 3.8
+ * WC requires at least: 4.0
+ * WC tested up to: 4.6
  */
 
 // Exit if accessed directly.
 use Ecurring\WooEcurring\EnvironmentChecker;
+use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\SubscriptionsJob;
+use Ecurring\WooEcurring\Subscription\PostType;
+use Ecurring\WooEcurring\Subscription\Metabox\Display;
+use Ecurring\WooEcurring\Subscription\Metabox\Save;
+use Ecurring\WooEcurring\Subscription\Metabox\Metabox;
+use Ecurring\WooEcurring\Assets;
+use Ecurring\WooEcurring\WebHook;
+use Ecurring\WooEcurring\Settings;
+use Ecurring\WooEcurring\Customer\MyAccount;
+use Ecurring\WooEcurring\Customer\Subscriptions;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 require_once 'includes/ecurring/wc/autoload.php';
 require_once 'vendor/autoload.php';
 
@@ -28,7 +41,7 @@ require_once 'vendor/autoload.php';
  * Plugin constants
  */
 
-if ( ! defined( 'WOOECUR_PLUGIN_ID' ) ) {
+if (!defined('WOOECUR_PLUGIN_ID')) {
 	define( 'WOOECUR_PLUGIN_ID', 'woo-ecurring' );
 }
 
@@ -78,7 +91,7 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_json_extension' );
  * Pro-actively check and communicate PHP version incompatibility for eCurring for WooCommerce
  */
 function ecurring_wc_check_php_version() {
-	if ( ! version_compare( PHP_VERSION, '5.6.0', ">=" ) ) {
+	if ( ! version_compare( PHP_VERSION, '7.2', ">=" ) ) {
 		remove_action( 'init', 'ecurring_wc_plugin_init' );
 		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive_php' );
 		return;
@@ -100,7 +113,7 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker();
-	if(! $environmentChecker->isMollieActive()){
+    if (!$environmentChecker->isMollieActive() || !$environmentChecker->isMollieMinimalVersion()) {
 		remove_action('init', 'ecurring_wc_plugin_init');
 		add_action('admin_notices', function () {
 			echo '<div class="error"><p>';
@@ -180,7 +193,7 @@ function ecurring_wc_plugin_inactive_php() {
 	}
 
 	echo '<div class="error"><p>';
-	echo __( 'eCurring for WooCommerce requires PHP 5.6 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
+	echo __( 'eCurring for WooCommerce requires PHP 7.2 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
 	echo '</p></div>';
 
 	return false;
@@ -260,12 +273,114 @@ function eCurringRegisterNewStatusAsBulkAction( $actions ) {
 	$new_actions = array();
 
 	foreach ($actions as $key => $action) {
-		if ('mark_processing' === $key)
-			$new_actions['mark_ecurring-retry'] = __( 'Change status to Retrying payment at eCurring', 'Order status', 'woo-ecurring' );
+        if ('mark_processing' === $key) {
+            $new_actions['mark_ecurring-retry'] = __('Change status to Retrying payment at eCurring',
+                'Order status', 'woo-ecurring');
+        }
 
-		$new_actions[$key] = $action;
-	}
-	return $new_actions;
+        $new_actions[$key] = $action;
+    }
+    return $new_actions;
 }
 
 add_action('init', 'ecurring_wc_plugin_init');
+
+/**
+ * @throws Throwable
+ */
+function initialize()
+{
+    try {
+        if (is_readable(__DIR__ . '/vendor/autoload.php')) {
+            include_once __DIR__ . '/vendor/autoload.php';
+        }
+
+        require_once 'includes/ecurring/wc/helper/settings.php';
+        require_once 'includes/ecurring/wc/helper/api.php';
+        require_once 'includes/ecurring/wc/plugin.php';
+
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $actions = new Actions($apiHelper);
+        $repository = new Repository();
+        $display = new Display();
+        $save = new Save($actions);
+        $subscriptions = new Subscriptions($apiHelper);
+
+        (new SubscriptionsJob($actions, $repository))->init();
+        (new Metabox($display, $save))->init();
+        (new PostType())->init();
+        (new Assets())->init();
+        (new WebHook($apiHelper, $repository))->init();
+        (new Settings())->init();
+        (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
+
+        add_action(
+            'woocommerce_payment_complete',
+            function (int $orderId) use ($repository, $apiHelper) {
+                $order = wc_get_order($orderId);
+                $subscriptionId = $order->get_meta('_ecurring_subscription_id', true);
+
+                if ($subscriptionId) {
+                    $response = json_decode(
+                        $apiHelper->apiCall(
+                            'GET',
+                            "https://api.ecurring.com/subscriptions/{$subscriptionId}"
+                        )
+                    );
+
+                    $repository->create($response->data);
+                }
+            }
+        );
+
+    } catch (Throwable $throwable) {
+        handleException($throwable);
+    }
+}
+
+add_action('plugins_loaded', __NAMESPACE__ . '\\initialize', PHP_INT_MAX);
+
+/**
+ * Handle any exception that might occur during plugin setup.
+ *
+ * @param Throwable $throwable The Exception
+ *
+ * @return void
+ */
+function handleException(Throwable $throwable)
+{
+    do_action('ecurring.woo-ecurring.critical', $throwable);
+
+    errorNotice(
+        sprintf(
+            '<strong>Error:</strong> %s <br><pre>%s</pre>',
+            $throwable->getMessage(),
+            $throwable->getTraceAsString()
+        )
+    );
+}
+
+/**
+ * Display an error message in the WP admin.
+ *
+ * @param string $message The message content
+ *
+ * @return void
+ */
+function errorNotice(string $message)
+{
+    foreach (['admin_notices', 'network_admin_notices'] as $hook) {
+        add_action(
+            $hook,
+            function () use ($message) {
+                $class = 'notice notice-error';
+                printf(
+                    '<div class="%1$s"><p>%2$s</p></div>',
+                    esc_attr($class),
+                    wp_kses_post($message)
+                );
+            }
+        );
+    }
+}

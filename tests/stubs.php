@@ -74,9 +74,3 @@ if(! class_exists(WC_Product::class))
 		}
 	}
 }
-
-if (!function_exists('add_filter')) {
-    function add_filter()
-    {
-    }
-}

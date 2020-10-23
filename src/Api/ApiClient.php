@@ -49,7 +49,7 @@ class ApiClient implements ApiClientInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getSubscriptionById($subscription_id): array
+	public function getSubscriptionById(string $subscription_id): array
 	{
 		$url = 'https://api.ecurring.com/subscriptions/'.$subscription_id;
 
@@ -141,7 +141,7 @@ class ApiClient implements ApiClientInterface {
 	 *
 	 * @throws ApiClientException
 	 */
-	protected function parseResponse($rawResponseBody)
+	protected function parseResponse(string $rawResponseBody): array
 	{
 		$parsedResponse = json_decode($rawResponseBody, true);
 

@@ -15,7 +15,7 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 	 * @param array    $subscriptionData Subscription to save.
 	 * @param WC_Order $subscriptionOrder The order subscription should be associated with.
 	 */
-	public function saveSubscription(array $subscriptionData, WC_Order $subscriptionOrder)
+	public function saveSubscription(array $subscriptionData, WC_Order $subscriptionOrder): void
 	{
 		$subscriptionId = $subscriptionData['data']['id'];
 
@@ -37,7 +37,8 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getProductSubscriptionId( WC_Product $product) {
+	public function getProductSubscriptionId( WC_Product $product): ?string
+    {
 		$subscriptionId = $product->get_meta( self::ECURRING_SUBSCRIPTION_PLAN_FIELD, true );
 
 		//Previously plugin saved subscription id '0' for non-eCurring products.
@@ -47,7 +48,7 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getSubscriptionIdByOrder( WC_Order $order )
+	public function getSubscriptionIdByOrder( WC_Order $order ): ?string
 	{
 		$subscriptionId = $order->get_meta(self::ECURRING_SUBSCRIPTION_ID_FIELD, true);
 
@@ -61,7 +62,8 @@ class SubscriptionCrud implements SubscriptionCrudInterface {
 	 *
 	 * @return string Url of the subscription page.
 	 */
-	protected function buildSubscriptionUrl(string $subscriptionApiUrl) {
+	protected function buildSubscriptionUrl(string $subscriptionApiUrl): string
+    {
 		$id = basename($subscriptionApiUrl);
 
 		return sprintf(

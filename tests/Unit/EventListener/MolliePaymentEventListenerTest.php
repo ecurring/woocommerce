@@ -1,11 +1,11 @@
 <?php
 
-namespace eCurring\WooEcurringTests\Unit\EventListener;
+namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MolliePaymentEventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use eCurring_WC_Helper_Data;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;

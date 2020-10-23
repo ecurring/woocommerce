@@ -1,9 +1,9 @@
 <?php
 
-namespace eCurring\WooEcurringTests\Unit\PaymentGatewaysFilter;
+namespace Ecurring\WooEcurringTests\Unit\PaymentGatewaysFilter;
 
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use WC_Payment_Gateway;
 use function Patchwork\redefine;
 

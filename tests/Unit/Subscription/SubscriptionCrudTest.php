@@ -1,9 +1,9 @@
 <?php
 
-namespace eCurring\WooEcurringTests\Unit\Subscription;
+namespace Ecurring\WooEcurringTests\Unit\Subscription;
 
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use WC_Order;
 use function Brain\Monkey\Functions\when;

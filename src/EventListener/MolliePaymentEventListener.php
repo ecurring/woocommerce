@@ -68,7 +68,8 @@ class MolliePaymentEventListener implements EventListenerInterface {
 	 * @param Payment  $payment Created payment.
 	 * @param WC_Order $order   The order payment created for.
 	 */
-	public function onMolliePaymentCreated($payment, WC_Order $order ) {
+	public function onMolliePaymentCreated($payment, WC_Order $order ): void
+    {
 
 		if( $this->subscriptionForOrderExists($order) )
 		{
@@ -144,7 +145,8 @@ class MolliePaymentEventListener implements EventListenerInterface {
 	 * @return array
 	 * @throws ApiClientException
 	 */
-	protected function createEcurringSubscription( WC_Order $order, string $subscriptionId ) {
+	protected function createEcurringSubscription( WC_Order $order, string $subscriptionId ): array
+    {
 
 		return $this->apiClient->createSubscription(
 			$this->dataHelper->getUsereCurringCustomerId( $order ),
