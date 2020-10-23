@@ -15,7 +15,6 @@
         "phpunit/phpunit": "^5 || ^7.1",
         "brain/monkey": "^2.4",
         "antecedent/patchwork": " ^2.1",
-        "johnpbloch/wordpress-core": "^5.5",
         "vimeo/psalm": "^3.17",
         "roots/wordpress": "@stable",
         "woocommerce/woocommerce": "^4.5",
