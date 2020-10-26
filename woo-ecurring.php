@@ -302,11 +302,11 @@ function initialize()
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $repository = new Repository();
+        $customerApi = new Customers($apiHelper);
+        $repository = new Repository($customerApi);
         $display = new Display();
         $subscriptionsApi = new SubscriptionsApi($apiHelper);
-        $save = new Save($subscriptionsApi);
-        $customerApi = new Customers($apiHelper);
+        $save = new Save($subscriptionsApi, $repository);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
 

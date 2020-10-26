@@ -2,31 +2,28 @@
 
 namespace Ecurring\WooEcurring\Subscription;
 
-use Ecurring\WooEcurring\Api\Customers;
-use eCurring_WC_Helper_Api;
-use eCurring_WC_Helper_Settings;
+use Ecurring\WooEcurring\Api\Customers as CustomersApi;
 use WP_Query;
 
 class Repository
 {
     /**
+     * @var CustomersApi
+     */
+    private $customers;
+
+    public function __construct(CustomersApi $customers)
+    {
+        $this->customers = $customers;
+    }
+
+    /**
      * Create posts as subscription post type
+     * @param object[] $subscriptions
      */
     public function createSubscriptions($subscriptions)
     {
-        $query = new WP_Query(
-            [
-                [
-                    'post_type' => 'esubscriptions',
-                    'posts_per_page' => -1,
-                    'post_status' => 'publish',
-                ],
-            ]
-        );
-        $subscriptionIds = [];
-        foreach ($query->posts as $post) {
-            $subscriptionIds[] = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
-        }
+        $subscriptionIds = $this->getSubscriptionIds();
 
         foreach ($subscriptions->data as $subscription) {
 
@@ -53,8 +50,7 @@ class Repository
         );
 
         if ($postId && is_int($postId)) {
-            $customer = $this->getCustomerApi();
-            $customerDetails = $customer->getCustomerById(
+            $customerDetails = $this->customers->getCustomerById(
                 $subscription->relationships->customer->data->id
             );
             add_post_meta($postId, '_ecurring_post_subscription_customer', $customerDetails);
@@ -90,8 +86,7 @@ class Repository
             $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
 
             if ($postSubscriptionId && $postSubscriptionId === $subscription->data->id) {
-                $customer = $this->getCustomerApi();
-                $customerDetails = $customer->getCustomerById(
+                $customerDetails = $this->customers->getCustomerById(
                     $subscription->relationships->customer->data->id
                 );
                 update_post_meta($post->ID, '_ecurring_post_subscription_customer', $customerDetails);
@@ -145,13 +140,25 @@ class Repository
     }
 
     /**
-     * @return Customers
+     * @return array
      */
-    protected function getCustomerApi(): Customers
+    protected function getSubscriptionIds(): array
     {
-        $settingsHelper = new eCurring_WC_Helper_Settings();
-        $api = new eCurring_WC_Helper_Api($settingsHelper);
-        $customer = new Customers($api);
-        return $customer;
+        $query = new WP_Query(
+            [
+                [
+                    'post_type' => 'esubscriptions',
+                    'posts_per_page' => -1,
+                    'post_status' => 'publish',
+                ],
+            ]
+        );
+
+        $subscriptionIds = [];
+        foreach ($query->posts as $post) {
+            $subscriptionIds[] = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
+        }
+
+        return $subscriptionIds;
     }
 }

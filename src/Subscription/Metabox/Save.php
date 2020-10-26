@@ -14,9 +14,15 @@ class Save
      */
     private $subscriptionsApi;
 
-    public function __construct(SubscriptionsApi $subscriptionsApi)
+    /**
+     * @var Repository
+     */
+    private $repository;
+
+    public function __construct(SubscriptionsApi $subscriptionsApi, Repository $repository)
     {
         $this->subscriptionsApi = $subscriptionsApi;
+        $this->repository = $repository;
     }
 
     public function save($postId)
@@ -143,9 +149,7 @@ class Save
                         ],
                     ]
                 ));
-
-                $postSubscription = new Repository();
-                $postSubscription->create($create->data);
+                $this->repository->create($create->data);
                 break;
             case 'cancel':
                 $response = json_decode($this->subscriptionsApi->cancel($subscriptionId, $cancelDate));
