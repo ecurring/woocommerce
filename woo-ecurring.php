@@ -14,9 +14,9 @@
  * WC tested up to: 4.6
  */
 
-// Exit if accessed directly.
+use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\EnvironmentChecker;
-use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Customer\Subscriptions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\SubscriptionsJob;
 use Ecurring\WooEcurring\Subscription\PostType;
@@ -27,7 +27,8 @@ use Ecurring\WooEcurring\Assets;
 use Ecurring\WooEcurring\WebHook;
 use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
-use Ecurring\WooEcurring\Customer\Subscriptions;
+use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -301,19 +302,21 @@ function initialize()
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $actions = new Actions($apiHelper);
         $repository = new Repository();
         $display = new Display();
-        $save = new Save($actions);
-        $subscriptions = new Subscriptions($apiHelper);
+        $subscriptionApi = new SubscriptionsApi($apiHelper);
+        $save = new Save($subscriptionApi);
+        $customerApi = new Customers($apiHelper);
+        $subscriptionPlans = new SubscriptionPlans($apiHelper);
+        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
 
-        (new SubscriptionsJob($actions, $repository))->init();
+        (new SubscriptionsJob($subscriptionApi, $repository))->init();
         (new Metabox($display, $save))->init();
         (new PostType($apiHelper))->init();
         (new Assets())->init();
         (new WebHook($apiHelper, $repository))->init();
         (new Settings())->init();
-        (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
+        (new MyAccount($subscriptionApi, $repository, $subscriptions))->init();
 
         add_action(
             'woocommerce_payment_complete',

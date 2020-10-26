@@ -82,6 +82,11 @@ class PostType
                         $subscriptionPlans = (new SubscriptionPlans(
                             $this->api
                         ))->getSubscriptionPlans();
+
+                        if (!isset($subscriptionPlans->data)) {
+                            break;
+                        }
+
                         $products = [];
                         foreach ($subscriptionPlans->data as $product) {
                             $products[$product->id] = $product->attributes->name ?: '';

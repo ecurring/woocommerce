@@ -2,7 +2,7 @@
 
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
-use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Subscriptions;
 
 class Metabox
 {
@@ -32,6 +32,14 @@ class Metabox
                     'Details',
                     function ($post)  {
                         $this->display->details($post);
+                    },
+                    'esubscriptions'
+                );
+                add_meta_box(
+                    'ecurring_subscription_general',
+                    'General',
+                    function ($post)  {
+                        $this->display->general($post);
                     },
                     'esubscriptions'
                 );

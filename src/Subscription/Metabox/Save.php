@@ -3,19 +3,20 @@
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
-use Ecurring\WooEcurring\Subscription\Actions;
+
+use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
 use Ecurring\WooEcurring\Subscription\Repository;
 
 class Save
 {
     /**
-     * @var Actions
+     * @var SubscriptionsApi
      */
-    private $actions;
+    private $subscriptionsApi;
 
-    public function __construct(Actions $actions)
+    public function __construct(SubscriptionsApi $subscriptionsApi)
     {
-        $this->actions = $actions;
+        $this->subscriptionsApi = $subscriptionsApi;
     }
 
     public function save($postId)
@@ -91,7 +92,7 @@ class Save
         switch ($subscriptionType) {
             case 'pause':
                 $response = json_decode(
-                    $this->actions->pause(
+                    $this->subscriptionsApi->pause(
                         $subscriptionId,
                         $resumeDate
                     )
@@ -99,11 +100,11 @@ class Save
                 $this->updateSubscription($postId, $response);
                 break;
             case 'resume':
-                $response = json_decode($this->actions->resume($subscriptionId));
+                $response = json_decode($this->subscriptionsApi->resume($subscriptionId));
                 $this->updateSubscription($postId, $response);
                 break;
             case 'switch':
-                $cancel = json_decode($this->actions->cancel($subscriptionId, $switchDate));
+                $cancel = json_decode($this->subscriptionsApi->cancel($subscriptionId, $switchDate));
                 $this->updateSubscription($postId, $cancel);
 
                 $productId = filter_input(
@@ -123,7 +124,7 @@ class Save
                     home_url('/')
                 );
 
-                $create = json_decode($this->actions->create(
+                $create = json_decode($this->subscriptionsApi->create(
                     [
                         'data' => [
                             'type' => 'subscription',
@@ -147,7 +148,7 @@ class Save
                 $postSubscription->create($create->data);
                 break;
             case 'cancel':
-                $response = json_decode($this->actions->cancel($subscriptionId, $cancelDate));
+                $response = json_decode($this->subscriptionsApi->cancel($subscriptionId, $cancelDate));
                 $this->updateSubscription($postId, $response);
                 break;
         }

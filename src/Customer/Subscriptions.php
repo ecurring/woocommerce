@@ -3,34 +3,37 @@
 namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
-use eCurring_WC_Helper_Api;
+use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 
 class Subscriptions
 {
     /**
-     * @var eCurring_WC_Helper_Api
+     * @var Customers
      */
-    private $api;
+    private $customer;
 
-    public function __construct(eCurring_WC_Helper_Api $api)
+    /**
+     * @var SubscriptionPlans
+     */
+    private $subscriptionPlans;
+
+    public function __construct(Customers $customer, SubscriptionPlans $subscriptionPlans)
     {
-        $this->api = $api;
+        $this->customer = $customer;
+        $this->subscriptionPlans = $subscriptionPlans;
     }
 
     public function display()
     {
         $customerId = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
-        $subscriptions = json_decode(
-            $this->api->apiCall(
-                'GET',
-                "https://api.ecurring.com/customers/{$customerId}/subscriptions"
-            )
-        );
+        $subscriptions = $this->customer->getCustomerSubscriptions($customerId);
+        $subscriptionsData = $subscriptions->data ?? [];
 
-        $subscriptionPlans = (new SubscriptionPlans($this->api))->getSubscriptionPlans();
+        $subscriptionPlans = $this->subscriptionPlans->getSubscriptionPlans();
+        $subscriptionPlansData = $subscriptionPlans->data ?? [];
         $products = [];
-        foreach ($subscriptionPlans->data as $product) {
+        foreach ($subscriptionPlansData as $product) {
             $products[$product->id] = $product->attributes->name;
         }
         ?>
@@ -47,7 +50,11 @@ class Subscriptions
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($subscriptions->data as $subscription) { ?>
+            <?php foreach ($subscriptionsData as $subscription) {
+                if (!$subscription) {
+                    continue;
+                }
+                ?>
                 <tr class="woocommerce-orders-table__row order">
                     <td class="woocommerce-orders-table__cell" data-title="Subscription">
                         <?php echo esc_attr($subscription->id); ?>

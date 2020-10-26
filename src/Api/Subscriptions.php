@@ -1,10 +1,10 @@
 <?php
 
-namespace Ecurring\WooEcurring\Subscription;
+namespace Ecurring\WooEcurring\Api;
 
 use eCurring_WC_Helper_Api;
 
-class Actions
+class Subscriptions
 {
     /**
      * @var eCurring_WC_Helper_Api
@@ -92,7 +92,7 @@ class Actions
         );
     }
 
-    public function import(int $page)
+    public function getSubscriptions(int $page)
     {
         return $this->apiHelper->apiCall(
             'GET',

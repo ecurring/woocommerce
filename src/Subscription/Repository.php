@@ -2,9 +2,10 @@
 
 namespace Ecurring\WooEcurring\Subscription;
 
-use Ecurring\WooEcurring\Api\Customer;
+use Ecurring\WooEcurring\Api\Customers;
 use eCurring_WC_Helper_Api;
 use eCurring_WC_Helper_Settings;
+use WP_Query;
 
 class Repository
 {
@@ -13,18 +14,17 @@ class Repository
      */
     public function createSubscriptions($subscriptions)
     {
-        // TODO use WP_Query instead of get_posts
-        $subscriptionPosts = get_posts(
+        $query = new WP_Query(
             [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
+                [
+                    'post_type' => 'esubscriptions',
+                    'posts_per_page' => -1,
+                    'post_status' => 'publish',
+                ],
             ]
         );
-
         $subscriptionIds = [];
-        foreach ($subscriptionPosts as $post) {
-
+        foreach ($query->posts as $post) {
             $subscriptionIds[] = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         }
 
@@ -76,15 +76,17 @@ class Repository
 
     public function update($subscription)
     {
-        // TODO use WP_Query instead of get_posts
-        $subscriptionPosts = get_posts(
+        $query = new WP_Query(
             [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
+                [
+                    'post_type' => 'esubscriptions',
+                    'posts_per_page' => -1,
+                    'post_status' => 'publish',
+                ],
             ]
         );
-        foreach ($subscriptionPosts as $post) {
+
+        foreach ($query->posts as $post) {
             $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
 
             if ($postSubscriptionId && $postSubscriptionId === $subscription->data->id) {
@@ -143,13 +145,13 @@ class Repository
     }
 
     /**
-     * @return Customer
+     * @return Customers
      */
-    protected function getCustomerApi(): Customer
+    protected function getCustomerApi(): Customers
     {
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $api = new eCurring_WC_Helper_Api($settingsHelper);
-        $customer = new Customer($api);
+        $customer = new Customers($api);
         return $customer;
     }
 }

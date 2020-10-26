@@ -16,14 +16,8 @@ class SubscriptionPlans
 
     public function getSubscriptionPlans()
     {
-        if (get_transient('ecurring_all_subscription_plans')) {
-            return get_transient('ecurring_all_subscription_plans');
-        }
-
-        $subscriptionPlans = json_decode(
+        return json_decode(
             $this->api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
         );
-
-        set_transient('ecurring_all_subscription_plans', $subscriptionPlans, 5 * MINUTE_IN_SECONDS);
     }
 }

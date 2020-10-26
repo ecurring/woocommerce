@@ -2,24 +2,24 @@
 
 namespace Ecurring\WooEcurring;
 
-use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
 use Ecurring\WooEcurring\Subscription\Repository;
 
 class SubscriptionsJob
 {
     /**
-     * @var Actions Subscription actions.
+     * @var SubscriptionsApi
      */
-    private $actions;
+    private $subscriptionsApi;
 
     /**
      * @var Repository
      */
     private $repository;
 
-    public function __construct(Actions $actions, Repository $repository)
+    public function __construct(SubscriptionsApi $subscriptionsApi, Repository $repository)
     {
-        $this->actions = $actions;
+        $this->subscriptionsApi = $subscriptionsApi;
         $this->repository = $repository;
     }
 
@@ -57,7 +57,7 @@ class SubscriptionsJob
 
                 $page = get_option('ecurring_subscriptions_page', 1);
 
-                $subscriptions = json_decode($this->actions->import((int)$page));
+                $subscriptions = json_decode($this->subscriptionsApi->getSubscriptions((int)$page));
 
                 $this->repository->createSubscriptions($subscriptions);
 

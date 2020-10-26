@@ -3,22 +3,17 @@
 namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
-use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
 use Ecurring\WooEcurring\Subscription\Repository;
-use eCurring_WC_Helper_Api;
 use Exception;
+use WP_Query;
 
 class MyAccount
 {
     /**
-     * @var eCurring_WC_Helper_Api
+     * @var SubscriptionsApi
      */
-    private $api;
-
-    /**
-     * @var Actions
-     */
-    private $actions;
+    private $subscriptionsApi;
 
     /**
      * @var Repository
@@ -31,15 +26,14 @@ class MyAccount
     private $subscriptions;
 
     public function __construct(
-        eCurring_WC_Helper_Api $api,
-        Actions $actions,
+        SubscriptionsApi $subscriptionsApi,
         Repository $repository,
         Subscriptions $subscriptions
     ) {
-        $this->api = $api;
-        $this->actions = $actions;
+        $this->subscriptionsApi = $subscriptionsApi;
         $this->repository = $repository;
         $this->subscriptions = $subscriptions;
+
     }
 
     public function init()
@@ -92,23 +86,23 @@ class MyAccount
         add_action(
             'wp_ajax_ecurring_customer_subscriptions',
             function () {
-                $this->doSubscriptionAction($this->actions);
+                $this->doSubscriptionAction($this->subscriptionsApi);
             }
         );
         add_action(
             'wp_ajax_nopriv_ecurring_customer_subscriptions',
             function () {
-                $this->doSubscriptionAction($this->actions);
+                $this->doSubscriptionAction($this->subscriptionsApi);
             }
         );
     }
 
     /**
-     * @param Actions $actions
+     * @param SubscriptionsApi $subscriptionsApi
      * @throws Exception
      */
     protected function doSubscriptionAction(
-        Actions $actions
+        SubscriptionsApi $subscriptionsApi
     ): void {
         $subscriptionType = filter_input(
             INPUT_POST,
@@ -173,7 +167,7 @@ class MyAccount
         switch ($subscriptionType) {
             case 'pause':
                 $response = json_decode(
-                    $actions->pause(
+                    $subscriptionsApi->pause(
                         $subscriptionId,
                         $resumeDate
                     )
@@ -181,11 +175,11 @@ class MyAccount
                 $this->updatePostSubscription($response);
                 break;
             case 'resume':
-                $response = json_decode($actions->resume($subscriptionId));
+                $response = json_decode($subscriptionsApi->resume($subscriptionId));
                 $this->updatePostSubscription($response);
                 break;
             case 'switch':
-                $cancel = json_decode($actions->cancel($subscriptionId, $switchDate));
+                $cancel = json_decode($subscriptionsApi->cancel($subscriptionId, $switchDate));
                 $this->updatePostSubscription($cancel);
 
                 $productId = filter_input(
@@ -206,7 +200,7 @@ class MyAccount
                 );
 
                 $response = json_decode(
-                    $actions->create(
+                    $subscriptionsApi->create(
                         [
                             'data' => [
                                 'type' => 'subscription',
@@ -232,7 +226,7 @@ class MyAccount
                 break;
             case 'cancel':
                 $response = json_decode(
-                    $actions->cancel($subscriptionId, $cancelDate)
+                    $subscriptionsApi->cancel($subscriptionId, $cancelDate)
                 );
                 $this->updatePostSubscription($response);
                 break;
@@ -246,15 +240,17 @@ class MyAccount
      */
     protected function updatePostSubscription($response)
     {
-        $subscriptionPosts = get_posts(
+        $query = new WP_Query(
             [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
+                [
+                    'post_type' => 'esubscriptions',
+                    'posts_per_page' => -1,
+                    'post_status' => 'publish',
+                ],
             ]
         );
 
-        foreach ($subscriptionPosts as $post) {
+        foreach ($query->posts as $post) {
             $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
 
             if ($postSubscriptionId && $postSubscriptionId === $response->data->id) {
