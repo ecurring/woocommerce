@@ -22,6 +22,21 @@ class PostType
     {
         $this->register();
         $this->listColumns();
+
+        add_filter(
+            'post_row_actions',
+            function ($actions) {
+                if (get_post_type() === 'esubscriptions') {
+                    unset($actions['edit']);
+                    unset($actions['view']);
+                    unset($actions['trash']);
+                    unset($actions['inline hide-if-no-js']);
+                }
+                return $actions;
+            },
+            10,
+            1
+        );
     }
 
     protected function register()
@@ -36,9 +51,14 @@ class PostType
                         'singular_name' => esc_html__('Subscription', 'woo-ecurring'),
                         'menu_name' => esc_html__('Subscriptions', 'woo-ecurring'),
                     ],
-                    'public' => true,
+                    'public' => false,
+                    'show_ui' => true,
                     'publicly_queryable' => true,
                     'supports' => ['title'],
+                    'capabilities' => [
+                        'create_posts' => false,
+                    ],
+                    'map_meta_cap' => true,
                 ];
 
                 register_post_type('esubscriptions', $args);

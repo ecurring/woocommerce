@@ -304,19 +304,19 @@ function initialize()
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
         $repository = new Repository();
         $display = new Display();
-        $subscriptionApi = new SubscriptionsApi($apiHelper);
-        $save = new Save($subscriptionApi);
+        $subscriptionsApi = new SubscriptionsApi($apiHelper);
+        $save = new Save($subscriptionsApi);
         $customerApi = new Customers($apiHelper);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
 
-        (new SubscriptionsJob($subscriptionApi, $repository))->init();
+        (new SubscriptionsJob($subscriptionsApi, $repository))->init();
         (new Metabox($display, $save))->init();
         (new PostType($apiHelper))->init();
         (new Assets())->init();
-        (new WebHook($apiHelper, $repository))->init();
+        (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
-        (new MyAccount($subscriptionApi, $repository, $subscriptions))->init();
+        (new MyAccount($subscriptionsApi, $repository, $subscriptions))->init();
 
         add_action(
             'woocommerce_payment_complete',

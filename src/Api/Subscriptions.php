@@ -99,4 +99,14 @@ class Subscriptions
             "https://api.ecurring.com/subscriptions?page[number]={$page}"
         );
     }
+
+    public function getSubscriptionById($subscriptionId)
+    {
+        return json_decode(
+            $this->apiHelper->apiCall(
+                'GET',
+                "https://api.ecurring.com/subscriptions/{$subscriptionId}"
+            )
+        );
+    }
 }
