@@ -10,7 +10,7 @@ use eCurring_WC_Plugin;
 /**
  * Add to cart validation. Disallow to add to the cart more than one subscription.
  */
-class AddToCartValidationEventListener {
+class AddToCartValidationEventListener implements EventListenerInterface {
 
 	/**
 	 * @var SubscriptionCrudInterface
