@@ -18,18 +18,34 @@ class Customers
 
     public function getCustomerById($customerId)
     {
-        return json_decode(
+        $customer = get_transient("ecurring_customer_{$customerId}");
+        if ($customer !== false) {
+            return $customer;
+        }
+
+        $response = json_decode(
             $this->api->apiCall('GET', "https://api.ecurring.com/customers/{$customerId}")
         );
+
+        set_transient("ecurring_customer_{$customerId}", $response, 5 * MINUTE_IN_SECONDS);
+        return $response;
     }
 
     public function getCustomerSubscriptions($customerId)
     {
-        return json_decode(
+        $subscriptions = get_transient("ecurring_customer_subscriptions_{$customerId}");
+        if ($subscriptions !== false) {
+            return $subscriptions;
+        }
+
+        $response = json_decode(
             $this->api->apiCall(
                 'GET',
                 "https://api.ecurring.com/customers/{$customerId}/subscriptions"
             )
         );
+
+        set_transient("ecurring_customer_subscriptions_{$customerId}", $response, 5 * MINUTE_IN_SECONDS);
+        return $response;
     }
 }
