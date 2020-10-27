@@ -175,11 +175,11 @@ class MyAccount
                 $this->updatePostSubscription($response);
                 break;
             case 'resume':
-                $response = json_decode($subscriptionsApi->resume($subscriptionId));
+                $response = $subscriptionsApi->resume($subscriptionId);
                 $this->updatePostSubscription($response);
                 break;
             case 'switch':
-                $cancel = json_decode($subscriptionsApi->cancel($subscriptionId, $switchDate));
+                $cancel = $subscriptionsApi->cancel($subscriptionId, $switchDate);
                 $this->updatePostSubscription($cancel);
 
                 $productId = filter_input(

@@ -57,7 +57,7 @@ class SubscriptionsJob
 
                 $page = get_option('ecurring_subscriptions_page', 1);
 
-                $subscriptions = json_decode($this->subscriptionsApi->getSubscriptions((int)$page));
+                $subscriptions = $this->subscriptionsApi->getSubscriptions((int)$page);
 
                 $this->repository->createSubscriptions($subscriptions);
 

@@ -47,56 +47,61 @@ class Subscriptions
      */
     public function pause($subscriptionId, $resumeDate)
     {
-        return $this->apiHelper->apiCall(
-            'PATCH',
-            "https://api.ecurring.com/subscriptions/{$subscriptionId}",
-            [
-                'data' => [
-                    'type' => 'subscription',
-                    'id' => $subscriptionId,
-                    'attributes' => [
-                        'status' => 'paused',
-                        'resume_date' => $resumeDate,
+        return json_decode(
+            $this->apiHelper->apiCall(
+                'PATCH',
+                "https://api.ecurring.com/subscriptions/{$subscriptionId}",
+                [
+                    'data' => [
+                        'type' => 'subscription',
+                        'id' => $subscriptionId,
+                        'attributes' => [
+                            'status' => 'paused',
+                            'resume_date' => $resumeDate,
+                        ],
                     ],
-                ],
-            ]
+                ]
+            )
         );
     }
 
     public function resume($subscriptionId)
     {
-        return $this->apiHelper->apiCall(
-            'PATCH',
-            "https://api.ecurring.com/subscriptions/{$subscriptionId}",
-            [
-                'data' => [
-                    'type' => 'subscription',
-                    'id' => $subscriptionId,
-                    'attributes' => [
-                        'status' => 'active',
+        return json_decode(
+            $this->apiHelper->apiCall(
+                'PATCH',
+                "https://api.ecurring.com/subscriptions/{$subscriptionId}",
+                [
+                    'data' => [
+                        'type' => 'subscription',
+                        'id' => $subscriptionId,
+                        'attributes' => [
+                            'status' => 'active',
+                        ],
                     ],
-                ],
-            ]
+                ]
+            )
         );
     }
 
-    /**
-     * @param ((bool|mixed|string)[]|string)[][] $data
-     */
     public function create(array $data)
     {
-        return $this->apiHelper->apiCall(
-            'POST',
-            'https://api.ecurring.com/subscriptions',
-            $data
+        return json_decode(
+            $this->apiHelper->apiCall(
+                'POST',
+                'https://api.ecurring.com/subscriptions',
+                $data
+            )
         );
     }
 
     public function getSubscriptions(int $page)
     {
-        return $this->apiHelper->apiCall(
-            'GET',
-            "https://api.ecurring.com/subscriptions?page[number]={$page}"
+        return json_decode(
+            $this->apiHelper->apiCall(
+                'GET',
+                "https://api.ecurring.com/subscriptions?page[number]={$page}"
+            )
         );
     }
 

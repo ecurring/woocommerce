@@ -27,7 +27,7 @@ class Save
 
     public function save($postId)
     {
-        $subscriptionType = $subscriptionType = filter_input(
+        $subscriptionType = filter_input(
             INPUT_POST,
             'ecurring_subscription',
             FILTER_SANITIZE_STRING
@@ -39,78 +39,25 @@ class Save
             FILTER_SANITIZE_STRING
         );
 
-        $pauseSubscription = filter_input(
-            INPUT_POST,
-            'ecurring_pause_subscription',
-            FILTER_SANITIZE_STRING
-        );
-        $resumeDate = '';
-        if ($pauseSubscription === 'specific-date') {
-            $resumeDate = filter_input(
-                INPUT_POST,
-                'ecurring_resume_date',
-                FILTER_SANITIZE_STRING
-            );
-
-            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
-        }
-
-        $cancelSubscription = filter_input(
-            INPUT_POST,
-            'ecurring_cancel_subscription',
-            FILTER_SANITIZE_STRING
-        );
-        $cancelDate = '';
-        if ($cancelSubscription === 'specific-date') {
-            $cancelDate = filter_input(
-                INPUT_POST,
-                'ecurring_cancel_date',
-                FILTER_SANITIZE_STRING
-            );
-
-            $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
-        }
-
-        $switchSubscription = filter_input(
-            INPUT_POST,
-            'ecurring_switch_subscription',
-            FILTER_SANITIZE_STRING
-        );
-        $switchDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
-        if ($switchSubscription === 'specific-date') {
-            $switchDate = filter_input(
-                INPUT_POST,
-                'ecurring_switch_date',
-                FILTER_SANITIZE_STRING
-            );
-
-            $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
-        }
-
-        if (!$subscriptionType || !in_array(
-                $subscriptionType,
-                ['pause', 'resume', 'switch', 'cancel'],
-                true
-            ) || !$subscriptionId) {
+        if ($this->subscriptionNotAllowed($subscriptionType, $subscriptionId)) {
             return;
         }
 
+        $resumeDate = $this->setResumeDate();
+        $cancelDate = $this->setCancelDate();
+        $switchDate = $this->setSwitchDate();
+
         switch ($subscriptionType) {
             case 'pause':
-                $response = json_decode(
-                    $this->subscriptionsApi->pause(
-                        $subscriptionId,
-                        $resumeDate
-                    )
-                );
+                $response = $this->subscriptionsApi->pause($subscriptionId, $resumeDate);
                 $this->updateSubscriptionAttributes($postId, $response);
                 break;
             case 'resume':
-                $response = json_decode($this->subscriptionsApi->resume($subscriptionId));
+                $response = $this->subscriptionsApi->resume($subscriptionId);
                 $this->updateSubscriptionAttributes($postId, $response);
                 break;
             case 'switch':
-                $cancel = json_decode($this->subscriptionsApi->cancel($subscriptionId, $switchDate));
+                $cancel = $this->subscriptionsApi->cancel($subscriptionId, $switchDate);
                 $this->updateSubscriptionAttributes($postId, $cancel);
 
                 $productId = filter_input(
@@ -130,7 +77,7 @@ class Save
                     home_url('/')
                 );
 
-                $create = json_decode($this->subscriptionsApi->create(
+                $create = $this->subscriptionsApi->create(
                     [
                         'data' => [
                             'type' => 'subscription',
@@ -144,15 +91,15 @@ class Save
                                 'subscription_webhook_url' => $subscriptionWebhookUrl,
                                 'transaction_webhook_url' => $transactionWebhookUrl,
                                 'status' => 'active',
-                                "start_date" => $switchDate
+                                "start_date" => $switchDate,
                             ],
                         ],
                     ]
-                ));
+                );
                 $this->repository->create($create->data);
                 break;
             case 'cancel':
-                $response = json_decode($this->subscriptionsApi->cancel($subscriptionId, $cancelDate));
+                $response = $this->subscriptionsApi->cancel($subscriptionId, $cancelDate);
                 $this->updateSubscriptionAttributes($postId, $response);
                 break;
         }
@@ -164,6 +111,97 @@ class Save
      */
     protected function updateSubscriptionAttributes($postId, $response)
     {
-        update_post_meta($postId, '_ecurring_post_subscription_attributes', $response->data->attributes);
+        update_post_meta(
+            $postId,
+            '_ecurring_post_subscription_attributes',
+            $response->data->attributes
+        );
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function setResumeDate(): string
+    {
+        $pauseSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_pause_subscription',
+            FILTER_SANITIZE_STRING
+        );
+
+        $resumeDate = '';
+
+        if ($pauseSubscription === 'specific-date') {
+            $resumeDate = filter_input(
+                INPUT_POST,
+                'ecurring_resume_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
+        }
+
+        return $resumeDate;
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function setCancelDate(): string
+    {
+        $cancelSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_cancel_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $cancelDate = '';
+        if ($cancelSubscription === 'specific-date') {
+            $cancelDate = filter_input(
+                INPUT_POST,
+                'ecurring_cancel_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
+        }
+        return $cancelDate;
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function setSwitchDate(): string
+    {
+        $switchSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_switch_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $switchDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
+        if ($switchSubscription === 'specific-date') {
+            $switchDate = filter_input(
+                INPUT_POST,
+                'ecurring_switch_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
+        }
+        return $switchDate;
+    }
+
+    /**
+     * @param $subscriptionType
+     * @param $subscriptionId
+     * @return bool
+     */
+    protected function subscriptionNotAllowed($subscriptionType, $subscriptionId): bool
+    {
+        return !$subscriptionType
+            || !in_array($subscriptionType, ['pause', 'resume', 'switch', 'cancel'], true)
+            || !$subscriptionId;
     }
 }
