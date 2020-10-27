@@ -72,17 +72,9 @@ class Repository
 
     public function update($subscription)
     {
-        $query = new WP_Query(
-            [
-                [
-                    'post_type' => 'esubscriptions',
-                    'posts_per_page' => -1,
-                    'post_status' => 'publish',
-                ],
-            ]
-        );
+        $posts = $this->getAllSubscriptionPosts();
 
-        foreach ($query->posts as $post) {
+        foreach ($posts as $post) {
             $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
 
             if ($postSubscriptionId && $postSubscriptionId === $subscription->data->id) {
@@ -160,5 +152,23 @@ class Repository
         }
 
         return $subscriptionIds;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAllSubscriptionPosts()
+    {
+        $query = new WP_Query(
+            [
+                [
+                    'post_type' => 'esubscriptions',
+                    'posts_per_page' => -1,
+                    'post_status' => 'publish',
+                ],
+            ]
+        );
+
+        return $query->posts;
     }
 }

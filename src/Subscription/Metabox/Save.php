@@ -103,15 +103,15 @@ class Save
                         $resumeDate
                     )
                 );
-                $this->updateSubscription($postId, $response);
+                $this->updateSubscriptionAttributes($postId, $response);
                 break;
             case 'resume':
                 $response = json_decode($this->subscriptionsApi->resume($subscriptionId));
-                $this->updateSubscription($postId, $response);
+                $this->updateSubscriptionAttributes($postId, $response);
                 break;
             case 'switch':
                 $cancel = json_decode($this->subscriptionsApi->cancel($subscriptionId, $switchDate));
-                $this->updateSubscription($postId, $cancel);
+                $this->updateSubscriptionAttributes($postId, $cancel);
 
                 $productId = filter_input(
                     INPUT_POST,
@@ -153,7 +153,7 @@ class Save
                 break;
             case 'cancel':
                 $response = json_decode($this->subscriptionsApi->cancel($subscriptionId, $cancelDate));
-                $this->updateSubscription($postId, $response);
+                $this->updateSubscriptionAttributes($postId, $response);
                 break;
         }
     }
@@ -162,7 +162,7 @@ class Save
      * @param $postId
      * @param $response
      */
-    protected function updateSubscription($postId, $response)
+    protected function updateSubscriptionAttributes($postId, $response)
     {
         update_post_meta($postId, '_ecurring_post_subscription_attributes', $response->data->attributes);
     }

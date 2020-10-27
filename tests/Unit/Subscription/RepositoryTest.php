@@ -61,4 +61,53 @@ class RepositoryTest extends TestCase
 
         $createSubscriptions->invoke($sut, $subscriptions);
     }
+
+    public function testUpdate()
+    {
+        $subscription = (object)[
+            'data' => (object)[
+                'id' => '123',
+                'links' => [],
+                'attributes' => [],
+                'relationships' => [],
+            ],
+            'relationships' => (object)[
+                'customer' => (object)[
+                    'data' => (object)[
+                        'id' => '42',
+                    ],
+                ],
+            ],
+        ];
+        $customersApi = $this->createMock(Customers::class);
+        $post = new class {
+            public $ID = 1;
+        };
+
+        $sut = $this
+            ->getMockBuilder(Repository::class)
+            ->setConstructorArgs([$customersApi])
+            ->setMethods(['getAllSubscriptionPosts'])
+            ->getMock();
+
+        $sut
+            ->expects($this->once())
+            ->method('getAllSubscriptionPosts')
+            ->willReturn(
+                [$post,]
+            );
+
+        when('get_post_meta')->justReturn('123');
+        when('update_post_meta')->justReturn(1);
+
+        $customersApi
+            ->expects($this->once())
+            ->method('getCustomerById')
+            ->willReturn([]);
+
+        $update = new ReflectionMethod($sut, 'update');
+        $update->setAccessible(true);
+
+        $update->invoke($sut, $subscription);
+    }
 }
