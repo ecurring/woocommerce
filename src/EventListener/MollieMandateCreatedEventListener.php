@@ -17,7 +17,7 @@ use WC_Order_Item_Product;
 /**
  * Listens for the Mollie payment create action.
  */
-class MolliePaymentEventListener implements EventListenerInterface {
+class MollieMandateCreatedEventListener implements EventListenerInterface {
 
 	/**
 	 * @var ApiClient
@@ -34,7 +34,7 @@ class MolliePaymentEventListener implements EventListenerInterface {
 	protected $subscriptionCrud;
 
 	/**
-	 * MolliePaymentEventListener constructor.
+	 * MollieMandateCreatedEventListener constructor.
 	 *
 	 * @param ApiClient $apiClient Service able to perform actions against eCurring API.
 	 */
@@ -54,23 +54,25 @@ class MolliePaymentEventListener implements EventListenerInterface {
 	 */
 	public function init(): void{
 		add_action(
-			'mollie-payments-for-woocommerce_payment_created',
-			[$this, 'onMolliePaymentCreated'],
+			'mollie-payments-for-woocommerce_after_mandate_created',
+			[$this, 'onMollieMandateCreated'],
 			10,
-			2
+			4
 		);
 	}
 
-	/**
-	 * Create an eCurring subscription after Mollie payment created if at order contains at least one subscription
-	 * product.
-	 *
-	 * @param Payment  $payment Created payment.
-	 * @param WC_Order $order   The order payment created for.
-	 */
-	public function onMolliePaymentCreated($payment, WC_Order $order ): void
+    /**
+     * Create an eCurring subscription after Mollie mandate created if at order contains at least one subscription
+     * product.
+     *
+     * @param Payment  $payment Created payment.
+     * @param WC_Order $order   The order payment created for.
+     * @param string   $mollieCustomerId
+     * @param string   $mandateId
+     *
+     */
+	public function onMollieMandateCreated($payment, WC_Order $order, string $mollieCustomerId, string $mandateId ): void
     {
-
 		if( $this->subscriptionForOrderExists($order) )
 		{
 			eCurring_WC_Plugin::debug(
