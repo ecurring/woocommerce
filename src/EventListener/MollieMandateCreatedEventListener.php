@@ -12,6 +12,7 @@ use eCurring_WC_Plugin;
 use Exception;
 use Mollie\Api\Resources\Payment;
 use WC_Order;
+use WC_Order_Item;
 use WC_Order_Item_Product;
 
 /**
@@ -86,26 +87,40 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
 		}
 
 		foreach ( $order->get_items() as $item ) {
-			if ( $item instanceof WC_Order_Item_Product ) {
-				try {
-					$product = $item->get_product();
-					$subscriptionId = $this->subscriptionCrud->getProductSubscriptionId($product);
-
-					if ( $subscriptionId !== null ) {
-						$subscriptionData = $this->createEcurringSubscription( $order, $subscriptionId );
-						$this->subscriptionCrud->saveSubscription($subscriptionData, $order);
-					}
-				} catch ( Exception $exception ) {
-					eCurring_WC_Plugin::debug(
-						sprintf(
-							'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
-							$exception->getMessage()
-						)
-					);
-				}
-			}
+		    $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
+            if ( $subscriptionId !== null ) {
+                try {
+                    $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
+                    $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
+                } catch ( Exception $exception ) {
+                    eCurring_WC_Plugin::debug(
+                        sprintf(
+                            'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
+                            $exception->getMessage()
+                        )
+                    );
+                }
+            }
 		}
 	}
+
+    /**
+     * Get subscription plan id from WC order item.
+     *
+     * @param WC_Order_Item $item Item to get subscription plan id from.
+     *
+     * @return string|null Subscription id or null if not exists.
+     */
+	protected function getSubscriptionPlanIdByOrderItem(WC_Order_Item $item): ?string
+    {
+        if(! $item instanceof WC_Order_Item_Product) {
+            return null;
+        }
+
+        $product = $item->get_product();
+
+        return $this->subscriptionCrud->getProductSubscriptionId($product);
+    }
 
 	/**
 	 * Check if subscription already created for given order.
