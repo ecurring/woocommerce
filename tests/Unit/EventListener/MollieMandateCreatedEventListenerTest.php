@@ -16,7 +16,7 @@ use WC_Product;
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 
-class MolliePaymentEventListenerTest extends TestCase {
+class MollieMandateCreatedEventListenerTest extends TestCase {
 
 	use MockeryPHPUnitIntegration;
 
@@ -37,7 +37,7 @@ class MolliePaymentEventListenerTest extends TestCase {
 		->once()
 		->with(
 			'mollie-payments-for-woocommerce_payment_created',
-			[$sut, 'onMolliePaymentCreated'],
+			[$sut, 'onMollieMandateCreated'],
 			10,
 			2
 		);
@@ -45,7 +45,7 @@ class MolliePaymentEventListenerTest extends TestCase {
 		$sut->init();
 	}
 
-	public function testOnMolliePaymentCreated()
+	public function testOnMollieMandateCreated()
 	{
 		/** @var ApiClient&MockObject $apiClientMock */
 		$apiClientMock = $this->createMock(ApiClient::class);
@@ -103,6 +103,6 @@ class MolliePaymentEventListenerTest extends TestCase {
 			)
 			->willReturn([]);
 
-		$sut->onMolliePaymentCreated(null, $orderMock);
+		$sut->onMollieMandateCreated(null, $orderMock, '', '');
 	}
 }
