@@ -92,6 +92,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
 		    $ecurringCustomerId = $this->createEcurringCustomerWithMollieMandate($mollieCustomerId, $order);
         }
 
+		$this->apiClient->addMollieMandateToTheCustomer($ecurringCustomerId, $mandateId);
+
 		foreach ( $order->get_items() as $item ) {
 		    $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
             if ( $subscriptionId !== null ) {
@@ -125,12 +127,14 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
     }
 
     /**
-     * Create a new ecurring user and attach a Mollie mandate.
+     * Create a new eCurring user and attach a Mollie mandate.
      *
      * @param string   $mollieCustomerId Mollie customer id to connect to new user.
      * @param WC_Order $order To take customer data from.
      *
      * @return string Created eCurring customer ID.
+     *
+     * @throws ApiClientException If customer creating failed.
      */
     public function createEcurringCustomerWithMollieMandate(string $mollieCustomerId, WC_Order $order): string
     {
