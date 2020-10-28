@@ -86,6 +86,12 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
 			return;
 		}
 
+		$ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
+
+		if($ecurringCustomerId === null){
+		    $ecurringCustomerId = $this->createEcurringCustomerWithMollieMandate($mollieCustomerId, $order);
+        }
+
 		foreach ( $order->get_items() as $item ) {
 		    $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
             if ( $subscriptionId !== null ) {
@@ -103,6 +109,39 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
             }
 		}
 	}
+
+    /**
+     * Check if eCurring user is created for given order.
+     *
+     * @param WC_Order $order
+     *
+     * @return string
+     */
+	public function getEcurringCustomerIdByOrder(WC_Order $order): string
+    {
+        return '';
+    }
+
+    /**
+     * Create a new ecurring user and attach a Mollie mandate.
+     *
+     * @param string   $mollieCustomerId Mollie customer id to connect to new user.
+     * @param WC_Order $order To take customer data from.
+     *
+     * @return string Created eCurring customer ID.
+     */
+    public function createEcurringCustomerWithMollieMandate(string $mollieCustomerId, WC_Order $order): string
+    {
+        $this->apiClient->createCustomer([
+            'first_name' => $order->get_billing_first_name(),
+            'last_name' => $order->get_billing_last_name(),
+            'email' => $order->get_billing_email(),
+            'language' => 'en',
+            'external_id' => $mollieCustomerId
+        ]);
+
+        return '';
+    }
 
     /**
      * Get subscription plan id from WC order item.

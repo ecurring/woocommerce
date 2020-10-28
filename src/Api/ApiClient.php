@@ -84,6 +84,25 @@ class ApiClient implements ApiClientInterface {
     /**
      * @inheritDoc
      */
+	public function createCustomer(array $customerAttributes): array
+    {
+        $requestData = [
+            'data' => [
+                'type' => 'customer',
+                'attributes' => $customerAttributes
+            ],
+        ];
+
+        return $this->apiCall(
+            'POST',
+            'https://api.ecurring.com/customers',
+            $requestData
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function addMollieMandateToTheCustomer(string $customerId, string $mollieMandateId): array
     {
         $requestData = [

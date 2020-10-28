@@ -59,4 +59,13 @@ interface ApiClientInterface {
      */
 	public function addMollieMandateToTheCustomer(string $customerId, string $mollieMandateId): array;
 
+    /**
+     * Create an eCurring customer with given attributes.
+     *
+     * @param array $customerAttributes Attributes to use for create customer API call.
+     *
+     * @return array Created customer data.
+     */
+	public function createCustomer(array $customerAttributes): array;
+
 }
