@@ -36,10 +36,10 @@ class MollieMandateCreatedEventListenerTest extends TestCase {
 		expect('add_action')
 		->once()
 		->with(
-			'mollie-payments-for-woocommerce_payment_created',
+			'mollie-payments-for-woocommerce_after_mandate_created',
 			[$sut, 'onMollieMandateCreated'],
 			10,
-			2
+			4
 		);
 
 		$sut->init();
@@ -93,6 +93,8 @@ class MollieMandateCreatedEventListenerTest extends TestCase {
 
 		when('home_url')
 			->justReturn('');
+
+		when('get_user_meta')->justReturn(0);
 
 		$apiClientMock->expects($this->once())
 			->method('createSubscription')

@@ -53,7 +53,7 @@ if(! class_exists(WC_Order_Item::class))
 
 if(! class_exists(WC_Order_Item_Product::class))
 {
-	class WC_Order_Item_Product
+	class WC_Order_Item_Product extends WC_Order_Item
 	{
 		public function get_product()
 		{
