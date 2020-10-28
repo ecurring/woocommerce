@@ -64,6 +64,8 @@ interface ApiClientInterface {
      *
      * @param array $customerAttributes Attributes to use for create customer API call.
      *
+     * @throws ApiClientException If request failed.
+     *
      * @return array Created customer data.
      */
 	public function createCustomer(array $customerAttributes): array;
