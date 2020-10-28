@@ -9,7 +9,6 @@ use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Helper_Data;
 use eCurring_WC_Plugin;
-use Exception;
 use Mollie\Api\Resources\Payment;
 use WC_Order;
 use WC_Order_Item;
@@ -85,31 +84,30 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
 
 			return;
 		}
+        try {
+            $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
 
-		$ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
-
-		if($ecurringCustomerId === null){
-		    $ecurringCustomerId = $this->createEcurringCustomerWithMollieMandate($mollieCustomerId, $order);
-            $this->apiClient->addMollieMandateToTheCustomer($ecurringCustomerId, $mandateId);
-        }
+            if($ecurringCustomerId === null){
+                $ecurringCustomerId = $this->createEcurringCustomerWithMollieMandate($mollieCustomerId, $order);
+                $this->apiClient->addMollieMandateToTheCustomer($ecurringCustomerId, $mandateId);
+            }
 
 
-        foreach ( $order->get_items() as $item ) {
-		    $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
-            if ( $subscriptionId !== null ) {
-                try {
+            foreach ( $order->get_items() as $item ) {
+                $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
+                if ( $subscriptionId !== null ) {
                     $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
                     $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
-                } catch ( Exception $exception ) {
-                    eCurring_WC_Plugin::debug(
-                        sprintf(
-                            'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
-                            $exception->getMessage()
-                        )
-                    );
                 }
             }
-		}
+        } catch (ApiClientException $exception){
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
+                    $exception->getMessage()
+                )
+            );
+        }
 	}
 
     /**
