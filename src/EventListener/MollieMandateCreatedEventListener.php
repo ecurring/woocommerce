@@ -134,7 +134,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
      */
     public function createEcurringCustomerWithMollieMandate(string $mollieCustomerId, WC_Order $order): string
     {
-        $this->apiClient->createCustomer([
+        $response = $this->apiClient->createCustomer([
             'first_name' => $order->get_billing_first_name(),
             'last_name' => $order->get_billing_last_name(),
             'email' => $order->get_billing_email(),
@@ -142,7 +142,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
             'external_id' => $mollieCustomerId
         ]);
 
-        return '';
+        return (string) $response['data']['id'];
     }
 
     /**
