@@ -111,15 +111,17 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
 	}
 
     /**
-     * Check if eCurring user is created for given order.
+     * Return eCurring customer id associated with order customer or null if not found.
      *
      * @param WC_Order $order
      *
-     * @return string
+     * @return string|null
      */
-	public function getEcurringCustomerIdByOrder(WC_Order $order): string
+	public function getEcurringCustomerIdByOrder(WC_Order $order): ?string
     {
-        return '';
+        $ecurringCustomerId = get_user_meta($order->get_customer_id(), 'ecurring_customer_id', true);
+
+        return $ecurringCustomerId === false ? null : (string) $ecurringCustomerId;
     }
 
     /**
