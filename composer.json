@@ -18,7 +18,7 @@
         "johnpbloch/wordpress-core": "^5.5",
         "vimeo/psalm": "^3.17",
         "roots/wordpress": "@stable",
-        "woocommerce/woocommerce": "^4.5",
+        "woocommerce/woocommerce": "^3.9",
         "mollie/mollie-woocommerce": "dev-develop"
     },
     "repositories": [
