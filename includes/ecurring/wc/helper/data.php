@@ -307,14 +307,11 @@ class eCurring_WC_Helper_Data {
 		// If there is no eCurring Customer ID set, try to create a new eCurring Customer
 		if ( empty( $customer_id ) ) {
 			try {
-                $mollieCustomerId = $order->get_meta('_ecurring_mollie_user_id', true);
-                $customerAttributes = $this->customerAttributesFromOrder($order);
-                $customerAttributes['external_id'] = $mollieCustomerId;
 
                 $request = $api->apiCall('POST', 'https://api.ecurring.com/customers', array(
                     'data' => array(
                         'type' => 'customer',
-                        'attributes' => $customerAttributes
+                        'attributes' => $this->customerAttributesFromOrder($order)
                     ),
                 ));
 
