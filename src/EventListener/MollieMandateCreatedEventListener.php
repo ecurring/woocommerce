@@ -84,6 +84,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
 
 			return;
 		}
+
         try {
             $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
 
@@ -92,14 +93,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
                 $this->apiClient->addMollieMandateToTheCustomer($ecurringCustomerId, $mandateId);
             }
 
-
-            foreach ( $order->get_items() as $item ) {
-                $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
-                if ( $subscriptionId !== null ) {
-                    $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
-                    $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
-                }
-            }
+            $this->createEcurringSubscriptionsFromOrder($order);
         } catch (ApiClientException $exception){
             eCurring_WC_Plugin::debug(
                 sprintf(
@@ -195,6 +189,25 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
 
 		return isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription';
 	}
+
+    /**
+     * Create eCurring subscriptions for subscription products in order.
+     *
+     * @param WC_Order $order Order to create subscriptions for.
+     *
+     * @throws ApiClientException If create subscription request failed.
+     */
+	public function createEcurringSubscriptionsFromOrder(WC_Order $order): void
+    {
+        foreach ( $order->get_items() as $item ) {
+            $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
+            if ( $subscriptionId !== null ) {
+                $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
+                $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
+            }
+        }
+    }
+
 
 	/**
 	 * Create an eCurring subscription on eCurring side using subscription product.
