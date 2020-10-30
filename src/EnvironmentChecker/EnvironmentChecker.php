@@ -12,6 +12,19 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     const MOLLIE_MINIMUM_VERSION = '6.0.0';
 
     /**
+     * @var string Minimum required PHP version.
+     */
+    protected $minPhpVersion;
+
+    /**
+     * @param string $minPhpVersion The minimum PHP version this plugin able to work with.
+     */
+    public function __construct(string $minPhpVersion)
+    {
+        $this->minPhpVersion = $minPhpVersion;
+    }
+
+    /**
      * @return bool Whether Mollie plugin is active.
      */
     public function isMollieActive(): bool
@@ -42,7 +55,9 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     public function checkEnvironment(): bool
     {
-        return $this->isMollieActive() && $this->isMollieMinimalVersion();
+        return $this->checkPhpVersion() &&
+            $this->isMollieActive() &&
+            $this->isMollieMinimalVersion();
     }
 
     /**
@@ -51,5 +66,15 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     public function getErrors(): iterable
     {
         return [];
+    }
+
+    /**
+     * Check whether current PHP version met plugin requirements.
+     *
+     * @return bool
+     */
+    protected function checkPhpVersion(): bool
+    {
+        return version_compare(PHP_VERSION, $this->minPhpVersion, '>=');
     }
 }
