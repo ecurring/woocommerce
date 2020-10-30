@@ -2,7 +2,7 @@
 
 namespace Ecurring\WooEcurringTests\Unit;
 
-use Ecurring\WooEcurring\EnvironmentChecker;
+use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use function Brain\Monkey\Functions\expect;
@@ -23,7 +23,7 @@ class EnvironmentCheckerTest extends TestCase {
 
 		$sut = new EnvironmentChecker();
 
-		$this->assertSame($isActive, $sut->isMollieActive());
+		$this->assertSame($isActive, $sut->checkMollieIsActive());
 	}
 
     /**

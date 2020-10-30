@@ -36,7 +36,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     /**
      * @return bool Whether Mollie plugin is active.
      */
-    public function isMollieActive(): bool
+    public function checkMollieIsActive(): bool
     {
         return is_plugin_active('mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php');
     }
@@ -66,7 +66,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     {
         return $this->checkPhpVersion() &&
             $this->checkWoocommerceIsActive() &&
-            $this->isMollieActive() &&
+            $this->checkMollieIsActive() &&
             $this->isMollieMinimalVersion();
     }
 
