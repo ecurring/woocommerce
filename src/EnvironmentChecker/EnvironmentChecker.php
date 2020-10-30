@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ecurring\WooEcurring;
-
-use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentCheckerInterface;
+namespace Ecurring\WooEcurring\EnvironmentChecker;
 
 /**
  * Check if environment is suitable for this plugin to work.
