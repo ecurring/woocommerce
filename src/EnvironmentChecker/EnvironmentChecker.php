@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EnvironmentChecker;
 
+use WooCommerce;
+
 /**
  * Check if environment is suitable for this plugin to work.
  */
@@ -56,6 +58,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     public function checkEnvironment(): bool
     {
         return $this->checkPhpVersion() &&
+            $this->checkWoocommerceIsActive() &&
             $this->isMollieActive() &&
             $this->isMollieMinimalVersion();
     }
@@ -77,4 +80,15 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     {
         return version_compare(PHP_VERSION, $this->minPhpVersion, '>=');
     }
+
+    /**
+     * Check whether WooCommerce is active.
+     *
+     * @return bool
+     */
+    protected function checkWoocommerceIsActive(): bool
+    {
+        return class_exists(WooCommerce::class);
+    }
+
 }
