@@ -19,11 +19,18 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected $minPhpVersion;
 
     /**
-     * @param string $minPhpVersion The minimum PHP version this plugin able to work with.
+     * @var string
      */
-    public function __construct(string $minPhpVersion)
+    protected $minWoocommerceVersion;
+
+    /**
+     * @param string $minPhpVersion The minimum required PHP version.
+     * @param string $minWoocommerceVersion The minimum required WC version.
+     */
+    public function __construct(string $minPhpVersion, string $minWoocommerceVersion)
     {
         $this->minPhpVersion = $minPhpVersion;
+        $this->minWoocommerceVersion = $minWoocommerceVersion;
     }
 
     /**
@@ -91,4 +98,17 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         return class_exists(WooCommerce::class);
     }
 
+    /**
+     * Check whether current WooCommerce version met plugin requirements.
+     *
+     * @return bool
+     */
+    protected function checkWoocommerceVersion(): bool
+    {
+        if(! defined('WC_VERSION')){
+            return false;
+        }
+
+        return version_compare(WC_VERSION, $this->minWoocommerceVersion, '>=');
+    }
 }
