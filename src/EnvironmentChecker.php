@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring;
 
+use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentCheckerInterface;
+
 /**
  * Check if environment is suitable for this plugin to work.
  */
-class EnvironmentChecker
+class EnvironmentChecker implements EnvironmentCheckerInterface
 {
     const MOLLIE_MINIMUM_VERSION = '6.0.0';
 
@@ -35,5 +37,21 @@ class EnvironmentChecker
             self::MOLLIE_MINIMUM_VERSION,
             '>='
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkEnvironment(): bool
+    {
+        return $this->isMollieActive() && $this->isMollieMinimalVersion();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getErrors(): iterable
+    {
+        return [];
     }
 }
