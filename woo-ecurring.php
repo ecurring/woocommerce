@@ -75,58 +75,6 @@ if ( ! defined( 'WOOECUR_PLUGIN_DIR' ) ) {
 	define( 'WOOECUR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
 
-add_action('plugins_loaded', function(){
-	$environmentChecker = new EnvironmentChecker('7.2', '3.9');
-	$isMollieActive = $environmentChecker->checkMollieIsActive();
-	$isMollieMinimalVersion = $isMollieActive && $environmentChecker->checkMollieVersion();
-	$molliePluginPageUrl = http_build_query([
-	    'tab'=> 'plugin-information',
-        'plugin' => 'mollie-payments-for-woocommerce'
-    ]);
-	$molliePluginPageUrl = admin_url('plugin-install.php?' . $molliePluginPageUrl);
-
-	$mollieNotActiveMessage = sprintf(
-	    /* translators: %1$s is replaced with Mollie plugin installation page url. */
-	    __(
-        '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
-        'woo-ecurring'
-        ),
-        esc_url($molliePluginPageUrl)
-    );
-
-	$mollieIsNotMinimalVersionMessage = sprintf(
-        /* translators: %1$s is replaced with Mollie plugin installation page url. */
-        __(
-        '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
-        'woo-ecurring'
-        ),
-        $molliePluginPageUrl
-    );
-
-	if($isMollieActive) {
-	    $isMollieMinimalVersion = $environmentChecker->checkMollieIsActive();
-    }
-
-    if (! $isMollieActive || ! $isMollieMinimalVersion) {
-		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action('admin_notices', function () use (
-		    $isMollieActive,
-            $mollieNotActiveMessage,
-            $mollieIsNotMinimalVersionMessage
-        ) {
-		    $ksesParams = [
-		        'a' => [
-		            'href' => [],
-                ],
-                'strong' => []
-            ];
-			echo '<div class="error"><p>';
-			echo $isMollieActive ? wp_kses($mollieIsNotMinimalVersionMessage, $ksesParams) : wp_kses($mollieNotActiveMessage, $ksesParams);
-			echo '</p></div>';
-		});
-	}
-});
-
 /**
  * Called when plugin is loaded
  */
@@ -244,6 +192,13 @@ function initialize()
         require_once 'includes/ecurring/wc/helper/settings.php';
         require_once 'includes/ecurring/wc/helper/api.php';
         require_once 'includes/ecurring/wc/plugin.php';
+
+        $environmentChecker = new EnvironmentChecker('7.2', '3.9');
+        if (!$environmentChecker->checkEnvironment()) {
+            foreach ($environmentChecker->getErrors() as $errorMessage) {
+                errorNotice($errorMessage);
+            }
+        }
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
