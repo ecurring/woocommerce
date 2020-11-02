@@ -87,18 +87,6 @@ function ecurring_wc_check_php_version() {
 }
 add_action( 'plugins_loaded', 'ecurring_wc_check_php_version' );
 
-/**
- * Check if WooCommerce is active and of a supported version
- */
-function ecurring_wc_check_woocommerce_status() {
-	if ( ! class_exists( 'WooCommerce' ) || version_compare( get_option( 'woocommerce_db_version' ), '3.0', '<' ) ) {
-		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive' );
-		return;
-	}
-}
-add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
-
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker('7.2', '3.9');
 	$isMollieActive = $environmentChecker->checkMollieIsActive();
@@ -208,32 +196,6 @@ function ecurring_wc_plugin_inactive_php() {
 
 	return false;
 
-}
-
-function ecurring_wc_plugin_inactive() {
-
-	if ( ! is_admin() ) {
-		return false;
-	}
-
-	if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
-
-		echo '<div class="error"><p>';
-		echo sprintf( esc_html__( '%1$sMollie Subscriptions is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for it to work. Please %5$sinstall & activate WooCommerce &raquo;%6$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="https://wordpress.org/plugins/woocommerce/">', '</a>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
-		echo '</p></div>';
-		return false;
-	}
-
-	if ( version_compare( get_option( 'woocommerce_db_version' ), '3.0', '<' ) ) {
-
-		echo '<div class="error"><p>';
-		echo sprintf( esc_html__( '%1$sMollie Subscriptions is inactive.%2$s This version requires WooCommerce 3.0 or newer. Please %3$supdate WooCommerce to version 3.0 or newer &raquo;%4$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
-		echo '</p></div>';
-		return false;
-
-	}
-
-	return '';
 }
 
 // Add custom order status "Retrying payment at eCurring"
