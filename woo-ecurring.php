@@ -166,7 +166,6 @@ function ecurring_wc_plugin_activation_hook ()
                  . implode('<br/>', $status_helper->getErrors());
 
         wp_die($message, $title, array('back_link' => true));
-        return;
     }
 }
 
