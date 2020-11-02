@@ -45,6 +45,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     public function checkEnvironment(): bool
     {
         return $this->checkPhpVersion() &&
+            $this->checkJsonExtension() &&
             $this->checkWoocommerceIsActive() &&
             $this->checkWoocommerceVersion() &&
             $this->checkMollieIsActive() &&
@@ -77,6 +78,25 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         }
 
         return $phpVersionIsOk;
+    }
+
+    /**
+     * Check whether json extension is loaded.
+     *
+     * @return bool
+     */
+    protected function checkJsonExtension(): bool
+    {
+        $jsonExtensionLoaded = extension_loaded('json');
+
+        if(! $jsonExtensionLoaded){
+            $this->errors[] = esc_html__(
+                'Mollie Subscriptions requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.',
+                'woo-ecurring'
+            );
+        }
+
+        return $jsonExtensionLoaded;
     }
 
     /**
