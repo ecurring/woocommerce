@@ -46,6 +46,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     {
         return $this->checkPhpVersion() &&
             $this->checkWoocommerceIsActive() &&
+            $this->checkWoocommerceVersion() &&
             $this->checkMollieIsActive() &&
             $this->checkMollieVersion();
     }
