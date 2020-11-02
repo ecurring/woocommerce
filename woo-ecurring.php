@@ -15,7 +15,7 @@
  */
 
 // Exit if accessed directly.
-use Ecurring\WooEcurring\EnvironmentChecker;
+use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\SubscriptionsJob;
@@ -112,7 +112,7 @@ function ecurring_wc_check_woocommerce_status() {
 add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
-	$environmentChecker = new EnvironmentChecker();
+	$environmentChecker = new EnvironmentChecker('7.2', '3.9');
     if (!$environmentChecker->isMollieActive() || !$environmentChecker->isMollieMinimalVersion()) {
 		remove_action('init', 'ecurring_wc_plugin_init');
 		add_action('admin_notices', function () {
