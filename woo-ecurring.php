@@ -76,18 +76,6 @@ if ( ! defined( 'WOOECUR_PLUGIN_DIR' ) ) {
 }
 
 /**
- * Pro-actively check for required PHP JSON extension
- */
-function ecurring_wc_check_json_extension() {
-	if ( function_exists( 'extension_loaded' ) && ! extension_loaded( 'json' ) ) {
-		remove_action( 'init', 'ecurring_wc_plugin_init' );
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive_json_extension' );
-		return;
-	}
-}
-add_action( 'plugins_loaded', 'ecurring_wc_check_json_extension' );
-
-/**
  * Pro-actively check and communicate PHP version incompatibility for eCurring for WooCommerce
  */
 function ecurring_wc_check_php_version() {
@@ -207,20 +195,6 @@ function ecurring_wc_plugin_activation_hook ()
 }
 
 register_activation_hook(__FILE__, 'ecurring_wc_plugin_activation_hook');
-
-function ecurring_wc_plugin_inactive_json_extension() {
-
-	if ( ! is_admin() ) {
-		return false;
-	}
-
-	echo '<div class="error"><p>';
-	echo esc_html__( 'Mollie Subscriptions requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.', 'woo-ecurring' );
-	echo '</p></div>';
-
-	return false;
-
-}
 
 function ecurring_wc_plugin_inactive_php() {
 
