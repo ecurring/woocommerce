@@ -139,11 +139,8 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         }
 
         if(! $isMollieActive){
-            $molliePluginPageUrl = http_build_query([
-                'tab'=> 'plugin-information',
-                'plugin' => 'mollie-payments-for-woocommerce'
-            ]);
-            $molliePluginPageUrl = admin_url('plugin-install.php?' . $molliePluginPageUrl);
+
+            $molliePluginPageUrl = $this->buildInstallPluginPageLink('mollie-payments-for-woocommerce');
 
             $this->errors[] = sprintf(
             /* translators: %1$s is replaced with Mollie plugin installation page url. */
@@ -183,11 +180,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
 
         if(! $isMollieVersionOk){
 
-            $molliePluginPageUrl = http_build_query([
-                'tab'=> 'plugin-information',
-                'plugin' => 'mollie-payments-for-woocommerce'
-            ]);
-            $molliePluginPageUrl = admin_url('plugin-install.php?' . $molliePluginPageUrl);
+            $molliePluginPageUrl = $this->buildInstallPluginPageLink('mollie-payments-for-woocommerce');
 
             $this->errors[] = $mollieIsNotMinimalVersionMessage = sprintf(
             /* translators: %1$s is replaced with Mollie plugin installation page url. */
@@ -200,5 +193,22 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         }
 
         return $isMollieVersionOk;
+    }
+
+    /**
+     * Build url to given plugin installation page in the WP admin.
+     *
+     * @param string $pluginSlug The slug of the plugin to build link to.
+     *
+     * @return string Url of the install plugin page in WP admin.
+     */
+    protected function buildInstallPluginPageLink(string $pluginSlug): string
+    {
+        $pluginUrlQueryPart = http_build_query([
+            'tab'=> 'plugin-information',
+            'plugin' => $pluginSlug
+        ]);
+
+        return admin_url('plugin-install.php?' . $pluginUrlQueryPart);
     }
 }
