@@ -113,9 +113,8 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker('7.2', '3.9');
-    if (!$environmentChecker->checkMollieIsActive() || !$environmentChecker->checkMollieVersion()) {
 	$isMollieActive = $environmentChecker->checkMollieIsActive();
-	$isMollieMinimalVersion = false;
+	$isMollieMinimalVersion = $isMollieActive && $environmentChecker->checkMollieVersion();
 	$molliePluginPageUrl = http_build_query([
 	    'tab'=> 'plugin-information',
         'plugin' => 'mollie-payments-for-woocommerce'
@@ -130,6 +129,7 @@ add_action('plugins_loaded', function(){
         ),
         esc_url($molliePluginPageUrl)
     );
+
 	$mollieIsNotMinimalVersionMessage = sprintf(
         /* translators: %1$s is replaced with Mollie plugin installation page url. */
         __(
@@ -140,7 +140,7 @@ add_action('plugins_loaded', function(){
     );
 
 	if($isMollieActive) {
-	    $isMollieMinimalVersion = $environmentChecker->isMollieMinimalVersion();
+	    $isMollieMinimalVersion = $environmentChecker->checkMollieIsActive();
     }
 
     if (! $isMollieActive || ! $isMollieMinimalVersion) {
