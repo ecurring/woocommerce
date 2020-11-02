@@ -196,7 +196,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
 
             $this->errors[] = $mollieIsNotMinimalVersionMessage = sprintf(
             /* translators: %1$s is replaced with Mollie plugin installation page url. */
-                __(
+            __(
                     '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
                     'woo-ecurring'
                 ),
