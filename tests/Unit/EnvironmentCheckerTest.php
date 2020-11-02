@@ -17,6 +17,15 @@ class EnvironmentCheckerTest extends TestCase {
 	 * @dataProvider isMollieActiveDataProvider
 	 */
 	public function testIsMolliePluginActive($isActive){
+
+	    if($isActive){
+           define('M4W_FILE', '/some/path/to/plugin_dir/plugin.php');
+        }
+
+	    expect('plugin_basename')
+            ->once()
+            ->andReturn('plugin_dir/plugin.php');
+
 		expect('is_plugin_active')
 			->once()
 			->andReturn($isActive);

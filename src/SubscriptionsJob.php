@@ -32,6 +32,10 @@ class SubscriptionsJob
                     return;
                 }
 
+                if(!function_exists('as_enqueue_async_action')) {
+                    return;
+                }
+
                 if (get_option('ecurring_import_finished') === '1') {
                     as_unschedule_all_actions('ecurring_import_subscriptions');
                     return;
