@@ -75,18 +75,6 @@ if ( ! defined( 'WOOECUR_PLUGIN_DIR' ) ) {
 	define( 'WOOECUR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
 
-/**
- * Pro-actively check and communicate PHP version incompatibility for eCurring for WooCommerce
- */
-function ecurring_wc_check_php_version() {
-	if ( ! version_compare( PHP_VERSION, '7.2', ">=" ) ) {
-		remove_action( 'init', 'ecurring_wc_plugin_init' );
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive_php' );
-		return;
-	}
-}
-add_action( 'plugins_loaded', 'ecurring_wc_check_php_version' );
-
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker('7.2', '3.9');
 	$isMollieActive = $environmentChecker->checkMollieIsActive();
@@ -183,20 +171,6 @@ function ecurring_wc_plugin_activation_hook ()
 }
 
 register_activation_hook(__FILE__, 'ecurring_wc_plugin_activation_hook');
-
-function ecurring_wc_plugin_inactive_php() {
-
-	if ( ! is_admin() ) {
-		return false;
-	}
-
-	echo '<div class="error"><p>';
-	echo __( 'Mollie Subscriptions requires PHP 7.2 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
-	echo '</p></div>';
-
-	return false;
-
-}
 
 // Add custom order status "Retrying payment at eCurring"
 add_action( 'init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
