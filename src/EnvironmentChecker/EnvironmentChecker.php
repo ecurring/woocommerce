@@ -88,9 +88,16 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         $wcIsActive = class_exists(WooCommerce::class);
 
         if(! $wcIsActive){
-            $this->errors[] = __(
-                'Mollie Subscriptions plugin is inactive. Please, activate Woocommerce plugin first.',
-                'woo-ecurring'
+
+            $woocommercePluginPageUrl = $this->buildInstallPluginPageLink('woocommerce');
+
+            $this->errors[] = sprintf(
+                /* translators: %1$s is replaced with WooCommerce plugin installation page url. */
+                __(
+                    '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, install and activate <a href="%1$s">WooCommerce</a> plugin first.',
+                    'woo-ecurring'
+                ),
+                $woocommercePluginPageUrl
             );
         }
 
@@ -109,11 +116,16 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         }
 
         $wcVersionIsOk = version_compare(WC_VERSION, $this->minWoocommerceVersion, '>=');
+        $woocommercePluginPageUrl = $this->buildInstallPluginPageLink('woocommerce');
 
         if(! $wcVersionIsOk) {
-            $this->errors[] = __(
-                'Mollie Subscriptions plugin is inactive. Please, update WooCommerce plugin first',
+            $this->errors[] = sprintf(
+            /* translators: %1$s is replaced with WooCommerce plugin installation page url. */
+            __(
+                '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">WooCommerce</a> plugin first.',
                 'woo-ecurring'
+            ),
+                $woocommercePluginPageUrl
             );
         }
 
