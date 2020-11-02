@@ -52,7 +52,7 @@ class EnvironmentCheckerTest extends TestCase {
                 'Version' => $mollieCurrentVersion,
             ]);
 
-        $this->assertSame($isMinimal, $sut->isMollieMinimalVersion());
+        $this->assertSame($isMinimal, $sut->checkMollieVersion());
     }
 
     public function isMinimalVersionDataProvider()

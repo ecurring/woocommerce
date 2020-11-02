@@ -54,7 +54,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     /**
      * @return bool Whether current Mollie version is allowed
      */
-    public function isMollieMinimalVersion(): bool
+    public function checkMollieVersion(): bool
     {
         if (!defined('M4W_FILE')) {
             return false;
@@ -81,7 +81,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         return $this->checkPhpVersion() &&
             $this->checkWoocommerceIsActive() &&
             $this->checkMollieIsActive() &&
-            $this->isMollieMinimalVersion();
+            $this->checkMollieVersion();
     }
 
     /**
