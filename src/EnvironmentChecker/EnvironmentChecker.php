@@ -139,9 +139,19 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         }
 
         if(! $isMollieActive){
-            $this->errors[] = __(
-                'Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first',
-                'woo-ecurring'
+            $molliePluginPageUrl = http_build_query([
+                'tab'=> 'plugin-information',
+                'plugin' => 'mollie-payments-for-woocommerce'
+            ]);
+            $molliePluginPageUrl = admin_url('plugin-install.php?' . $molliePluginPageUrl);
+
+            $this->errors[] = sprintf(
+            /* translators: %1$s is replaced with Mollie plugin installation page url. */
+                __(
+                    '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+                    'woo-ecurring'
+                ),
+                esc_url($molliePluginPageUrl)
             );
         }
 
@@ -172,9 +182,20 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         }
 
         if(! $isMollieVersionOk){
-            $this->errors[] = __(
-                'Mollie Subscriptions plugin is inactive. Please, update Mollie Payments for WooCommerce plugin first.',
-                'woo-ecurring'
+
+            $molliePluginPageUrl = http_build_query([
+                'tab'=> 'plugin-information',
+                'plugin' => 'mollie-payments-for-woocommerce'
+            ]);
+            $molliePluginPageUrl = admin_url('plugin-install.php?' . $molliePluginPageUrl);
+
+            $this->errors[] = $mollieIsNotMinimalVersionMessage = sprintf(
+            /* translators: %1$s is replaced with Mollie plugin installation page url. */
+                __(
+                    '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+                    'woo-ecurring'
+                ),
+                $molliePluginPageUrl
             );
         }
 
