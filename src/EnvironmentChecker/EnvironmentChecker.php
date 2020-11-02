@@ -42,8 +42,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
             return false;
         }
 
-        if(! function_exists('plugin_basename'))
-        {
+        if(! function_exists('plugin_basename')) {
             require_once ABSPATH . WPINC . '/plugin.php';
         }
 
@@ -59,6 +58,10 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     {
         if (!defined('M4W_FILE')) {
             return false;
+        }
+
+        if(! function_exists('get_plugin_data')){
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
         $molliePluginData = get_plugin_data(M4W_FILE);
