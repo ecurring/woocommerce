@@ -74,15 +74,6 @@ class eCurring_WC_Helper_Settings
     {
         $status = eCurring_WC_Plugin::getStatusHelper();
 
-        if (!$status->isCompatible())
-        {
-            // Just stop here!
-            return ''
-                . '<div class="notice notice-error">'
-                . '<p><strong>' . __('Error', 'woo-ecurring') . ':</strong> ' . implode('<br/>', $status->getErrors())
-                . '</p></div>';
-        }
-
         try
         {
             // Check compatibility
