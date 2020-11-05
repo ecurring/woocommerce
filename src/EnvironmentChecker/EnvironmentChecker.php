@@ -70,7 +70,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         if(! $phpVersionIsOk)
         {
             $this->errors[] = __(
-                'Mollie Subscriptions plugin is disabled. Please, update your PHP version first.',
+                'Mollie Subscriptions plugin is disabled. Please, update your PHP first.',
                 'woo-ecurring'
             );
         }
