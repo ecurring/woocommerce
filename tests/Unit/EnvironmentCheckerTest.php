@@ -86,6 +86,9 @@ class EnvironmentCheckerTest extends TestCase {
     {
         $sut = new EnvironmentChecker('7.2', '4.0');
 
+        expect('phpversion')
+            ->andReturn('7.2');
+
         expect('get_option')
             ->with('active_plugins')
             ->andReturn([]);
