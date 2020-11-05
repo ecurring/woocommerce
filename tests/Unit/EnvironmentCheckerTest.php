@@ -346,4 +346,74 @@ class EnvironmentCheckerTest extends TestCase {
 
         $this->assertTrue($stringFound, 'Not found expected message about Mollie Payments plugin is not active.');
     }
+
+    public function testCheckEnvironmentCaseMollieVersionTooLow()
+    {
+        $minRequiredPhpVersion = '7.2';
+        $minRequiredWcVersion = '4.0';
+        $actualMollieVersion = '5.9.10';
+        $actualPhpVersion = $minRequiredPhpVersion;
+
+        expect('phpversion')
+            ->andReturn($actualPhpVersion);
+
+        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion );
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn('woo-ecurring/woo-ecurring.php');
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => $actualMollieVersion]);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'update') && stristr($errorMessage, 'Mollie Payments')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about Mollie plugin update required.');
+    }
 }
