@@ -157,7 +157,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     /**
      * @return bool Whether Mollie plugin is active.
      */
-    public function checkMollieIsActive(): bool
+    protected function checkMollieIsActive(): bool
     {
         $isMollieActive = false;
 
@@ -192,7 +192,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     /**
      * @return bool Whether current Mollie version is allowed
      */
-    public function checkMollieVersion(): bool
+    protected function checkMollieVersion(): bool
     {
         $isMollieVersionOk = false;
 
