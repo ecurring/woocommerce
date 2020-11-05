@@ -91,35 +91,6 @@ function ecurring_wc_plugin_init() {
 
 }
 
-/**
- * Called when plugin is activated
- */
-function ecurring_wc_plugin_activation_hook ()
-{
-
-	if ( ! class_exists( 'WooCommerce' ) || version_compare( get_option( 'woocommerce_db_version' ), '3.0', '<' ) ) {
-		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive' );
-		return;
-	}
-
-    // Register eCurring autoloader
-   eCurring_WC_Autoload::register();
-
-    $status_helper = eCurring_WC_Plugin::getStatusHelper();
-
-    if (!$status_helper->isCompatible())
-    {
-        $title   = 'Could not activate plugin ' . WOOECUR_PLUGIN_TITLE;
-        $message = '<h1><strong>Could not activate plugin ' . WOOECUR_PLUGIN_TITLE . '</strong></h1><br/>'
-                 . implode('<br/>', $status_helper->getErrors());
-
-        wp_die($message, $title, array('back_link' => true));
-    }
-}
-
-register_activation_hook(__FILE__, 'ecurring_wc_plugin_activation_hook');
-
 // Add custom order status "Retrying payment at eCurring"
 add_action( 'init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
 add_filter( 'wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
