@@ -3,6 +3,7 @@
     "get_class",
     "date",
     "extension_loaded",
-    "phpversion"
+    "phpversion",
+    "version_compare"
   ]
 }
