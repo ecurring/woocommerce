@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EnvironmentChecker;
 
-use WooCommerce;
-
 /**
  * Check if environment is suitable for this plugin to work.
  */
@@ -106,7 +104,10 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function checkWoocommerceIsActive(): bool
     {
-        $wcIsActive = class_exists(WooCommerce::class);
+        $wcIsActive = in_array(
+            'woocommerce/woocommerce.php',
+            apply_filters( 'active_plugins', get_option( 'active_plugins' ))
+        );
 
         if(! $wcIsActive){
 
