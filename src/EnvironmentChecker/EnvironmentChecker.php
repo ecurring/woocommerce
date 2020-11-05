@@ -65,7 +65,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function checkPhpVersion(): bool
     {
-        $phpVersionIsOk = version_compare(PHP_VERSION, $this->minPhpVersion, '>=');
+        $phpVersionIsOk = version_compare(phpversion(), $this->minPhpVersion, '>=');
 
         if(! $phpVersionIsOk)
         {
