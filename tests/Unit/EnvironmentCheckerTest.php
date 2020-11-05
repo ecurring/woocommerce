@@ -147,4 +147,70 @@ class EnvironmentCheckerTest extends TestCase {
 
         $this->assertTrue($stringFound, 'Not found expected message about JSON PHP extension required.');
     }
+
+    public function testCheckEnvironmentCaseWoocommerceIsInactive()
+    {
+        $sut = new EnvironmentChecker('7.2', '4.0');
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn([]);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn('woo-ecurring/woo-ecurring.php');
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => '6.0.0']);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        expect('phpversion')
+            ->andReturn('7.2');
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'install and activate') && stristr($errorMessage, 'WooCommerce')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about WooCommerce not active.');
+    }
+
+
 }
