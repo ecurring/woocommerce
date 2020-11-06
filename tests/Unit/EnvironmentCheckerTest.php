@@ -15,7 +15,7 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseEverythingOk()
     {
-        $sut = new EnvironmentChecker(PHP_VERSION, '4.0');
+        $sut = new EnvironmentChecker(PHP_VERSION, '4.0', '6.0.0');
 
         expect('extension_loaded')
             ->with('json')
@@ -59,7 +59,7 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCasePhpVersionLessThenRequired()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0');
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
 
         expect('phpversion')
             ->andReturn('7.1');
@@ -85,7 +85,7 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseNoJsonExtension()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0');
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
 
         expect('phpversion')
             ->andReturn('7.2');
@@ -151,7 +151,7 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseWoocommerceIsInactive()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0');
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
 
         expect('get_option')
             ->with('active_plugins')
@@ -222,7 +222,7 @@ class EnvironmentCheckerTest extends TestCase {
         expect('phpversion')
             ->andReturn($actualPhpVersion);
 
-        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion );
+        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion, '6.0.0' );
 
         redefine('version_compare', function ($version1) use ($actualPhpVersion) {
             //return true for PHP version check, false for WC version check
@@ -289,7 +289,7 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseMollieIsInactive()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0');
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
 
         expect('get_option')
             ->with('active_plugins')
@@ -352,12 +352,13 @@ class EnvironmentCheckerTest extends TestCase {
         $minRequiredPhpVersion = '7.2';
         $minRequiredWcVersion = '4.0';
         $actualMollieVersion = '5.9.10';
+        $requiredMollieVersion = '6.0.0';
         $actualPhpVersion = $minRequiredPhpVersion;
 
         expect('phpversion')
             ->andReturn($actualPhpVersion);
 
-        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion );
+        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion,  $requiredMollieVersion);
 
         expect('get_option')
             ->with('active_plugins')

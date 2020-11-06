@@ -164,7 +164,7 @@ function initialize()
         require_once 'includes/ecurring/wc/helper/api.php';
         require_once 'includes/ecurring/wc/plugin.php';
 
-        $environmentChecker = new EnvironmentChecker('7.2', '3.9');
+        $environmentChecker = new EnvironmentChecker('7.2', '3.9', '6.0.0');
         if (!$environmentChecker->checkEnvironment()) {
             foreach ($environmentChecker->getErrors() as $errorMessage) {
                 errorNotice($errorMessage);

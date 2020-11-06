@@ -9,8 +9,6 @@ namespace Ecurring\WooEcurring\EnvironmentChecker;
  */
 class EnvironmentChecker implements EnvironmentCheckerInterface
 {
-    const MOLLIE_MINIMUM_VERSION = '6.0.0';
-
     /**
      * @var string Minimum required PHP version.
      */
@@ -27,14 +25,21 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected $minWoocommerceVersion;
 
     /**
-     * @param string $minPhpVersion The minimum required PHP version.
-     * @param string $minWoocommerceVersion The minimum required WC version.
+     * @var string
      */
-    public function __construct(string $minPhpVersion, string $minWoocommerceVersion)
+    protected $minMollieVersion;
+
+    /**
+     * @param string $minPhpVersion         The minimum required PHP version.
+     * @param string $minWoocommerceVersion The minimum required WC version.
+     * @param string $minMollieVersion      The minimum required Mollie Payments version.
+     */
+    public function __construct(string $minPhpVersion, string $minWoocommerceVersion, string $minMollieVersion)
     {
         $this->minPhpVersion = $minPhpVersion;
         $this->minWoocommerceVersion = $minWoocommerceVersion;
         $this->errors = [];
+        $this->minMollieVersion = $minMollieVersion;
     }
 
     /**
@@ -207,7 +212,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
 
             $isMollieVersionOk = version_compare(
                 $currentMollieVersion,
-                self::MOLLIE_MINIMUM_VERSION,
+                $this->minMollieVersion,
                 '>='
             );
         }
