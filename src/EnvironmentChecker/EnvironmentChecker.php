@@ -164,18 +164,9 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function checkMollieIsActive(): bool
     {
-        $isMollieActive = false;
+        $molliePluginBasename = $this->getMolliePluginBasename();
 
-        if(defined('M4W_FILE')){
-
-            if(! function_exists('plugin_basename')) {
-                require_once ABSPATH . WPINC . '/plugin.php';
-            }
-
-            $molliePluginBasename = plugin_basename(M4W_FILE);
-
-            $isMollieActive = is_plugin_active($molliePluginBasename);
-        }
+        $isMollieActive = is_plugin_active($molliePluginBasename);
 
         if(! $isMollieActive){
 
@@ -192,6 +183,24 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         }
 
         return $isMollieActive;
+    }
+
+    /**
+     * Get base name (dir name/file name) of Mollie plugin.
+     *
+     * @return string|null
+     */
+    protected function getMolliePluginBasename(): ?string
+    {
+        if(! defined('M4W_FILE')){
+            return null;
+        }
+
+        if(! function_exists('plugin_basename')) {
+            require_once ABSPATH . WPINC . '/plugin.php';
+        }
+
+        return $molliePluginBasename = plugin_basename(M4W_FILE);
     }
 
     /**
