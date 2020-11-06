@@ -165,7 +165,6 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected function checkMollieIsActive(): bool
     {
         $molliePluginBasename = $this->getMolliePluginBasename();
-
         $isMollieActive = is_plugin_active($molliePluginBasename);
 
         if(! $isMollieActive){
