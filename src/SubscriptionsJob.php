@@ -53,24 +53,26 @@ class SubscriptionsJob
 
         add_action(
             'ecurring_import_subscriptions',
-            function () {
-
-                $page = get_option('ecurring_subscriptions_page', 1);
-
-                $subscriptions = json_decode($this->actions->import((int)$page));
-
-                $this->repository->createSubscriptions($subscriptions);
-
-                $parts = parse_url($subscriptions->links->next);
-                parse_str($parts['query'], $query);
-                $nextPage = $query['page']['number'];
-
-                update_option('ecurring_subscriptions_page', $nextPage);
-
-                if (!$nextPage) {
-                    update_option('ecurring_import_finished', true);
-                }
-            }
+            [$this, 'importSubscriptions']
         );
+    }
+
+    public function importSubscriptions(): void
+    {
+        $page = get_option('ecurring_subscriptions_page', 1);
+
+        $subscriptions = json_decode($this->actions->import((int)$page));
+
+        $this->repository->createSubscriptions($subscriptions);
+
+        $parts = parse_url($subscriptions->links->next);
+        parse_str($parts['query'], $query);
+        $nextPage = $query['page']['number'];
+
+        update_option('ecurring_subscriptions_page', $nextPage);
+
+        if (!$nextPage) {
+            update_option('ecurring_import_finished', true);
+        }
     }
 }
