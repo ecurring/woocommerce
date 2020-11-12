@@ -126,39 +126,7 @@ class MyAccount
                 $this->updatePostSubscription($response);
                 break;
             case 'switch':
-                $cancel = json_decode($actions->cancel($subscriptionId, $switchDate));
-                $this->updatePostSubscription($cancel);
-
-                $productId = filter_input(
-                    INPUT_POST,
-                    'ecurring_subscription_plan',
-                    FILTER_SANITIZE_STRING
-                );
-
-                $response = json_decode(
-                    $actions->create(
-                        [
-                            'data' => [
-                                'type' => 'subscription',
-                                'attributes' => [
-                                    'customer_id' => $cancel->data->relationships->customer->data->id,
-                                    'subscription_plan_id' => $productId,
-                                    'mandate_code' => $cancel->data->attributes->mandate_code,
-                                    'mandate_accepted' => true,
-                                    'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
-                                    'confirmation_sent' => 'true',
-                                    'subscription_webhook_url' => $this->buildSubscriptionWebhookUrl(),
-                                    'transaction_webhook_url' => $this->buildTransactionWebhookUrl(),
-                                    'status' => 'active',
-                                    "start_date" => $switchDate,
-                                ],
-                            ],
-                        ]
-                    )
-                );
-
-                $postSubscription = new Repository();
-                $postSubscription->create($response->data);
+                $this->doSubscriptionSwitch($actions, $subscriptionId, $switchDate);
                 break;
             case 'cancel':
                 $response = json_decode(
@@ -169,6 +137,43 @@ class MyAccount
         }
 
         wp_die();
+    }
+
+    protected function doSubscriptionSwitch(Actions $actions, string $subscriptionId, string $switchDate): void
+    {
+        $cancel = json_decode($actions->cancel($subscriptionId, $switchDate));
+        $this->updatePostSubscription($cancel);
+
+        $productId = filter_input(
+            INPUT_POST,
+            'ecurring_subscription_plan',
+            FILTER_SANITIZE_STRING
+        );
+
+        $response = json_decode(
+            $actions->create(
+                [
+                    'data' => [
+                        'type' => 'subscription',
+                        'attributes' => [
+                            'customer_id' => $cancel->data->relationships->customer->data->id,
+                            'subscription_plan_id' => $productId,
+                            'mandate_code' => $cancel->data->attributes->mandate_code,
+                            'mandate_accepted' => true,
+                            'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
+                            'confirmation_sent' => 'true',
+                            'subscription_webhook_url' => $this->buildSubscriptionWebhookUrl(),
+                            'transaction_webhook_url' => $this->buildTransactionWebhookUrl(),
+                            'status' => 'active',
+                            "start_date" => $switchDate,
+                        ],
+                    ],
+                ]
+            )
+        );
+
+        $postSubscription = new Repository();
+        $postSubscription->create($response->data);
     }
 
     /**
