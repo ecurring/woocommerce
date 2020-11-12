@@ -17,7 +17,7 @@ class Settings
                     'administrator',
                     __FILE__,
                     function () {
-                        echo wp_kses_post($this->renderSettingsPage());
+                        echo $this->renderSettingsPage();
                     }
                 );
             }
