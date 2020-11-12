@@ -168,11 +168,7 @@ class Subscriptions
         $allowSwitch = get_option('ecurring_customer_subscription_switch');
         $allowCancel = get_option('ecurring_customer_subscription_cancel');
 
-        if ($allowPause === '1' || $allowSwitch === '1' || $allowCancel === '1') {
-            return true;
-        }
-
-        return false;
+        return $allowPause === '1' || $allowSwitch === '1' || $allowCancel === '1';
     }
 
     protected function allowOption(string $option): bool
