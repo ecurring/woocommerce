@@ -17,7 +17,7 @@ class Subscriptions
         $this->api = $api;
     }
 
-    public function display()
+    public function display(): void
     {
         $customerId = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
         $subscriptions = json_decode(
