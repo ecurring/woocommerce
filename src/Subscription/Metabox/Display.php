@@ -9,7 +9,7 @@ use WP_Post;
 
 class Display
 {
-    public function details(WP_Post $post)
+    public function details(WP_Post $post): void
     {
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
@@ -39,7 +39,7 @@ class Display
         <?php
     }
 
-    public function options(WP_Post $post)
+    public function options(WP_Post $post): void
     {
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
