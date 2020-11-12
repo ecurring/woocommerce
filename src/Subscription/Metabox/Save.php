@@ -62,7 +62,7 @@ class Save
                 $this->updateSubscription($postId, $response);
                 break;
             case 'switch':
-                $this->handleSubscriptionSwitch($subscriptionId, $switchDate, $postId);
+                $this->handleSubscriptionSwitch($subscriptionId, $switchDate, (int)$postId);
                 break;
             case 'cancel':
                 $response = json_decode($this->actions->cancel($subscriptionId, $this->detectCancelDate()));
