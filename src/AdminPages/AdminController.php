@@ -122,7 +122,8 @@ class AdminController
         } catch (Throwable $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Failed to render plugin settings form. Exception was caught with code %1$d and message: %2$s',
+                    'Failed to render plugin settings form.' .
+                    'Exception was caught with code %1$d and message: %2$s',
                     $exception->getCode(),
                     $exception->getMessage()
                 )
@@ -141,7 +142,12 @@ class AdminController
      */
     public function saveSettings(): void
     {
-        $formData = $_POST[$this->fieldsCollectionName] ?? null;
+        $formData = filter_input(
+            INPUT_POST,
+            $this->fieldsCollectionName,
+            FILTER_SANITIZE_STRING,
+            FILTER_REQUIRE_ARRAY
+        );
 
         if ($formData === null) {
             return;
