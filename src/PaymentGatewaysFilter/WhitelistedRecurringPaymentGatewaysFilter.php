@@ -31,7 +31,7 @@ class WhitelistedRecurringPaymentGatewaysFilter implements PaymentGatewaysFilter
     public function filter(array $gateways): array
     {
 
-        return array_filter($gateways, function (WC_Payment_Gateway $gateway) {
+        return array_filter($gateways, function (WC_Payment_Gateway $gateway): bool {
             return $this->isGatewayClassWhitelisted($gateway) && $gateway->supports('subscriptions');
         });
     }

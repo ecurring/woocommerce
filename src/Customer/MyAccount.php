@@ -36,6 +36,7 @@ class MyAccount
         Repository $repository,
         Subscriptions $subscriptions
     ) {
+
         $this->api = $api;
         $this->actions = $actions;
         $this->repository = $repository;
@@ -95,6 +96,7 @@ class MyAccount
     protected function doSubscriptionAction(
         Actions $actions
     ): void {
+
         $subscriptionType = filter_input(
             INPUT_POST,
             'ecurring_subscription_type',

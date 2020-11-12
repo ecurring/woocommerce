@@ -2,7 +2,6 @@
 
 namespace Ecurring\WooEcurring\AdminPages\Form;
 
-
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\ElementInterface;
 use ChriCo\Fields\View\RenderableElementInterface;

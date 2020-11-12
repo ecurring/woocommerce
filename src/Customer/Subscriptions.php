@@ -67,9 +67,9 @@ class Subscriptions
                                   data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                 <select style="width:100%;" name="ecurring_subscription"
                                         class="ecurring_subscription_options"
-                                        data-subscription="<?php echo esc_attr(
-                                            $subscription->id
-                                        ); ?>">
+                                        data-subscription="<?php
+                                        echo esc_attr($subscription->id); ?>"
+                                >
                                     <option value="">Select an option</option>
                                     <?php if ($subscription->attributes->status === 'paused') { ?>
                                         <?php if ($this->allowOption('pause')) { ?>
@@ -102,7 +102,7 @@ class Subscriptions
                                         <input class="ecurring-hide" name="ecurring_resume_date" type="date"
                                                value="<?php echo esc_attr(
                                                    (new DateTime('now'))->format('Y-m-d')
-                                               ); ?>">
+                                                      ); ?>">
                                         <button>Update</button>
                                     </div>
                                     <button class="resume-update ecurring-hide">Update</button>
@@ -130,7 +130,7 @@ class Subscriptions
                                         <input name="ecurring_switch_date" type="date"
                                                value="<?php echo esc_attr(
                                                    (new DateTime('now'))->format('Y-m-d')
-                                               ); ?>">
+                                                      ); ?>">
                                         <button>Update</button>
                                     </div>
                                 <?php } ?>
@@ -146,7 +146,7 @@ class Subscriptions
                                         <input name="ecurring_cancel_date" type="date"
                                                value="<?php echo esc_attr(
                                                    (new DateTime('now'))->format('Y-m-d')
-                                               ); ?>">
+                                                      ); ?>">
                                         <button>Update</button>
                                     </div>
                                 <?php } ?>

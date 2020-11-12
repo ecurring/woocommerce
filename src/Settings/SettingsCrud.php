@@ -9,8 +9,8 @@ namespace Ecurring\WooEcurring\Settings;
  *
  * Currently, we are saving all options as single array to avoid problems with cleaning.
  *
- * Another reason is to avoid need to migrate settings from previous plugin version. We are using the same option name
- * for options array storage so it would work after update.
+ * Another reason is to avoid need to migrate settings from previous plugin version. We are using
+ * the same option name for options array storage so it would work after update.
  *
  * In the future, it would be a good idea to find a better approach.
  */

@@ -29,6 +29,7 @@ class ApiClient implements ApiClientInterface
         string $subscriptionPlanId,
         string $transactionWebhookUrl = ''
     ): array {
+
         $requestData = [
             'data' => [
                 'type' => 'subscription',

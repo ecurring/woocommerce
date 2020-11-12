@@ -62,6 +62,7 @@ class AdminController
         NonceInterface $nonce,
         NonceFieldBuilderInterface $nonceFieldBuilder
     ) {
+
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
         $this->formFieldsCollectionBuilder = $formBuilder;
         $this->fieldsCollectionName = $fieldsCollectionName;
@@ -76,7 +77,10 @@ class AdminController
     public function init(): void
     {
         add_action('woocommerce_settings_tabs_array', [$this, 'registerPluginSettingsTab'], 100);
-        add_action('woocommerce_settings_tabs_' . self::PLUGIN_SETTINGS_TAB_SLUG, [$this, 'renderPluginSettingsPage']);
+        add_action(
+            'woocommerce_settings_tabs_' . self::PLUGIN_SETTINGS_TAB_SLUG,
+            [$this, 'renderPluginSettingsPage']
+        );
         add_action('admin_init', [$this, 'saveSettings'], 11);
     }
 
@@ -89,7 +93,11 @@ class AdminController
      */
     public function registerPluginSettingsTab(array $tabs): array
     {
-        $tabs[self::PLUGIN_SETTINGS_TAB_SLUG] = _x('Mollie Subscriptions', 'Plugin settings tab name', 'woo-ecurring');
+        $tabs[self::PLUGIN_SETTINGS_TAB_SLUG] = _x(
+            'Mollie Subscriptions',
+            'Plugin settings tab name',
+            'woo-ecurring'
+        );
 
         return $tabs;
     }
@@ -104,7 +112,12 @@ class AdminController
             $formView = $this->formFieldsCollectionBuilder->buildFormFieldsCollectionView();
             $nonceField = $this->nonceFieldBuilder->buildNonceField($this->nonce);
             $nonceFieldView = $this->nonceFieldBuilder->buildNonceFieldView();
-            $context = ['view' => $formView, 'form' => $form, 'nonceField' => $nonceField, 'nonceFieldView' => $nonceFieldView];
+            $context = [
+                'view' => $formView,
+                'form' => $form,
+                'nonceField' => $nonceField,
+                'nonceFieldView' => $nonceFieldView,
+            ];
             echo $this->adminSettingsPageRenderer->render($context);
         } catch (Throwable $exception) {
             eCurring_WC_Plugin::debug(
@@ -154,7 +167,9 @@ class AdminController
      */
     protected function redirectToSettingsPage(): void
     {
-        wp_safe_redirect(admin_url('admin.php?page=wc-settings&tab=' . self::PLUGIN_SETTINGS_TAB_SLUG));
+        wp_safe_redirect(
+            admin_url('admin.php?page=wc-settings&tab=' . self::PLUGIN_SETTINGS_TAB_SLUG)
+        );
         die;
     }
 

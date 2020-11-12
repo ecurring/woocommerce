@@ -35,6 +35,7 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
         ViewFactory $viewFactory,
         array $formFields
     ) {
+
         $this->elementFactory = $elementFactory;
         $this->viewFactory = $viewFactory;
         $this->formFields = $formFields;
