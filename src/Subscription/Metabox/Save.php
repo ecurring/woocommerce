@@ -80,11 +80,13 @@ class Save
             $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
         }
 
-        if (!$subscriptionType || !in_array(
+        if (
+            !$subscriptionType || !in_array(
                 $subscriptionType,
                 ['pause', 'resume', 'switch', 'cancel'],
                 true
-            ) || !$subscriptionId) {
+            ) || !$subscriptionId
+        ) {
             return;
         }
 
@@ -137,7 +139,7 @@ class Save
                                 'subscription_webhook_url' => $subscriptionWebhookUrl,
                                 'transaction_webhook_url' => $transactionWebhookUrl,
                                 'status' => 'active',
-                                "start_date" => $switchDate
+                                "start_date" => $switchDate,
                             ],
                         ],
                     ]

@@ -26,11 +26,11 @@ class Metabox
     {
         add_action(
             'add_meta_boxes',
-            function (){
+            function () {
                 add_meta_box(
                     'ecurring_subscription_details',
                     'Details',
-                    function ($post)  {
+                    function ($post) {
                         $this->display->details($post);
                     },
                     'esubscriptions'

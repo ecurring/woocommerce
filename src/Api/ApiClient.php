@@ -4,165 +4,172 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Api;
 
-class ApiClient implements ApiClientInterface {
+class ApiClient implements ApiClientInterface
+{
 
-	/**
-	 * @var string
-	 */
-	protected $apiKey;
+    /**
+     * @var string
+     */
+    protected $apiKey;
 
-	/**
-	 * @param string $apiKey Key required for authentication.
-	 */
-	public function __construct(string $apiKey) {
-		$this->apiKey = $apiKey;
-	}
+    /**
+     * @param string $apiKey Key required for authentication.
+     */
+    public function __construct(string $apiKey)
+    {
 
-	/**
-	 * @inheritDoc
-	 */
-	public function createSubscription(
-		string $ecurringCustomerId,
-		string $subscriptionPlanId,
-		string $transactionWebhookUrl = ''
-	): array {
-		$requestData = [
-			'data' => [
-				'type'       => 'subscription',
-				'attributes' => [
-					'customer_id'              => $ecurringCustomerId,
-					'subscription_plan_id'     => $subscriptionPlanId,
-					'transaction_webhook_url'  => $transactionWebhookUrl,
-					'confirmation_sent'        => true,
-					'metadata'                 => ['source' => 'woocommerce']
-				]
-			]
-		];
+        $this->apiKey = $apiKey;
+    }
 
-		return $this->apiCall(
-			'POST',
-			'https://api.ecurring.com/subscriptions',
-			$requestData
-		);
-	}
+    /**
+     * @inheritDoc
+     */
+    public function createSubscription(
+        string $ecurringCustomerId,
+        string $subscriptionPlanId,
+        string $transactionWebhookUrl = ''
+    ): array {
+        $requestData = [
+            'data' => [
+                'type' => 'subscription',
+                'attributes' => [
+                    'customer_id' => $ecurringCustomerId,
+                    'subscription_plan_id' => $subscriptionPlanId,
+                    'transaction_webhook_url' => $transactionWebhookUrl,
+                    'confirmation_sent' => true,
+                    'metadata' => ['source' => 'woocommerce'],
+                ],
+            ],
+        ];
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getSubscriptionById(string $subscription_id): array
-	{
-		$url = 'https://api.ecurring.com/subscriptions/'.$subscription_id;
+        return $this->apiCall(
+            'POST',
+            'https://api.ecurring.com/subscriptions',
+            $requestData
+        );
+    }
 
-		return $this->apiCall('GET', $url);
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getSubscriptionById(string $subscription_id): array
+    {
+        $url = 'https://api.ecurring.com/subscriptions/' . $subscription_id;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function activateSubscription( string $subscriptionId, string $mandateAcceptedDate ): array {
+        return $this->apiCall('GET', $url);
+    }
 
-		$requestData = [
-			'data' => [
-				'type' => 'subscription',
-				'id' => $subscriptionId,
-				'attributes' => [
-					'status' => 'active',
-					'mandate_accepted' => true,
-					'mandate_accepted_date' => $mandateAcceptedDate
-				]
-			]
-		];
+    /**
+     * @inheritdoc
+     */
+    public function activateSubscription(string $subscriptionId, string $mandateAcceptedDate): array
+    {
 
-		return $this->apiCall(
-			'PATCH',
-			sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
-			$requestData
-		);
-	}
+        $requestData = [
+            'data' => [
+                'type' => 'subscription',
+                'id' => $subscriptionId,
+                'attributes' => [
+                    'status' => 'active',
+                    'mandate_accepted' => true,
+                    'mandate_accepted_date' => $mandateAcceptedDate,
+                ],
+            ],
+        ];
 
-	/**
-	 * Make eCurring API request call.
-	 *
-	 * @param string     $method HTTP Method, one of the GET, POST, PATH, DELETE.
-	 * @param string     $url    Request target URL.
-	 * @param bool|array $data   Content to be sent in JSON-encoded format as request body.
-	 *
-	 * @return array Parsed response data.
-	 *
-	 * @throws ApiClientException
-	 */
-	public function apiCall( $method, $url, $data = false ): array {
+        return $this->apiCall(
+            'PATCH',
+            sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
+            $requestData
+        );
+    }
 
-		$rawResponse = $this->doApiRequest($method, $url, $data);
+    /**
+     * Make eCurring API request call.
+     *
+     * @param string     $method HTTP Method, one of the GET, POST, PATH, DELETE.
+     * @param string     $url    Request target URL.
+     * @param bool|array $data   Content to be sent in JSON-encoded format as request body.
+     *
+     * @return array Parsed response data.
+     *
+     * @throws ApiClientException
+     */
+    public function apiCall($method, $url, $data = false): array
+    {
 
-		if(is_wp_error($rawResponse)){
-			throw new ApiClientException(
-				sprintf(
-					'WP_Error returned for the API request: %1$s',
-					$rawResponse->get_error_message()
-				),
-				$rawResponse->get_error_code()
-			);
-		}
+        $rawResponse = $this->doApiRequest($method, $url, $data);
 
-		return $this->parseResponse($rawResponse['body']);
-	}
+        if (is_wp_error($rawResponse)) {
+            throw new ApiClientException(
+                sprintf(
+                    'WP_Error returned for the API request: %1$s',
+                    $rawResponse->get_error_message()
+                ),
+                $rawResponse->get_error_code()
+            );
+        }
 
-	/**
-	 * Make API request and return raw result.
-	 *
-	 * @param string $method
-	 * @param string $url
-	 * @param false $data
-	 *
-	 * @return mixed
-	 */
-	protected function doApiRequest($method, $url, $data = false){
-		$args    = array (
-			'method'  => $method,
-			'headers' => array (
-				'X-Authorization' => $this->apiKey,
-				'Content-Type'    => 'application/vnd.api+json',
-				'Accept'          => 'application/vnd.api+json'
-			),
-			'body'    => $data ? json_encode( $data ) : ''
-		);
+        return $this->parseResponse($rawResponse['body']);
+    }
 
-		return wp_remote_request( $url, $args );
-	}
+    /**
+     * Make API request and return raw result.
+     *
+     * @param string $method
+     * @param string $url
+     * @param false $data
+     *
+     * @return mixed
+     */
+    protected function doApiRequest($method, $url, $data = false)
+    {
 
-	/**
-	 * Parse raw response body into an array
-	 *
-	 * @param string $rawResponseBody
-	 *
-	 * @return array
-	 *
-	 * @throws ApiClientException
-	 */
-	protected function parseResponse(string $rawResponseBody): array
-	{
-		$parsedResponse = json_decode($rawResponseBody, true);
+        $args =  [
+            'method' => $method,
+            'headers' =>  [
+                'X-Authorization' => $this->apiKey,
+                'Content-Type' => 'application/vnd.api+json',
+                'Accept' => 'application/vnd.api+json',
+            ],
+            'body' => $data ? json_encode($data) : '',
+        ];
 
-		if(json_last_error() !== JSON_ERROR_NONE){
-			throw new ApiClientException(
-				sprintf(
-					'Cannot parse API response. JSON parse error message: %1$s. Parsed string: %2$s',
-					json_last_error_msg(),
-					$rawResponseBody
-				)
-			);
-		}
+        return wp_remote_request($url, $args);
+    }
 
-		if (isset($parsedResponse['errors'])) {
-			throw new ApiClientException(
-				sprintf(
-					'Errors returned by the API. Returned response: %1$s',
-					print_r($parsedResponse['errors'], true)
-				)
-			);
-		}
+    /**
+     * Parse raw response body into an array
+     *
+     * @param string $rawResponseBody
+     *
+     * @return array
+     *
+     * @throws ApiClientException
+     */
+    protected function parseResponse(string $rawResponseBody): array
+    {
+        $parsedResponse = json_decode($rawResponseBody, true);
 
-		return $parsedResponse;
-	}
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ApiClientException(
+                sprintf(
+                    'Cannot parse API response. JSON parse error message: %1$s. Parsed string: %2$s',
+                    json_last_error_msg(),
+                    $rawResponseBody
+                )
+            );
+        }
+
+        if (isset($parsedResponse['errors'])) {
+            throw new ApiClientException(
+                sprintf(
+                    'Errors returned by the API. Returned response: %1$s',
+                    print_r($parsedResponse['errors'], true)
+                )
+            );
+        }
+
+        return $parsedResponse;
+    }
 }

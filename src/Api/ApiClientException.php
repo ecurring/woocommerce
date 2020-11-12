@@ -9,4 +9,6 @@ use eCurring_WC_Exception;
 /**
  * Thrown when API request problem occurred.
  */
-class ApiClientException extends eCurring_WC_Exception{}
+class ApiClientException extends eCurring_WC_Exception
+{
+}

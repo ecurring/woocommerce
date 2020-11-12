@@ -27,12 +27,12 @@ class SubscriptionsJob
     {
         add_action(
             'init',
-            function () {
+            static function () {
                 if (wp_doing_ajax()) {
                     return;
                 }
 
-                if(!function_exists('as_enqueue_async_action')) {
+                if (!function_exists('as_enqueue_async_action')) {
                     return;
                 }
 

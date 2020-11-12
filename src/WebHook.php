@@ -31,7 +31,6 @@ class WebHook
                 $webhook = filter_input(INPUT_GET, 'ecurring-webhook', FILTER_SANITIZE_STRING);
 
                 if ($webhook === 'transaction') {
-
                     $response = json_decode(file_get_contents('php://input'));
 
                     $subscription_id = filter_var(

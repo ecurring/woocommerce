@@ -20,12 +20,10 @@ class Repository
 
         $subscriptionIds = [];
         foreach ($subscriptionPosts as $post) {
-
             $subscriptionIds[] = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         }
 
         foreach ($subscriptions->data as $subscription) {
-
             if (!$this->orderSubscriptionExist($subscription)) {
                 continue;
             }

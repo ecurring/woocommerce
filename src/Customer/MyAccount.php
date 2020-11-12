@@ -53,7 +53,7 @@ class MyAccount
 
         add_filter(
             'query_vars',
-            function ($vars) {
+            static function ($vars) {
                 $vars[] = 'ecurring-subscriptions';
                 return $vars;
             },
@@ -62,7 +62,7 @@ class MyAccount
 
         add_filter(
             'the_title',
-            function ($title) {
+            static function ($title) {
                 global $wp_query;
                 if (isset($wp_query->query_vars['ecurring-subscriptions']) && in_the_loop()) {
                     return __('Subscriptions', 'woo-ecurring');

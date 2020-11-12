@@ -14,48 +14,54 @@ namespace Ecurring\WooEcurring\Settings;
  *
  * In the future, it would be a good idea to find a better approach.
  */
-class SettingsCrud implements SettingsCrudInterface {
+class SettingsCrud implements SettingsCrudInterface
+{
 
-	protected const OPTIONS_STORAGE_KEY = 'ecurring_wc_gateway_ecurring_settings';
+    protected const OPTIONS_STORAGE_KEY = 'ecurring_wc_gateway_ecurring_settings';
 
-	/**
-	 * @var array
-	 */
-	private $options;
+    /**
+     * @var array
+     */
+    private $options;
 
-	public function __construct()
-	{
-		$this->options = get_option(self::OPTIONS_STORAGE_KEY);
+    public function __construct()
+    {
+        $this->options = get_option(self::OPTIONS_STORAGE_KEY);
+    }
 
-	}
+    /**
+     * @inheritDoc
+     */
+    public function updateOption(string $optionName, $optionValue): void
+    {
 
-	/**
-	 * @inheritDoc
-	 */
-	public function updateOption( string $optionName, $optionValue ): void {
-		$this->options[$optionName] = $optionValue;
-		$this->persist();
-	}
+        $this->options[$optionName] = $optionValue;
+        $this->persist();
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getOption( string $optionName, $default = null ) {
-		return $this->options[$optionName] ?? $default;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getOption(string $optionName, $default = null)
+    {
 
-	/**
-	 * @inheritDoc
-	 */
-	public function clearSettings(): void {
-		delete_option(self::OPTIONS_STORAGE_KEY);
-	}
+        return $this->options[$optionName] ?? $default;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function persist(): void
-	{
-		update_option(self::OPTIONS_STORAGE_KEY, $this->options);
-	}
+    /**
+     * @inheritDoc
+     */
+    public function clearSettings(): void
+    {
+
+        delete_option(self::OPTIONS_STORAGE_KEY);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function persist(): void
+    {
+        update_option(self::OPTIONS_STORAGE_KEY, $this->options);
+    }
 }

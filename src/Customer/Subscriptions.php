@@ -69,26 +69,26 @@ class Subscriptions
                                         class="ecurring_subscription_options"
                                         data-subscription="<?php echo esc_attr(
                                             $subscription->id
-                                        ); ?>">
+                                                           ); ?>">
                                     <option value="">Select an option</option>
                                     <?php if ($subscription->attributes->status === 'paused') { ?>
-                                        <?php if($this->allowOption('pause')) { ?>
+                                        <?php if ($this->allowOption('pause')) { ?>
                                             <option value="resume">Resume subscription</option>
                                         <?php } ?>
                                     <?php } else { ?>
-                                        <?php if($this->allowOption('pause')) { ?>
+                                        <?php if ($this->allowOption('pause')) { ?>
                                             <option value="pause">Pause subscription</option>
                                         <?php } ?>
-                                        <?php if($this->allowOption('switch')) { ?>
+                                        <?php if ($this->allowOption('switch')) { ?>
                                             <option value="switch">Switch subscription</option>
                                         <?php } ?>
                                     <?php } ?>
-                                    <?php if($this->allowOption('cancel')) { ?>
+                                    <?php if ($this->allowOption('cancel')) { ?>
                                         <option value="cancel">Cancel subscription</option>
                                     <?php } ?>
                                 </select>
 
-                                <?php if($this->allowOption('pause')) { ?>
+                                <?php if ($this->allowOption('pause')) { ?>
                                     <div class="ecurring-hide pause-form"
                                          data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                         <label><input name="ecurring_pause_subscription" type="radio"
@@ -102,12 +102,12 @@ class Subscriptions
                                         <input class="ecurring-hide" name="ecurring_resume_date" type="date"
                                                value="<?php echo esc_attr(
                                                    (new DateTime('now'))->format('Y-m-d')
-                                               ); ?>">
+                                                      ); ?>">
                                         <button>Update</button>
                                     </div>
                                     <button class="resume-update ecurring-hide">Update</button>
                                 <?php } ?>
-                                <?php if($this->allowOption('switch')) { ?>
+                                <?php if ($this->allowOption('switch')) { ?>
                                     <div class="ecurring-hide switch-form"
                                          data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                         <select class="ecurring_subscription_plan"
@@ -130,11 +130,11 @@ class Subscriptions
                                         <input name="ecurring_switch_date" type="date"
                                                value="<?php echo esc_attr(
                                                    (new DateTime('now'))->format('Y-m-d')
-                                               ); ?>">
+                                                      ); ?>">
                                         <button>Update</button>
                                     </div>
                                 <?php } ?>
-                                <?php if($this->allowOption('cancel')) { ?>
+                                <?php if ($this->allowOption('cancel')) { ?>
                                     <div class="ecurring-hide cancel-form"
                                          data-subscription="<?php echo esc_attr($subscription->id); ?>">
                                         <label><input name="ecurring_cancel_subscription" type="radio"
@@ -146,7 +146,7 @@ class Subscriptions
                                         <input name="ecurring_cancel_date" type="date"
                                                value="<?php echo esc_attr(
                                                    (new DateTime('now'))->format('Y-m-d')
-                                               ); ?>">
+                                                      ); ?>">
                                         <button>Update</button>
                                     </div>
                                 <?php } ?>
@@ -158,7 +158,6 @@ class Subscriptions
             </tbody>
         </table>
     <?php }
-
 
     protected function allowAtLeastOneOption(): bool
     {
