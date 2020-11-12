@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring;
 
 use eCurring_WC_Plugin;
@@ -7,6 +9,12 @@ use eCurring_WC_Plugin;
 class Assets
 {
     public function init()
+    {
+        $this->enqueueAdminScripts();
+        $this->enqueueFrontScripts();
+    }
+
+    protected function enqueueAdminScripts(): void
     {
         add_action(
             'admin_enqueue_scripts',
@@ -38,7 +46,10 @@ class Assets
                 );
             }
         );
+    }
 
+    protected function enqueueFrontScripts(): void
+    {
         add_action(
             'wp_enqueue_scripts',
             static function () {
