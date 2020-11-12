@@ -17,7 +17,7 @@ class Settings
                     'administrator',
                     __FILE__,
                     function () {
-                        echo $this->renderSettingsPage();
+                        echo $this->renderSettingsPage(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     }
                 );
             }
