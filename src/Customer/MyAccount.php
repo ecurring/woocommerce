@@ -109,60 +109,14 @@ class MyAccount
             FILTER_SANITIZE_STRING
         );
 
-        $pauseSubscription = filter_input(
-            INPUT_POST,
-            'ecurring_pause_subscription',
-            FILTER_SANITIZE_STRING
-        );
-        $resumeDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
-        if ($pauseSubscription === 'specific-date') {
-            $resumeDate = filter_input(
-                INPUT_POST,
-                'ecurring_resume_date',
-                FILTER_SANITIZE_STRING
-            );
-
-            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
-        }
-
-        $switchSubscription = filter_input(
-            INPUT_POST,
-            'ecurring_switch_subscription',
-            FILTER_SANITIZE_STRING
-        );
-        $switchDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
-        if ($switchSubscription === 'specific-date') {
-            $switchDate = filter_input(
-                INPUT_POST,
-                'ecurring_switch_date',
-                FILTER_SANITIZE_STRING
-            );
-
-            $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
-        }
-
-        $cancelSubscription = filter_input(
-            INPUT_POST,
-            'ecurring_cancel_subscription',
-            FILTER_SANITIZE_STRING
-        );
-        $cancelDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
-        if ($cancelSubscription === 'specific-date') {
-            $cancelDate = filter_input(
-                INPUT_POST,
-                'ecurring_cancel_date',
-                FILTER_SANITIZE_STRING
-            );
-
-            $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
-        }
+        $switchDate = $this->detectSubscriptionSwitchDate();
 
         switch ($subscriptionType) {
             case 'pause':
                 $response = json_decode(
                     $actions->pause(
                         $subscriptionId,
-                        $resumeDate
+                        $this->detectSubscriptionResumeDate()
                     )
                 );
                 $this->updatePostSubscription($response);
@@ -181,17 +135,6 @@ class MyAccount
                     FILTER_SANITIZE_STRING
                 );
 
-                $subscriptionWebhookUrl = add_query_arg(
-                    'ecurring-webhook',
-                    'subscription',
-                    home_url('/')
-                );
-                $transactionWebhookUrl = add_query_arg(
-                    'ecurring-webhook',
-                    'transaction',
-                    home_url('/')
-                );
-
                 $response = json_decode(
                     $actions->create(
                         [
@@ -204,8 +147,8 @@ class MyAccount
                                     'mandate_accepted' => true,
                                     'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
                                     'confirmation_sent' => 'true',
-                                    'subscription_webhook_url' => $subscriptionWebhookUrl,
-                                    'transaction_webhook_url' => $transactionWebhookUrl,
+                                    'subscription_webhook_url' => $this->buildSubscriptionWebhookUrl(),
+                                    'transaction_webhook_url' => $this->buildTransactionWebhookUrl(),
                                     'status' => 'active',
                                     "start_date" => $switchDate,
                                 ],
@@ -219,13 +162,125 @@ class MyAccount
                 break;
             case 'cancel':
                 $response = json_decode(
-                    $actions->cancel($subscriptionId, $cancelDate)
+                    $actions->cancel($subscriptionId, $this->detectSubscriptionCancelDate())
                 );
                 $this->updatePostSubscription($response);
                 break;
         }
 
         wp_die();
+    }
+
+    /**
+     * Build and return url to be used for a subscription webhook call.
+     *
+     * @return string
+     */
+    protected function buildSubscriptionWebhookUrl(): string
+    {
+        return add_query_arg(
+            'ecurring-webhook',
+            'subscription',
+            home_url('/')
+        );
+    }
+
+    /**
+     * Build and return url to be used for a transaction webhook call.
+     *
+     * @return string
+     */
+    protected function buildTransactionWebhookUrl(): string
+    {
+        return add_query_arg(
+            'ecurring-webhook',
+            'transaction',
+            home_url('/')
+        );
+    }
+
+    /**
+     * Get formatted subscription switch date from posted data.
+     *
+     * @return string Formatted subscription switch date.
+     *
+     * @throws Exception If cannot create DateTime object.
+     */
+    protected function detectSubscriptionSwitchDate(): string
+    {
+        $switchSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_switch_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $switchDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
+        if ($switchSubscription === 'specific-date') {
+            $switchDate = filter_input(
+                INPUT_POST,
+                'ecurring_switch_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
+        }
+
+        return $switchDate;
+    }
+
+    /**
+     * Get formatted subscription resume date from posted data.
+     *
+     * @return string Formatted subscription cancel date.
+     *
+     * @throws Exception If cannot create DateTime object.
+     */
+    protected function detectSubscriptionResumeDate(): string
+    {
+        $pauseSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_pause_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $resumeDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
+        if ($pauseSubscription === 'specific-date') {
+            $resumeDate = filter_input(
+                INPUT_POST,
+                'ecurring_resume_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
+        }
+
+        return $resumeDate;
+    }
+
+    /**
+     * Get formatted subscription cancel date from posted data.
+     *
+     * @return string Formatted subscription cancel date.
+     *
+     * @throws Exception If cannot create DateTime object.
+     */
+    protected function detectSubscriptionCancelDate(): string
+    {
+        $cancelSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_cancel_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $cancelDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
+        if ($cancelSubscription === 'specific-date') {
+            $cancelDate = filter_input(
+                INPUT_POST,
+                'ecurring_cancel_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
+        }
+
+        return $cancelDate;
     }
 
     /**
