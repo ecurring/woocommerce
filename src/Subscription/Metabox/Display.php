@@ -5,10 +5,11 @@ namespace Ecurring\WooEcurring\Subscription\Metabox;
 use DateTime;
 use eCurring_WC_Helper_Api;
 use eCurring_WC_Helper_Settings;
+use WP_Post;
 
 class Display
 {
-    public function details($post)
+    public function details(WP_Post $post)
     {
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
@@ -38,7 +39,7 @@ class Display
         <?php
     }
 
-    public function options($post)
+    public function options(WP_Post $post)
     {
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
