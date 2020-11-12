@@ -39,7 +39,7 @@ class Display
         <?php
     }
 
-    public function options(WP_Post $post): void
+    public function options(WP_Post $post): void //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
