@@ -174,10 +174,7 @@ class Subscriptions
     protected function allowOption(string $option): bool
     {
         $option = get_option("ecurring_customer_subscription_{$option}");
-        if ($option === '1') {
-            return true;
-        }
 
-        return false;
+        return $option === '1';
     }
 }
