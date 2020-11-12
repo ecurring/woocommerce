@@ -91,18 +91,20 @@ class Subscriptions
                                 <?php if ($this->allowOption('pause')) { ?>
                                     <div class="ecurring-hide pause-form"
                                          data-subscription="<?php echo esc_attr($subscription->id); ?>">
-                                        <label><input name="ecurring_pause_subscription" type="radio"
+                                        <label><input name="ecurring_pause_subscription"
+                                                      type="radio"
                                                       value="infinite"
                                                       class="tog"
                                                       checked="checked"/>Infinite</label>
-                                        <label><input name="ecurring_pause_subscription" type="radio"
+                                        <label><input name="ecurring_pause_subscription"
+                                                      type="radio"
                                                       value="specific-date"
                                                       class="tog"/>Specific
                                             date</label>
-                                        <input class="ecurring-hide" name="ecurring_resume_date" type="date"
-                                               value="<?php echo esc_attr(
-                                                   (new DateTime('now'))->format('Y-m-d')
-                                                      ); ?>">
+                                        <input class="ecurring-hide"
+                                               name="ecurring_resume_date"
+                                               type="date"
+                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
                                         <button>Update</button>
                                     </div>
                                     <button class="resume-update ecurring-hide">Update</button>
@@ -121,32 +123,33 @@ class Subscriptions
                                                 ><?php echo esc_attr($value); ?></option>
                                             <?php }; ?>
                                         </select>
-                                        <label><input name="ecurring_switch_subscription" type="radio"
+                                        <label><input name="ecurring_switch_subscription"
+                                                      type="radio"
                                                       value="immediately" class="tog"
                                                       checked="checked"/>Immediately</label>
-                                        <label><input name="ecurring_switch_subscription" type="radio"
+                                        <label><input name="ecurring_switch_subscription"
+                                                      type="radio"
                                                       value="specific-date"
                                                       class="tog"/>Specific date</label>
                                         <input name="ecurring_switch_date" type="date"
-                                               value="<?php echo esc_attr(
-                                                   (new DateTime('now'))->format('Y-m-d')
-                                                      ); ?>">
+                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
                                         <button>Update</button>
                                     </div>
                                 <?php } ?>
                                 <?php if ($this->allowOption('cancel')) { ?>
                                     <div class="ecurring-hide cancel-form"
                                          data-subscription="<?php echo esc_attr($subscription->id); ?>">
-                                        <label><input name="ecurring_cancel_subscription" type="radio"
+                                        <label><input name="ecurring_cancel_subscription"
+                                                      type="radio"
                                                       value="infinite" class="tog"
                                                       checked="checked"/>Infinite</label>
-                                        <label><input name="ecurring_cancel_subscription" type="radio"
+                                        <label><input name="ecurring_cancel_subscription"
+                                                      type="radio"
                                                       value="specific-date"
                                                       class="tog"/>Specific date</label>
-                                        <input name="ecurring_cancel_date" type="date"
-                                               value="<?php echo esc_attr(
-                                                   (new DateTime('now'))->format('Y-m-d')
-                                                      ); ?>">
+                                        <input name="ecurring_cancel_date"
+                                               type="date"
+                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
                                         <button>Update</button>
                                     </div>
                                 <?php } ?>
