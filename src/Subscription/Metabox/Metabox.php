@@ -2,8 +2,6 @@
 
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
-use Ecurring\WooEcurring\Subscription\Actions;
-
 class Metabox
 {
     /**
