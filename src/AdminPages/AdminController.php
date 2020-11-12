@@ -118,7 +118,7 @@ class AdminController
                 'nonceField' => $nonceField,
                 'nonceFieldView' => $nonceFieldView,
             ];
-            echo $this->adminSettingsPageRenderer->render($context);
+            echo $this->adminSettingsPageRenderer->render($context); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         } catch (Throwable $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
