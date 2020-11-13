@@ -13,6 +13,10 @@ class WC_Order
             new WC_Order_Item_Product(),
         ];
     }
+
+    public function save():void
+    {
+    }
 }
 
 class WC_Order_Item_Product
