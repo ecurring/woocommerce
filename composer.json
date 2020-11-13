@@ -20,7 +20,8 @@
         "roots/wordpress": "@stable",
         "woocommerce/woocommerce": "^3.9",
         "mollie/mollie-woocommerce": "dev-develop",
-        "inpsyde/php-coding-standards": " ^1"
+        "inpsyde/php-coding-standards": " ^1",
+        "woocommerce/action-scheduler": "^3.1.6"
     },
     "repositories": [
         {
