@@ -10,6 +10,18 @@ use Ecurring\WooEcurring\Subscription\Repository;
 use eCurring_WC_Helper_Api;
 use Exception;
 
+use function in_the_loop;
+use function add_action;
+use function add_filter;
+use function filter_input;
+use function json_decode;
+use function get_post_meta;
+use function update_post_meta;
+use function home_url;
+use function add_query_arg;
+use function get_posts;
+use function wp_die;
+
 class MyAccount
 {
     /**
