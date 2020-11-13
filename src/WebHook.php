@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring;
 
 use Ecurring\WooEcurring\Subscription\Repository;
