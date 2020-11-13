@@ -9,6 +9,7 @@ use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use eCurring_WC_Helper_Api;
 use Exception;
+use WP_Post;
 
 use function in_the_loop;
 use function add_action;
@@ -309,6 +310,9 @@ class MyAccount
      */
     protected function updatePostSubscription($response): void
     {
+        /**
+         * @var array<WP_Post>
+         */
         $subscriptionPosts = get_posts(
             [
                 'post_type' => 'esubscriptions',
