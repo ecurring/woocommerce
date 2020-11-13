@@ -13,8 +13,8 @@ interface ApiClientInterface
     /**
      * API call to create subscription.
      *
-     * @param string $customerId eCurring customer id.
-     * @param string $subscriptionId eCurring subscription product id.
+     * @param string $ecurringCustomerId    eCurring customer id.
+     * @param string $subscriptionPlanId    eCurring subscription product id.
      * @param string $transactionWebhookUrl Webhook URL will be triggered by eCurring on transaction.
      *
      * @return array Created subscription data or error details.
@@ -22,8 +22,8 @@ interface ApiClientInterface
      * @throws ApiClientException If request failed.
      */
     public function createSubscription(
-        string $customerId,
-        string $subscriptionId,
+        string $ecurringCustomerId,
+        string $subscriptionPlanId,
         string $transactionWebhookUrl = ''
     ): array;
 

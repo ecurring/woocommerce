@@ -119,7 +119,7 @@ class ApiClient implements ApiClientInterface
      *
      * @param string $method
      * @param string $url
-     * @param false $data
+     * @param array|bool $data
      *
      * @return mixed
      */
