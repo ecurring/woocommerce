@@ -35,6 +35,9 @@ class NonceFieldBuilder implements NonceFieldBuilderInterface
 
     /**
      * @inheritDoc
+     *
+     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
      */
     public function buildNonceField(NonceInterface $nonce): ElementInterface
     {

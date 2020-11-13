@@ -43,6 +43,9 @@ class FormFieldsCollectionBuilder implements FormFieldsCollectionBuilderInterfac
 
     /**
      * @inheritDoc
+     *
+     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
      */
     public function buildFieldsCollection(): CollectionElementInterface
     {
