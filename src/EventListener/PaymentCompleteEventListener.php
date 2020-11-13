@@ -8,6 +8,7 @@ use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
+use WC_Order;
 
 class PaymentCompleteEventListener implements EventListenerInterface
 {
@@ -45,6 +46,16 @@ class PaymentCompleteEventListener implements EventListenerInterface
     {
         $order = wc_get_order($orderId);
         $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
+
+        if (! $order instanceof WC_Order) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Payment completed for order %1$d, but this order not found.',
+                    $orderId
+                )
+            );
+            return;
+        }
 
         if ($subscriptionId) {
             eCurring_WC_Plugin::debug(
