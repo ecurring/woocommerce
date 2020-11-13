@@ -7,6 +7,11 @@ namespace Ecurring\WooEcurring\EventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 
+use function add_filter;
+use function wc_get_product;
+use function wc_add_notice;
+use function _x;
+
 /**
  * Add to cart validation. Disallow to add to the cart more than one subscription.
  */
