@@ -102,8 +102,13 @@ class Repository
 
     /**
      * Check if subscription id exist in orders post meta.
+     *
      * @param $subscription
+     *
      * @return bool
+     *
+     * @todo: This seems to be very ineffective and potentially may lead to crash of DB has a lot of orders.
+     *        Check and rewrite if needed.
      */
     protected function orderSubscriptionExist($subscription): bool
     {
