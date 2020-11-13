@@ -31,11 +31,7 @@ class Assets
                     'ecurring_admin_subscriptions',
                     $scriptFilePath,
                     ['jquery'],
-                    (string) filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js')
-                        )
-                    )
+                    (string) filemtime($scriptFilePath)
                 );
 
                 $stylesFilePath = eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css');
@@ -44,11 +40,7 @@ class Assets
                     'ecurring_admin_subscriptions',
                     $stylesFilePath,
                     [],
-                    (string) filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css')
-                        )
-                    )
+                    (string) filemtime($stylesFilePath)
                 );
             }
         );
@@ -64,11 +56,7 @@ class Assets
                     'ecurring_customer_subscriptions',
                     $scriptFilePath,
                     ['jquery'],
-                    (string) filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl('assets/js/customer-subscriptions.js')
-                        )
-                    )
+                    (string) filemtime($scriptFilePath)
                 );
 
                 wp_localize_script(
@@ -85,13 +73,7 @@ class Assets
                     'ecurring_customer_subscriptions',
                     $stylesFilePath,
                     [],
-                    (string) filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl(
-                                'assets/css/customer-subscriptions.css'
-                            )
-                        )
-                    )
+                    (string) filemtime($stylesFilePath)
                 );
             }
         );
