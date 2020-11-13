@@ -20,4 +20,8 @@
             <directory name="/app/vendor/vimeo/psalm/tests/fixtures/stubs" />
         </ignoreFiles>
     </extraFiles>
+
+    <stubs>
+        <file name=".psalm/function-stubs.php"/>
+    </stubs>
 </psalm>
