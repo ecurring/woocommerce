@@ -58,6 +58,7 @@ class AddToCartValidationEventListener
             wc_add_notice(
                 _x(
                     'Please complete your current purchase first before adding another subscription product.',
+                    'User notice when trying to add more than one subscription product to the cart',
                     'woo-ecurring'
                 ),
                 'error'
