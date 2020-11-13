@@ -47,5 +47,7 @@ require_once ABSPATH . WPINC . '/theme.php';
 require_once ABSPATH . WPINC . '/post-thumbnail-template.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
+require_once PROJECT_DIR . '/includes/ecurring/wc/plugin.php';
+
 require_once PROJECT_DIR . '/vendor/woocommerce/action-scheduler/functions.php';
 require_once PROJECT_DIR . '/vendor/woocommerce/woocommerce/includes/wc-order-functions.php';

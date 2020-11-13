@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring;
 
 use eCurring_WC_Plugin;
+use WP_Screen;
 
 class Assets
 {
@@ -19,7 +20,8 @@ class Assets
         add_action(
             'admin_enqueue_scripts',
             static function () {
-                if (get_current_screen()->id !== 'esubscriptions') {
+                $screen = get_current_screen();
+                if ($screen instanceof WP_Screen && $screen->id !== 'esubscriptions') {
                     return;
                 }
 
@@ -29,7 +31,7 @@ class Assets
                     'ecurring_admin_subscriptions',
                     $scriptFilePath,
                     ['jquery'],
-                    filemtime(
+                    (string) filemtime(
                         get_template_directory(
                             eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js')
                         )
@@ -42,7 +44,7 @@ class Assets
                     'ecurring_admin_subscriptions',
                     $stylesFilePath,
                     [],
-                    filemtime(
+                    (string) filemtime(
                         get_template_directory(
                             eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css')
                         )
@@ -62,7 +64,7 @@ class Assets
                     'ecurring_customer_subscriptions',
                     $scriptFilePath,
                     ['jquery'],
-                    filemtime(
+                    (string) filemtime(
                         get_template_directory(
                             eCurring_WC_Plugin::getPluginUrl('assets/js/customer-subscriptions.js')
                         )
@@ -83,7 +85,7 @@ class Assets
                     'ecurring_customer_subscriptions',
                     $stylesFilePath,
                     [],
-                    filemtime(
+                    (string) filemtime(
                         get_template_directory(
                             eCurring_WC_Plugin::getPluginUrl(
                                 'assets/css/customer-subscriptions.css'
