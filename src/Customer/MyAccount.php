@@ -43,7 +43,7 @@ class MyAccount
         $this->subscriptions = $subscriptions;
     }
 
-    public function init()
+    public function init(): void
     {
         add_action(
             'woocommerce_account_ecurring-subscriptions_endpoint',
@@ -290,8 +290,10 @@ class MyAccount
 
     /**
      * @param $response
+     *
+     * @return void
      */
-    protected function updatePostSubscription($response)
+    protected function updatePostSubscription($response): void
     {
         $subscriptionPosts = get_posts(
             [

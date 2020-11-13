@@ -6,7 +6,7 @@ namespace Ecurring\WooEcurring;
 
 class Settings
 {
-    public function init()
+    public function init(): void
     {
         add_action(
             'admin_menu',

@@ -6,8 +6,10 @@ class Repository
 {
     /**
      * Create posts as subscription post type
+     *
+     * @return void
      */
-    public function createSubscriptions($subscriptions)
+    public function createSubscriptions($subscriptions): void
     {
         // TODO use WP_Query instead of get_posts
         $subscriptionPosts = get_posts(
@@ -36,7 +38,7 @@ class Repository
         }
     }
 
-    public function create($subscription)
+    public function create($subscription): void
     {
         $postId = wp_insert_post(
             [
@@ -62,7 +64,7 @@ class Repository
         }
     }
 
-    public function update($subscription)
+    public function update($subscription): void
     {
         // TODO use WP_Query instead of get_posts
         $subscriptionPosts = get_posts(

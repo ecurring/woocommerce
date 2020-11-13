@@ -22,7 +22,7 @@ class Actions
     /**
      * @param false|string $cancelDate
      */
-    public function cancel($subscriptionId, $cancelDate)
+    public function cancel(string $subscriptionId, $cancelDate)
     {
         $attributes = ['status' => 'cancelled'];
         if ($cancelDate) {

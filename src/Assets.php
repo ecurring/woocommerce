@@ -8,7 +8,7 @@ use eCurring_WC_Plugin;
 
 class Assets
 {
-    public function init()
+    public function init(): void
     {
         $this->enqueueAdminScripts();
         $this->enqueueFrontScripts();

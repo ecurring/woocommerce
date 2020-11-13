@@ -21,6 +21,9 @@ class Save
         $this->actions = $actions;
     }
 
+    /**
+     * @return void
+     */
     public function save($postId)
     {
         $subscriptionType = $subscriptionType = filter_input(
@@ -205,8 +208,10 @@ class Save
     /**
      * @param $postId
      * @param $response
+     *
+     * @return void
      */
-    protected function updateSubscription($postId, $response)
+    protected function updateSubscription(int $postId, $response): void
     {
         update_post_meta($postId, '_ecurring_post_subscription_attributes', $response->data->attributes);
     }

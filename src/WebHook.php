@@ -23,7 +23,7 @@ class WebHook
         $this->repository = $repository;
     }
 
-    public function init()
+    public function init(): void
     {
         add_filter(
             'request',

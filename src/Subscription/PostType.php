@@ -4,13 +4,13 @@ namespace Ecurring\WooEcurring\Subscription;
 
 class PostType
 {
-    public function init()
+    public function init(): void
     {
         $this->register();
         $this->listColumns();
     }
 
-    protected function register()
+    protected function register(): void
     {
         add_action(
             'init',
@@ -32,7 +32,7 @@ class PostType
         );
     }
 
-    protected function listColumns()
+    protected function listColumns(): void
     {
         add_filter(
             'manage_esubscriptions_posts_columns',

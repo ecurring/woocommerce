@@ -38,8 +38,10 @@ class PaymentCompleteEventListener implements EventListenerInterface
 
     /**
      * @param int $orderId
+     *
+     * @return void
      */
-    public function onPaymentComplete(int $orderId)
+    public function onPaymentComplete(int $orderId): void
     {
         $order = wc_get_order($orderId);
         $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);

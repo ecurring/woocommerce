@@ -13,4 +13,11 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
+
+    <extraFiles>
+        <directory name="includes" />
+        <ignoreFiles>
+            <directory name="/app/vendor/vimeo/psalm/tests/fixtures/stubs" />
+        </ignoreFiles>
+    </extraFiles>
 </psalm>

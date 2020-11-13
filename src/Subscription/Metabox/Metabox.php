@@ -20,7 +20,7 @@ class Metabox
         $this->save = $save;
     }
 
-    public function init()
+    public function init(): void
     {
         add_action(
             'add_meta_boxes',
