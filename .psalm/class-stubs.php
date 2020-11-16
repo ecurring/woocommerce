@@ -17,6 +17,14 @@ class WC_Order
     public function save():void
     {
     }
+
+    public function get_meta(string $key, bool $single = true)
+    {
+    }
+
+    public function update_meta_data(string $key, $data):void
+    {
+    }
 }
 
 class WC_Order_Item_Product
@@ -33,4 +41,11 @@ class WC_Product
 
 class WC_Order_Refund extends WC_Order
 {
+}
+
+class WC_Payment_Gateway
+{
+    public function supports(string $feature): bool
+    {
+    }
 }
