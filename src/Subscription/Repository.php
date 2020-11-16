@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Subscription;
 
+use WP_Post;
+
 class Repository
 {
     /**
@@ -13,7 +15,12 @@ class Repository
      */
     public function createSubscriptions($subscriptions): void
     {
-        // TODO use WP_Query instead of get_posts
+
+        /**
+         * @var WP_Post[] $subscriptionPosts
+         *
+         * @todo use WP_Query instead of get_posts
+         */
         $subscriptionPosts = get_posts(
             [
                 'post_type' => 'esubscriptions',
@@ -68,7 +75,11 @@ class Repository
 
     public function update($subscription): void
     {
-        // TODO use WP_Query instead of get_posts
+        /**
+         * @var WP_Post[]
+         *
+         * @todo use WP_Query instead of get_posts
+         */
         $subscriptionPosts = get_posts(
             [
                 'post_type' => 'esubscriptions',
