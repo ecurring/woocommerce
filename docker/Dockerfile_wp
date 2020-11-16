@@ -12,7 +12,7 @@ RUN apt-get install -y zip unzip curl git g++ zlib1g-dev libicu-dev
 RUN docker-php-ext-configure intl && \
     docker-php-ext-install intl
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --install-dir=/usr/bin --filename=composer
+RUN php composer-setup.php --install-dir=/usr/bin --filename=composer --version=1.10.16
 RUN php -r "unlink('composer-setup.php');"
 
 WORKDIR ${BUILD_ROOT_PATH}

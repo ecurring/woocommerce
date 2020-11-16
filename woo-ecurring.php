@@ -113,14 +113,50 @@ add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
 
 add_action('plugins_loaded', function(){
 	$environmentChecker = new EnvironmentChecker();
-    if (!$environmentChecker->isMollieActive() || !$environmentChecker->isMollieMinimalVersion()) {
+	$isMollieActive = $environmentChecker->isMollieActive();
+	$isMollieMinimalVersion = false;
+	$molliePluginPageUrl = http_build_query([
+	    'tab'=> 'plugin-information',
+        'plugin' => 'mollie-payments-for-woocommerce'
+    ]);
+	$molliePluginPageUrl = admin_url('plugin-install.php?' . $molliePluginPageUrl);
+
+	$mollieNotActiveMessage = sprintf(
+	    /* translators: %1$s is replaced with Mollie plugin installation page url. */
+	    __(
+        '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+        'woo-ecurring'
+        ),
+        esc_url($molliePluginPageUrl)
+    );
+	$mollieIsNotMinimalVersionMessage = sprintf(
+        /* translators: %1$s is replaced with Mollie plugin installation page url. */
+        __(
+        '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+        'woo-ecurring'
+        ),
+        $molliePluginPageUrl
+    );
+
+	if($isMollieActive) {
+	    $isMollieMinimalVersion = $environmentChecker->isMollieMinimalVersion();
+    }
+
+    if (! $isMollieActive || ! $isMollieMinimalVersion) {
 		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action('admin_notices', function () {
+		add_action('admin_notices', function () use (
+		    $isMollieActive,
+            $mollieNotActiveMessage,
+            $mollieIsNotMinimalVersionMessage
+        ) {
+		    $ksesParams = [
+		        'a' => [
+		            'href' => [],
+                ],
+                'strong' => []
+            ];
 			echo '<div class="error"><p>';
-			echo esc_html__(
-				'Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first.',
-				'woo-ecurring'
-			);
+			echo $isMollieActive ? wp_kses($mollieIsNotMinimalVersionMessage, $ksesParams) : wp_kses($mollieNotActiveMessage, $ksesParams);
 			echo '</p></div>';
 		});
 	}
@@ -166,7 +202,6 @@ function ecurring_wc_plugin_activation_hook ()
                  . implode('<br/>', $status_helper->getErrors());
 
         wp_die($message, $title, array('back_link' => true));
-        return;
     }
 }
 
@@ -193,7 +228,7 @@ function ecurring_wc_plugin_inactive_php() {
 	}
 
 	echo '<div class="error"><p>';
-	echo __( 'eCurring for WooCommerce requires PHP 7.2 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
+	echo __( 'Mollie Subscriptions requires PHP 7.2 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
 	echo '</p></div>';
 
 	return false;
@@ -209,7 +244,7 @@ function ecurring_wc_plugin_inactive() {
 	if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 
 		echo '<div class="error"><p>';
-		echo sprintf( esc_html__( '%1$seCurring for WooCommerce is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for it to work. Please %5$sinstall & activate WooCommerce &raquo;%6$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="https://wordpress.org/plugins/woocommerce/">', '</a>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
+		echo sprintf( esc_html__( '%1$sMollie Subscriptions is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for it to work. Please %5$sinstall & activate WooCommerce &raquo;%6$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="https://wordpress.org/plugins/woocommerce/">', '</a>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
 		echo '</p></div>';
 		return false;
 	}
@@ -217,7 +252,7 @@ function ecurring_wc_plugin_inactive() {
 	if ( version_compare( get_option( 'woocommerce_db_version' ), '3.0', '<' ) ) {
 
 		echo '<div class="error"><p>';
-		echo sprintf( esc_html__( '%1$seCurring for WooCommerce is inactive.%2$s This version requires WooCommerce 3.0 or newer. Please %3$supdate WooCommerce to version 3.0 or newer &raquo;%4$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
+		echo sprintf( esc_html__( '%1$sMollie Subscriptions is inactive.%2$s This version requires WooCommerce 3.0 or newer. Please %3$supdate WooCommerce to version 3.0 or newer &raquo;%4$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
 		echo '</p></div>';
 		return false;
 
