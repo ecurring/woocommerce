@@ -25,6 +25,10 @@ class WC_Order
     public function update_meta_data(string $key, $data):void
     {
     }
+
+    public function add_order_note(string $note): void
+    {
+    }
 }
 
 class WC_Order_Item_Product
@@ -37,6 +41,7 @@ class WC_Order_Item_Product
 
 class WC_Product
 {
+    public function get_meta(string $metaKey, bool $single = true);
 }
 
 class WC_Order_Refund extends WC_Order
