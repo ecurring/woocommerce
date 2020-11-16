@@ -19,7 +19,7 @@ class SettingsFormTemplate implements TemplateInterface
     {
 
         /**
-         * @var FormInterface $form
+         * @var FormInterface&ElementInterface $form
          */
         $form = $context['form'];
 
