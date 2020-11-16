@@ -17,7 +17,7 @@
     <extraFiles>
         <directory name="includes" />
         <ignoreFiles>
-            <directory name="/app/vendor/vimeo/psalm/tests/fixtures/stubs" />
+            <directory name="vendor/vimeo/psalm/tests/fixtures/stubs" />
         </ignoreFiles>
     </extraFiles>
 
