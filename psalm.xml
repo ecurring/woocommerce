@@ -16,9 +16,6 @@
 
     <extraFiles>
         <directory name="includes" />
-        <ignoreFiles>
-            <directory name="vendor/vimeo/psalm/tests/fixtures/stubs" />
-        </ignoreFiles>
     </extraFiles>
 
     <stubs>
