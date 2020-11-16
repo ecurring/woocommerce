@@ -6,6 +6,7 @@ namespace Ecurring\WooEcurring;
 
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
+use eCurring_WC_Plugin;
 
 class SubscriptionsJob
 {
@@ -68,8 +69,15 @@ class SubscriptionsJob
         $this->repository->createSubscriptions($subscriptions);
 
         $parts = parse_url($subscriptions->links->next);
-        parse_str($parts['query'], $query);
-        $nextPage = $query['page']['number'];
+        parse_str($parts['query'] ?? '', $query);
+        $nextPage = $query['page']['number'] ?? null;
+
+        if ($nextPage  === null) {
+            eCurring_WC_Plugin::debug(
+                'Could not get the next page number from API response.' .
+                'Subscriptions import failed.'
+            );
+        }
 
         update_option('ecurring_subscriptions_page', $nextPage);
 
