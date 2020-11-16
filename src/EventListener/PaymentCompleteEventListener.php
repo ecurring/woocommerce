@@ -45,7 +45,6 @@ class PaymentCompleteEventListener implements EventListenerInterface
     public function onPaymentComplete(int $orderId): void
     {
         $order = wc_get_order($orderId);
-        $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
 
         if (! $order instanceof WC_Order) {
             eCurring_WC_Plugin::debug(
@@ -56,6 +55,8 @@ class PaymentCompleteEventListener implements EventListenerInterface
             );
             return;
         }
+
+        $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
 
         if (! $subscriptionId) {
             return;
