@@ -14,25 +14,25 @@ class SubscriptionCrud implements SubscriptionCrudInterface
      * Save subscription data to the database.
      *
      * @param array    $subscriptionData Subscription to save.
-     * @param WC_Order $subscriptionOrder The order subscription should be associated with.
+     * @param WC_Order $order            The order subscription should be associated with.
      */
-    public function saveSubscription(array $subscriptionData, WC_Order $subscriptionOrder): void
+    public function saveSubscription(array $subscriptionData, WC_Order $order): void
     {
         $subscriptionId = $subscriptionData['data']['id'];
 
-        $subscriptionOrder->update_meta_data(self::MANDATE_ACCEPTED_DATE_FIELD, date('c'));
-        $subscriptionOrder->update_meta_data(self::ECURRING_SUBSCRIPTION_ID_FIELD, $subscriptionId);
+        $order->update_meta_data(self::MANDATE_ACCEPTED_DATE_FIELD, date('c'));
+        $order->update_meta_data(self::ECURRING_SUBSCRIPTION_ID_FIELD, $subscriptionId);
 
         $subscriptionLink = $this->buildSubscriptionUrl($subscriptionData['links']['self']);
-        $subscriptionOrder->update_meta_data(self::ECURRING_SUBSCRIPTION_LINK_FIELD, $subscriptionLink);
+        $order->update_meta_data(self::ECURRING_SUBSCRIPTION_LINK_FIELD, $subscriptionLink);
 
-        $subscriptionOrder->add_order_note(sprintf(
+        $order->add_order_note(sprintf(
         /* translators: Placeholder 1: Payment method title, placeholder 2: payment ID */
             __('Payment started for subscription ID %s.', 'woo-ecurring'),
             '<a href="' . $subscriptionLink . '" target="_blank">' . $subscriptionId . '</a>'
         ));
 
-        $subscriptionOrder->save();
+        $order->save();
     }
 
     /**
