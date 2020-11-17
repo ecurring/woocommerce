@@ -1,6 +1,9 @@
 {
   "redefinable-internals": [
     "get_class",
-    "date"
+    "date",
+    "extension_loaded",
+    "phpversion",
+    "version_compare"
   ]
 }

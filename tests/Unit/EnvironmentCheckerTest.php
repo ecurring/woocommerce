@@ -2,73 +2,419 @@
 
 namespace Ecurring\WooEcurringTests\Unit;
 
-use Ecurring\WooEcurring\EnvironmentChecker;
+use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use function Brain\Monkey\Functions\expect;
+use function Brain\Monkey\Functions\when;
+use function Patchwork\redefine;
 
 class EnvironmentCheckerTest extends TestCase {
 
 	use MockeryPHPUnitIntegration; //to count Mockery expectations properly as assertions
 
-	/**
-	 * Test if isMolliePluginActive functions correctly checks for that plugin and returns correct result.
-	 *
-	 * @dataProvider isMollieActiveDataProvider
-	 */
-	public function testIsMolliePluginActive($isActive){
+    public function testCheckEnvironmentCaseEverythingOk()
+    {
+        $sut = new EnvironmentChecker(PHP_VERSION, '4.0', '6.0.0');
 
-	    if($isActive){
-           define('M4W_FILE', '/some/path/to/plugin_dir/plugin.php');
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
         }
 
-	    expect('plugin_basename')
-            ->once()
-            ->andReturn('plugin_dir/plugin.php');
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
 
-		expect('is_plugin_active')
-			->once()
-			->andReturn($isActive);
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn($molliePluginBasename);
 
-		$sut = new EnvironmentChecker();
-
-		$this->assertSame($isActive, $sut->isMollieActive());
-	}
-
-    /**
-     * Return possible options for Mollie Payments for Woocommerce plugin states: true for active, false for inactive.
-     */
-    public function isMollieActiveDataProvider()
-    {
-        return [
-            [true],
-            [false]
-        ];
-    }
-
-    /** @dataProvider isMinimalVersionDataProvider */
-    public function testIsMollieMinimalVersion($mollieCurrentVersion, $isMinimal)
-    {
-        if (!defined('M4W_FILE')) {
-            define('M4W_FILE', 'foo/bar.baz');
-        }
-
-        $sut = new EnvironmentChecker();
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
 
         expect('get_plugin_data')
-            ->once()
-            ->andReturn([
-                'Version' => $mollieCurrentVersion,
-            ]);
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => '6.0.0']);
 
-        $this->assertSame($isMinimal, $sut->isMollieMinimalVersion());
+        $this->assertTrue($sut->checkEnvironment(), 'EnvironmentChecker test false negative.');
+        $this->assertSame($sut->getErrors(), [], 'Errors returned after successful environment check.');
     }
 
-    public function isMinimalVersionDataProvider()
+    public function testCheckEnvironmentCasePhpVersionLessThenRequired()
     {
-        return [
-            ['5.9.0', false],
-            ['6.0.0', true],
-        ];
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+
+        expect('phpversion')
+            ->andReturn('7.1');
+
+        when('__')
+            ->returnArg(1);
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'update your PHP')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about PHP update required.');
+
+    }
+
+    public function testCheckEnvironmentCaseNoJsonExtension()
+    {
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+
+        expect('phpversion')
+            ->andReturn('7.2');
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'woo-ecurring/woo-ecurring.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn('woo-ecurring/woo-ecurring.php');
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => '6.0.0']);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(false);
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'requires the JSON extension for PHP')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about JSON PHP extension required.');
+    }
+
+    public function testCheckEnvironmentCaseWoocommerceIsInactive()
+    {
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn([]);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn('woo-ecurring/woo-ecurring.php');
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => '6.0.0']);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        expect('phpversion')
+            ->andReturn('7.2');
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'install and activate') && stristr($errorMessage, 'WooCommerce')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about WooCommerce not active.');
+    }
+
+    public function testCheckEnvironmentCaseWoocommerceVersionTooLow()
+    {
+        $minRequiredPhpVersion = '7.2';
+        $minRequiredWcVersion = '4.0';
+        $actualPhpVersion = '7.2';
+
+        expect('phpversion')
+            ->andReturn($actualPhpVersion);
+
+        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion, '6.0.0' );
+
+        redefine('version_compare', function ($version1) use ($actualPhpVersion) {
+            //return true for PHP version check, false for WC version check
+            return $version1 === $actualPhpVersion;
+        });
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn('woo-ecurring/woo-ecurring.php');
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => '6.0.0']);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'update') && stristr($errorMessage, 'WooCommerce')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about WooCommerce update required.');
+    }
+
+    public function testCheckEnvironmentCaseMollieIsInactive()
+    {
+        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn('woo-ecurring/woo-ecurring.php');
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(false);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        expect('phpversion')
+            ->andReturn('7.2');
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'install and activate') && stristr($errorMessage, 'Mollie Payments')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about Mollie Payments plugin is not active.');
+    }
+
+    public function testCheckEnvironmentCaseMollieVersionTooLow()
+    {
+        $minRequiredPhpVersion = '7.2';
+        $minRequiredWcVersion = '4.0';
+        $actualMollieVersion = '5.9.10';
+        $requiredMollieVersion = '6.0.0';
+        $actualPhpVersion = $minRequiredPhpVersion;
+
+        expect('phpversion')
+            ->andReturn($actualPhpVersion);
+
+        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion,  $requiredMollieVersion);
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn('woo-ecurring/woo-ecurring.php');
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => $actualMollieVersion]);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
+
+
+        $errors = $sut->getErrors();
+        $stringFound = false;
+
+        foreach ($errors as $errorMessage) {
+            if(stristr($errorMessage, 'update') && stristr($errorMessage, 'Mollie Payments')){
+                $stringFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($stringFound, 'Not found expected message about Mollie plugin update required.');
     }
 }

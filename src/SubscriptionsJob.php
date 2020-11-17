@@ -31,8 +31,7 @@ class SubscriptionsJob
                 if (wp_doing_ajax()) {
                     return;
                 }
-
-                if (!function_exists('as_enqueue_async_action')) {
+                if(! function_exists('as_unschedule_all_actions') || ! function_exists('as_enqueue_async_action')){
                     return;
                 }
 
