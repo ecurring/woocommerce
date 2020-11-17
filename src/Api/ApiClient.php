@@ -95,7 +95,7 @@ class ApiClient implements ApiClientInterface {
 
         return $this->apiCall(
             'POST',
-            'https://api.ecurring.com/customers',
+            'https://api.ecurring.com/customers?_beta=1',
             $requestData
         );
     }
@@ -117,7 +117,7 @@ class ApiClient implements ApiClientInterface {
 
         return $this->apiCall(
             'POST',
-            'https://api.ecurring.com/mandates',
+            'https://api.ecurring.com/mandates?_beta=1',
             $requestData
         );
     }
