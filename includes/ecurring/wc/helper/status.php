@@ -30,39 +30,6 @@ class eCurring_WC_Helper_Status
     }
 
     /**
-     * Check if this plugin is compatible
-     *
-     * @return bool
-     */
-    public function isCompatible ()
-    {
-        static $is_compatible = null;
-
-        if ($is_compatible !== null)
-        {
-            return $is_compatible;
-        }
-
-        // Default
-        $is_compatible = true;
-
-        if (!$this->hasCompatibleWooCommerceVersion())
-        {
-            $this->errors[] = sprintf(
-                /* translators: Placeholder 1: Plugin name, placeholder 2: required WooCommerce version, placeholder 3: used WooCommerce version */
-                __('The %s plugin requires at least WooCommerce version %s, you are using version %s. Please update your WooCommerce plugin.', 'woo-ecurring'),
-                WOOECUR_PLUGIN_TITLE,
-                self::MIN_WOOCOMMERCE_VERSION,
-                $this->getWooCommerceVersion()
-            );
-
-            return $is_compatible = false;
-        }
-
-        return $is_compatible;
-    }
-
-    /**
      * @return string
      */
     public function getWooCommerceVersion ()
