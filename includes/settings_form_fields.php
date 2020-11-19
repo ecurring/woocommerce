@@ -28,7 +28,7 @@ return function (string $formAction, SettingsCrudInterface $settings): array {
 				'attributes' => [
 					'name'    => 'debug',
 					'type'    => 'checkbox',
-					'value'   => $settings->getOption('debug') ? 'yes' : ''
+					'value'   => $settings->getOption('debug') === 'no' ? '' : 'yes'
 				],
 				'choices'    => [
 					'yes' => esc_html_x(
