@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\AdminPages;
 
 use Brain\Nonces\NonceInterface;
+use ChriCo\Fields\Element\ElementInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
@@ -143,13 +144,32 @@ class AdminController {
 
 		foreach ($fieldsCollection->elements() as $element)
 		{
-			$this->settingsCrud->updateOption($element->name(), $formData[$element->name()] ?? null);
+			$this->settingsCrud->updateOption($element->name(), $this->getFormFieldValueToSave($formData, $element));
 		}
 
 		$this->settingsCrud->persist();
 
 		$this->redirectToSettingsPage();
 	}
+
+    /**
+     * Prepare form field value to save.
+     *
+     * @param array            $formData
+     * @param ElementInterface $element
+     *
+     * @return mixed|string|null
+     */
+	protected function getFormFieldValueToSave(array $formData, ElementInterface  $element)
+    {
+        $value = $formData[$element->name()] ?? null;
+
+        if($value === null && $element->type() === 'checkbox'){
+            $value = 'no';
+        }
+
+        return $value;
+    }
 
 	/**
 	 * Do redirect to the plugin settings page.
