@@ -28,6 +28,7 @@ return function (string $formAction, SettingsCrudInterface $settings): array {
 				'attributes' => [
 					'name'    => 'debug',
 					'type'    => 'checkbox',
+					'value'   => $settings->getOption('debug') ? 'enabled' : ''
 				],
 				'choices'    => [
 					'yes' => esc_html_x(
