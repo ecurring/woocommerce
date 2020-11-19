@@ -30,7 +30,7 @@ return function (string $formAction, SettingsCrudInterface $settings): array {
 					'type'    => 'checkbox',
 				],
 				'choices'    => [
-					'enabled' => esc_html_x(
+					'yes' => esc_html_x(
 						'When checked, logs will be created',
 						'Plugin settings',
 						'woo-ecurring'
