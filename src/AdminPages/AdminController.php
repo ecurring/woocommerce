@@ -129,7 +129,12 @@ class AdminController {
 	 */
 	public function saveSettings(): void
 	{
-		$formData = $_POST[$this->fieldsCollectionName] ?? null;
+		$formData = filter_input(
+		    INPUT_POST,
+            $this->fieldsCollectionName,
+            FILTER_SANITIZE_STRING,
+            FILTER_REQUIRE_ARRAY
+            ) ?? null;
 
 		if($formData === null){
 			return;
