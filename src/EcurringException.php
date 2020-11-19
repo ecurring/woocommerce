@@ -9,7 +9,7 @@ use Exception;
 /**
  * Super type for all app exceptions.
  */
-class EcurrungException extends Exception
+class EcurringException extends Exception
 {
 
 }
