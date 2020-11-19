@@ -15,7 +15,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected $minPhpVersion;
 
     /**
-     * @var array List of the error messages if environment is not ok.
+     * @var array<string> List of the error messages if environment is not ok.
      */
     protected $errors;
 
@@ -163,7 +163,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected function checkMollieIsActive(): bool
     {
         $molliePluginBasename = $this->getMolliePluginBasename();
-        $isMollieActive = is_plugin_active($molliePluginBasename);
+        $isMollieActive = $molliePluginBasename !== null && is_plugin_active($molliePluginBasename);
 
         if (! $isMollieActive) {
             $molliePluginPageUrl = $this->buildInstallPluginPageLink('mollie-payments-for-woocommerce');
