@@ -417,4 +417,66 @@ class EnvironmentCheckerTest extends TestCase {
 
         $this->assertTrue($stringFound, 'Not found expected message about Mollie plugin update required.');
     }
+
+    /**
+     * Test Mollie version in short (X.Y) form correctly interpreted and compared with full-form required version.
+     *
+     * @see https://inpsyde.atlassian.net/browse/ECUR-73
+     */
+    public function testCheckEnvironmentCaseMollieVersionOkShortForm()
+    {
+        $minRequiredPhpVersion = $actualPhpVersion = '7.2';
+        $minRequiredWcVersion = '4.0';
+        $actualMollieVersion = '6.0';
+        $requiredMollieVersion = '6.0.0';
+
+        expect('phpversion')
+            ->andReturn($actualPhpVersion);
+
+        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion,  $requiredMollieVersion);
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn($molliePluginBasename);
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => $actualMollieVersion]);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        $this->assertTrue($sut->checkEnvironment(), 'EnvironmentChecker test false negative.');
+    }
 }
