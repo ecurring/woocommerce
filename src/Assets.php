@@ -1,56 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring;
 
 use eCurring_WC_Plugin;
+use WP_Screen;
 
 class Assets
 {
-    public function init()
+    public function init(): void
+    {
+        $this->enqueueAdminScripts();
+        $this->enqueueFrontScripts();
+    }
+
+    protected function enqueueAdminScripts(): void
     {
         add_action(
             'admin_enqueue_scripts',
-            function () {
-                if (get_current_screen()->id !== 'esubscriptions') {
+            static function () {
+                $screen = get_current_screen();
+                if ($screen instanceof WP_Screen && $screen->id !== 'esubscriptions') {
                     return;
                 }
 
+                $scriptFilePath = eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js');
+
                 wp_enqueue_script(
                     'ecurring_admin_subscriptions',
-                    eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js'),
+                    $scriptFilePath,
                     ['jquery'],
-                    filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js')
-                        )
-                    )
+                    (string) filemtime($scriptFilePath)
                 );
+
+                $stylesFilePath = eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css');
 
                 wp_enqueue_style(
                     'ecurring_admin_subscriptions',
-                    eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css'),
+                    $stylesFilePath,
                     [],
-                    filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css')
-                        )
-                    )
+                    (string) filemtime($stylesFilePath)
                 );
             }
         );
+    }
 
+    protected function enqueueFrontScripts(): void
+    {
         add_action(
             'wp_enqueue_scripts',
-            function () {
+            static function () {
+                $scriptFilePath = eCurring_WC_Plugin::getPluginUrl('assets/js/customer-subscriptions.js');
                 wp_enqueue_script(
                     'ecurring_customer_subscriptions',
-                    eCurring_WC_Plugin::getPluginUrl('assets/js/customer-subscriptions.js'),
+                    $scriptFilePath,
                     ['jquery'],
-                    filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl('assets/js/customer-subscriptions.js')
-                        )
-                    )
+                    (string) filemtime($scriptFilePath)
                 );
 
                 wp_localize_script(
@@ -61,17 +67,13 @@ class Assets
                     ]
                 );
 
+                $stylesFilePath = eCurring_WC_Plugin::getPluginUrl('assets/css/customer-subscriptions.css');
+
                 wp_enqueue_style(
                     'ecurring_customer_subscriptions',
-                    eCurring_WC_Plugin::getPluginUrl('assets/css/customer-subscriptions.css'),
+                    $stylesFilePath,
                     [],
-                    filemtime(
-                        get_template_directory(
-                            eCurring_WC_Plugin::getPluginUrl(
-                                'assets/css/customer-subscriptions.css'
-                            )
-                        )
-                    )
+                    (string) filemtime($stylesFilePath)
                 );
             }
         );
