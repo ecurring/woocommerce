@@ -63,7 +63,7 @@ class ApiClient implements ApiClientInterface
     /**
      * @inheritdoc
      */
-    public function activateSubscription(string $subscriptionId, string $mandateCode, string $mandateAcceptedDate): array
+    public function activateSubscription(string $subscriptionId, string $mandateAcceptedDate): array
     {
 
         $requestData = [
@@ -74,7 +74,6 @@ class ApiClient implements ApiClientInterface
                     'status' => 'active',
                     'mandate_accepted' => true,
                     'mandate_accepted_date' => $mandateAcceptedDate,
-                    'mandate_code' => $mandateCode,
                 ],
             ],
         ];
