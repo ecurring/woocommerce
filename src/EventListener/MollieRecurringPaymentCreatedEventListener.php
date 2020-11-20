@@ -8,6 +8,7 @@ use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
+use WC_Order;
 
 class MollieRecurringPaymentCreatedEventListener implements EventListenerInterface
 {
