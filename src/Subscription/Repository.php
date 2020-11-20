@@ -1,15 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring\Subscription;
+
+use WP_Post;
 
 class Repository
 {
     /**
      * Create posts as subscription post type
+     *
+     * @return void
      */
-    public function createSubscriptions($subscriptions)
+    public function createSubscriptions($subscriptions): void
     {
-        // TODO use WP_Query instead of get_posts
+
+        /**
+         * @var WP_Post[] $subscriptionPosts
+         *
+         * @todo use WP_Query instead of get_posts
+         */
         $subscriptionPosts = get_posts(
             [
                 'post_type' => 'esubscriptions',
@@ -20,12 +31,10 @@ class Repository
 
         $subscriptionIds = [];
         foreach ($subscriptionPosts as $post) {
-
             $subscriptionIds[] = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         }
 
         foreach ($subscriptions->data as $subscription) {
-
             if (!$this->orderSubscriptionExist($subscription)) {
                 continue;
             }
@@ -38,7 +47,7 @@ class Repository
         }
     }
 
-    public function create($subscription)
+    public function create($subscription): void
     {
         $postId = wp_insert_post(
             [
@@ -64,9 +73,13 @@ class Repository
         }
     }
 
-    public function update($subscription)
+    public function update($subscription): void
     {
-        // TODO use WP_Query instead of get_posts
+        /**
+         * @var WP_Post[]
+         *
+         * @todo use WP_Query instead of get_posts
+         */
         $subscriptionPosts = get_posts(
             [
                 'post_type' => 'esubscriptions',
@@ -100,8 +113,13 @@ class Repository
 
     /**
      * Check if subscription id exist in orders post meta.
+     *
      * @param $subscription
+     *
      * @return bool
+     *
+     * @todo: This seems to be very ineffective and potentially may lead to crash of DB has a lot of orders.
+     *        Check and rewrite if needed.
      */
     protected function orderSubscriptionExist($subscription): bool
     {

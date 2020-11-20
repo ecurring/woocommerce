@@ -13,4 +13,13 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
+
+    <extraFiles>
+        <directory name="includes" />
+    </extraFiles>
+
+    <stubs>
+        <file name=".psalm/function-stubs.php"/>
+        <file name=".psalm/class-stubs.php"/>
+    </stubs>
 </psalm>

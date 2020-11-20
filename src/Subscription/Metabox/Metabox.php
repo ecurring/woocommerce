@@ -1,8 +1,8 @@
 <?php
 
-namespace Ecurring\WooEcurring\Subscription\Metabox;
+declare(strict_types=1);
 
-use Ecurring\WooEcurring\Subscription\Actions;
+namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 class Metabox
 {
@@ -22,15 +22,15 @@ class Metabox
         $this->save = $save;
     }
 
-    public function init()
+    public function init(): void
     {
         add_action(
             'add_meta_boxes',
-            function (){
+            function () {
                 add_meta_box(
                     'ecurring_subscription_details',
                     'Details',
-                    function ($post)  {
+                    function ($post) {
                         $this->display->details($post);
                     },
                     'esubscriptions'

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20e638f5e86ce1a18da0e6951efab60b",
+    "content-hash": "0e54c4249a6c44779d5df8d8dee31edf",
     "packages": [
         {
             "name": "brain/nonces",
@@ -54,10 +54,6 @@
                 "wordpress",
                 "wordpress nonce"
             ],
-            "support": {
-                "issues": "https://github.com/Brain-WP/Nonces/issues",
-                "source": "https://github.com/Brain-WP/Nonces/tree/master"
-            },
             "time": "2016-11-17T13:04:21+00:00"
         },
         {
@@ -110,10 +106,6 @@
                 }
             ],
             "description": "Package which provides some re-usable fields for WordPress.",
-            "support": {
-                "issues": "https://github.com/Chrico/wp-fields/issues",
-                "source": "https://github.com/Chrico/wp-fields/tree/master"
-            },
             "time": "2018-06-15T09:22:34+00:00"
         },
         {
@@ -166,10 +158,6 @@
                 }
             ],
             "description": "An interface for objects that can perform rendering.",
-            "support": {
-                "issues": "https://github.com/Dhii/output-renderer-interface/issues",
-                "source": "https://github.com/Dhii/output-renderer-interface/tree/0.4.x"
-            },
             "time": "2020-03-06T07:52:12+00:00"
         },
         {
@@ -256,10 +244,6 @@
                 }
             ],
             "description": "Inpsyde Filter library.",
-            "support": {
-                "issues": "https://www.github.com/inpsyde/inpsyde-filter/issues",
-                "source": "https://www.github.com/inpsyde/inpsyde-filter"
-            },
             "time": "2017-10-13T09:47:13+00:00"
         },
         {
@@ -311,10 +295,6 @@
                 }
             ],
             "description": "Inpsyde Validator library.",
-            "support": {
-                "issues": "https://www.github.com/inpsyde/inpsyde-validator/issues",
-                "source": "https://www.github.com/inpsyde/inpsyde-validator"
-            },
             "time": "2020-05-06T10:01:39+00:00"
         }
     ],
@@ -325,12 +305,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/amp.git",
-                "reference": "dbb3c28ece24b36efa91be205f6f0b015bddc27c"
+                "reference": "eb2f325586bc6ebb12d27834fc779fa140c38a57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/amp/zipball/dbb3c28ece24b36efa91be205f6f0b015bddc27c",
-                "reference": "dbb3c28ece24b36efa91be205f6f0b015bddc27c",
+                "url": "https://api.github.com/repos/amphp/amp/zipball/eb2f325586bc6ebb12d27834fc779fa140c38a57",
+                "reference": "eb2f325586bc6ebb12d27834fc779fa140c38a57",
                 "shasum": ""
             },
             "require": {
@@ -401,7 +381,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-14T16:44:06+00:00"
+            "time": "2020-10-10T13:54:50+00:00"
         },
         {
             "name": "amphp/byte-stream",
@@ -819,7 +799,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/package-versions-deprecated.git",
-                "reference": "64291c788b9a18272346decf566931e33a317399"
+                "reference": "c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855"
             },
             "dist": {
                 "type": "zip",
@@ -900,7 +880,7 @@
                 "php": "^5.3.2 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.12.54",
+                "phpstan/phpstan": "^0.12.19",
                 "symfony/phpunit-bridge": "^4.2 || ^5"
             },
             "type": "library",
@@ -1017,6 +997,72 @@
             "time": "2020-11-13T08:04:11+00:00"
         },
         {
+            "name": "dealerdirect/phpcodesniffer-composer-installer",
+            "version": "v0.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dealerdirect/phpcodesniffer-composer-installer.git",
+                "reference": "e8d808670b8f882188368faaf1144448c169c0b7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dealerdirect/phpcodesniffer-composer-installer/zipball/e8d808670b8f882188368faaf1144448c169c0b7",
+                "reference": "e8d808670b8f882188368faaf1144448c169c0b7",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0 || ^2.0",
+                "php": ">=5.3",
+                "squizlabs/php_codesniffer": "^2 || ^3 || 4.0.x-dev"
+            },
+            "require-dev": {
+                "composer/composer": "*",
+                "phpcompatibility/php-compatibility": "^9.0",
+                "sensiolabs/security-checker": "^4.1.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Franck Nijhof",
+                    "email": "franck.nijhof@dealerdirect.com",
+                    "homepage": "http://www.frenck.nl",
+                    "role": "Developer / IT Manager"
+                }
+            ],
+            "description": "PHP_CodeSniffer Standards Composer Installer Plugin",
+            "homepage": "http://www.dealerdirect.com",
+            "keywords": [
+                "PHPCodeSniffer",
+                "PHP_CodeSniffer",
+                "code quality",
+                "codesniffer",
+                "composer",
+                "installer",
+                "phpcs",
+                "plugin",
+                "qa",
+                "quality",
+                "standard",
+                "standards",
+                "style guide",
+                "stylecheck",
+                "tests"
+            ],
+            "time": "2020-06-25T14:57:39+00:00"
+        },
+        {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "v0.1.1",
             "source": {
@@ -1051,31 +1097,36 @@
         },
         {
             "name": "doctrine/instantiator",
-            "version": "1.5.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "6410c4b8352cb64218641457cef64997e6b784fb"
+                "reference": "3e7a22aed197e9333cc929e7f6b4300bdae91fcc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/6410c4b8352cb64218641457cef64997e6b784fb",
-                "reference": "6410c4b8352cb64218641457cef64997e6b784fb",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/3e7a22aed197e9333cc929e7f6b4300bdae91fcc",
+                "reference": "3e7a22aed197e9333cc929e7f6b4300bdae91fcc",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^8.0",
+                "doctrine/coding-standard": "^6.0",
                 "ext-pdo": "*",
                 "ext-phar": "*",
-                "phpbench/phpbench": "^0.13 || 1.0.0-alpha2",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-phpunit": "^0.12",
-                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
+                "phpbench/phpbench": "^0.13",
+                "phpstan/phpstan-phpunit": "^0.11",
+                "phpstan/phpstan-shim": "^0.11",
+                "phpunit/phpunit": "^7.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
@@ -1089,7 +1140,7 @@
                 {
                     "name": "Marco Pivetta",
                     "email": "ocramius@gmail.com",
-                    "homepage": "https://ocramius.github.io/"
+                    "homepage": "http://ocramius.github.com/"
                 }
             ],
             "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
@@ -1112,7 +1163,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-10T19:05:51+00:00"
+            "time": "2020-06-15T18:51:04+00:00"
         },
         {
             "name": "felixfbecker/advanced-json-rpc",
@@ -1475,6 +1526,110 @@
             "time": "2020-07-09T08:09:16+00:00"
         },
         {
+            "name": "inpsyde/php-coding-standards",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/inpsyde/php-coding-standards.git",
+                "reference": "38546e64d1f04fb69d7105bfe41ef9e46c6f8bfb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/inpsyde/php-coding-standards/zipball/38546e64d1f04fb69d7105bfe41ef9e46c6f8bfb",
+                "reference": "38546e64d1f04fb69d7105bfe41ef9e46c6f8bfb",
+                "shasum": ""
+            },
+            "require": {
+                "automattic/phpcs-neutron-standard": "^1.6.0",
+                "automattic/vipwpcs": "^2.2",
+                "dealerdirect/phpcodesniffer-composer-installer": "~0.7.0",
+                "php": ">=7",
+                "phpcompatibility/php-compatibility": "^9.3.5",
+                "squizlabs/php_codesniffer": "~3.5.6",
+                "wp-coding-standards/wpcs": "^2.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "6.5.* || 9.4.*",
+                "vimeo/psalm": "^3"
+            },
+            "type": "phpcodesniffer-standard",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.0-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Inpsyde GmbH",
+                    "email": "hello@inpsyde.com",
+                    "homepage": "https://inpsyde.com",
+                    "role": "Company"
+                }
+            ],
+            "description": "PHP 7+ coding standards for Inpsyde WordPress projects.",
+            "keywords": [
+                "Code style",
+                "Coding Style",
+                "Inpsyde",
+                "PHP standards",
+                "PSR-2",
+                "WordPress standards",
+                "code standards",
+                "coding standards",
+                "object calisthenics",
+                "phpcs",
+                "psr-12",
+                "standards",
+                "wordpress"
+            ],
+            "time": "2020-10-17T22:47:35+00:00"
+        },
+        {
+            "name": "johnpbloch/wordpress-core",
+            "version": "5.6.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/johnpbloch/wordpress-core.git",
+                "reference": "e7a6edb762b95146d7e7b892712356ea668372fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/e7a6edb762b95146d7e7b892712356ea668372fb",
+                "reference": "e7a6edb762b95146d7e7b892712356ea668372fb",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=5.6.20"
+            },
+            "provide": {
+                "wordpress/core-implementation": "5.6.x-dev"
+            },
+            "type": "wordpress-core",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "WordPress Community",
+                    "homepage": "https://wordpress.org/about/"
+                }
+            ],
+            "description": "WordPress is open source software you can use to create a beautiful website, blog, or app.",
+            "homepage": "https://wordpress.org/",
+            "keywords": [
+                "blog",
+                "cms",
+                "wordpress"
+            ],
+            "time": "2020-11-19T09:32:41+00:00"
+        },
+        {
             "name": "maxmind-db/reader",
             "version": "v1.6.0",
             "source": {
@@ -1691,19 +1846,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/WooCommerce.git",
-                "reference": "7200045baec4b52fa9fd23b651642ce24af3a03e"
+                "reference": "ea24b6188dfee75c2f0e22e9284955a6af0581ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/7200045baec4b52fa9fd23b651642ce24af3a03e",
-                "reference": "7200045baec4b52fa9fd23b651642ce24af3a03e",
+                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/ea24b6188dfee75c2f0e22e9284955a6af0581ae",
+                "reference": "ea24b6188dfee75c2f0e22e9284955a6af0581ae",
                 "shasum": ""
             },
             "require": {
                 "ext-intl": "*",
                 "ext-json": "*",
                 "mollie/mollie-api-php": "^2.0",
-                "php": "^5.6.40 | ^7.0"
+                "php": "^5.6.39 | ^7.0"
             },
             "require-dev": {
                 "brain/monkey": "^2.3",
@@ -1711,7 +1866,7 @@
                 "johnpbloch/wordpress-core": "^3.8 || ^4.0 || ^5.0",
                 "phpunit/phpunit": "^5 || ^7.1",
                 "ptrofimov/xpmock": "^1",
-                "woocommerce/woocommerce": "^2.2 || ^3.0"
+                "woocommerce/woocommerce": "^2.2 || ^3.0 || ^4.0"
             },
             "type": "wordpress-plugin",
             "extra": {
@@ -1747,7 +1902,7 @@
                 "source": "https://github.com/mollie/WooCommerce/tree/develop",
                 "issues": "https://github.com/mollie/WooCommerce/issues"
             },
-            "time": "2020-11-11T16:05:25+00:00"
+            "time": "2020-11-17T09:03:12+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2053,6 +2208,64 @@
             "time": "2018-07-08T19:19:57+00:00"
         },
         {
+            "name": "phpcompatibility/php-compatibility",
+            "version": "9.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPCompatibility/PHPCompatibility.git",
+                "reference": "9fb324479acf6f39452e0655d2429cc0d3914243"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPCompatibility/PHPCompatibility/zipball/9fb324479acf6f39452e0655d2429cc0d3914243",
+                "reference": "9fb324479acf6f39452e0655d2429cc0d3914243",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "squizlabs/php_codesniffer": "^2.3 || ^3.0.2"
+            },
+            "conflict": {
+                "squizlabs/php_codesniffer": "2.6.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.5 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "suggest": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically.",
+                "roave/security-advisories": "dev-master || Helps prevent installing dependencies with known security issues."
+            },
+            "type": "phpcodesniffer-standard",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Wim Godden",
+                    "homepage": "https://github.com/wimg",
+                    "role": "lead"
+                },
+                {
+                    "name": "Juliette Reinders Folmer",
+                    "homepage": "https://github.com/jrfnl",
+                    "role": "lead"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/PHPCompatibility/PHPCompatibility/graphs/contributors"
+                }
+            ],
+            "description": "A set of sniffs for PHP_CodeSniffer that checks for PHP cross-version compatibility.",
+            "homepage": "http://techblog.wimgodden.be/tag/codesniffer/",
+            "keywords": [
+                "compatibility",
+                "phpcs",
+                "standards"
+            ],
+            "time": "2019-12-27T09:44:58+00:00"
+        },
+        {
             "name": "phpdocumentor/reflection-common",
             "version": "dev-master",
             "source": {
@@ -2107,12 +2320,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "069a785b2141f5bcf49f3e353548dc1cce6df556"
+                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/069a785b2141f5bcf49f3e353548dc1cce6df556",
-                "reference": "069a785b2141f5bcf49f3e353548dc1cce6df556",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
+                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
                 "shasum": ""
             },
             "require": {
@@ -2151,7 +2364,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2020-09-03T19:13:55+00:00"
+            "time": "2020-11-18T14:27:38+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -3513,17 +3726,116 @@
             "time": "2016-10-03T07:35:21+00:00"
         },
         {
+            "name": "sirbrillig/phpcs-variable-analysis",
+            "version": "2.10.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sirbrillig/phpcs-variable-analysis.git",
+                "reference": "26f24afa84e0e34e06663c91cbbd513b354b1389"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sirbrillig/phpcs-variable-analysis/zipball/26f24afa84e0e34e06663c91cbbd513b354b1389",
+                "reference": "26f24afa84e0e34e06663c91cbbd513b354b1389",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+                "limedeck/phpunit-detailed-printer": "^3.1 || ^4.0 || ^5.0",
+                "phpstan/phpstan": "^0.11.8",
+                "phpunit/phpunit": "^5.0 || ^6.5 || ^7.0 || ^8.0",
+                "sirbrillig/phpcs-import-detection": "^1.1"
+            },
+            "type": "phpcodesniffer-standard",
+            "autoload": {
+                "psr-4": {
+                    "VariableAnalysis\\": "VariableAnalysis/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sam Graham",
+                    "email": "php-codesniffer-variableanalysis@illusori.co.uk"
+                },
+                {
+                    "name": "Payton Swick",
+                    "email": "payton@foolord.com"
+                }
+            ],
+            "description": "A PHPCS sniff to detect problems with variables.",
+            "time": "2020-11-10T22:28:15+00:00"
+        },
+        {
+            "name": "squizlabs/php_codesniffer",
+            "version": "3.5.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "9d583721a7157ee997f235f327de038e7ea6dac4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/9d583721a7157ee997f235f327de038e7ea6dac4",
+                "reference": "9d583721a7157ee997f235f327de038e7ea6dac4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "bin": [
+                "bin/phpcs",
+                "bin/phpcbf"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "https://github.com/squizlabs/PHP_CodeSniffer",
+            "keywords": [
+                "phpcs",
+                "standards"
+            ],
+            "time": "2020-10-23T02:01:07+00:00"
+        },
+        {
             "name": "symfony/console",
             "version": "5.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "d1d8b8fd9b605630aa73b1b384e246fee54e8ffa"
+                "reference": "b194bea28f51b40ab61acb1ba66b9a31f6b4bd0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/d1d8b8fd9b605630aa73b1b384e246fee54e8ffa",
-                "reference": "d1d8b8fd9b605630aa73b1b384e246fee54e8ffa",
+                "url": "https://api.github.com/repos/symfony/console/zipball/b194bea28f51b40ab61acb1ba66b9a31f6b4bd0c",
+                "reference": "b194bea28f51b40ab61acb1ba66b9a31f6b4bd0c",
                 "shasum": ""
             },
             "require": {
@@ -3604,7 +3916,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-05T20:05:54+00:00"
+            "time": "2020-11-20T08:48:10+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4520,6 +4832,41 @@
             "time": "2016-08-15T15:31:42+00:00"
         },
         {
+            "name": "woocommerce/action-scheduler",
+            "version": "3.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/woocommerce/action-scheduler.git",
+                "reference": "275d0ba54b1c263dfc62688de2fa9a25a373edf8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/woocommerce/action-scheduler/zipball/275d0ba54b1c263dfc62688de2fa9a25a373edf8",
+                "reference": "275d0ba54b1c263dfc62688de2fa9a25a373edf8",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.6",
+                "woocommerce/woocommerce-sniffs": "0.0.8",
+                "wp-cli/wp-cli": "~1.5.1"
+            },
+            "type": "wordpress-plugin",
+            "extra": {
+                "scripts-description": {
+                    "test": "Run unit tests",
+                    "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
+                    "phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "Action Scheduler for WordPress and WooCommerce",
+            "homepage": "https://actionscheduler.org/",
+            "time": "2020-05-12T16:22:33+00:00"
+        },
+        {
             "name": "woocommerce/woocommerce",
             "version": "3.9.3",
             "source": {
@@ -4665,6 +5012,52 @@
             "homepage": "https://github.com/woocommerce/woocommerce-rest-api",
             "abandoned": true,
             "time": "2020-01-28T21:04:51+00:00"
+        },
+        {
+            "name": "wp-coding-standards/wpcs",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WordPress/WordPress-Coding-Standards.git",
+                "reference": "7da1894633f168fe244afc6de00d141f27517b62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WordPress/WordPress-Coding-Standards/zipball/7da1894633f168fe244afc6de00d141f27517b62",
+                "reference": "7da1894633f168fe244afc6de00d141f27517b62",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "squizlabs/php_codesniffer": "^3.3.1"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.5 || ^0.6",
+                "phpcompatibility/php-compatibility": "^9.0",
+                "phpcsstandards/phpcsdevtools": "^1.0",
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "suggest": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.6 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically."
+            },
+            "type": "phpcodesniffer-standard",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/WordPress/WordPress-Coding-Standards/graphs/contributors"
+                }
+            ],
+            "description": "PHP_CodeSniffer rules (sniffs) to enforce WordPress coding conventions",
+            "keywords": [
+                "phpcs",
+                "standards",
+                "wordpress"
+            ],
+            "time": "2020-05-13T23:57:56+00:00"
         }
     ],
     "aliases": [],

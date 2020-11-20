@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Api;
 
-use eCurring_WC_Exception;
+use Ecurring\WooEcurring\EcurringException;
 
 /**
  * Thrown when API request problem occurred.
  */
-class ApiClientException extends eCurring_WC_Exception{}
+class ApiClientException extends EcurringException
+{
+}

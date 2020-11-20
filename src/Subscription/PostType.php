@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring\Subscription;
 
 class PostType
 {
-    public function init()
+    public function init(): void
     {
         $this->register();
         $this->listColumns();
     }
 
-    protected function register()
+    protected function register(): void
     {
         add_action(
             'init',
-            function () {
+            static function () {
 
                 $args = [
                     'labels' => [
@@ -32,11 +34,11 @@ class PostType
         );
     }
 
-    protected function listColumns()
+    protected function listColumns(): void
     {
         add_filter(
             'manage_esubscriptions_posts_columns',
-            function ($columns) {
+            static function ($columns) {
                 unset($columns['date']);
 
                 $columns['status'] = 'Status';
@@ -47,7 +49,7 @@ class PostType
 
         add_action(
             'manage_esubscriptions_posts_custom_column',
-            function ($column, $postId) {
+            static function ($column, $postId) {
                 $attributes = get_post_meta(
                     $postId,
                     '_ecurring_post_subscription_attributes',
@@ -62,7 +64,6 @@ class PostType
                         echo 'product here...';
                         break;
                 }
-
             },
             10,
             2

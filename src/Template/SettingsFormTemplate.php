@@ -9,34 +9,35 @@ use ChriCo\Fields\Element\FormInterface;
 use ChriCo\Fields\View\RenderableElementInterface;
 use Dhii\Output\Template\TemplateInterface;
 
-class SettingsFormTemplate implements TemplateInterface {
+class SettingsFormTemplate implements TemplateInterface
+{
 
-	/**
-	 * @inheritDoc
-	 */
-	public function render($context = null): string
+    /**
+     * @inheritDoc
+     */
+    public function render($context = null): string
     {
 
-		/**
-		 * @var FormInterface $form
-		 */
-		$form = $context['form'];
+        /**
+         * @var FormInterface&ElementInterface $form
+         */
+        $form = $context['form'];
 
-		/**
-		 * @var RenderableElementInterface
-		 */
-		$view = $context['view'];
+        /**
+         * @var RenderableElementInterface
+         */
+        $view = $context['view'];
 
-		$mainFormFields = $view->render($form);
+        $mainFormFields = $view->render($form);
 
-		/** @var ElementInterface $nonceField */
-		$nonceField = $context['nonceField'];
+        /** @var ElementInterface $nonceField */
+        $nonceField = $context['nonceField'];
 
-		/** @var RenderableElementInterface $nonceView */
-		$nonceView = $context['nonceFieldView'];
+        /** @var RenderableElementInterface $nonceView */
+        $nonceView = $context['nonceFieldView'];
 
-		$nonceFormFields = $nonceView->render($nonceField);
+        $nonceFormFields = $nonceView->render($nonceField);
 
-		return $mainFormFields . $nonceFormFields;
-	}
+        return $mainFormFields . $nonceFormFields;
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring\Subscription;
 
 use eCurring_WC_Helper_Api;
@@ -22,7 +24,7 @@ class Actions
     /**
      * @param false|string $cancelDate
      */
-    public function cancel($subscriptionId, $cancelDate)
+    public function cancel(string $subscriptionId, $cancelDate)
     {
         $attributes = ['status' => 'cancelled'];
         if ($cancelDate) {

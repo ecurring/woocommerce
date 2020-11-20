@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EnvironmentChecker;
 
+use Dhii\Package\Version\StringVersionFactoryInterface;
+use eCurring_WC_Plugin;
+use Exception;
+
 /**
  * Check if environment is suitable for this plugin to work.
  */
@@ -15,7 +19,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected $minPhpVersion;
 
     /**
-     * @var array List of the error messages if environment is not ok.
+     * @var array<string> List of the error messages if environment is not ok.
      */
     protected $errors;
 
@@ -28,18 +32,29 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      * @var string
      */
     protected $minMollieVersion;
+    /**
+     * @var StringVersionFactoryInterface
+     */
+    protected $versionFactory;
 
     /**
-     * @param string $minPhpVersion         The minimum required PHP version.
-     * @param string $minWoocommerceVersion The minimum required WC version.
-     * @param string $minMollieVersion      The minimum required Mollie Payments version.
+     * @param string               $minPhpVersion            The minimum required PHP version.
+     * @param string               $minWoocommerceVersion    The minimum required WC version.
+     * @param string               $minMollieVersion         The minimum required Mollie Payments version.
+     * @param StringVersionFactoryInterface $versionFactory Factory to create Version instance,
+     *                                                      used to normalize version string.
      */
-    public function __construct(string $minPhpVersion, string $minWoocommerceVersion, string $minMollieVersion)
-    {
+    public function __construct(
+        string $minPhpVersion,
+        string $minWoocommerceVersion,
+        string $minMollieVersion,
+        StringVersionFactoryInterface $versionFactory
+    ) {
         $this->minPhpVersion = $minPhpVersion;
         $this->minWoocommerceVersion = $minWoocommerceVersion;
         $this->errors = [];
         $this->minMollieVersion = $minMollieVersion;
+        $this->versionFactory = $versionFactory;
     }
 
     /**
@@ -70,10 +85,9 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function checkPhpVersion(): bool
     {
-        $phpVersionIsOk = version_compare(phpversion(), $this->minPhpVersion, '>=');
+        $phpVersionIsOk = $this->checkVersion(phpversion(), $this->minPhpVersion);
 
-        if(! $phpVersionIsOk)
-        {
+        if (! $phpVersionIsOk) {
             $this->errors[] = __(
                 'Mollie Subscriptions plugin is disabled. Please, update your PHP first.',
                 'woo-ecurring'
@@ -92,7 +106,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     {
         $jsonExtensionLoaded = extension_loaded('json');
 
-        if(! $jsonExtensionLoaded){
+        if (! $jsonExtensionLoaded) {
             $this->errors[] = esc_html__(
                 'Mollie Subscriptions requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.',
                 'woo-ecurring'
@@ -111,11 +125,10 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     {
         $wcIsActive = in_array(
             'woocommerce/woocommerce.php',
-            apply_filters( 'active_plugins', get_option( 'active_plugins' ))
+            apply_filters('active_plugins', get_option('active_plugins'))
         );
 
-        if(! $wcIsActive){
-
+        if (! $wcIsActive) {
             $woocommercePluginPageUrl = $this->buildInstallPluginPageLink('woocommerce');
 
             $this->errors[] = sprintf(
@@ -138,20 +151,20 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function checkWoocommerceVersion(): bool
     {
-        if(! defined('WC_VERSION')){
+        if (! defined('WC_VERSION')) {
             return false;
         }
 
-        $wcVersionIsOk = version_compare(WC_VERSION, $this->minWoocommerceVersion, '>=');
+        $wcVersionIsOk = $this->checkVersion(WC_VERSION, $this->minWoocommerceVersion);
         $woocommercePluginPageUrl = $this->buildInstallPluginPageLink('woocommerce');
 
-        if(! $wcVersionIsOk) {
+        if (! $wcVersionIsOk) {
             $this->errors[] = sprintf(
             /* translators: %1$s is replaced with WooCommerce plugin installation page url. */
-            __(
-                '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">WooCommerce</a> plugin first.',
-                'woo-ecurring'
-            ),
+                __(
+                    '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">WooCommerce</a> plugin first.',
+                    'woo-ecurring'
+                ),
                 $woocommercePluginPageUrl
             );
         }
@@ -165,10 +178,9 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected function checkMollieIsActive(): bool
     {
         $molliePluginBasename = $this->getMolliePluginBasename();
-        $isMollieActive = is_plugin_active($molliePluginBasename);
+        $isMollieActive = $molliePluginBasename !== null && is_plugin_active($molliePluginBasename);
 
-        if(! $isMollieActive){
-
+        if (! $isMollieActive) {
             $molliePluginPageUrl = $this->buildInstallPluginPageLink('mollie-payments-for-woocommerce');
 
             $this->errors[] = sprintf(
@@ -191,11 +203,11 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function getMolliePluginBasename(): ?string
     {
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             return null;
         }
 
-        if(! function_exists('plugin_basename')) {
+        if (! function_exists('plugin_basename')) {
             require_once ABSPATH . WPINC . '/plugin.php';
         }
 
@@ -209,29 +221,23 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     {
         $isMollieVersionOk = false;
 
-        if(defined('M4W_FILE')){
-
-            if(! function_exists('get_plugin_data')){
+        if (defined('M4W_FILE')) {
+            if (! function_exists('get_plugin_data')) {
                 require_once ABSPATH . 'wp-admin/includes/plugin.php';
             }
 
             $molliePluginData = get_plugin_data(M4W_FILE);
             $currentMollieVersion = $molliePluginData['Version'];
 
-            $isMollieVersionOk = version_compare(
-                $currentMollieVersion,
-                $this->minMollieVersion,
-                '>='
-            );
+            $isMollieVersionOk = $this->checkVersion($currentMollieVersion, $this->minMollieVersion);
         }
 
-        if(! $isMollieVersionOk){
-
+        if (! $isMollieVersionOk) {
             $molliePluginPageUrl = $this->buildInstallPluginPageLink('mollie-payments-for-woocommerce');
 
             $this->errors[] = $mollieIsNotMinimalVersionMessage = sprintf(
             /* translators: %1$s is replaced with Mollie plugin installation page url. */
-            __(
+                __(
                     '<strong>Mollie Subscriptions plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
                     'woo-ecurring'
                 ),
@@ -252,10 +258,52 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
     protected function buildInstallPluginPageLink(string $pluginSlug): string
     {
         $pluginUrlQueryPart = http_build_query([
-            'tab'=> 'plugin-information',
-            'plugin' => $pluginSlug
+            'tab' => 'plugin-information',
+            'plugin' => $pluginSlug,
         ]);
 
         return admin_url('plugin-install.php?' . $pluginUrlQueryPart);
+    }
+
+    /**
+     * Check if $actualVersion less then $requiredVersion.
+     *
+     * @param string $actualVersion
+     * @param string $requiredVersion
+     *
+     * @return bool
+     */
+    protected function checkVersion(string $actualVersion, string $requiredVersion): bool
+    {
+        try {
+            $normalizedActualVersion = $this->normalizeVersion($actualVersion);
+            $normalizedRequiredVersion = $this->normalizeVersion($requiredVersion);
+        } catch (Exception $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Could not parse version string.' .
+                    'Caught an exception when tried to normalize: %1$s',
+                    $exception->getMessage()
+                )
+            );
+
+            return false;
+        }
+
+        return version_compare($normalizedActualVersion, $normalizedRequiredVersion, '>=');
+    }
+
+    /**
+     * Parse version string and return proper SevVer version string.
+     *
+     * @param string $version
+     *
+     * @return string
+     *
+     * @throws Exception If could not normalize version.
+     */
+    protected function normalizeVersion(string $version): string
+    {
+        return (string) $this->versionFactory->createVersionFromString($version);
     }
 }
