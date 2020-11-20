@@ -28,10 +28,10 @@ return function (string $formAction, SettingsCrudInterface $settings): array {
 				'attributes' => [
 					'name'    => 'debug',
 					'type'    => 'checkbox',
-					'value'   => $settings->getOption('debug') ? 'enabled' : ''
+					'value'   => $settings->getOption('debug') === 'no' ? '' : 'yes'
 				],
 				'choices'    => [
-					'enabled' => esc_html_x(
+					'yes' => esc_html_x(
 						'When checked, logs will be created',
 						'Plugin settings',
 						'woo-ecurring'
