@@ -17,49 +17,52 @@ use WC_Order_Item_Product;
 /**
  * Listens for the Mollie payment create action.
  */
-class MollieMandateCreatedEventListener implements EventListenerInterface {
+class MollieMandateCreatedEventListener implements EventListenerInterface
+{
 
-	/**
-	 * @var ApiClient
-	 */
-	protected $apiClient;
+    /**
+     * @var ApiClient
+     */
+    protected $apiClient;
 
-	/**
-	 * @var eCurring_WC_Helper_Data
-	 */
-	protected $dataHelper;
-	/**
-	 * @var SubscriptionCrudInterface
-	 */
-	protected $subscriptionCrud;
+    /**
+     * @var eCurring_WC_Helper_Data
+     */
+    protected $dataHelper;
+    /**
+     * @var SubscriptionCrudInterface
+     */
+    protected $subscriptionCrud;
 
-	/**
-	 * MollieMandateCreatedEventListener constructor.
-	 *
-	 * @param ApiClient $apiClient Service able to perform actions against eCurring API.
-	 */
-	public function __construct(
-		ApiClient $apiClient,
-		eCurring_WC_Helper_Data $dataHelper,
-		SubscriptionCrudInterface $subscriptionCrud
-	) {
+    /**
+     * MollieMandateCreatedEventListener constructor.
+     *
+     * @param ApiClient $apiClient Service able to perform actions against eCurring API.
+     */
+    public function __construct(
+        ApiClient $apiClient,
+        eCurring_WC_Helper_Data $dataHelper,
+        SubscriptionCrudInterface $subscriptionCrud
+    ) {
 
-		$this->apiClient        = $apiClient;
-		$this->dataHelper       = $dataHelper;
-		$this->subscriptionCrud = $subscriptionCrud;
-	}
+        $this->apiClient = $apiClient;
+        $this->dataHelper = $dataHelper;
+        $this->subscriptionCrud = $subscriptionCrud;
+    }
 
-	/**
-	 * Init event listener.
-	 */
-	public function init(): void{
-		add_action(
-			'mollie-payments-for-woocommerce_after_mandate_created',
-			[$this, 'onMollieMandateCreated'],
-			10,
-			4
-		);
-	}
+    /**
+     * Init event listener.
+     */
+    public function init(): void
+    {
+
+        add_action(
+            'mollie-payments-for-woocommerce_after_mandate_created',
+            [$this, 'onMollieMandateCreated'],
+            10,
+            4
+        );
+    }
 
     /**
      * Create an eCurring subscription after Mollie mandate created if at order contains at least one subscription
@@ -71,30 +74,29 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
      * @param string   $mandateId
      *
      */
-	public function onMollieMandateCreated($payment, WC_Order $order, string $mollieCustomerId, string $mandateId ): void
+    public function onMollieMandateCreated($payment, WC_Order $order, string $mollieCustomerId, string $mandateId): void
     {
-		if( $this->subscriptionForOrderExists($order) )
-		{
-			eCurring_WC_Plugin::debug(
-				sprintf(
-					'Subscription already exists for order %1$d. New subscription will not be created.',
-					$order->get_id()
-				)
-			);
+        if ($this->subscriptionForOrderExists($order)) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Subscription already exists for order %1$d. New subscription will not be created.',
+                    $order->get_id()
+                )
+            );
 
-			return;
-		}
+            return;
+        }
 
         try {
             $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
 
-            if($ecurringCustomerId === null){
+            if ($ecurringCustomerId === null) {
                 $ecurringCustomerId = $this->createEcurringCustomerWithMollieMandate($mollieCustomerId, $order);
                 $this->apiClient->addMollieMandateToTheCustomer($ecurringCustomerId, $mandateId);
             }
 
             $this->createEcurringSubscriptionsFromOrder($order);
-        } catch (ApiClientException $exception){
+        } catch (ApiClientException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
@@ -102,7 +104,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
                 )
             );
         }
-	}
+    }
 
     /**
      * Return eCurring customer id associated with order customer or null if not found.
@@ -111,7 +113,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
      *
      * @return string|null
      */
-	public function getEcurringCustomerIdByOrder(WC_Order $order): ?string
+    public function getEcurringCustomerIdByOrder(WC_Order $order): ?string
     {
         $ecurringCustomerId = get_user_meta($order->get_customer_id(), 'ecurring_customer_id', true);
 
@@ -135,7 +137,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
             'last_name' => $order->get_billing_last_name(),
             'email' => $order->get_billing_email(),
             'language' => 'en',
-            'external_id' => $mollieCustomerId
+            'external_id' => $mollieCustomerId,
         ]);
 
         return (string) $response['data']['id'];
@@ -148,9 +150,9 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
      *
      * @return string|null Subscription id or null if not exists.
      */
-	protected function getSubscriptionPlanIdByOrderItem(WC_Order_Item $item): ?string
+    protected function getSubscriptionPlanIdByOrderItem(WC_Order_Item $item): ?string
     {
-        if(! $item instanceof WC_Order_Item_Product) {
+        if (! $item instanceof WC_Order_Item_Product) {
             return null;
         }
 
@@ -159,36 +161,35 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
         return $this->subscriptionCrud->getProductSubscriptionId($product);
     }
 
-	/**
-	 * Check if subscription already created for given order.
-	 *
-	 * @param WC_Order $order
-	 *
-	 * @return bool
-	 */
-	protected function subscriptionForOrderExists(WC_Order $order): bool
-	{
-		$subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
+    /**
+     * Check if subscription already created for given order.
+     *
+     * @param WC_Order $order
+     *
+     * @return bool
+     */
+    protected function subscriptionForOrderExists(WC_Order $order): bool
+    {
+        $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
 
-		if($subscriptionId === null){
-			return false;
-		}
+        if ($subscriptionId === null) {
+            return false;
+        }
 
-		try{
-			$subscriptionData = $this->apiClient->getSubscriptionById($subscriptionId);
-		} catch (ApiClientException $exception)
-		{
-			eCurring_WC_Plugin::debug(
-				sprintf(
-					'Failed to check if subscription %1$s exists, caught API client exception. Exception message: %2$s',
-					$subscriptionId,
-					$exception->getMessage()
-				)
-			);
-		}
+        try {
+            $subscriptionData = $this->apiClient->getSubscriptionById($subscriptionId);
+        } catch (ApiClientException $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Failed to check if subscription %1$s exists, caught API client exception. Exception message: %2$s',
+                    $subscriptionId,
+                    $exception->getMessage()
+                )
+            );
+        }
 
-		return isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription';
-	}
+        return isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription';
+    }
 
     /**
      * Create eCurring subscriptions for subscription products in order.
@@ -197,34 +198,33 @@ class MollieMandateCreatedEventListener implements EventListenerInterface {
      *
      * @throws ApiClientException If create subscription request failed.
      */
-	public function createEcurringSubscriptionsFromOrder(WC_Order $order): void
+    public function createEcurringSubscriptionsFromOrder(WC_Order $order): void
     {
-        foreach ( $order->get_items() as $item ) {
+        foreach ($order->get_items() as $item) {
             $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
-            if ( $subscriptionId !== null ) {
+            if ($subscriptionId !== null) {
                 $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
                 $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
             }
         }
     }
 
-
-	/**
-	 * Create an eCurring subscription on eCurring side using subscription product.
-	 *
-	 * @param WC_Order $order
-	 * @param string   $subscriptionId
-	 *
-	 * @return array
-	 * @throws ApiClientException
-	 */
-	protected function createEcurringSubscription( WC_Order $order, string $subscriptionId ): array
+    /**
+     * Create an eCurring subscription on eCurring side using subscription product.
+     *
+     * @param WC_Order $order
+     * @param string   $subscriptionId
+     *
+     * @return array
+     * @throws ApiClientException
+     */
+    protected function createEcurringSubscription(WC_Order $order, string $subscriptionId): array
     {
 
-		return $this->apiClient->createSubscription(
-			$this->dataHelper->getUsereCurringCustomerId( $order ),
-			$subscriptionId,
-			add_query_arg( 'ecurring-webhook', 'transaction', home_url( '/' ) )
-		);
-	}
+        return $this->apiClient->createSubscription(
+            $this->dataHelper->getUsereCurringCustomerId($order),
+            $subscriptionId,
+            add_query_arg('ecurring-webhook', 'transaction', home_url('/'))
+        );
+    }
 }

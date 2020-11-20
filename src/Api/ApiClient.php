@@ -60,40 +60,41 @@ class ApiClient implements ApiClientInterface
         return $this->apiCall('GET', $url);
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function activateSubscription( string $subscriptionId, string $mandateCode, string $mandateAcceptedDate ): array {
+    /**
+     * @inheritdoc
+     */
+    public function activateSubscription(string $subscriptionId, string $mandateCode, string $mandateAcceptedDate): array
+    {
 
-		$requestData = [
-			'data' => [
-				'type' => 'subscription',
-				'id' => $subscriptionId,
-				'attributes' => [
-					'status' => 'active',
-					'mandate_accepted' => true,
-					'mandate_accepted_date' => $mandateAcceptedDate,
-					'mandate_code' => $mandateCode
-				]
-			]
-		];
+        $requestData = [
+            'data' => [
+                'type' => 'subscription',
+                'id' => $subscriptionId,
+                'attributes' => [
+                    'status' => 'active',
+                    'mandate_accepted' => true,
+                    'mandate_accepted_date' => $mandateAcceptedDate,
+                    'mandate_code' => $mandateCode,
+                ],
+            ],
+        ];
 
-		return $this->apiCall(
-			'PATCH',
-			sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
-			$requestData
-		);
-	}
+        return $this->apiCall(
+            'PATCH',
+            sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
+            $requestData
+        );
+    }
 
     /**
      * @inheritDoc
      */
-	public function createCustomer(array $customerAttributes): array
+    public function createCustomer(array $customerAttributes): array
     {
         $requestData = [
             'data' => [
                 'type' => 'customer',
-                'attributes' => $customerAttributes
+                'attributes' => $customerAttributes,
             ],
         ];
 
@@ -114,9 +115,9 @@ class ApiClient implements ApiClientInterface
                 'type' => 'mandate',
                 'attributes' => [
                     'customer_id' => $customerId,
-                    'external_id' => $mollieMandateId
+                    'external_id' => $mollieMandateId,
                 ],
-            ]
+            ],
         ];
 
         return $this->apiCall(
