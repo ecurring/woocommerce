@@ -49,7 +49,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         string $minWoocommerceVersion,
         string $minMollieVersion,
         StringVersionFactoryInterface $versionFactory
-    ){
+    ) {
         $this->minPhpVersion = $minPhpVersion;
         $this->minWoocommerceVersion = $minWoocommerceVersion;
         $this->errors = [];
@@ -275,13 +275,16 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function checkVersion(string $actualVersion, string $requiredVersion): bool
     {
-        try{
+        try {
             $normalizedActualVersion = $this->normalizeVersion($actualVersion);
             $normalizedRequiredVersion = $this->normalizeVersion($requiredVersion);
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             eCurring_WC_Plugin::debug(
-                'Could not parse version string. Caught an exception when tried to normalize: %1$s',
-                $exception->getMessage()
+                sprintf(
+                    'Could not parse version string.' .
+                    'Caught an exception when tried to normalize: %1$s',
+                    $exception->getMessage()
+                )
             );
 
             return false;
