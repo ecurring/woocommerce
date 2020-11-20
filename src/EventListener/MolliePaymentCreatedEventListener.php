@@ -10,6 +10,9 @@ use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 use WC_Order;
 
+/**
+ * Activate subscription on payment complete.
+ */
 class MolliePaymentCreatedEventListener implements EventListenerInterface
 {
     /**
