@@ -69,7 +69,6 @@ class ApiClientTest extends TestCase
         $apiKey = 'apikey098765';
         $method = 'PATCH';
         $mandateAcceptedDate = date('c');
-        $mandateCode = 'somemandatecode123';
 
         $requestData = [
             'data' => [
@@ -79,7 +78,6 @@ class ApiClientTest extends TestCase
                     'status' => 'active',
                     'mandate_accepted' => true,
                     'mandate_accepted_date' => $mandateAcceptedDate,
-                    'mandate_code' => $mandateCode,
                 ],
             ],
         ];

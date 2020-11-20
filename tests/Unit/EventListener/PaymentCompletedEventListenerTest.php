@@ -13,8 +13,9 @@ use WC_Order;
 use function Brain\Monkey\Functions\expect;
 
 use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
+use function Brain\Monkey\Functions\when;
 
-class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
+class PaymentCompletedEventListenerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;  //to properly count Mockery expectations as assertions.
 
@@ -32,10 +33,8 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
         expect('add_action')
             ->once()
             ->with(
-                'mollie-payments-for-woocommerce_after_mandate_created',
-                [$sut, 'onMandateCreated'],
-                10,
-                3
+                'woocommerce_payment_complete',
+                [$sut, 'onPaymentComplete']
             );
 
         $sut->init();
@@ -49,7 +48,6 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
 
         $orderId = 123;
         $subscriptionId = 'subscription321';
-        $mandateCode = 'somemandatecode456';
         $mandateAcceptedDate = date('c');
 
         /** @var WC_Order&MockObject $wcOrderMock */
@@ -61,10 +59,14 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
             ->with(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD)
             ->willReturn($mandateAcceptedDate);
 
+        when('wc_get_order')
+            ->justReturn($wcOrderMock);
+
         /** @var ApiClientInterface&MockObject $apiClientMock */
         $apiClientMock = $this->createMock(ApiClientInterface::class);
         $apiClientMock->expects($this->once())
-            ->method('activateSubscription');
+            ->method('activateSubscription')
+            ->with($subscriptionId, $mandateAcceptedDate);
 
         /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
         $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
@@ -75,6 +77,6 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
 
         $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock);
 
-        $sut->onMandateCreated(false, $wcOrderMock, $mandateCode);
+        $sut->onPaymentComplete($orderId);
     }
 }
