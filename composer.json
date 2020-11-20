@@ -9,7 +9,8 @@
         "dhii/output-renderer-interface": " ^0.4",
         "chrico/wp-fields": " ^1.0",
         "brain/nonces": " ^1.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "dhii/versions": "^0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^5 || ^7.1",

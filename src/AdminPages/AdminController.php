@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\AdminPages;
 
 use Brain\Nonces\NonceInterface;
+use ChriCo\Fields\Element\ElementInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;

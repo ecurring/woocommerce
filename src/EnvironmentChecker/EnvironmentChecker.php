@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EnvironmentChecker;
 
+use Dhii\Package\Version\StringVersionFactoryInterface;
+use eCurring_WC_Plugin;
+use Exception;
+
 /**
  * Check if environment is suitable for this plugin to work.
  */
@@ -28,18 +32,29 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      * @var string
      */
     protected $minMollieVersion;
+    /**
+     * @var StringVersionFactoryInterface
+     */
+    protected $versionFactory;
 
     /**
-     * @param string $minPhpVersion         The minimum required PHP version.
-     * @param string $minWoocommerceVersion The minimum required WC version.
-     * @param string $minMollieVersion      The minimum required Mollie Payments version.
+     * @param string               $minPhpVersion            The minimum required PHP version.
+     * @param string               $minWoocommerceVersion    The minimum required WC version.
+     * @param string               $minMollieVersion         The minimum required Mollie Payments version.
+     * @param StringVersionFactoryInterface $versionFactory Factory to create Version instance,
+     *                                                      used to normalize version string.
      */
-    public function __construct(string $minPhpVersion, string $minWoocommerceVersion, string $minMollieVersion)
-    {
+    public function __construct(
+        string $minPhpVersion,
+        string $minWoocommerceVersion,
+        string $minMollieVersion,
+        StringVersionFactoryInterface $versionFactory
+    ){
         $this->minPhpVersion = $minPhpVersion;
         $this->minWoocommerceVersion = $minWoocommerceVersion;
         $this->errors = [];
         $this->minMollieVersion = $minMollieVersion;
+        $this->versionFactory = $versionFactory;
     }
 
     /**
@@ -70,7 +85,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
      */
     protected function checkPhpVersion(): bool
     {
-        $phpVersionIsOk = version_compare(phpversion(), $this->minPhpVersion, '>=');
+        $phpVersionIsOk = $this->checkVersion(phpversion(), $this->minPhpVersion);
 
         if (! $phpVersionIsOk) {
             $this->errors[] = __(
@@ -140,7 +155,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
             return false;
         }
 
-        $wcVersionIsOk = version_compare(WC_VERSION, $this->minWoocommerceVersion, '>=');
+        $wcVersionIsOk = $this->checkVersion(WC_VERSION, $this->minWoocommerceVersion);
         $woocommercePluginPageUrl = $this->buildInstallPluginPageLink('woocommerce');
 
         if (! $wcVersionIsOk) {
@@ -214,11 +229,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
             $molliePluginData = get_plugin_data(M4W_FILE);
             $currentMollieVersion = $molliePluginData['Version'];
 
-            $isMollieVersionOk = version_compare(
-                $currentMollieVersion,
-                $this->minMollieVersion,
-                '>='
-            );
+            $isMollieVersionOk = $this->checkVersion($currentMollieVersion, $this->minMollieVersion);
         }
 
         if (! $isMollieVersionOk) {
@@ -252,5 +263,44 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
         ]);
 
         return admin_url('plugin-install.php?' . $pluginUrlQueryPart);
+    }
+
+    /**
+     * Check if $actualVersion less then $requiredVersion.
+     *
+     * @param string $actualVersion
+     * @param string $requiredVersion
+     *
+     * @return bool
+     */
+    protected function checkVersion(string $actualVersion, string $requiredVersion): bool
+    {
+        try{
+            $normalizedActualVersion = $this->normalizeVersion($actualVersion);
+            $normalizedRequiredVersion = $this->normalizeVersion($requiredVersion);
+        }catch (Exception $exception){
+            eCurring_WC_Plugin::debug(
+                'Could not parse version string. Caught an exception when tried to normalize: %1$s',
+                $exception->getMessage()
+            );
+
+            return false;
+        }
+
+        return version_compare($normalizedActualVersion, $normalizedRequiredVersion, '>=');
+    }
+
+    /**
+     * Parse version string and return proper SevVer version string.
+     *
+     * @param string $version
+     *
+     * @return string
+     *
+     * @throws Exception If could not normalize version.
+     */
+    protected function normalizeVersion(string $version): string
+    {
+        return (string) $this->versionFactory->createVersionFromString($version);
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9db72944a9e51fbd40672d33b96a3a7",
+    "content-hash": "196be0c2f6f9d4bbe6f13780eca99d24",
     "packages": [
         {
             "name": "brain/nonces",
@@ -173,6 +173,52 @@
             "time": "2020-03-06T07:52:12+00:00"
         },
         {
+            "name": "dhii/package-interface",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dhii/package-interface.git",
+                "reference": "8169f4f08d7709ba850d8a2befeff5f1d208ca54"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dhii/package-interface/zipball/8169f4f08d7709ba850d8a2befeff5f1d208ca54",
+                "reference": "8169f4f08d7709ba850d8a2befeff5f1d208ca54",
+                "shasum": ""
+            },
+            "require": {
+                "dhii/stringable-interface": "^0.1",
+                "dhii/validation-interface": "^0.3-alpha1",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0 | ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dhii\\Package\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Ukhanev",
+                    "email": "xedin.unknown@gmail.com"
+                }
+            ],
+            "description": "Interfaces for package-related interop",
+            "time": "2020-05-14T19:54:39+00:00"
+        },
+        {
             "name": "dhii/stringable-interface",
             "version": "v0.1",
             "source": {
@@ -213,6 +259,97 @@
             ],
             "description": "Interoperability interface for objects that can be cast to string",
             "time": "2017-01-23T15:08:20+00:00"
+        },
+        {
+            "name": "dhii/validation-interface",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dhii/validation-interface.git",
+                "reference": "f5c15606b1387df2381134e4fc6e1971cbc284a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dhii/validation-interface/zipball/f5c15606b1387df2381134e4fc6e1971cbc284a0",
+                "reference": "f5c15606b1387df2381134e4fc6e1971cbc284a0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "dhii/stringable-interface": "^0.1",
+                "phpunit/phpunit": "^7.0 | ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dhii\\Validation\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Ukhanev",
+                    "email": "xedin.unknown@gmail.com"
+                }
+            ],
+            "description": "A base interface for validators",
+            "time": "2020-05-14T00:22:48+00:00"
+        },
+        {
+            "name": "dhii/versions",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dhii/versions.git",
+                "reference": "40933debe1d77f26a381a47abfb256e0e974e439"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dhii/versions/zipball/40933debe1d77f26a381a47abfb256e0e974e439",
+                "reference": "40933debe1d77f26a381a47abfb256e0e974e439",
+                "shasum": ""
+            },
+            "require": {
+                "dhii/package-interface": "^0.1",
+                "dhii/stringable-interface": "^0.1",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0 | ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dhii\\Versions\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Ukhanev",
+                    "email": "xedin.unknown@gmail.com"
+                }
+            ],
+            "description": "Implementation for dealing with SemVer-compliant versions",
+            "time": "2020-05-14T19:25:38+00:00"
         },
         {
             "name": "inpsyde/filter",
@@ -1695,16 +1832,16 @@
         },
         {
             "name": "johnpbloch/wordpress-core",
-            "version": "5.5.x-dev",
+            "version": "5.6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpbloch/wordpress-core.git",
-                "reference": "b2280752c88555f9fc3fa52d6acfd3fd7da587d3"
+                "reference": "e7a6edb762b95146d7e7b892712356ea668372fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/b2280752c88555f9fc3fa52d6acfd3fd7da587d3",
-                "reference": "b2280752c88555f9fc3fa52d6acfd3fd7da587d3",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/e7a6edb762b95146d7e7b892712356ea668372fb",
+                "reference": "e7a6edb762b95146d7e7b892712356ea668372fb",
                 "shasum": ""
             },
             "require": {
@@ -1712,7 +1849,7 @@
                 "php": ">=5.6.20"
             },
             "provide": {
-                "wordpress/core-implementation": "5.5.x-dev"
+                "wordpress/core-implementation": "5.6.x-dev"
             },
             "type": "wordpress-core",
             "notification-url": "https://packagist.org/downloads/",
@@ -1732,7 +1869,7 @@
                 "cms",
                 "wordpress"
             ],
-            "time": "2020-11-04T16:12:47+00:00"
+            "time": "2020-11-19T09:32:41+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -1951,19 +2088,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/WooCommerce.git",
-                "reference": "7200045baec4b52fa9fd23b651642ce24af3a03e"
+                "reference": "ea24b6188dfee75c2f0e22e9284955a6af0581ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/7200045baec4b52fa9fd23b651642ce24af3a03e",
-                "reference": "7200045baec4b52fa9fd23b651642ce24af3a03e",
+                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/ea24b6188dfee75c2f0e22e9284955a6af0581ae",
+                "reference": "ea24b6188dfee75c2f0e22e9284955a6af0581ae",
                 "shasum": ""
             },
             "require": {
                 "ext-intl": "*",
                 "ext-json": "*",
                 "mollie/mollie-api-php": "^2.0",
-                "php": "^5.6.40 | ^7.0"
+                "php": "^5.6.39 | ^7.0"
             },
             "require-dev": {
                 "brain/monkey": "^2.3",
@@ -1971,7 +2108,7 @@
                 "johnpbloch/wordpress-core": "^3.8 || ^4.0 || ^5.0",
                 "phpunit/phpunit": "^5 || ^7.1",
                 "ptrofimov/xpmock": "^1",
-                "woocommerce/woocommerce": "^2.2 || ^3.0"
+                "woocommerce/woocommerce": "^2.2 || ^3.0 || ^4.0"
             },
             "type": "wordpress-plugin",
             "extra": {
@@ -2007,7 +2144,7 @@
                 "source": "https://github.com/mollie/WooCommerce/tree/develop",
                 "issues": "https://github.com/mollie/WooCommerce/issues"
             },
-            "time": "2020-11-11T16:05:25+00:00"
+            "time": "2020-11-17T09:03:12+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2425,12 +2562,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "069a785b2141f5bcf49f3e353548dc1cce6df556"
+                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/069a785b2141f5bcf49f3e353548dc1cce6df556",
-                "reference": "069a785b2141f5bcf49f3e353548dc1cce6df556",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
+                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
                 "shasum": ""
             },
             "require": {
@@ -2469,7 +2606,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2020-09-03T19:13:55+00:00"
+            "time": "2020-11-18T14:27:38+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -3161,8 +3298,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.5.3",
-                "reference": "5.5.3"
+                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.5.3"
             },
             "require": {
                 "php": ">=5.3.2",
