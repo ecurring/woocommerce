@@ -13,7 +13,7 @@ use WC_Order;
 /**
  * Activate subscription on payment complete.
  */
-class MolliePaymentCreatedEventListener implements EventListenerInterface
+class PaymentCompletedEventListener implements EventListenerInterface
 {
     /**
      * @var ApiClientInterface

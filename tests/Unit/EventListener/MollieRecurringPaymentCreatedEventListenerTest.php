@@ -12,7 +12,7 @@ use WC_Order;
 
 use function Brain\Monkey\Functions\expect;
 
-use Ecurring\WooEcurring\EventListener\MolliePaymentCreatedEventListener;
+use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
 
 class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
 {
@@ -27,7 +27,7 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
         /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
         $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
 
-        $sut = new MolliePaymentCreatedEventListener($apiClientMock, $subscriptionCrudMock);
+        $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock);
 
         expect('add_action')
             ->once()
@@ -73,7 +73,7 @@ class MollieRecurringPaymentCreatedEventListenerTest extends TestCase
             ->with($wcOrderMock)
             ->willReturn($subscriptionId);
 
-        $sut = new MolliePaymentCreatedEventListener($apiClientMock, $subscriptionCrudMock);
+        $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock);
 
         $sut->onMandateCreated(false, $wcOrderMock, $mandateCode);
     }
