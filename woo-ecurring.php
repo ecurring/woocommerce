@@ -15,6 +15,7 @@
  */
 
 // Exit if accessed directly.
+use Dhii\Versions\StringVersionFactory;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
@@ -164,7 +165,14 @@ function initialize()
         require_once 'includes/ecurring/wc/helper/api.php';
         require_once 'includes/ecurring/wc/plugin.php';
 
-        $environmentChecker = new EnvironmentChecker('7.2', '3.9', '6.0.0');
+        $versionFactory = new StringVersionFactory();
+
+        $environmentChecker = new EnvironmentChecker(
+            '7.2',
+            '3.9',
+            '6.0.0',
+            $versionFactory
+        );
         if (!$environmentChecker->checkEnvironment()) {
             foreach ($environmentChecker->getErrors() as $errorMessage) {
                 errorNotice($errorMessage);

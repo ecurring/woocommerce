@@ -2,9 +2,12 @@
 
 namespace Ecurring\WooEcurringTests\Unit;
 
+use Dhii\Package\Version\StringVersionFactoryInterface;
+use Dhii\Package\Version\VersionInterface;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\MockObject\MockObject;
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 use function Patchwork\redefine;
@@ -15,7 +18,25 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseEverythingOk()
     {
-        $sut = new EnvironmentChecker(PHP_VERSION, '4.0', '6.0.0');
+        $versionMock = $this->createConfiguredMock(
+            VersionInterface::class,
+            ['__toString' => '1.0.0']
+        );
+
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createConfiguredMock(
+            StringVersionFactoryInterface::class,
+            [
+                'createVersionFromString' => $versionMock
+            ]
+        );
+
+        $sut = new EnvironmentChecker(
+            PHP_VERSION,
+            '4.0',
+            '6.0.0',
+            $versionFactoryMock
+        );
 
         expect('extension_loaded')
             ->with('json')
@@ -59,10 +80,28 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCasePhpVersionLessThenRequired()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+        $actualPhpVersion = '7.1';
+        $requiredPhpVersion = '7.2';
+
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
+        $versionFactoryMock->method('createVersionFromString')
+           ->willReturnCallback(function (string $version){
+                return $this->createConfiguredMock(
+                    VersionInterface::class,
+                    ['__toString' => $version . '.0']
+                );
+           });
+
+        $sut = new EnvironmentChecker(
+            $requiredPhpVersion,
+            '4.0',
+            '6.0.0',
+            $versionFactoryMock
+        );
 
         expect('phpversion')
-            ->andReturn('7.1');
+            ->andReturn($actualPhpVersion);
 
         when('__')
             ->returnArg(1);
@@ -85,10 +124,26 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseNoJsonExtension()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+        $actualPhpVersion = $requiredPhpVersion = '7.2';
+
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
+        $versionFactoryMock->method('createVersionFromString')
+            ->willReturnCallback(function(string $version){
+                return $this->createConfiguredMock(
+                    VersionInterface::class,
+                    ['__toString' => $version . '.0']
+                );
+            });
+        $sut = new EnvironmentChecker(
+            $requiredPhpVersion,
+            '4.0',
+            '6.0.0',
+            $versionFactoryMock
+        );
 
         expect('phpversion')
-            ->andReturn('7.2');
+            ->andReturn($actualPhpVersion);
 
         expect('get_option')
             ->with('active_plugins')
@@ -151,7 +206,24 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseWoocommerceIsInactive()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+        $currentPhpVersion = $requiredPhpVersion = '7.2';
+
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
+        $versionFactoryMock->method('createVersionFromString')
+            ->willReturnCallback(function(string $version){
+                return $this->createConfiguredMock(
+                    VersionInterface::class,
+                    ['__toString' => $version . '.0']
+                );
+            });
+
+        $sut = new EnvironmentChecker(
+            $requiredPhpVersion,
+            '4.0',
+            '6.0.0',
+            $versionFactoryMock
+        );
 
         expect('get_option')
             ->with('active_plugins')
@@ -196,7 +268,7 @@ class EnvironmentCheckerTest extends TestCase {
             ->andReturn(true);
 
         expect('phpversion')
-            ->andReturn('7.2');
+            ->andReturn($currentPhpVersion);
 
         $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
 
@@ -215,14 +287,28 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseWoocommerceVersionTooLow()
     {
-        $minRequiredPhpVersion = '7.2';
+        $minRequiredPhpVersion = $actualPhpVersion = '7.2';
         $minRequiredWcVersion = '4.0';
-        $actualPhpVersion = '7.2';
 
         expect('phpversion')
             ->andReturn($actualPhpVersion);
 
-        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion, '6.0.0' );
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
+        $versionFactoryMock->method('createVersionFromString')
+            ->willReturnCallback(function(string $version){
+                return $this->createConfiguredMock(
+                    VersionInterface::class,
+                    ['__toString' => $version]
+                );
+            });
+
+        $sut = new EnvironmentChecker(
+            $minRequiredPhpVersion,
+            $minRequiredWcVersion,
+            '6.0.0',
+            $versionFactoryMock
+        );
 
         redefine('version_compare', function ($version1) use ($actualPhpVersion) {
             //return true for PHP version check, false for WC version check
@@ -289,7 +375,22 @@ class EnvironmentCheckerTest extends TestCase {
 
     public function testCheckEnvironmentCaseMollieIsInactive()
     {
-        $sut = new EnvironmentChecker('7.2', '4.0', '6.0.0');
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
+        $versionFactoryMock->method('createVersionFromString')
+            ->willReturnCallback(function(string $version){
+                return $this->createConfiguredMock(
+                    VersionInterface::class,
+                    ['__toString' => $version . '.0']
+                );
+            });
+
+        $sut = new EnvironmentChecker(
+            '7.2',
+            '4.0',
+            '6.0.0',
+            $versionFactoryMock
+        );
 
         expect('get_option')
             ->with('active_plugins')
@@ -358,7 +459,22 @@ class EnvironmentCheckerTest extends TestCase {
         expect('phpversion')
             ->andReturn($actualPhpVersion);
 
-        $sut = new EnvironmentChecker($minRequiredPhpVersion, $minRequiredWcVersion,  $requiredMollieVersion);
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
+        $versionFactoryMock->method('createVersionFromString')
+            ->willReturnCallback(function(string $version){
+                return $this->createConfiguredMock(
+                    VersionInterface::class,
+                    ['__toString' => $version . '.0']
+                );
+            });
+
+        $sut = new EnvironmentChecker(
+            $minRequiredPhpVersion,
+            $minRequiredWcVersion,
+            $requiredMollieVersion,
+            $versionFactoryMock
+        );
 
         expect('get_option')
             ->with('active_plugins')
@@ -416,5 +532,84 @@ class EnvironmentCheckerTest extends TestCase {
         }
 
         $this->assertTrue($stringFound, 'Not found expected message about Mollie plugin update required.');
+    }
+
+    /**
+     * Test Mollie version in short (X.Y) form correctly interpreted and compared with full-form required version.
+     *
+     * @see https://inpsyde.atlassian.net/browse/ECUR-73
+     */
+    public function testCheckEnvironmentCaseMollieVersionOkShortForm()
+    {
+        $minRequiredPhpVersion = $actualPhpVersion = '7.2';
+        $minRequiredWcVersion = '4.0';
+        $actualMollieVersion = '6.0';
+        $requiredMollieVersion = '6.0.0';
+
+        /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
+        $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
+        $versionFactoryMock->method('createVersionFromString')
+            ->willReturnCallback(function(string $version){
+                $normalizedVersion = $version === '6.0' ? '6.0.0' : $version;
+                return $this->createConfiguredMock(
+                    VersionInterface::class,
+                    ['__toString' => $normalizedVersion ]
+                );
+            });
+
+        expect('phpversion')
+            ->andReturn($actualPhpVersion);
+
+
+        $sut = new EnvironmentChecker(
+            $minRequiredPhpVersion,
+            $minRequiredWcVersion,
+            $requiredMollieVersion,
+            $versionFactoryMock
+        );
+
+        expect('get_option')
+            ->with('active_plugins')
+            ->andReturn([]);
+
+        expect('apply_filters')
+            ->with('active_plugins', [])
+            ->andReturn(['woocommerce/woocommerce.php']);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->returnArg(1);
+
+        when('__')
+            ->returnArg(1);
+
+        when('esc_html__')
+            ->returnArg(1);
+
+        if(! defined('M4W_FILE')){
+            define('M4W_FILE', '');
+        }
+
+        $molliePluginBasename = 'mollie-for-woocommerce/mollie-for-woocommerce.php';
+
+        expect('plugin_basename')
+            ->with(M4W_FILE)
+            ->andReturn($molliePluginBasename);
+
+        expect('is_plugin_active')
+            ->with($molliePluginBasename)
+            ->andReturn(true);
+
+        expect('get_plugin_data')
+            ->with(M4W_FILE)
+            ->andReturn(['Version' => $actualMollieVersion]);
+
+        expect('extension_loaded')
+            ->with('json')
+            ->andReturn(true);
+
+        $this->assertTrue($sut->checkEnvironment(), 'EnvironmentChecker test false negative.');
     }
 }
