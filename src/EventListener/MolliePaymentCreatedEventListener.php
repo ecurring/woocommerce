@@ -10,7 +10,7 @@ use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 use WC_Order;
 
-class MollieRecurringPaymentCreatedEventListener implements EventListenerInterface
+class MolliePaymentCreatedEventListener implements EventListenerInterface
 {
     /**
      * @var ApiClientInterface

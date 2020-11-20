@@ -7,7 +7,7 @@ use ChriCo\Fields\ViewFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
-use Ecurring\WooEcurring\EventListener\MollieRecurringPaymentCreatedEventListener;
+use Ecurring\WooEcurring\EventListener\MolliePaymentCreatedEventListener;
 use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
 use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter;
 use Ecurring\WooEcurring\Api\ApiClient;
@@ -46,7 +46,7 @@ class eCurring_WC_Plugin
 		$apiClient = new ApiClient($settingsHelper->getApiKey());
         (new MollieMandateCreatedEventListener($apiClient, $data_helper, $subscriptionCrud))->init();
         (new AddToCartValidationEventListener($subscriptionCrud))->init();
-        (new MollieRecurringPaymentCreatedEventListener($apiClient, $subscriptionCrud))->init();
+        (new MolliePaymentCreatedEventListener($apiClient, $subscriptionCrud))->init();
 
         add_action('admin_init', function(){
             $elementFactory = new ElementFactory();
