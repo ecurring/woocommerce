@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "196be0c2f6f9d4bbe6f13780eca99d24",
+    "content-hash": "0e54c4249a6c44779d5df8d8dee31edf",
     "packages": [
         {
             "name": "brain/nonces",
@@ -54,10 +54,6 @@
                 "wordpress",
                 "wordpress nonce"
             ],
-            "support": {
-                "issues": "https://github.com/Brain-WP/Nonces/issues",
-                "source": "https://github.com/Brain-WP/Nonces/tree/master"
-            },
             "time": "2016-11-17T13:04:21+00:00"
         },
         {
@@ -110,10 +106,6 @@
                 }
             ],
             "description": "Package which provides some re-usable fields for WordPress.",
-            "support": {
-                "issues": "https://github.com/Chrico/wp-fields/issues",
-                "source": "https://github.com/Chrico/wp-fields/tree/master"
-            },
             "time": "2018-06-15T09:22:34+00:00"
         },
         {
@@ -166,10 +158,6 @@
                 }
             ],
             "description": "An interface for objects that can perform rendering.",
-            "support": {
-                "issues": "https://github.com/Dhii/output-renderer-interface/issues",
-                "source": "https://github.com/Dhii/output-renderer-interface/tree/0.4.x"
-            },
             "time": "2020-03-06T07:52:12+00:00"
         },
         {
@@ -393,10 +381,6 @@
                 }
             ],
             "description": "Inpsyde Filter library.",
-            "support": {
-                "issues": "https://www.github.com/inpsyde/inpsyde-filter/issues",
-                "source": "https://www.github.com/inpsyde/inpsyde-filter"
-            },
             "time": "2017-10-13T09:47:13+00:00"
         },
         {
@@ -448,10 +432,6 @@
                 }
             ],
             "description": "Inpsyde Validator library.",
-            "support": {
-                "issues": "https://www.github.com/inpsyde/inpsyde-validator/issues",
-                "source": "https://www.github.com/inpsyde/inpsyde-validator"
-            },
             "time": "2020-05-06T10:01:39+00:00"
         }
     ],
@@ -4072,12 +4052,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "d1d8b8fd9b605630aa73b1b384e246fee54e8ffa"
+                "reference": "b194bea28f51b40ab61acb1ba66b9a31f6b4bd0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/d1d8b8fd9b605630aa73b1b384e246fee54e8ffa",
-                "reference": "d1d8b8fd9b605630aa73b1b384e246fee54e8ffa",
+                "url": "https://api.github.com/repos/symfony/console/zipball/b194bea28f51b40ab61acb1ba66b9a31f6b4bd0c",
+                "reference": "b194bea28f51b40ab61acb1ba66b9a31f6b4bd0c",
                 "shasum": ""
             },
             "require": {
@@ -4158,7 +4138,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-05T20:05:54+00:00"
+            "time": "2020-11-20T08:48:10+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
