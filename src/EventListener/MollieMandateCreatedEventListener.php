@@ -93,6 +93,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             if ($ecurringCustomerId === null) {
                 $ecurringCustomerId = $this->createEcurringCustomerWithMollieMandate($mollieCustomerId, $order);
                 $this->apiClient->addMollieMandateToTheCustomer($ecurringCustomerId, $mandateId);
+
+                eCurring_WC_Plugin::debug('eCurring customer not found, a new one was created.');
             }
 
             $this->createEcurringSubscriptionsFromOrder($order);
@@ -205,6 +207,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             if ($subscriptionId !== null) {
                 $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
                 $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
+
+                eCurring_WC_Plugin::debug('A new eCurring subscription was successfully created.');
             }
         }
     }
