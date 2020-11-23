@@ -65,8 +65,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     }
 
     /**
-     * Create an eCurring subscription after Mollie mandate created if at order contains at least one subscription
-     * product.
+     * Create an eCurring subscription after Mollie mandate created if at order
+     * contains at least one subscription product.
      *
      * @param Payment  $payment Created payment.
      * @param WC_Order $order   The order payment created for.
