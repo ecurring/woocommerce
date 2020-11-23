@@ -57,11 +57,11 @@ class Assets
     {
         add_action(
             'wp_enqueue_scripts',
-            static function () {
-                $scriptFilePath = eCurring_WC_Plugin::getPluginUrl('assets/js/customer-subscriptions.js');
+            function () {
+                $scriptFileUrl = eCurring_WC_Plugin::getPluginUrl('assets/js/customer-subscriptions.js');
                 wp_enqueue_script(
                     'ecurring_customer_subscriptions',
-                    $scriptFilePath,
+                    $scriptFileUrl,
                     ['jquery'],
                     (string) filemtime($scriptFilePath)
                 );
@@ -74,11 +74,11 @@ class Assets
                     ]
                 );
 
-                $stylesFilePath = eCurring_WC_Plugin::getPluginUrl('assets/css/customer-subscriptions.css');
+                $stylesFileUrl = eCurring_WC_Plugin::getPluginUrl('assets/css/customer-subscriptions.css');
 
                 wp_enqueue_style(
                     'ecurring_customer_subscriptions',
-                    $stylesFilePath,
+                    $stylesFileUrl,
                     [],
                     (string) filemtime($stylesFilePath)
                 );
