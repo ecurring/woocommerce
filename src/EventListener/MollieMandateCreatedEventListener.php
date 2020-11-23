@@ -70,11 +70,11 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @param Payment  $payment Created payment.
      * @param WC_Order $order   The order payment created for.
-     * @param string   $mollieCustomerId
      * @param string   $mandateId
+     * @param string   $mollieCustomerId
      *
      */
-    public function onMollieMandateCreated($payment, WC_Order $order, string $mollieCustomerId, string $mandateId): void
+    public function onMollieMandateCreated($payment, WC_Order $order, string $mandateId, string $mollieCustomerId): void
     {
         if ($this->subscriptionForOrderExists($order)) {
             eCurring_WC_Plugin::debug(
