@@ -90,7 +90,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         try {
             $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
 
-            if ($ecurringCustomerId === null) {
+            if (! $ecurringCustomerId) {
                 $ecurringCustomerId = $this->createEcurringCustomerWithMollieMandate($mollieCustomerId, $order);
                 $this->apiClient->addMollieMandateToTheCustomer($ecurringCustomerId, $mandateId);
 
