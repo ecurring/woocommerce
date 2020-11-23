@@ -63,7 +63,7 @@ class Assets
                     'ecurring_customer_subscriptions',
                     $scriptFileUrl,
                     ['jquery'],
-                    (string) filemtime($scriptFilePath)
+                    (string) filemtime($this->pluginAssetsPath . 'js/customer-subscriptions.js')
                 );
 
                 wp_localize_script(
@@ -80,7 +80,7 @@ class Assets
                     'ecurring_customer_subscriptions',
                     $stylesFileUrl,
                     [],
-                    (string) filemtime($stylesFilePath)
+                    (string) filemtime($this->pluginAssetsPath . 'css/customer-subscriptions.css')
                 );
             }
         );
