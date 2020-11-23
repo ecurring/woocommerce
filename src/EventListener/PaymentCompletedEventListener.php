@@ -77,7 +77,6 @@ class PaymentCompletedEventListener implements EventListenerInterface
         try {
             $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate);
         } catch (ApiClientException $exception) {
-            //todo: change order status?
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Could not activate subscription, API request failed. Order id: %1$d, subscription id: %2$s, mandate accepted date: %3$s, error code: %4$d, error message: %5$s.',
