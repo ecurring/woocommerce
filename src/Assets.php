@@ -32,20 +32,20 @@ class Assets
                     return;
                 }
 
-                $scriptFilePath = eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js');
+                $scriptFileUrl = eCurring_WC_Plugin::getPluginUrl('assets/js/admin-subscriptions.js');
 
                 wp_enqueue_script(
                     'ecurring_admin_subscriptions',
-                    $scriptFilePath,
+                    $scriptFileUrl,
                     ['jquery'],
                     (string) filemtime($this->pluginAssetsPath . 'js/admin-subscriptions.js')
                 );
 
-                $stylesFilePath = eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css');
+                $stylesFileUrl = eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css');
 
                 wp_enqueue_style(
                     'ecurring_admin_subscriptions',
-                    $stylesFilePath,
+                    $stylesFileUrl,
                     [],
                     (string) filemtime($this->pluginAssetsPath . 'css/admin-subscriptions.css')
                 );
