@@ -113,13 +113,13 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @param WC_Order $order
      *
-     * @return string|null
+     * @return string
      */
-    public function getEcurringCustomerIdByOrder(WC_Order $order): ?string
+    public function getEcurringCustomerIdByOrder(WC_Order $order): string
     {
         $ecurringCustomerId = get_user_meta($order->get_customer_id(), 'ecurring_customer_id', true);
 
-        return $ecurringCustomerId === false ? null : (string) $ecurringCustomerId;
+        return (string) $ecurringCustomerId;
     }
 
     /**
