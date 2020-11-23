@@ -9,17 +9,24 @@ use WP_Screen;
 
 class Assets
 {
+    /**
+     * @var string
+     */
+    protected $pluginAssetsPath = '';
+
     public function init(): void
     {
         $this->enqueueAdminScripts();
         $this->enqueueFrontScripts();
+
+        $this->pluginAssetsPath = plugin_dir_path(WOOECUR_PLUGIN_FILE) . 'assets/';
     }
 
     protected function enqueueAdminScripts(): void
     {
         add_action(
             'admin_enqueue_scripts',
-            static function () {
+            function () {
                 $screen = get_current_screen();
                 if ($screen instanceof WP_Screen && $screen->id !== 'esubscriptions') {
                     return;
@@ -31,7 +38,7 @@ class Assets
                     'ecurring_admin_subscriptions',
                     $scriptFilePath,
                     ['jquery'],
-                    (string) filemtime($scriptFilePath)
+                    (string) filemtime($this->pluginAssetsPath . 'js/admin-subscriptions.js')
                 );
 
                 $stylesFilePath = eCurring_WC_Plugin::getPluginUrl('assets/css/admin-subscriptions.css');
@@ -40,7 +47,7 @@ class Assets
                     'ecurring_admin_subscriptions',
                     $stylesFilePath,
                     [],
-                    (string) filemtime($stylesFilePath)
+                    (string) filemtime($this->pluginAssetsPath . 'css/admin-subscriptions.css')
                 );
             }
         );
