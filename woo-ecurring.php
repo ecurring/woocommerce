@@ -78,22 +78,6 @@ if (! defined('WOOECUR_PLUGIN_DIR')) {
 }
 
 /**
- * Called when plugin is loaded
- */
-function ecurring_wc_plugin_init()
-{
-
-    // Register autoloader
-    eCurring_WC_Autoload::register();
-
-    // Setup and start plugin
-    eCurring_WC_Plugin::init();
-
-    // Add endpoint for eCurring Subscriptions
-    add_rewrite_endpoint('ecurring-subscriptions', EP_ROOT | EP_PAGES);
-}
-
-/**
  *  Add 'Retrying payment at eCurring' status
  */
 function eCurringRegisterNewStatusAsPostStatus()
@@ -160,8 +144,6 @@ function eCurringRegisterNewStatusAsBulkAction($actions)
     return $new_actions;
 }
 
-add_action('init', 'ecurring_wc_plugin_init');
-
 /**
  * @throws Throwable
  */
@@ -175,6 +157,17 @@ function initialize()
         require_once 'includes/ecurring/wc/helper/settings.php';
         require_once 'includes/ecurring/wc/helper/api.php';
         require_once 'includes/ecurring/wc/plugin.php';
+
+        add_action('init', static function () {
+            // Register autoloader
+            eCurring_WC_Autoload::register();
+
+            // Setup and start plugin
+            eCurring_WC_Plugin::init();
+
+            // Add endpoint for eCurring Subscriptions
+            add_rewrite_endpoint('ecurring-subscriptions', EP_ROOT | EP_PAGES);
+        });
 
         $versionFactory = new StringVersionFactory();
 
@@ -229,7 +222,6 @@ function initialize()
         add_action('init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
         add_filter('wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
         add_filter('bulk_actions-edit-shop_order', 'eCurringRegisterNewStatusAsBulkAction', 50, 1);
-
     } catch (Throwable $throwable) {
         handleException($throwable);
     }
