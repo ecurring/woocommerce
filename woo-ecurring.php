@@ -105,12 +105,16 @@ function eCurringRegisterNewStatusAsPostStatus()
 {
 
     register_post_status('wc-ecurring-retry', [
-        'label' => __('Retrying payment at eCurring', 'Order status', 'woo-ecurring'),
+        'label' => _x('Retrying payment at eCurring', 'Order status', 'woo-ecurring'),
         'public' => true,
         'exclude_from_search' => false,
         'show_in_admin_all_list' => true,
         'show_in_admin_status_list' => true,
-        'label_count' => _n_noop('Retrying payment at eCurring <span class="count">(%s)</span>', 'Retrying payment at eCurring<span class="count">(%s)</span>', 'woo-ecurring'),
+        'label_count' => _n_noop(
+            'Retrying payment at eCurring <span class="count">(%s)</span>',
+            'Retrying payment at eCurring<span class="count">(%s)</span>',
+            'woo-ecurring'
+        ),
     ]);
 }
 
@@ -127,7 +131,11 @@ function eCurringRegisterNewStatusAsOrderStatus($order_statuses)
     foreach ($order_statuses as $key => $status) {
         $new_order_statuses[ $key ] = $status;
         if ('wc-processing' === $key) {
-            $new_order_statuses['wc-ecurring-retry'] = __('Retrying payment at eCurring', 'Order status', 'woo-ecurring');
+            $new_order_statuses['wc-ecurring-retry'] = _x(
+                'Retrying payment at eCurring',
+                'Order status',
+                'woo-ecurring'
+            );
         }
     }
     return $new_order_statuses;
@@ -145,7 +153,7 @@ function eCurringRegisterNewStatusAsBulkAction($actions)
 
     foreach ($actions as $key => $action) {
         if ('mark_processing' === $key) {
-            $new_actions['mark_ecurring-retry'] = __(
+            $new_actions['mark_ecurring-retry'] = _x(
                 'Change status to Retrying payment at eCurring',
                 'Order status',
                 'woo-ecurring'
