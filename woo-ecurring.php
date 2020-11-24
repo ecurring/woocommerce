@@ -93,11 +93,6 @@ function ecurring_wc_plugin_init()
     add_rewrite_endpoint('ecurring-subscriptions', EP_ROOT | EP_PAGES);
 }
 
-// Add custom order status "Retrying payment at eCurring"
-add_action('init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
-add_filter('wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
-add_filter('bulk_actions-edit-shop_order', 'eCurringRegisterNewStatusAsBulkAction', 50, 1);
-
 /**
  *  Add 'Retrying payment at eCurring' status
  */
@@ -229,6 +224,12 @@ function initialize()
                 }
             }
         );
+
+        // Add custom order status "Retrying payment at eCurring"
+        add_action('init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
+        add_filter('wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
+        add_filter('bulk_actions-edit-shop_order', 'eCurringRegisterNewStatusAsBulkAction', 50, 1);
+
     } catch (Throwable $throwable) {
         handleException($throwable);
     }
