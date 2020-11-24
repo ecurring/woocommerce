@@ -76,6 +76,11 @@ if ( ! defined( 'WOOECUR_PLUGIN_DIR' ) ) {
 	define( 'WOOECUR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
 
+//Plugin main file
+if (! defined( 'WOOECUR_PLUGIN_FILE' ) ) {
+    define('WOOECUR_PLUGIN_FILE', __FILE__);
+}
+
 /**
  * Called when plugin is loaded
  */
