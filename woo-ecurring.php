@@ -35,10 +35,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-require_once(ABSPATH . 'wp-admin/includes/plugin.php');
-require_once 'includes/ecurring/wc/autoload.php';
-require_once 'vendor/autoload.php';
-
 /**
  * Plugin constants
  */
@@ -154,6 +150,8 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
+        require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        require_once 'includes/ecurring/wc/autoload.php';
         require_once 'includes/ecurring/wc/helper/settings.php';
         require_once 'includes/ecurring/wc/helper/api.php';
         require_once 'includes/ecurring/wc/plugin.php';
