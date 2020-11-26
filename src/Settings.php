@@ -44,7 +44,7 @@ class Settings
      *
      * @return string
      */
-    protected function renderSettingsPage(): string
+    protected function renderSettingsPage(): string //phpcs:disable Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         ob_start(); ?>
         <div class="wrap">
