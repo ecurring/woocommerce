@@ -92,8 +92,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 
             if (! $ecurringCustomerId) {
                 $ecurringCustomerId = $this->createEcurringConnectedToMollieCustomer($mollieCustomerId, $order);
-                $this->saveMollieTransactionId($order, $mandateId);
-                $this->apiClient->addMollieMandateToTheEcurringCustomer($ecurringCustomerId, $mandateId);
+                $this->saveMollieMandateId($order->get_customer_id(), $mandateId);
 
                 eCurring_WC_Plugin::debug('eCurring customer not found, a new one was created.');
             }
@@ -121,6 +120,17 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         $ecurringCustomerId = get_user_meta($order->get_customer_id(), 'ecurring_customer_id', true);
 
         return (string) $ecurringCustomerId;
+    }
+
+    /**
+     * Save Mollie mandate ID in the local user meta.
+     *
+     * @param int    $userId
+     * @param string $mollieMandateId
+     */
+    public function saveMollieMandateId($userId, string $mollieMandateId): void
+    {
+        update_user_meta($userId, '_ecurring_mollie_mandate_id', $mollieMandateId);
     }
 
     /**

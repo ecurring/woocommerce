@@ -74,6 +74,20 @@ class PaymentCompletedEventListener implements EventListenerInterface
         );
         $mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
 
+        $mandateId = $this->getMollieMandateId($order->get_customer_id());
+        $ecurringCustomerId = $this->getEcurringCustomerId($order);
+
+        try {
+            $this->apiClient->addMollieMandateToTheEcurringCustomer($ecurringCustomerId, $mandateId);
+        } catch (ApiClientException $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Cannot add Mollie mandate to the eCurring user. Caught exception: %1$s',
+                    $exception->getMessage()
+                )
+            );
+        }
+
         try {
             $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate);
         } catch (ApiClientException $exception) {
@@ -88,5 +102,25 @@ class PaymentCompletedEventListener implements EventListenerInterface
                 )
             );
         }
+    }
+
+    /**
+     * @param WC_Order $order
+     *
+     * @return string
+     */
+    public function getEcurringCustomerId(WC_Order $order): string
+    {
+        return get_user_meta($order->get_customer_id(), 'ecurring_customer_id', true);
+    }
+
+    /**
+     * @param int $customerId
+     *
+     * @return string
+     */
+    protected function getMollieMandateId(int $customerId): string
+    {
+        return get_user_meta($customerId, '_ecurring_mollie_mandate_id', true);
     }
 }
