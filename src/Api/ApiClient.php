@@ -107,7 +107,7 @@ class ApiClient implements ApiClientInterface
     /**
      * @inheritDoc
      */
-    public function addMollieMandateToTheCustomer(string $customerId, string $mollieMandateId): array
+    public function addMollieMandateToTheEcurringCustomer(string $customerId, string $mollieMandateId): array
     {
         $requestData = [
             'data' => [

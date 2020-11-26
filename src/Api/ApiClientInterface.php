@@ -56,7 +56,7 @@ interface ApiClientInterface
      *
      * @throws ApiClientException If request failed.
      */
-    public function addMollieMandateToTheCustomer(string $customerId, string $mollieMandateId): array;
+    public function addMollieMandateToTheEcurringCustomer(string $customerId, string $mollieMandateId): array;
 
     /**
      * Create an eCurring customer with given attributes.
