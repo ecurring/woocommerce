@@ -7,6 +7,7 @@ use Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use eCurring_WC_Helper_Data;
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
 use WC_Order;
@@ -49,6 +50,10 @@ class MollieMandateCreatedEventListenerTest extends TestCase
 
     public function testOnMollieMandateCreated()
     {
+        //Prevent calling static eCurring_WC_Plugin::debug() method.
+        $pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
+        $pluginMock->shouldReceive('debug');
+
         /** @var ApiClient&MockObject $apiClientMock */
         $apiClientMock = $this->createMock(ApiClient::class);
 
@@ -111,6 +116,10 @@ class MollieMandateCreatedEventListenerTest extends TestCase
                 ''
             )
             ->willReturn([]);
+
+        $apiClientMock->expects($this->once())
+            ->method('createCustomer')
+            ->willReturn(['data' => ['id' => $ecurringCustomerId]]);
 
         $sut->onMollieMandateCreated(null, $orderMock, '', '');
     }
