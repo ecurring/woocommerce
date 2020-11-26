@@ -170,7 +170,12 @@ class Display
                 ); ?></h4>
             <label><input name="ecurring_pause_subscription" type="radio" value="infinite"
                           class="tog"
-                          checked="checked"/>Infinite</label>
+                          checked="checked"/><?php
+                                                    echo esc_html_x(
+                                                        'Infinite',
+                                                        'Admin meta box context',
+                                                        'woo-ecurring'
+                                                    );?></label>
             <label><input name="ecurring_pause_subscription" type="radio" value="specific-date"
                           class="tog"
                 /><?php
