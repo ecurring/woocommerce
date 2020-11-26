@@ -11,7 +11,7 @@ use WP_Post;
 
 class Display
 {
-    public function details(WP_Post $post): void
+    public function details(WP_Post $post): void //phpcs:disable Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
