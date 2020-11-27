@@ -235,9 +235,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     protected function createEcurringSubscription(WC_Order $order, string $subscriptionId): array
     {
-
         return $this->apiClient->createSubscription(
-            $this->dataHelper->getUsereCurringCustomerId($order),
+            $this->getEcurringCustomerIdByOrder($order),
             $subscriptionId,
             add_query_arg('ecurring-webhook', 'transaction', home_url('/'))
         );
