@@ -20,29 +20,29 @@ interface CustomerCrudInterface
     /**
      * Get local user's id used in eCurring system.
      *
-     * @param int $wpUserId Local user id to get eCurring id of.
+     * @param int $localUserId Local user id to get eCurring id of.
      *
      * @return string
      */
-    public function getEcurringId(int $wpUserId): string;
+    public function getEcurringId(int $localUserId): string;
 
     /**
      * Save Mollie mandate id associated with the local customer.
      *
-     * @param int    $wpUserId Local user id.
+     * @param int    $localUserId     Local user id.
      * @param string $mollieMandateId Mollie mandate id to save.
      */
-    public function saveMollieMandateId(int $wpUserId, string $mollieMandateId): void;
+    public function saveMollieMandateId(int $localUserId, string $mollieMandateId): void;
 
     /**
-     * @param int $wpUserId Local user id.
+     * @param int $localUserId Local user id.
      *
      * @return string Mollie mandate id.
      */
-    public function getMollieMandateId(int $wpUserId): string;
+    public function getMollieMandateId(int $localUserId): string;
 
     /**
      * Delete all data associated with given customer.
      */
-    public function clearCustomerData(int $wpUserId): void;
+    public function clearCustomerData(int $localUserId): void;
 }
