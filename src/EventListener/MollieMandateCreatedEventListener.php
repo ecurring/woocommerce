@@ -161,12 +161,12 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @param WC_Order_Item $item Item to get subscription plan id from.
      *
-     * @return string|null Subscription id or null if not exists.
+     * @return string Subscription id or null if not exists.
      */
-    protected function getSubscriptionPlanIdByOrderItem(WC_Order_Item $item): ?string
+    protected function getSubscriptionPlanIdByOrderItem(WC_Order_Item $item): string
     {
         if (! $item instanceof WC_Order_Item_Product) {
-            return null;
+            return '';
         }
 
         $product = $item->get_product();
@@ -215,7 +215,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     {
         foreach ($order->get_items() as $item) {
             $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
-            if ($subscriptionId !== null) {
+            $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
+            if ($subscriptionId !== '' && $ecurringCustomerId !== '') {
                 $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
                 $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
 
