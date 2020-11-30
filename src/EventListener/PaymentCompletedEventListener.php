@@ -6,6 +6,7 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
+use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 use WC_Order;
@@ -23,16 +24,25 @@ class PaymentCompletedEventListener implements EventListenerInterface
      * @var SubscriptionCrudInterface
      */
     protected $subscriptionCrud;
+    /**
+     * @var CustomerCrudInterface
+     */
+    protected $customerCrud;
 
     /**
      * @param ApiClientInterface        $apiClient To make eCurring API calls.
      * @param SubscriptionCrudInterface $subscriptionCrud Service able to read subscription data.
+     * @param CustomerCrudInterface     $customerCrud Service able to provide customer data.
      */
-    public function __construct(ApiClientInterface $apiClient, SubscriptionCrudInterface $subscriptionCrud)
-    {
+    public function __construct(
+        ApiClientInterface $apiClient,
+        SubscriptionCrudInterface $subscriptionCrud,
+        CustomerCrudInterface $customerCrud
+    ) {
 
         $this->apiClient = $apiClient;
         $this->subscriptionCrud = $subscriptionCrud;
+        $this->customerCrud = $customerCrud;
     }
 
     public function init(): void
@@ -74,8 +84,8 @@ class PaymentCompletedEventListener implements EventListenerInterface
         );
         $mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
 
-        $mandateId = $this->getMollieMandateId($order->get_customer_id());
-        $ecurringCustomerId = $this->getEcurringCustomerId($order);
+        $mandateId = $this->customerCrud->getMollieMandateId($order->get_customer_id());
+        $ecurringCustomerId = $this->customerCrud->getEcurringId($order->get_customer_id());
 
         try {
             $this->apiClient->addMollieMandateToTheEcurringCustomer($ecurringCustomerId, $mandateId);
@@ -102,25 +112,5 @@ class PaymentCompletedEventListener implements EventListenerInterface
                 )
             );
         }
-    }
-
-    /**
-     * @param WC_Order $order
-     *
-     * @return string
-     */
-    public function getEcurringCustomerId(WC_Order $order): string
-    {
-        return get_user_meta($order->get_customer_id(), 'ecurring_customer_id', true);
-    }
-
-    /**
-     * @param int $customerId
-     *
-     * @return string
-     */
-    protected function getMollieMandateId(int $customerId): string
-    {
-        return get_user_meta($customerId, '_ecurring_mollie_mandate_id', true);
     }
 }
