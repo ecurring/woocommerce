@@ -14,6 +14,8 @@ interface CustomerCrudInterface
      *
      * @param int    $localUserId Local user id.
      * @param string $ecurringId  eCurring user id to save.
+     *
+     * @throws CustomerCrudException Thrown if couldn't save data.
      */
     public function saveEcurringId(int $localUserId, string $ecurringId): void;
 
@@ -23,6 +25,8 @@ interface CustomerCrudInterface
      * @param int $localUserId Local user id to get eCurring id of.
      *
      * @return string
+     *
+     * @throws CustomerCrudException Thrown if couldn't get data.
      */
     public function getEcurringId(int $localUserId): string;
 
@@ -31,6 +35,8 @@ interface CustomerCrudInterface
      *
      * @param int    $localUserId     Local user id.
      * @param string $mollieMandateId Mollie mandate id to save.
+     *
+     * @throws CustomerCrudException Thrown if couldn't save data.
      */
     public function saveMollieMandateId(int $localUserId, string $mollieMandateId): void;
 
@@ -38,11 +44,15 @@ interface CustomerCrudInterface
      * @param int $localUserId Local user id.
      *
      * @return string Mollie mandate id.
+     *
+     * @throws CustomerCrudException Thrown if couldn't get data.
      */
     public function getMollieMandateId(int $localUserId): string;
 
     /**
      * Delete all data associated with given customer.
+     *
+     * @throws CustomerCrudException Thrown if couldn't clear user data.
      */
     public function clearCustomerData(int $localUserId): void;
 }
