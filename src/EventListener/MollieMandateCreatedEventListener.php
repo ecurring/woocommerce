@@ -106,7 +106,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
+                    'Failed to create subscription on successful Mollie payment. ' . 'Caught exception with message: %1$s',
                     $exception->getMessage()
                 )
             );
@@ -194,7 +194,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             );
         }
 
-        return isset($subscriptionData['data']['type']) && $subscriptionData['data']['type'] === 'subscription';
+        return isset($subscriptionData['data']['type']) &&
+            $subscriptionData['data']['type'] === 'subscription';
     }
 
     /**
