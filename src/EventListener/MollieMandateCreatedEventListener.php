@@ -92,7 +92,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         }
 
         try {
-            $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
+            $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
 
             if (! $ecurringCustomerId) {
                 $ecurringCustomerId = $this->createEcurringCustomerConnectedToMollieCustomer($mollieCustomerId, $order);
@@ -111,19 +111,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
                 )
             );
         }
-    }
-
-    /**
-     * Return eCurring customer id associated with order customer.
-     *
-     * @param WC_Order $order
-     *
-     * @return string
-     * @throws CustomerCrudException
-     */
-    public function getEcurringCustomerIdByOrder(WC_Order $order): string
-    {
-        return (string) $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
     }
 
     /**
@@ -209,7 +196,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     {
         foreach ($order->get_items() as $item) {
             $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
-            $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
+            $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
             if ($subscriptionId !== '' && $ecurringCustomerId !== '') {
                 $subscriptionData = $this->createEcurringSubscription($ecurringCustomerId, $subscriptionId);
                 $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
