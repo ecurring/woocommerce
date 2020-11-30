@@ -41,7 +41,6 @@ class eCurring_WC_Plugin
         }
 
         $plugin_basename = self::getPluginFile();
-        $data_helper = self::getDataHelper();
         $settingsHelper = self::getSettingsHelper();
         $subscriptionCrud = new SubscriptionCrud();
         $customerCrud = new CustomerCrud();
