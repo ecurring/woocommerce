@@ -91,7 +91,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
 
             if (! $ecurringCustomerId) {
-                $this->createEcurringConnectedToMollieCustomer($mollieCustomerId, $order);
+                $this->createEcurringCustomerConnectedToMollieCustomer($mollieCustomerId, $order);
                 $this->saveMollieMandateId($order->get_customer_id(), $mandateId);
 
                 eCurring_WC_Plugin::debug('eCurring customer not found, a new one was created.');
@@ -143,7 +143,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @throws ApiClientException If customer creating failed.
      */
-    public function createEcurringConnectedToMollieCustomer(string $mollieCustomerId, WC_Order $order): string
+    public function createEcurringCustomerConnectedToMollieCustomer(string $mollieCustomerId, WC_Order $order): string
     {
         $response = $this->apiClient->createCustomer([
             'first_name' => $order->get_billing_first_name(),
