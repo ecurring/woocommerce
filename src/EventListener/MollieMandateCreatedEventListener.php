@@ -8,6 +8,7 @@ use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
+use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 use Mollie\Api\Resources\Payment;
@@ -102,7 +103,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             }
 
             $this->createEcurringSubscriptionsFromOrder($order);
-        } catch (ApiClientException $exception) {
+        } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Failed to create subscription on successful Mollie payment. Caught exception with message: %1$s',
