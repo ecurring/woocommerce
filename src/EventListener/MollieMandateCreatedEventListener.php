@@ -6,6 +6,7 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
+use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
@@ -117,6 +118,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @param WC_Order $order
      *
      * @return string
+     * @throws CustomerCrudException
      */
     public function getEcurringCustomerIdByOrder(WC_Order $order): string
     {
@@ -199,7 +201,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @param WC_Order $order Order to create subscriptions for.
      *
-     * @throws ApiClientException If create subscription request failed.
+     * @throws ApiClientException|CustomerCrudException If problems occurred when tried to create.
      */
     public function createEcurringSubscriptionsFromOrder(WC_Order $order): void
     {
