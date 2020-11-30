@@ -28,7 +28,7 @@ interface CustomerCrudInterface
      *
      * @throws CustomerCrudException Thrown if couldn't get data.
      */
-    public function getEcurringId(int $localUserId): string;
+    public function getEcurringCustomerId(int $localUserId): string;
 
     /**
      * Save Mollie mandate id associated with the local customer.

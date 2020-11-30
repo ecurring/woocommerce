@@ -87,7 +87,7 @@ class PaymentCompletedEventListener implements EventListenerInterface
 
         try {
             $mandateId = $this->customerCrud->getMollieMandateId($order->get_customer_id());
-            $ecurringCustomerId = $this->customerCrud->getEcurringId($order->get_customer_id());
+            $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
         } catch (CustomerCrudException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(

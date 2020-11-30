@@ -123,7 +123,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function getEcurringCustomerIdByOrder(WC_Order $order): string
     {
-        return (string) $this->customerCrud->getEcurringId($order->get_customer_id());
+        return (string) $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
     }
 
     /**
