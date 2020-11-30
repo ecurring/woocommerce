@@ -6,6 +6,7 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
+use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
@@ -84,8 +85,19 @@ class PaymentCompletedEventListener implements EventListenerInterface
         );
         $mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
 
-        $mandateId = $this->customerCrud->getMollieMandateId($order->get_customer_id());
-        $ecurringCustomerId = $this->customerCrud->getEcurringId($order->get_customer_id());
+        try {
+            $mandateId = $this->customerCrud->getMollieMandateId($order->get_customer_id());
+            $ecurringCustomerId = $this->customerCrud->getEcurringId($order->get_customer_id());
+        } catch (CustomerCrudException $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Couldn\'t get locally saved user data, caught exception when trying: %1$s',
+                    $exception->getMessage()
+                )
+            );
+
+            return;
+        }
 
         try {
             $this->apiClient->addMollieMandateToTheEcurringCustomer($ecurringCustomerId, $mandateId);
