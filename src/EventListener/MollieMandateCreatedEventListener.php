@@ -92,6 +92,13 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         }
 
         try {
+            /**
+             * This needed to prevent possible situation when customer returns to the previous page
+             * after submitting checkout form. In this case, this code may be executed again
+             * so another subscription would be created.
+             *
+             * @see https://inpsyde.atlassian.net/browse/ECUR-20 for details.
+             */
             $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
 
             if (! $ecurringCustomerId) {
