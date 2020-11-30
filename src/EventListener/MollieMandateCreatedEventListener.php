@@ -83,7 +83,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         if ($this->subscriptionForOrderExists($order)) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Subscription already exists for order %1$d. New subscription will not be created.',
+                    'Subscription already exists for order %1$d.' .
+                    ' New subscription will not be created.',
                     $order->get_id()
                 )
             );
@@ -113,7 +114,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Failed to create subscription on successful Mollie payment. ' . 'Caught exception with message: %1$s',
+                    'Failed to create subscription on successful Mollie payment. ' .
+                    'Caught exception with message: %1$s',
                     $exception->getMessage()
                 )
             );
