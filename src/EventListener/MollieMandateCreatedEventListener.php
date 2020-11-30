@@ -209,7 +209,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
             $ecurringCustomerId = $this->getEcurringCustomerIdByOrder($order);
             if ($subscriptionId !== '' && $ecurringCustomerId !== '') {
-                $subscriptionData = $this->createEcurringSubscription($order, $subscriptionId);
+                $subscriptionData = $this->createEcurringSubscription($ecurringCustomerId, $subscriptionId);
                 $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
 
                 eCurring_WC_Plugin::debug('A new eCurring subscription was successfully created.');
@@ -220,16 +220,17 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     /**
      * Create an eCurring subscription on eCurring side using subscription product.
      *
-     * @param WC_Order $order
-     * @param string   $subscriptionId
+     * @param string $ecurringCustomerId
+     * @param string $subscriptionId
      *
-     * @return array
+     * @return array Saved subscription data.
+     *
      * @throws ApiClientException
      */
-    protected function createEcurringSubscription(WC_Order $order, string $subscriptionId): array
+    protected function createEcurringSubscription(string $ecurringCustomerId, string $subscriptionId): array
     {
         return $this->apiClient->createSubscription(
-            $this->getEcurringCustomerIdByOrder($order),
+            $ecurringCustomerId,
             $subscriptionId,
             add_query_arg('ecurring-webhook', 'transaction', home_url('/'))
         );
