@@ -40,7 +40,7 @@ class eCurring_WC_Plugin
             return;
         }
 
-        $plugin_basename = self::getPluginFile();
+        $pluginBasename = self::getPluginFile();
         $settingsHelper = self::getSettingsHelper();
         $subscriptionCrud = new SubscriptionCrud();
         $customerCrud = new CustomerCrud();
@@ -74,7 +74,7 @@ class eCurring_WC_Plugin
         });
 
         // Add settings link to plugins page
-        add_filter('plugin_action_links_' . $plugin_basename, [ __CLASS__, 'addPluginActionLinks' ]);
+        add_filter('plugin_action_links_' . $pluginBasename, [ __CLASS__, 'addPluginActionLinks' ]);
 
         // Enqueue scripts and styles
         add_action('wp_enqueue_scripts', [ __CLASS__, 'eCurringEnqueueScriptsAndStyles' ]);
