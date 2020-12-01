@@ -110,7 +110,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
                 eCurring_WC_Plugin::debug('eCurring customer not found, a new one was created.');
             }
 
-            $this->createEcurringSubscriptionsFromOrder($order);
+            $this->createEcurringSubscriptionsFromOrder($order, $ecurringCustomerId);
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
@@ -198,13 +198,12 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * Create eCurring subscriptions for subscription products in order.
      *
      * @param WC_Order $order Order to create subscriptions for.
+     * @param string $ecurringCustomerId The eCurring customer ID to create subscription for.
      *
      * @throws ApiClientException|CustomerCrudException If problems occurred when tried to create.
      */
-    public function createEcurringSubscriptionsFromOrder(WC_Order $order): void
+    public function createEcurringSubscriptionsFromOrder(WC_Order $order, string $ecurringCustomerId): void
     {
-        $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
-
         foreach ($order->get_items() as $item) {
             $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
             if ($subscriptionId !== '' && $ecurringCustomerId !== '') {
