@@ -203,9 +203,10 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function createEcurringSubscriptionsFromOrder(WC_Order $order): void
     {
+        $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
+
         foreach ($order->get_items() as $item) {
             $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
-            $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
             if ($subscriptionId !== '' && $ecurringCustomerId !== '') {
                 $subscriptionData = $this->createEcurringSubscription($ecurringCustomerId, $subscriptionId);
                 $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
