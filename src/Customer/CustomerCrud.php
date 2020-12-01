@@ -11,7 +11,9 @@ use WP_User;
  */
 class CustomerCrud implements CustomerCrudInterface
 {
-
+    /**
+     * This key has no underscore at the beginning because it was used in previous versions.
+     */
     protected const ECURRING_CUSTOMER_ID_STORAGE_KEY = 'ecurring_customer_id';
 
     protected const MOLLIE_MANDATE_ID_STORAGE_KEY = '_ecurring_mollie_mandate_id';
@@ -137,6 +139,8 @@ class CustomerCrud implements CustomerCrudInterface
 
     /**
      * Check if user with given ID exists.
+     *
+     * @param int $userId User id to check.
      *
      * @return bool True for user exists, false otherwise.
      */
