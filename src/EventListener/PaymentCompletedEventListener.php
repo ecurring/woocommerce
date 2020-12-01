@@ -64,7 +64,7 @@ class PaymentCompletedEventListener implements EventListenerInterface
         if (! $order instanceof WC_Order) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Payment completed for order %1$d, but this order not found.',
+                    'Payment completed for order %1$d, but that order not found.',
                     $orderId
                 )
             );
@@ -96,7 +96,7 @@ class PaymentCompletedEventListener implements EventListenerInterface
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Couldn\'t activate eCurring subscription on successful Mollie payment.' .
-                    ' An exception caught when trying: %1$s',
+                    ' An exception was caught when trying: %1$s',
                     $exception->getMessage()
                 )
             );
