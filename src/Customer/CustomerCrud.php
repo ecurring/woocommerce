@@ -7,7 +7,7 @@ namespace Ecurring\WooEcurring\Customer;
 use WP_User;
 
 /**
- * Customer crud using WP user meta as a storage.
+ * Customer CRUD implementation using WP user meta as a storage.
  */
 class CustomerCrud implements CustomerCrudInterface
 {
