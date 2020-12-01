@@ -150,7 +150,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @param WC_Order_Item $item Item to get subscription plan id from.
      *
-     * @return string Subscription id or null if not exists.
+     * @return string Subscription id or empty string if not exists.
      */
     protected function getSubscriptionPlanIdByOrderItem(WC_Order_Item $item): string
     {
