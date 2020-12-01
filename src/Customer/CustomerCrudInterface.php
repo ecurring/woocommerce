@@ -55,4 +55,18 @@ interface CustomerCrudInterface
      * @throws CustomerCrudException Thrown if couldn't clear user data.
      */
     public function clearCustomerData(int $localUserId): void;
+
+    /**
+     * Set or remove flag to indicate if customer needs Mollie mandate to be added.
+     */
+    public function saveFlagCustomerNeedsMollieMandate(int $localUserId, bool $needsMollieMandate): void;
+
+    /**
+     * Check if given customer needs Mollie mandate to be added.
+     *
+     * @param int $localUserId User id to check flag for.
+     *
+     * @return bool True if customer needs Mollie mandate, false otherwise.
+     */
+    public function getFlagCustomerNeedsMollieMandate(int $localUserId): bool;
 }

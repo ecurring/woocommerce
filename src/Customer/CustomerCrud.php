@@ -16,6 +16,8 @@ class CustomerCrud implements CustomerCrudInterface
 
     protected const MOLLIE_MANDATE_ID_STORAGE_KEY = '_ecurring_mollie_mandate_id';
 
+    protected const FLAG_MOLLIE_MANDATE_NEEDED_KEY = '_ecurring_customer_needs_mollie_mandate';
+
     /**
      * @inheritDoc
      */
@@ -110,6 +112,27 @@ class CustomerCrud implements CustomerCrudInterface
                 $localUserId
             );
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function saveFlagCustomerNeedsMollieMandate(int $localUserId, bool $needsMollieMandate): void
+    {
+        if ($needsMollieMandate) {
+            update_user_meta($localUserId, self::FLAG_MOLLIE_MANDATE_NEEDED_KEY, '1');
+            return;
+        }
+
+        delete_user_meta($localUserId, self::FLAG_MOLLIE_MANDATE_NEEDED_KEY);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFlagCustomerNeedsMollieMandate(int $localUserId): bool
+    {
+        return (bool) get_user_meta($localUserId, self::FLAG_MOLLIE_MANDATE_NEEDED_KEY, true);
     }
 
     /**
