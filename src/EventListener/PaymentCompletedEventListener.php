@@ -98,6 +98,8 @@ class PaymentCompletedEventListener implements EventListenerInterface
                         $exception->getMessage()
                     )
                 );
+
+                return;
             }
         }
 
