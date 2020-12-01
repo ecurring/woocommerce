@@ -3,6 +3,7 @@
 namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClientInterface;
+use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery;
@@ -28,7 +29,10 @@ class PaymentCompletedEventListenerTest extends TestCase
         /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
         $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
 
-        $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock);
+        /** @var CustomerCrudInterface&MockObject $customerCrudMock */
+        $customerCrudMock = $this->createMock(CustomerCrudInterface::class);
+
+        $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock, $customerCrudMock);
 
         expect('add_action')
             ->once()
@@ -47,6 +51,8 @@ class PaymentCompletedEventListenerTest extends TestCase
         $pluginMock->shouldReceive('debug');
 
         $orderId = 123;
+        $localCustomerId = 234;
+        $mollieMandateId = 'molliemandateid123';
         $subscriptionId = 'subscription321';
         $mandateAcceptedDate = date('c');
 
@@ -54,10 +60,11 @@ class PaymentCompletedEventListenerTest extends TestCase
         $wcOrderMock = $this->createMock(WC_Order::class);
         $wcOrderMock->method('get_id')
             ->willReturn($orderId);
-
         $wcOrderMock->method('get_meta')
             ->with(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD)
             ->willReturn($mandateAcceptedDate);
+        $wcOrderMock->method('get_customer_id')
+            ->willReturn($localCustomerId);
 
         when('wc_get_order')
             ->justReturn($wcOrderMock);
@@ -75,7 +82,16 @@ class PaymentCompletedEventListenerTest extends TestCase
             ->with($wcOrderMock)
             ->willReturn($subscriptionId);
 
-        $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock);
+        /** @var CustomerCrudInterface&MockObject $customerCrudMock */
+        $customerCrudMock = $this->createMock(CustomerCrudInterface::class);
+        $customerCrudMock->expects($this->once())
+            ->method('getMollieMandateId')
+            ->willReturn($mollieMandateId);
+        $customerCrudMock->expects($this->once())
+            ->method('getFlagCustomerNeedsMollieMandate')
+            ->willReturn(true);
+
+        $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock, $customerCrudMock);
 
         $sut->onPaymentComplete($orderId);
     }
