@@ -58,6 +58,8 @@ interface CustomerCrudInterface
 
     /**
      * Set or remove flag to indicate if customer needs Mollie mandate to be added.
+     *
+     * @throws CustomerCrudException Thrown if couldn't save data.
      */
     public function saveFlagCustomerNeedsMollieMandate(int $localUserId, bool $needsMollieMandate): void;
 
@@ -67,6 +69,8 @@ interface CustomerCrudInterface
      * @param int $localUserId User id to check flag for.
      *
      * @return bool True if customer needs Mollie mandate, false otherwise.
+     *
+     * @throws CustomerCrudException Thrown if couldn't get data.
      */
     public function getFlagCustomerNeedsMollieMandate(int $localUserId): bool;
 }

@@ -121,6 +121,16 @@ class CustomerCrud implements CustomerCrudInterface
      */
     public function saveFlagCustomerNeedsMollieMandate(int $localUserId, bool $needsMollieMandate): void
     {
+        if (! $this->userExists($localUserId)) {
+            throw new CustomerCrudException(
+                sprintf(
+                    'Couldn\'t set customer needs Mollie mandate flag ' .
+                    'for user %1$d because this user doesn\'t exist',
+                    $localUserId
+                )
+            );
+        }
+
         if ($needsMollieMandate) {
             update_user_meta($localUserId, self::FLAG_MOLLIE_MANDATE_NEEDED_KEY, '1');
             return;
@@ -134,6 +144,16 @@ class CustomerCrud implements CustomerCrudInterface
      */
     public function getFlagCustomerNeedsMollieMandate(int $localUserId): bool
     {
+        if (! $this->userExists($localUserId)) {
+            throw new CustomerCrudException(
+                sprintf(
+                    'Couldn\'t get customer needs Mollie mandate flag ' .
+                    'for user %1$d because this user doesn\'t exist',
+                    $localUserId
+                )
+            );
+        }
+
         return (bool) get_user_meta($localUserId, self::FLAG_MOLLIE_MANDATE_NEEDED_KEY, true);
     }
 
