@@ -24,7 +24,7 @@ interface CustomerCrudInterface
      *
      * @param int $localUserId Local user id to get eCurring id of.
      *
-     * @return string
+     * @return string Customer id or empty string if not set.
      *
      * @throws CustomerCrudException Thrown if couldn't get data.
      */
@@ -52,12 +52,17 @@ interface CustomerCrudInterface
     /**
      * Delete all data associated with given customer.
      *
+     * @param int $localUserId User id to clear data of.
+     *
      * @throws CustomerCrudException Thrown if couldn't clear user data.
      */
     public function clearCustomerData(int $localUserId): void;
 
     /**
      * Set or remove flag to indicate if customer needs Mollie mandate to be added.
+     *
+     * @param int  $localUserId User id to save flag for.
+     * @param bool $needsMollieMandate True to set flag, false to remove it.
      *
      * @throws CustomerCrudException Thrown if couldn't save data.
      */
