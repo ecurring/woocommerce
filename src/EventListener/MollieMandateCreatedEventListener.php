@@ -160,7 +160,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 
         $product = $item->get_product();
 
-        return $this->subscriptionCrud->getProductSubscriptionId($product);
+        return (string) $this->subscriptionCrud->getProductSubscriptionId($product);
     }
 
     /**
