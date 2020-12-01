@@ -23,7 +23,7 @@ class CustomerCrud implements CustomerCrudInterface
     /**
      * @inheritDoc
      */
-    public function saveEcurringId(int $localUserId, string $ecurringId): void
+    public function saveEcurringCustomerId(int $localUserId, string $ecurringId): void
     {
         if (! $this->userExists($localUserId)) {
             throw new CustomerCrudException(

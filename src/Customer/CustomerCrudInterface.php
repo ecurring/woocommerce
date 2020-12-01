@@ -17,7 +17,7 @@ interface CustomerCrudInterface
      *
      * @throws CustomerCrudException Thrown if couldn't save data.
      */
-    public function saveEcurringId(int $localUserId, string $ecurringId): void;
+    public function saveEcurringCustomerId(int $localUserId, string $ecurringId): void;
 
     /**
      * Get local user's id used in eCurring system.
