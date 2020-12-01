@@ -87,32 +87,16 @@ class PaymentCompletedEventListener implements EventListenerInterface
         $mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
         $userId = $order->get_customer_id();
 
-        if ($this->customerCrud->getFlagCustomerNeedsMollieMandate($userId)) {
-            try {
-                $this->addMollieMandateToTheCustomer($userId);
-            } catch (EcurringException $exception) {
-                eCurring_WC_Plugin::debug(
-                    sprintf(
-                        'Couldn\'t add Mollie mandate to the eCurring customer.' .
-                        ' An exception caught when trying: %1$s',
-                        $exception->getMessage()
-                    )
-                );
-
-                return;
-            }
-        }
-
         try {
+            if ($this->customerCrud->getFlagCustomerNeedsMollieMandate($userId)) {
+                $this->addMollieMandateToTheCustomer($userId);
+            }
             $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate);
-        } catch (ApiClientException $exception) {
+        } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Could not activate subscription, API request failed. Order id: %1$d, subscription id: %2$s, mandate accepted date: %3$s, error code: %4$d, error message: %5$s.',
-                    $orderId,
-                    $subscriptionId,
-                    $mandateAcceptedDate,
-                    $exception->getCode(),
+                    'Couldn\'t activate eCurring subscription on successful Mollie payment.' .
+                    ' An exception caught when trying: %1$s',
                     $exception->getMessage()
                 )
             );
