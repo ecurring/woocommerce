@@ -85,29 +85,32 @@ class PaymentCompletedEventListener implements EventListenerInterface
         );
         $mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
 
-        try {
-            $mandateId = $this->customerCrud->getMollieMandateId($order->get_customer_id());
-            $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
-        } catch (CustomerCrudException $exception) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Couldn\'t get locally saved user data, caught exception when trying: %1$s',
-                    $exception->getMessage()
-                )
-            );
+        if ($this->customerCrud->getFlagCustomerNeedsMollieMandate($order->get_customer_id())) {
+            try {
+                $mandateId = $this->customerCrud->getMollieMandateId($order->get_customer_id());
+                $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
+            } catch (CustomerCrudException $exception) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Couldn\'t get locally saved user data, caught exception when trying: %1$s',
+                        $exception->getMessage()
+                    )
+                );
 
-            return;
-        }
+                return;
+            }
 
-        try {
-            $this->apiClient->addMollieMandateToTheEcurringCustomer($ecurringCustomerId, $mandateId);
-        } catch (ApiClientException $exception) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Cannot add Mollie mandate to the eCurring user. Caught exception: %1$s',
-                    $exception->getMessage()
-                )
-            );
+            try {
+                $this->apiClient->addMollieMandateToTheEcurringCustomer($ecurringCustomerId, $mandateId);
+                $this->customerCrud->saveFlagCustomerNeedsMollieMandate($order->get_customer_id(), false);
+            } catch (ApiClientException $exception) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Cannot add Mollie mandate to the eCurring user. Caught exception: %1$s',
+                        $exception->getMessage()
+                    )
+                );
+            }
         }
 
         try {
