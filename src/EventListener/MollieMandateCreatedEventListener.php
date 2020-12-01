@@ -216,10 +216,10 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     }
 
     /**
-     * Create an eCurring subscription on eCurring side using subscription product.
+     * Create an eCurring subscription on eCurring side.
      *
-     * @param string $ecurringCustomerId
-     * @param string $subscriptionId
+     * @param string $ecurringCustomerId id of the customer in eCurring.
+     * @param string $subscriptionId id of the subscription plan in eCurring.
      *
      * @return array Saved subscription data.
      *
