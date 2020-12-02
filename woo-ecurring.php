@@ -179,6 +179,8 @@ function initialize()
             foreach ($environmentChecker->getErrors() as $errorMessage) {
                 errorNotice($errorMessage);
             }
+
+            return;
         }
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
