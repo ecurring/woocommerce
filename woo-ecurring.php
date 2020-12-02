@@ -15,7 +15,6 @@
  * WC tested up to: 4.6
  */
 
-// Exit if accessed directly.
 use Dhii\Versions\StringVersionFactory;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Subscription\Actions;
@@ -31,6 +30,7 @@ use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
 
+// Exit if accessed directly.
 if (!defined('ABSPATH')) {
     exit;
 }
