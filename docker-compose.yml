@@ -95,15 +95,18 @@ services:
       - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
       - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
-  wp:
-    image: library/wordpress:cli-php${PHP_TEST_VERSION}
-    container_name: "${PROJECT_NAME}_wpcli"
-    working_dir: ${DOCROOT_PATH}
-    volumes:
-      - wordpress:${DOCROOT_PATH}
-      - ${BASE_PATH}:${PROJECT_MOUNT_PATH}
-      - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
-      - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
+### This service is temporarily disabled. This is because we are started to use PHP 8,
+### but there is no official wp-cli image based on PHP 8 yet.
+### wp service could be enabled again as soon as respective docker image will be available.
+#  wp:
+#    image: library/wordpress:cli-php${PHP_TEST_VERSION}
+#    container_name: "${PROJECT_NAME}_wpcli"
+#    working_dir: ${DOCROOT_PATH}
+#    volumes:
+#      - wordpress:${DOCROOT_PATH}
+#      - ${BASE_PATH}:${PROJECT_MOUNT_PATH}
+#      - ${WOOCOMMERCE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/woocommerce
+#      - ${MOLLIE_HOST_SYSTEM_PATH}:${PLUGINS_PATH}/mollie-woocommerce
 
 volumes:
   wordpress:
