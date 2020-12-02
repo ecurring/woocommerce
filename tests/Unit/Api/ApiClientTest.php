@@ -1,111 +1,112 @@
 <?php
 
+
 namespace Ecurring\WooEcurringTests\Unit\Api;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
 use function Brain\Monkey\Functions\expect;
 
-class ApiClientTest extends TestCase
-{
-    //This trait usage is needed so PhpUnit can detect expect() function as assertion.
-    use MockeryPHPUnitIntegration;
+class ApiClientTest extends TestCase {
 
-    public function testCreateSubscription()
-    {
-        $apiKey = 'someapikey135';
-        $ecurringCustomerId = 'ecurringcustomer123';
-        $subscriptionPlanId = 'subscription564';
-        $transactionWebhookUrl = 'http://ecurring.loc/transaction';
-        $method = 'POST';
+	//This trait usage is needed so PhpUnit can detect expect() function as assertion.
+	use MockeryPHPUnitIntegration;
 
-        $sut = new ApiClient($apiKey);
+	public function testCreateSubscription()
+	{
+		$apiKey = 'someapikey135';
+		$ecurringCustomerId = 'ecurringcustomer123';
+		$subscriptionPlanId = 'subscription564';
+		$transactionWebhookUrl = 'http://ecurring.loc/transaction';
+		$method = 'POST';
 
-        $requestData = [
-            'data' => [
-                'type' => 'subscription',
-                'attributes' => [
-                    'customer_id' => $ecurringCustomerId,
-                    'subscription_plan_id' => $subscriptionPlanId,
-                    'transaction_webhook_url' => $transactionWebhookUrl,
-                    'confirmation_sent' => true,
-                    'metadata' => ['source' => 'woocommerce'],
-                ],
-            ],
-        ];
+		$sut = new ApiClient($apiKey);
 
-        $requestArgs = [
-            'method' => $method,
-            'headers' => [
-                'X-Authorization' => $apiKey,
-                'Content-Type' => 'application/vnd.api+json',
-                'Accept' => 'application/vnd.api+json',
-            ],
-            'body' => json_encode($requestData),
-        ];
+		$requestData = [
+			'data' => [
+				'type'       => 'subscription',
+				'attributes' => [
+					'customer_id'              => $ecurringCustomerId,
+					'subscription_plan_id'     => $subscriptionPlanId,
+					'transaction_webhook_url'  => $transactionWebhookUrl,
+					'confirmation_sent'        => true,
+					'metadata'                 => ['source' => 'woocommerce']
+				]
+			]
+		];
 
-        expect('wp_remote_request')
-            ->once()
-            ->with(
-                'https://api.ecurring.com/subscriptions',
-                $requestArgs
-            )
-            ->andReturn([
-                'body' => '{"field": "value"}',
-            ]);
+		$requestArgs = [
+			'method'  => $method,
+			'headers' => [
+				'X-Authorization' => $apiKey,
+				'Content-Type'    => 'application/vnd.api+json',
+				'Accept'          => 'application/vnd.api+json'
+			],
+			'body' => json_encode($requestData)
+		];
 
-        $sut->createSubscription(
-            $ecurringCustomerId,
-            $subscriptionPlanId,
-            $transactionWebhookUrl
-        );
-    }
+		expect('wp_remote_request')
+			->once()
+			->with(
+				'https://api.ecurring.com/subscriptions',
+				$requestArgs
+			)
+			->andReturn([
+				'body' => '{"field": "value"}'
+			]);
 
-    public function testActivateSubscription()
-    {
-        $subscriptionId = 'subscription12345';
-        $apiKey = 'apikey098765';
-        $method = 'PATCH';
-        $mandateAcceptedDate = date('c');
+		$sut->createSubscription(
+			$ecurringCustomerId,
+			$subscriptionPlanId,
+			$transactionWebhookUrl
+		);
+	}
 
-        $requestData = [
-            'data' => [
-                'type' => 'subscription',
-                'id' => $subscriptionId,
-                'attributes' => [
-                    'status' => 'active',
-                    'mandate_accepted' => true,
-                    'mandate_accepted_date' => $mandateAcceptedDate,
-                ],
-            ],
-        ];
+	public function testActivateSubscription()
+	{
+		$subscriptionId = 'subscription12345';
+		$apiKey = 'apikey098765';
+		$method = 'PATCH';
+		$mandateAcceptedDate = date('c');
 
-        $requestArgs = [
-            'method' => $method,
-            'headers' => [
-                'X-Authorization' => $apiKey,
-                'Content-Type' => 'application/vnd.api+json',
-                'Accept' => 'application/vnd.api+json',
-            ],
-            'body' => json_encode($requestData),
-        ];
+		$requestData = [
+			'data' => [
+				'type' => 'subscription',
+				'id' => $subscriptionId,
+				'attributes' => [
+					'status' => 'active',
+					'mandate_accepted' => true,
+					'mandate_accepted_date' => $mandateAcceptedDate
+				]
+			]
+		];
 
-        expect('wp_remote_request')
-            ->once()
-            ->with(
-                sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
-                $requestArgs
-            )
-        ->andReturn(
-            [
-                'body' => '{"field": "value"}',
-            ]
-        );
+		$requestArgs = [
+			'method'  => $method,
+			'headers' => [
+				'X-Authorization' => $apiKey,
+				'Content-Type'    => 'application/vnd.api+json',
+				'Accept'          => 'application/vnd.api+json'
+			],
+			'body' => json_encode($requestData)
+		];
 
-        $sut = new ApiClient($apiKey);
 
-        $sut->activateSubscription($subscriptionId, $mandateAcceptedDate);
-    }
+		expect('wp_remote_request')
+			->once()
+			->with(
+				sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
+				$requestArgs
+			)
+		->andReturn(
+			[
+				'body' => '{"field": "value"}'
+			]
+		);
+
+		$sut = new ApiClient($apiKey);
+
+		$sut->activateSubscription($subscriptionId, $mandateAcceptedDate);
+	}
 }

@@ -197,6 +197,30 @@ class eCurring_WC_Helper_Data {
 	}
 
 	/**
+	 * Save active eCurring payment id for order
+	 *
+	 * @param int     $order_id
+	 * @param object| $payment
+	 *
+	 * @return $this
+	 */
+	public function setActiveeCurringPayment( $order_id, $payment ) {
+		$order = eCurring_WC_Plugin::getDataHelper()->getWcOrder( $order_id );
+
+		$order->update_meta_data( '_ecurring_payment_id', $payment->id );
+
+		$order->delete_meta_data( '_ecurring_cancelled_payment_id' );
+
+		if ( $payment->customerId ) {
+			$order->update_meta_data( '_ecurring_customer_id', $payment->customerId );
+		}
+
+		$order->save();
+
+		return $this;
+	}
+
+	/**
 	 * @param $order WC_Order
 	 * @param $user_id
 	 * @param $customer_id

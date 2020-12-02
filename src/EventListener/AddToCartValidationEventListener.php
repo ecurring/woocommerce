@@ -15,7 +15,7 @@ use function _x;
 /**
  * Add to cart validation. Disallow to add to the cart more than one subscription.
  */
-class AddToCartValidationEventListener implements EventListenerInterface
+class AddToCartValidationEventListener
 {
 
     /**
