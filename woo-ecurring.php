@@ -231,7 +231,7 @@ function eCurringInitialize()
     }
 }
 
-add_action('plugins_loaded', __NAMESPACE__ . '\\eCurringInitialize', PHP_INT_MAX);
+add_action('plugins_loaded', 'eCurringInitialize', PHP_INT_MAX);
 
 /**
  * Handle any exception that might occur during plugin setup.
