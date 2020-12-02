@@ -147,7 +147,7 @@ function eCurringRegisterNewStatusAsBulkAction($actions)
 /**
  * @throws Throwable
  */
-function initialize()
+function eCurringInitialize()
 {
     try {
         if (is_readable(__DIR__ . '/vendor/autoload.php')) {
@@ -181,7 +181,7 @@ function initialize()
         );
         if (!$environmentChecker->checkEnvironment()) {
             foreach ($environmentChecker->getErrors() as $errorMessage) {
-                errorNotice($errorMessage);
+                eCurringErrorNotice($errorMessage);
             }
 
             return;
@@ -227,11 +227,11 @@ function initialize()
         add_filter('wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
         add_filter('bulk_actions-edit-shop_order', 'eCurringRegisterNewStatusAsBulkAction', 50, 1);
     } catch (Throwable $throwable) {
-        handleException($throwable);
+        eCurringHandleException($throwable);
     }
 }
 
-add_action('plugins_loaded', __NAMESPACE__ . '\\initialize', PHP_INT_MAX);
+add_action('plugins_loaded', __NAMESPACE__ . '\\eCurringInitialize', PHP_INT_MAX);
 
 /**
  * Handle any exception that might occur during plugin setup.
@@ -240,11 +240,11 @@ add_action('plugins_loaded', __NAMESPACE__ . '\\initialize', PHP_INT_MAX);
  *
  * @return void
  */
-function handleException(Throwable $throwable)
+function eCurringHandleException(Throwable $throwable)
 {
     do_action('ecurring.woo-ecurring.critical', $throwable);
 
-    errorNotice(
+    eCurringErrorNotice(
         sprintf(
             '<strong>Error:</strong> %s <br><pre>%s</pre>',
             $throwable->getMessage(),
@@ -260,7 +260,7 @@ function handleException(Throwable $throwable)
  *
  * @return void
  */
-function errorNotice(string $message)
+function eCurringErrorNotice(string $message)
 {
     foreach (['admin_notices', 'network_admin_notices'] as $hook) {
         add_action(
