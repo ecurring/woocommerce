@@ -1,4 +1,5 @@
 <?php
+
 if (defined('ABSPATH')) {
     return;
 }
@@ -6,6 +7,10 @@ if (defined('ABSPATH')) {
 define('PROJECT_DIR', dirname(__DIR__));
 define('ABSPATH', PROJECT_DIR . '/vendor/wordpress/wordpress/');
 define('WPINC', 'wp-includes');
+
+if (! defined('WOOECUR_PLUGIN_FILE')) {
+    define('WOOECUR_PLUGIN_FILE', '');
+}
 
 require_once ABSPATH . WPINC . '/plugin.php';
 require_once ABSPATH . WPINC . '/load.php';
