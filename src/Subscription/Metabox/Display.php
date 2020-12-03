@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
-use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use eCurring_WC_Helper_Api;
 use eCurring_WC_Helper_Settings;
+use WP_Post;
 
 class Display
 {
-    public function details($post)
+    public function details(WP_Post $post): void
     {
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
@@ -39,25 +41,7 @@ class Display
         <?php
     }
 
-    public function general($post)
-    {
-        $customer = get_post_meta($post->ID, '_ecurring_post_subscription_customer', true);
-
-        $customerId = $customer->data->id ?? '';
-        $firstName = $customer->data->attributes->first_name ?? '';
-        $lastName = $customer->data->attributes->last_name ?? '';
-        $email = $customer->data->attributes->email ?? '';;
-        ?>
-        <ul>
-            <li>Customer ID: <?php echo esc_attr($customerId);?></li>
-            <li>First Name: <?php echo esc_attr($firstName);?></li>
-            <li>Last Name: <?php echo esc_attr($lastName);?></li>
-            <li>Email: <?php echo esc_attr($email);?></li>
-        </ul>
-    <?php
-    }
-
-    public function options($post)
+    public function options(WP_Post $post): void //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
@@ -72,12 +56,9 @@ class Display
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $api = new eCurring_WC_Helper_Api($settingsHelper);
-        $productsResponse = (new SubscriptionPlans($api))->getSubscriptionPlans();
-
-        if(!isset($productsResponse->data)) {
-            return;
-        }
-
+        $productsResponse = json_decode(
+            $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
+        );
         $products = [];
         foreach ($productsResponse->data as $product) {
             $products[$product->id] = $product->attributes->name;

@@ -14,9 +14,10 @@
  * WC tested up to: 4.6
  */
 
-use Ecurring\WooEcurring\Api\Customers;
-use Ecurring\WooEcurring\EnvironmentChecker;
-use Ecurring\WooEcurring\Customer\Subscriptions;
+// Exit if accessed directly.
+use Dhii\Versions\StringVersionFactory;
+use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
+use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\SubscriptionsJob;
 use Ecurring\WooEcurring\Subscription\PostType;
@@ -27,8 +28,7 @@ use Ecurring\WooEcurring\Assets;
 use Ecurring\WooEcurring\WebHook;
 use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
-use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
-use Ecurring\WooEcurring\Api\SubscriptionPlans;
+use Ecurring\WooEcurring\Customer\Subscriptions;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -76,56 +76,10 @@ if ( ! defined( 'WOOECUR_PLUGIN_DIR' ) ) {
 	define( 'WOOECUR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
 
-/**
- * Pro-actively check for required PHP JSON extension
- */
-function ecurring_wc_check_json_extension() {
-	if ( function_exists( 'extension_loaded' ) && ! extension_loaded( 'json' ) ) {
-		remove_action( 'init', 'ecurring_wc_plugin_init' );
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive_json_extension' );
-		return;
-	}
+//Plugin main file
+if (! defined( 'WOOECUR_PLUGIN_FILE' ) ) {
+    define('WOOECUR_PLUGIN_FILE', __FILE__);
 }
-add_action( 'plugins_loaded', 'ecurring_wc_check_json_extension' );
-
-/**
- * Pro-actively check and communicate PHP version incompatibility for eCurring for WooCommerce
- */
-function ecurring_wc_check_php_version() {
-	if ( ! version_compare( PHP_VERSION, '7.2', ">=" ) ) {
-		remove_action( 'init', 'ecurring_wc_plugin_init' );
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive_php' );
-		return;
-	}
-}
-add_action( 'plugins_loaded', 'ecurring_wc_check_php_version' );
-
-/**
- * Check if WooCommerce is active and of a supported version
- */
-function ecurring_wc_check_woocommerce_status() {
-	if ( ! class_exists( 'WooCommerce' ) || version_compare( get_option( 'woocommerce_db_version' ), '3.0', '<' ) ) {
-		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive' );
-		return;
-	}
-}
-add_action( 'plugins_loaded', 'ecurring_wc_check_woocommerce_status' );
-
-add_action('plugins_loaded', function(){
-	$environmentChecker = new EnvironmentChecker();
-    if (!$environmentChecker->isMollieActive()) { // || !$environmentChecker->isMollieMinimalVersion()
-		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action('admin_notices', function () {
-			echo '<div class="error"><p>';
-			echo esc_html__(
-				'Mollie Subscriptions plugin is inactive. Please, activate Mollie Payments for WooCommerce plugin first.',
-				'woo-ecurring'
-			);
-			echo '</p></div>';
-		});
-	}
-});
 
 /**
  * Called when plugin is loaded
@@ -141,90 +95,6 @@ function ecurring_wc_plugin_init() {
 	// Add endpoint for eCurring Subscriptions
 	add_rewrite_endpoint( 'ecurring-subscriptions', EP_ROOT | EP_PAGES );
 
-}
-
-/**
- * Called when plugin is activated
- */
-function ecurring_wc_plugin_activation_hook ()
-{
-
-	if ( ! class_exists( 'WooCommerce' ) || version_compare( get_option( 'woocommerce_db_version' ), '3.0', '<' ) ) {
-		remove_action('init', 'ecurring_wc_plugin_init');
-		add_action( 'admin_notices', 'ecurring_wc_plugin_inactive' );
-		return;
-	}
-
-    // Register eCurring autoloader
-   eCurring_WC_Autoload::register();
-
-    $status_helper = eCurring_WC_Plugin::getStatusHelper();
-
-    if (!$status_helper->isCompatible())
-    {
-        $title   = 'Could not activate plugin ' . WOOECUR_PLUGIN_TITLE;
-        $message = '<h1><strong>Could not activate plugin ' . WOOECUR_PLUGIN_TITLE . '</strong></h1><br/>'
-                 . implode('<br/>', $status_helper->getErrors());
-
-        wp_die($message, $title, array('back_link' => true));
-        return;
-    }
-}
-
-register_activation_hook(__FILE__, 'ecurring_wc_plugin_activation_hook');
-
-function ecurring_wc_plugin_inactive_json_extension() {
-
-	if ( ! is_admin() ) {
-		return false;
-	}
-
-	echo '<div class="error"><p>';
-	echo esc_html__( 'Mollie Subscriptions requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.', 'woo-ecurring' );
-	echo '</p></div>';
-
-	return false;
-
-}
-
-function ecurring_wc_plugin_inactive_php() {
-
-	if ( ! is_admin() ) {
-		return false;
-	}
-
-	echo '<div class="error"><p>';
-	echo __( 'eCurring for WooCommerce requires PHP 7.2 or higher. Your PHP version is outdated. Upgrade your PHP version (with help of your webhoster).', 'woo-ecurring' );
-	echo '</p></div>';
-
-	return false;
-
-}
-
-function ecurring_wc_plugin_inactive() {
-
-	if ( ! is_admin() ) {
-		return false;
-	}
-
-	if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
-
-		echo '<div class="error"><p>';
-		echo sprintf( esc_html__( '%1$seCurring for WooCommerce is inactive.%2$s The %3$sWooCommerce plugin%4$s must be active for it to work. Please %5$sinstall & activate WooCommerce &raquo;%6$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="https://wordpress.org/plugins/woocommerce/">', '</a>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
-		echo '</p></div>';
-		return false;
-	}
-
-	if ( version_compare( get_option( 'woocommerce_db_version' ), '3.0', '<' ) ) {
-
-		echo '<div class="error"><p>';
-		echo sprintf( esc_html__( '%1$seCurring for WooCommerce is inactive.%2$s This version requires WooCommerce 3.0 or newer. Please %3$supdate WooCommerce to version 3.0 or newer &raquo;%4$s', 'woo-ecurring' ), '<strong>', '</strong>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
-		echo '</p></div>';
-		return false;
-
-	}
-
-	return '';
 }
 
 // Add custom order status "Retrying payment at eCurring"
@@ -296,27 +166,39 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
-        require_once __DIR__ . '/includes/ecurring/wc/helper/settings.php';
-        require_once __DIR__ . '/includes/ecurring/wc/helper/api.php';
-        require_once __DIR__ . '/includes/ecurring/wc/plugin.php';
+        require_once 'includes/ecurring/wc/helper/settings.php';
+        require_once 'includes/ecurring/wc/helper/api.php';
+        require_once 'includes/ecurring/wc/plugin.php';
+
+        $versionFactory = new StringVersionFactory();
+
+        $environmentChecker = new EnvironmentChecker(
+            '7.2',
+            '3.9',
+            '6.0.0',
+            $versionFactory
+        );
+        if (!$environmentChecker->checkEnvironment()) {
+            foreach ($environmentChecker->getErrors() as $errorMessage) {
+                errorNotice($errorMessage);
+            }
+        }
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $customerApi = new Customers($apiHelper);
-        $repository = new Repository($customerApi);
+        $actions = new Actions($apiHelper);
+        $repository = new Repository();
         $display = new Display();
-        $subscriptionsApi = new SubscriptionsApi($apiHelper);
-        $save = new Save($subscriptionsApi, $repository);
-        $subscriptionPlans = new SubscriptionPlans($apiHelper);
-        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
+        $save = new Save($actions);
+        $subscriptions = new Subscriptions($apiHelper);
 
-        (new SubscriptionsJob($subscriptionsApi, $repository))->init();
+        (new SubscriptionsJob($actions, $repository))->init();
         (new Metabox($display, $save))->init();
-        (new PostType($apiHelper))->init();
+        (new PostType())->init();
         (new Assets())->init();
-        (new WebHook($subscriptionsApi, $repository))->init();
+        (new WebHook($apiHelper, $repository))->init();
         (new Settings())->init();
-        (new MyAccount($subscriptionsApi, $repository, $subscriptions))->init();
+        (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
 
         add_action(
             'woocommerce_payment_complete',

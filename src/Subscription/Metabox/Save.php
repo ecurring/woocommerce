@@ -1,33 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
-
-use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
+use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Exception;
 
 class Save
 {
     /**
-     * @var SubscriptionsApi
+     * @var Actions
      */
-    private $subscriptionsApi;
+    private $actions;
 
-    /**
-     * @var Repository
-     */
-    private $repository;
-
-    public function __construct(SubscriptionsApi $subscriptionsApi, Repository $repository)
+    public function __construct(Actions $actions)
     {
-        $this->subscriptionsApi = $subscriptionsApi;
-        $this->repository = $repository;
+        $this->actions = $actions;
     }
 
+    /**
+     * @return void
+     */
     public function save($postId)
     {
-        $subscriptionType = filter_input(
+        $subscriptionType = $subscriptionType = filter_input(
             INPUT_POST,
             'ecurring_subscription',
             FILTER_SANITIZE_STRING
@@ -39,117 +38,96 @@ class Save
             FILTER_SANITIZE_STRING
         );
 
-        if ($this->subscriptionNotAllowed($subscriptionType, $subscriptionId)) {
+        $switchDate = $this->detectSwitchDate();
+
+        if (
+            !$subscriptionType || !in_array(
+                $subscriptionType,
+                ['pause', 'resume', 'switch', 'cancel'],
+                true
+            ) || !$subscriptionId
+        ) {
             return;
         }
 
-        $resumeDate = $this->setResumeDate();
-        $cancelDate = $this->setCancelDate();
-        $switchDate = $this->setSwitchDate();
-
         switch ($subscriptionType) {
             case 'pause':
-                $response = $this->subscriptionsApi->pause($subscriptionId, $resumeDate);
-                $this->updateSubscriptionAttributes($postId, $response);
+                $response = json_decode(
+                    $this->actions->pause(
+                        $subscriptionId,
+                        $this->detectResumeDate()
+                    )
+                );
+                $this->updateSubscription($postId, $response);
                 break;
             case 'resume':
-                $response = $this->subscriptionsApi->resume($subscriptionId);
-                $this->updateSubscriptionAttributes($postId, $response);
+                $response = json_decode($this->actions->resume($subscriptionId));
+                $this->updateSubscription($postId, $response);
                 break;
             case 'switch':
-                $cancel = $this->subscriptionsApi->cancel($subscriptionId, $switchDate);
-                $this->updateSubscriptionAttributes($postId, $cancel);
-
-                $productId = filter_input(
-                    INPUT_POST,
-                    'ecurring_subscription_plan',
-                    FILTER_SANITIZE_STRING
-                );
-
-                $subscriptionWebhookUrl = add_query_arg(
-                    'ecurring-webhook',
-                    'subscription',
-                    home_url('/')
-                );
-                $transactionWebhookUrl = add_query_arg(
-                    'ecurring-webhook',
-                    'transaction',
-                    home_url('/')
-                );
-
-                $create = $this->subscriptionsApi->create(
-                    [
-                        'data' => [
-                            'type' => 'subscription',
-                            'attributes' => [
-                                'customer_id' => $cancel->data->relationships->customer->data->id,
-                                'subscription_plan_id' => $productId,
-                                'mandate_code' => $cancel->data->attributes->mandate_code,
-                                'mandate_accepted' => true,
-                                'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
-                                'confirmation_sent' => 'true',
-                                'subscription_webhook_url' => $subscriptionWebhookUrl,
-                                'transaction_webhook_url' => $transactionWebhookUrl,
-                                'status' => 'active',
-                                "start_date" => $switchDate,
-                            ],
-                        ],
-                    ]
-                );
-                $this->repository->create($create->data);
+                $this->handleSubscriptionSwitch($subscriptionId, $switchDate, (int)$postId);
                 break;
             case 'cancel':
-                $response = $this->subscriptionsApi->cancel($subscriptionId, $cancelDate);
-                $this->updateSubscriptionAttributes($postId, $response);
+                $response = json_decode($this->actions->cancel($subscriptionId, $this->detectCancelDate()));
+                $this->updateSubscription($postId, $response);
                 break;
         }
     }
 
-    /**
-     * @param $postId
-     * @param $response
-     */
-    protected function updateSubscriptionAttributes($postId, $response)
+    protected function handleSubscriptionSwitch(string $subscriptionId, string $switchDate, int $postId): void
     {
-        update_post_meta(
-            $postId,
-            '_ecurring_post_subscription_attributes',
-            $response->data->attributes
-        );
-    }
+        $cancel = json_decode($this->actions->cancel($subscriptionId, $switchDate));
+        $this->updateSubscription($postId, $cancel);
 
-    /**
-     * @return string
-     * @throws \Exception
-     */
-    protected function setResumeDate(): string
-    {
-        $pauseSubscription = filter_input(
+        $productId = filter_input(
             INPUT_POST,
-            'ecurring_pause_subscription',
+            'ecurring_subscription_plan',
             FILTER_SANITIZE_STRING
         );
 
-        $resumeDate = '';
+        $subscriptionWebhookUrl = add_query_arg(
+            'ecurring-webhook',
+            'subscription',
+            home_url('/')
+        );
+        $transactionWebhookUrl = add_query_arg(
+            'ecurring-webhook',
+            'transaction',
+            home_url('/')
+        );
 
-        if ($pauseSubscription === 'specific-date') {
-            $resumeDate = filter_input(
-                INPUT_POST,
-                'ecurring_resume_date',
-                FILTER_SANITIZE_STRING
-            );
+        $create = json_decode($this->actions->create(
+            [
+                'data' => [
+                    'type' => 'subscription',
+                    'attributes' => [
+                        'customer_id' => $cancel->data->relationships->customer->data->id,
+                        'subscription_plan_id' => $productId,
+                        'mandate_code' => $cancel->data->attributes->mandate_code,
+                        'mandate_accepted' => true,
+                        'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
+                        'confirmation_sent' => 'true',
+                        'subscription_webhook_url' => $subscriptionWebhookUrl,
+                        'transaction_webhook_url' => $transactionWebhookUrl,
+                        'status' => 'active',
+                        "start_date" => $switchDate,
+                    ],
+                ],
+            ]
+        ));
 
-            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
-        }
-
-        return $resumeDate;
+        $postSubscription = new Repository();
+        $postSubscription->create($create->data);
     }
 
     /**
-     * @return string
-     * @throws \Exception
+     * Get formatted subscription cancel date, if no cancellation date so return an empty string.
+     *
+     * @return string Formatted subscription cancel date or empty string if no cancel date defined.
+     *
+     * @throws Exception If cannot create DateTime object.
      */
-    protected function setCancelDate(): string
+    protected function detectCancelDate(): string
     {
         $cancelSubscription = filter_input(
             INPUT_POST,
@@ -166,20 +144,53 @@ class Save
 
             $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
         }
+
         return $cancelDate;
     }
 
     /**
+     * Detect subscription resume date from posted data.
+     *
      * @return string
-     * @throws \Exception
+     *
+     * @throws Exception If cannot create DateTime object.
      */
-    protected function setSwitchDate(): string
+    protected function detectResumeDate(): string
+    {
+        $pauseSubscription = filter_input(
+            INPUT_POST,
+            'ecurring_pause_subscription',
+            FILTER_SANITIZE_STRING
+        );
+        $resumeDate = '';
+        if ($pauseSubscription === 'specific-date') {
+            $resumeDate = filter_input(
+                INPUT_POST,
+                'ecurring_resume_date',
+                FILTER_SANITIZE_STRING
+            );
+
+            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
+        }
+
+        return $resumeDate;
+    }
+
+    /**
+     * Get formatted subscription switch date from posted data.
+     *
+     * @return string Formatted subscription switch date.
+     *
+     * @throws Exception If cannot create DateTime object.
+     */
+    protected function detectSwitchDate(): string
     {
         $switchSubscription = filter_input(
             INPUT_POST,
             'ecurring_switch_subscription',
             FILTER_SANITIZE_STRING
         );
+
         $switchDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
         if ($switchSubscription === 'specific-date') {
             $switchDate = filter_input(
@@ -190,18 +201,18 @@ class Save
 
             $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
         }
+
         return $switchDate;
     }
 
     /**
-     * @param $subscriptionType
-     * @param $subscriptionId
-     * @return bool
+     * @param $postId
+     * @param $response
+     *
+     * @return void
      */
-    protected function subscriptionNotAllowed($subscriptionType, $subscriptionId): bool
+    protected function updateSubscription(int $postId, $response): void
     {
-        return !$subscriptionType
-            || !in_array($subscriptionType, ['pause', 'resume', 'switch', 'cancel'], true)
-            || !$subscriptionId;
+        update_post_meta($postId, '_ecurring_post_subscription_attributes', $response->data->attributes);
     }
 }

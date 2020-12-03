@@ -2,6 +2,8 @@
   "redefinable-internals": [
     "get_class",
     "date",
-    "filter_input"
+    "extension_loaded",
+    "phpversion",
+    "version_compare"
   ]
 }

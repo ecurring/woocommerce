@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ruleset name="Mollie Payments for WooCommerce"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+    <description>Idealo For WooCommerce Coding Standard</description>
+
+    <exclude-pattern>.psalm</exclude-pattern>
+    <exclude-pattern>tests/bootstrap\.php</exclude-pattern>
+
+    <config name="testVersion" value="7.2-"/>
+    <config name="ignore_warnings_on_exit" value="1"/>
+
+    <file>./src</file>
+
+    <rule ref="Inpsyde">
+        <exclude name="Inpsyde.CodeQuality.NoAccessors.NoGetter"/>
+        <exclude name="Inpsyde.CodeQuality.NoAccessors.NoSetter"/>
+        <exclude name="Inpsyde.CodeQuality.FunctionBodyStart.WrongForMultiLineDeclaration"/>
+        <exclude name="Inpsyde.CodeQuality.ElementNameMinimalLength.TooShort"/>
+    </rule>
+
+    <rule ref="PHPCompatibility">
+        <exclude name="PHPCompatibility.FunctionDeclarations.NewNullableTypes.returnTypeFound" />
+        <exclude name="PHPCompatibility.FunctionDeclarations.NewReturnTypeDeclarations.voidFound"/>
+        <exclude name="PHPCompatibility.Classes.NewConstVisibility.Found"/>
+        <exclude
+                name="PHPCompatibility.FunctionDeclarations.NewNullableTypes.typeDeclarationFound"
+        />
+        <exclude
+                name="PHPCompatibility.FunctionDeclarations.NewParamTypeDeclarations.iterableFound"
+        />
+        <exclude
+                name="PHPCompatibility.FunctionDeclarations.NewReturnTypeDeclarations.iterableFound"
+        />
+        <exclude name="PHPCompatibility.Lists.NewKeyedList.Found" />
+        <exclude name="PHPCompatibility.Lists.NewShortList.Found" />
+    </rule>
+
+    <rule ref="WordPress.PHP.StrictInArray.MissingArguments">
+        <type>warning</type>
+    </rule>
+    <rule ref="WordPress.Arrays.CommaAfterArrayItem.NoComma">
+        <type>warning</type>
+    </rule>
+</ruleset>

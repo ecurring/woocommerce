@@ -1,49 +1,22 @@
 <?php
 
-namespace Ecurring\WooEcurring\Subscription;
+declare(strict_types=1);
 
-use DateTime;
-use Ecurring\WooEcurring\Api\SubscriptionPlans;
-use eCurring_WC_Helper_Api;
+namespace Ecurring\WooEcurring\Subscription;
 
 class PostType
 {
-    /**
-     * @var eCurring_WC_Helper_Api
-     */
-    private $api;
-
-    public function __construct(eCurring_WC_Helper_Api $api)
-    {
-        $this->api = $api;
-    }
-
-    public function init()
+    public function init(): void
     {
         $this->register();
         $this->listColumns();
-
-        add_filter(
-            'post_row_actions',
-            function ($actions) {
-                if (get_post_type() === 'esubscriptions') {
-                    unset($actions['edit']);
-                    unset($actions['view']);
-                    unset($actions['trash']);
-                    unset($actions['inline hide-if-no-js']);
-                }
-                return $actions;
-            },
-            10,
-            1
-        );
     }
 
-    protected function register()
+    protected function register(): void
     {
         add_action(
             'init',
-            function () {
+            static function () {
 
                 $args = [
                     'labels' => [
@@ -51,14 +24,9 @@ class PostType
                         'singular_name' => esc_html__('Subscription', 'woo-ecurring'),
                         'menu_name' => esc_html__('Subscriptions', 'woo-ecurring'),
                     ],
-                    'public' => false,
-                    'show_ui' => true,
+                    'public' => true,
                     'publicly_queryable' => true,
                     'supports' => ['title'],
-                    'capabilities' => [
-                        'create_posts' => false,
-                    ],
-                    'map_meta_cap' => true,
                 ];
 
                 register_post_type('esubscriptions', $args);
@@ -66,17 +34,13 @@ class PostType
         );
     }
 
-    protected function listColumns()
+    protected function listColumns(): void
     {
         add_filter(
             'manage_esubscriptions_posts_columns',
-            function ($columns) {
+            static function ($columns) {
                 unset($columns['date']);
 
-                $columns['title'] = 'Subscription ID';
-                $columns['customer'] = 'Customer';
-                $columns['product'] = 'Product';
-                $columns['start_date'] = 'Start Date';
                 $columns['status'] = 'Status';
 
                 return $columns;
@@ -85,47 +49,19 @@ class PostType
 
         add_action(
             'manage_esubscriptions_posts_custom_column',
-            function ($column, $postId) {
+            static function ($column, $postId) {
                 $attributes = get_post_meta(
                     $postId,
                     '_ecurring_post_subscription_attributes',
                     true
                 );
-
                 switch ($column) {
-                    case 'customer':
-                        $customer = get_post_meta($postId, '_ecurring_post_subscription_customer', true);
-                        echo esc_attr($customer->data->attributes->first_name) . ' '
-                            . esc_attr($customer->data->attributes->last_name);
+                    case 'status':
+                        // TODO check if status exists first
+                        echo esc_attr(ucfirst($attributes->status));
                         break;
                     case 'product':
-                        $subscriptionPlans = (new SubscriptionPlans(
-                            $this->api
-                        ))->getSubscriptionPlans();
-
-                        if (!isset($subscriptionPlans->data)) {
-                            break;
-                        }
-
-                        $products = [];
-                        foreach ($subscriptionPlans->data as $product) {
-                            $products[$product->id] = $product->attributes->name ?: '';
-                        }
-
-                        $relationships = get_post_meta(
-                            $postId,
-                            '_ecurring_post_subscription_relationships',
-                            true
-                        );
-                        $productId = $relationships->{'subscription-plan'}->data->id;
-                        echo esc_attr($products[$productId]);
-                        break;
-                    case 'start_date':
-                        $startDate = $attributes->start_date;
-                        echo esc_attr((new DateTime($startDate))->format('d-m-Y'));
-                        break;
-                    case 'status':
-                        echo esc_attr(ucfirst($attributes->status));
+                        echo 'product here...';
                         break;
                 }
             },

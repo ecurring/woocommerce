@@ -1,4 +1,5 @@
 <?php
+
 if (defined('ABSPATH')) {
     return;
 }
@@ -6,6 +7,10 @@ if (defined('ABSPATH')) {
 define('PROJECT_DIR', dirname(__DIR__));
 define('ABSPATH', PROJECT_DIR . '/vendor/wordpress/wordpress/');
 define('WPINC', 'wp-includes');
+
+if (! defined('WOOECUR_PLUGIN_FILE')) {
+    define('WOOECUR_PLUGIN_FILE', '');
+}
 
 require_once ABSPATH . WPINC . '/plugin.php';
 require_once ABSPATH . WPINC . '/load.php';
@@ -47,5 +52,8 @@ require_once ABSPATH . WPINC . '/theme.php';
 require_once ABSPATH . WPINC . '/post-thumbnail-template.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-require_once PROJECT_DIR . '/wp-content/plugins/action-scheduler/functions.php';
-require_once PROJECT_DIR . '/wp-content/plugins/woocommerce/includes/wc-order-functions.php';
+require_once PROJECT_DIR . '/includes/ecurring/wc/plugin.php';
+require_once PROJECT_DIR . '/includes/ecurring/wc/helper/api.php';
+
+require_once PROJECT_DIR . '/vendor/woocommerce/action-scheduler/functions.php';
+require_once PROJECT_DIR . '/vendor/woocommerce/woocommerce/includes/wc-order-functions.php';

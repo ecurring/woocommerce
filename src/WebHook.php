@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring;
 
 use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
@@ -23,7 +25,7 @@ class WebHook
         $this->repository = $repository;
     }
 
-    public function init()
+    public function init(): void
     {
         add_filter(
             'request',
@@ -31,7 +33,6 @@ class WebHook
                 $webhook = filter_input(INPUT_GET, 'ecurring-webhook', FILTER_SANITIZE_STRING);
 
                 if ($webhook === 'transaction') {
-
                     $response = json_decode(file_get_contents('php://input'));
 
                     $subscriptionId = filter_var(
