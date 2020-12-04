@@ -17,6 +17,7 @@ class Repository
     {
 
         foreach ($subscriptions->data as $subscription) {
+            //check if subscription saved in order meta fields. This check should be removed after migration to post type will be added.
             if ($this->orderSubscriptionExist($subscription)) {
                 continue;
             }
