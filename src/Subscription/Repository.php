@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Subscription;
 
-use WP_Post;
-
 class Repository
 {
     /**
@@ -20,7 +18,6 @@ class Repository
             if (! $this->subscriptionExistsInDb($subscription->id)) {
                 $this->create($subscription);
             }
-
         }
     }
 
@@ -52,40 +49,31 @@ class Repository
 
     public function update($subscription): void
     {
-        /**
-         * @var WP_Post[]
-         *
-         * @todo use WP_Query instead of get_posts
-         */
-        $subscriptionPosts = get_posts(
-            [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
-            ]
-        );
-        foreach ($subscriptionPosts as $post) {
-            $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
-
-            if ($postSubscriptionId && $postSubscriptionId === $subscription->data->id) {
-                update_post_meta($post->ID, '_ecurring_post_subscription_id', $subscription->data->id);
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_links',
-                    $subscription->data->links
-                );
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_attributes',
-                    $subscription->data->attributes
-                );
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_relationships',
-                    $subscription->data->relationships
-                );
-            }
+        $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscription->data->id);
+        if (! $subscriptionPostId) {
+            return;
         }
+
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_id',
+            $subscription->data->id
+        );
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_links',
+            $subscription->data->links
+        );
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_attributes',
+            $subscription->data->attributes
+        );
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_relationships',
+            $subscription->data->relationships
+        );
     }
 
     /**
