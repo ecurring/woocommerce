@@ -12,7 +12,7 @@ class Settings
             'admin_menu',
             function () {
                 add_menu_page(
-                    'eCurring Settings',
+                    'Settings',
                     'eCurring',
                     'administrator',
                     __FILE__,
