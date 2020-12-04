@@ -39,7 +39,7 @@ class Repository
     public function update($subscription): void
     {
         $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscription->data->id);
-        if (! $subscriptionPostId) {
+        if ($subscriptionPostId === 0) {
             return;
         }
 
