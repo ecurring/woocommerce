@@ -97,13 +97,8 @@ class Repository
                 'numberposts' => 1,
                 'post_status' => 'publish',
                 'fields' => 'ids',
-                'meta_query' => [
-                    [
-                        'key' => '_ecurring_post_subscription_id',
-                        'value' => $subscriptionId,
-                        'compare' => '=',
-                    ],
-                ],
+                'meta_key' => '_ecurring_post_subscription_id',
+                'meta_value' => $subscriptionId,
             ]
         );
 
