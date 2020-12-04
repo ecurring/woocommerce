@@ -17,11 +17,6 @@ class Repository
     {
 
         foreach ($subscriptions->data as $subscription) {
-            //check if subscription saved in order meta fields. This check should be removed after migration to post type will be added.
-            if ($this->orderSubscriptionExist($subscription)) {
-                continue;
-            }
-
             if ($this->subscriptionExistsInDb($subscription->id)) {
                 continue;
             }
@@ -92,39 +87,6 @@ class Repository
                 );
             }
         }
-    }
-
-    /**
-     * Check if subscription id exist in orders post meta.
-     *
-     * @param $subscription
-     *
-     * @return bool
-     *
-     * @todo: This seems to be very ineffective and potentially may lead to crash of DB has a lot of orders.
-     *        Check and rewrite if needed.
-     */
-    protected function orderSubscriptionExist($subscription): bool
-    {
-        $orders = wc_get_orders(
-            [
-                'posts_per_page' => -1,
-            ]
-        );
-
-        foreach ($orders as $order) {
-            $subscriptionId = get_post_meta(
-                $order->get_id(),
-                '_ecurring_subscription_id',
-                true
-            );
-
-            if ($subscriptionId === $subscription->id) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
