@@ -32,18 +32,7 @@ class Repository
         );
 
         if ($postId && is_int($postId)) {
-            add_post_meta($postId, '_ecurring_post_subscription_id', $subscription->id);
-            add_post_meta($postId, '_ecurring_post_subscription_links', $subscription->links);
-            add_post_meta(
-                $postId,
-                '_ecurring_post_subscription_attributes',
-                $subscription->attributes
-            );
-            add_post_meta(
-                $postId,
-                '_ecurring_post_subscription_relationships',
-                $subscription->relationships
-            );
+            $this->saveSubscriptionData($postId, $subscription);
         }
     }
 
@@ -54,25 +43,30 @@ class Repository
             return;
         }
 
+        $this->saveSubscriptionData($subscriptionPostId, $subscription);
+    }
+
+    protected function saveSubscriptionData(int $subscriptionPostId, $subscriptionData): void
+    {
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_id',
-            $subscription->data->id
+            $subscriptionData->data->id
         );
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_links',
-            $subscription->data->links
+            $subscriptionData->data->links
         );
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_attributes',
-            $subscription->data->attributes
+            $subscriptionData->data->attributes
         );
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_relationships',
-            $subscription->data->relationships
+            $subscriptionData->data->relationships
         );
     }
 
