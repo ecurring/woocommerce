@@ -17,11 +17,10 @@ class Repository
     {
 
         foreach ($subscriptions->data as $subscription) {
-            if ($this->subscriptionExistsInDb($subscription->id)) {
-                continue;
+            if (! $this->subscriptionExistsInDb($subscription->id)) {
+                $this->create($subscription);
             }
 
-            $this->create($subscription);
         }
     }
 
