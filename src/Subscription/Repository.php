@@ -17,7 +17,7 @@ class Repository
     {
 
         foreach ($subscriptions->data as $subscription) {
-            if (!$this->orderSubscriptionExist($subscription)) {
+            if ($this->orderSubscriptionExist($subscription)) {
                 continue;
             }
 
