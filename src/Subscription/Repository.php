@@ -97,6 +97,18 @@ class Repository
      */
     protected function subscriptionExistsInDb(string $subscriptionId): bool
     {
+        $found = $this->getSubscriptionPostIdBySubscriptionId($subscriptionId);
+
+        return $found !== 0;
+    }
+
+    /**
+     * @param string $subscriptionId
+     *
+     * @return int
+     */
+    protected function getSubscriptionPostIdBySubscriptionId(string $subscriptionId): int
+    {
         $found = get_posts(
             [
                 'post_type' => 'esubscriptions',
@@ -113,6 +125,6 @@ class Repository
             ]
         );
 
-        return count($found) > 0;
+        return (int) $found[0] ?? 0;
     }
 }
