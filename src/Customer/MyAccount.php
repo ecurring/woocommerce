@@ -183,8 +183,7 @@ class MyAccount
             )
         );
 
-        $postSubscription = new Repository();
-        $postSubscription->create($response->data);
+        $this->repository->create($response);
     }
 
     /**
