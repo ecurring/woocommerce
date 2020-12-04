@@ -16,30 +16,12 @@ class Repository
     public function createSubscriptions($subscriptions): void
     {
 
-        /**
-         * @var WP_Post[] $subscriptionPosts
-         *
-         * @todo use WP_Query instead of get_posts
-         */
-        $subscriptionPosts = get_posts(
-            [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
-            ]
-        );
-
-        $subscriptionIds = [];
-        foreach ($subscriptionPosts as $post) {
-            $subscriptionIds[] = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
-        }
-
         foreach ($subscriptions->data as $subscription) {
             if (!$this->orderSubscriptionExist($subscription)) {
                 continue;
             }
 
-            if (in_array($subscription->id, $subscriptionIds, true)) {
+            if ($this->subscriptionExistsInDb($subscription->id)) {
                 continue;
             }
 
@@ -142,5 +124,33 @@ class Repository
         }
 
         return false;
+    }
+
+    /**
+     * Check if subscription already saved in the local DB.
+     *
+     * @param string $subscriptionId The subscription id to check for.
+     *
+     * @return bool
+     */
+    protected function subscriptionExistsInDb(string $subscriptionId): bool
+    {
+        $found = get_posts(
+            [
+                'post_type' => 'esubscriptions',
+                'numberposts' => 1,
+                'post_status' => 'publish',
+                'fields' => 'ids',
+                'meta_query' => [
+                    [
+                        'key' => '_ecurring_post_subscription_id',
+                        'value' => $subscriptionId,
+                        'compare' => '=',
+                    ],
+                ],
+            ]
+        );
+
+        return count($found) > 0;
     }
 }
