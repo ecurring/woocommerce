@@ -97,7 +97,7 @@ class Repository
      */
     protected function subscriptionExistsInDb(string $subscriptionId): bool
     {
-        $found = $this->getSubscriptionPostIdBySubscriptionId($subscriptionId);
+        $found = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
 
         return $found !== 0;
     }
@@ -107,7 +107,7 @@ class Repository
      *
      * @return int
      */
-    protected function getSubscriptionPostIdBySubscriptionId(string $subscriptionId): int
+    protected function findSubscriptionPostIdBySubscriptionId(string $subscriptionId): int
     {
         $found = get_posts(
             [
