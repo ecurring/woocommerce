@@ -34,6 +34,9 @@ class AddToCartValidationEventListenerTest extends TestCase
             ->andReturn($productMock);
         when('_x')->returnArg();
 
+        expect('get_current_user_id')
+            ->andReturn(456);
+
         /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
         $subscriptionsCrudMock = $this->createConfiguredMock(
             SubscriptionCrudInterface::class,
@@ -67,6 +70,9 @@ class AddToCartValidationEventListenerTest extends TestCase
             ['getProductSubscriptionId' => $subscriptionId]
         );
 
+        expect('get_current_user_id')
+            ->andReturn(456);
+
         $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
 
         expect('wc_add_notice')->once();
@@ -97,6 +103,9 @@ class AddToCartValidationEventListenerTest extends TestCase
             SubscriptionCrudInterface::class,
             ['getProductSubscriptionId' => $subscriptionId]
         );
+
+        expect('get_current_user_id')
+            ->andReturn(456);
 
         expect('wc_add_notice')->never();
 
