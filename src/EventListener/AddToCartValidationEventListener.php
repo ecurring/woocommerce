@@ -83,7 +83,7 @@ class AddToCartValidationEventListener implements EventListenerInterface
     {
         $loginPageLinkOpeningTag = sprintf(
             '<a href="%1$s">',
-            wp_login_url()
+            wc_get_page_permalink('myaccount')
         );
 
         $loginPageLinkClosingTag = '</a>';
