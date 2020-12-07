@@ -54,6 +54,12 @@ class AddToCartValidationEventListener implements EventListenerInterface
             return $validationPassed;
         }
 
+        if (get_current_user_id() === 0) {
+            $this->addLoginNeededNotice();
+
+            return false;
+        }
+
         if ($quantity > 1 || eCurring_WC_Plugin::eCurringSubscriptionIsInCart()) {
             wc_add_notice(
                 _x(
@@ -68,5 +74,34 @@ class AddToCartValidationEventListener implements EventListenerInterface
         }
 
         return $validationPassed;
+    }
+
+    /**
+     * Add notice for the guest customer about login is requered to buy subscription.
+     */
+    protected function addLoginNeededNotice(): void
+    {
+        $loginPageLinkOpeningTag = sprintf(
+            '<a href="%1$s">',
+            wp_login_url()
+        );
+
+        $loginPageLinkClosingTag = '</a>';
+
+        $loginNeededMessage = sprintf(
+            /* translators: %1$s is replaced with opening html <a> tag, %2$s is replaced with the closing html </a> tag */
+            _x(
+                'Please, %1$slogin or register%2$s first to be able to purchase subscription.',
+                'User notice when guest customer tries to purchase subscription',
+                'woo-ecurring'
+            ),
+            $loginPageLinkOpeningTag,
+            $loginPageLinkClosingTag
+        );
+
+        wc_add_notice(
+            $loginNeededMessage,
+            'error'
+        );
     }
 }
