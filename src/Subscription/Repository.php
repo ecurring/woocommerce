@@ -91,6 +91,7 @@ class Repository
      */
     protected function findSubscriptionPostIdBySubscriptionId(string $subscriptionId): int
     {
+        /** @var int[] $found */
         $found = get_posts(
             [
                 'post_type' => 'esubscriptions',
@@ -102,6 +103,6 @@ class Repository
             ]
         );
 
-        return (int) $found[0] ?? 0;
+        return $found[0] ?? 0;
     }
 }
