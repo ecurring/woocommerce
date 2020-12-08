@@ -365,7 +365,7 @@ class eCurring_WC_Plugin
         $subscription_plans_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[size]=' . $page_size), true);
         $subscription_plans_data = isset($subscription_plans_response['data']) ? $subscription_plans_response['data'] : false;
         if (!$subscription_plans_data) {
-            exit;
+            return;
         }
 
         $subscription_plans = [];
