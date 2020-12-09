@@ -1,6 +1,6 @@
 <?php
 
-namespace Ecurring\WooEcurringTests\AdminPages;
+namespace Ecurring\WooEcurringTests\Unit\AdminPages;
 
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
