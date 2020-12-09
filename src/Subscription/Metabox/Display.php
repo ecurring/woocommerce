@@ -34,10 +34,30 @@ class Display
             <li>Product ID: <?php echo esc_attr($productId);?></li>
             <li>Start date: <?php echo esc_attr((new DateTime($startDate))->format('d-m-Y'));?></li>
             <li>Activated on: <?php echo esc_attr((new DateTime($activatedOn))->format('d-m-Y H:i:s'));?></li>
-            <li>(Will be) cancelled on: <?php echo esc_attr((new DateTime($canceledOn))->format('d-m-Y'));?></li>
+            <li>(Will be) cancelled on: <?php if ($canceledOn) {
+                    echo esc_attr((new DateTime($canceledOn))->format('d-m-Y'));
+                } ?></li>
             <li>Mandate ID: <?php echo esc_attr($mandateId);?></li>
         </ul>
 
+        <?php
+    }
+
+    public function general($post)
+    {
+        $customer = get_post_meta($post->ID, '_ecurring_post_subscription_customer', true);
+
+        $customerId = $customer->data->id ?? '';
+        $firstName = $customer->data->attributes->first_name ?? '';
+        $lastName = $customer->data->attributes->last_name ?? '';
+        $email = $customer->data->attributes->email ?? '';;
+        ?>
+        <ul>
+            <li>Customer ID: <?php echo esc_attr($customerId);?></li>
+            <li>First Name: <?php echo esc_attr($firstName);?></li>
+            <li>Last Name: <?php echo esc_attr($lastName);?></li>
+            <li>Email: <?php echo esc_attr($email);?></li>
+        </ul>
         <?php
     }
 
@@ -59,6 +79,11 @@ class Display
         $productsResponse = json_decode(
             $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
         );
+
+        if(!isset($productsResponse->data)) {
+            return;
+        }
+
         $products = [];
         foreach ($productsResponse->data as $product) {
             $products[$product->id] = $product->attributes->name;

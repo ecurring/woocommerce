@@ -169,9 +169,9 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
-        require_once 'includes/ecurring/wc/helper/settings.php';
-        require_once 'includes/ecurring/wc/helper/api.php';
-        require_once 'includes/ecurring/wc/plugin.php';
+        require_once __DIR__ . '/includes/ecurring/wc/helper/settings.php';
+        require_once __DIR__ . '/includes/ecurring/wc/helper/api.php';
+        require_once __DIR__ . '/includes/ecurring/wc/plugin.php';
 
         $versionFactory = new StringVersionFactory();
 
@@ -200,7 +200,7 @@ function initialize()
 
         (new SubscriptionsJob($actions, $repository))->init();
         (new Metabox($display, $save))->init();
-        (new PostType())->init();
+        (new PostType($apiHelper))->init();
         (new Assets())->init();
         (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
