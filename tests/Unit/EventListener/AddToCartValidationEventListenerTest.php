@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurringTests\Unit\EventListener;
+namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
