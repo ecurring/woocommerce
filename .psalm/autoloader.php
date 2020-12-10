@@ -57,3 +57,7 @@ require_once PROJECT_DIR . '/includes/ecurring/wc/helper/api.php';
 
 require_once PROJECT_DIR . '/vendor/woocommerce/action-scheduler/functions.php';
 require_once PROJECT_DIR . '/vendor/woocommerce/woocommerce/includes/wc-order-functions.php';
+
+if (! defined('MINUTE_IN_SECONDS')) {
+    define('MINUTE_IN_SECONDS', 60);
+}
