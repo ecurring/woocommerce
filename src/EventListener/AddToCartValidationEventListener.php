@@ -100,7 +100,10 @@ class AddToCartValidationEventListener implements EventListenerInterface
         );
 
         wc_add_notice(
-            $loginNeededMessage,
+            sprintf(
+                '<p>%1$s</p>',
+                $loginNeededMessage
+            ),
             'error'
         );
     }
