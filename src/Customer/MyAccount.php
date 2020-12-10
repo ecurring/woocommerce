@@ -58,6 +58,7 @@ class MyAccount
         $this->subscriptions = $subscriptions;
     }
 
+    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     public function init(): void
     {
         add_filter(
