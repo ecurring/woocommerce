@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Subscription;
 
+use Ecurring\WooEcurring\Api\Customers;
+use eCurring_WC_Helper_Api;
+use eCurring_WC_Helper_Settings;
 use WP_Post;
 
 class Repository
@@ -58,6 +61,12 @@ class Repository
         );
 
         if ($postId && is_int($postId)) {
+            $customer = $this->getCustomerApi();
+            $customerDetails = $customer->getCustomerById(
+                $subscription->relationships->customer->data->id
+            );
+            add_post_meta($postId, '_ecurring_post_subscription_customer', $customerDetails);
+
             add_post_meta($postId, '_ecurring_post_subscription_id', $subscription->id);
             add_post_meta($postId, '_ecurring_post_subscription_links', $subscription->links);
             add_post_meta(
@@ -142,5 +151,16 @@ class Repository
         }
 
         return false;
+    }
+
+    /**
+     * @return Customers
+     */
+    protected function getCustomerApi(): Customers
+    {
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $api = new eCurring_WC_Helper_Api($settingsHelper);
+        $customer = new Customers($api);
+        return $customer;
     }
 }

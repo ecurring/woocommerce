@@ -128,14 +128,6 @@ class eCurring_WC_Plugin
         add_filter('woocommerce_product_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
         add_filter('woocommerce_product_single_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
 
-        // eCurring add to cart button text
-        add_filter('woocommerce_is_sold_individually', [ __CLASS__, 'eCurringDisableQuantity'], 10, 2);
-
-        // Add eCurring Subscriptions to WooCommerce My Account
-        add_action('init', [ __CLASS__, 'eCurringSubscriptionsEndpoint' ], 10, 2);
-
-        add_filter('woocommerce_account_menu_items', [ __CLASS__, 'eCurringSubscriptionsMyAccount'], 10, 1);
-
         // Add 'eCurring details' metabox to WooCommerce Order Edit
         add_action('add_meta_boxes', [ __CLASS__, 'eCurringAddOrdersMetaBox']);
 
@@ -684,30 +676,6 @@ class eCurring_WC_Plugin
         $vars[] = 'ecurring-subscriptions';
 
         return $vars;
-    }
-
-    /**
-     * eCurring Subscriptions - Add to My account menu
-     *
-     * @param $items
-     *
-     * @return array
-     */
-    public static function eCurringSubscriptionsMyAccount($items)
-    {
-
-        $new_items =  [];
-        $new_items['ecurring-subscriptions'] = __('Subscriptions', 'woo-ecurring');
-
-        // Search for the item position and +1 since is after the selected item key.
-        $position = array_search('orders', array_keys($items)) + 1;
-
-        // Insert the new item.
-        $final_items = array_slice($items, 0, $position, true);
-        $final_items += $new_items;
-        $final_items += array_slice($items, $position, count($items) - $position, true);
-
-        return $final_items;
     }
 
     /**
