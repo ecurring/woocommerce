@@ -117,7 +117,7 @@ class AddToCartValidationEventListenerTest extends TestCase
         $this->assertSame(true, $addedToCart);
     }
 
-    public function testOnAddSubscriptionItsNotAllowedToGuestsToAddSubscription()
+    public function testOnAddSubscriptionGuestsNotAllowedToAddSubscriptionToCart()
     {
         $subscriptionId = '456';
         $productId = 123;
