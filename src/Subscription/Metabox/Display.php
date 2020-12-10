@@ -84,6 +84,24 @@ class Display
         <?php
     }
 
+    public function general($post)
+    {
+        $customer = get_post_meta($post->ID, '_ecurring_post_subscription_customer', true);
+
+        $customerId = $customer->data->id ?? '';
+        $firstName = $customer->data->attributes->first_name ?? '';
+        $lastName = $customer->data->attributes->last_name ?? '';
+        $email = $customer->data->attributes->email ?? '';;
+        ?>
+        <ul>
+            <li>Customer ID: <?php echo esc_attr($customerId);?></li>
+            <li>First Name: <?php echo esc_attr($firstName);?></li>
+            <li>Last Name: <?php echo esc_attr($lastName);?></li>
+            <li>Email: <?php echo esc_attr($email);?></li>
+        </ul>
+        <?php
+    }
+
     public function options(WP_Post $post): void //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
@@ -102,6 +120,11 @@ class Display
         $productsResponse = json_decode(
             $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
         );
+
+        if(!isset($productsResponse->data)) {
+            return;
+        }
+
         $products = [];
         foreach ($productsResponse->data as $product) {
             $products[$product->id] = $product->attributes->name;

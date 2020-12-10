@@ -16,6 +16,8 @@
 
 // Exit if accessed directly.
 use Dhii\Versions\StringVersionFactory;
+use Ecurring\WooEcurring\Api\Customers;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
@@ -29,6 +31,7 @@ use Ecurring\WooEcurring\WebHook;
 use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
+use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -166,9 +169,9 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
-        require_once 'includes/ecurring/wc/helper/settings.php';
-        require_once 'includes/ecurring/wc/helper/api.php';
-        require_once 'includes/ecurring/wc/plugin.php';
+        require_once __DIR__ . '/includes/ecurring/wc/helper/settings.php';
+        require_once __DIR__ . '/includes/ecurring/wc/helper/api.php';
+        require_once __DIR__ . '/includes/ecurring/wc/plugin.php';
 
         $versionFactory = new StringVersionFactory();
 
@@ -186,17 +189,20 @@ function initialize()
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $customerApi = new Customers($apiHelper);
         $actions = new Actions($apiHelper);
         $repository = new Repository();
         $display = new Display();
         $save = new Save($actions);
-        $subscriptions = new Subscriptions($apiHelper);
+        $subscriptionPlans = new SubscriptionPlans($apiHelper);
+        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
+        $subscriptionsApi = new SubscriptionsApi($apiHelper );
 
         (new SubscriptionsJob($actions, $repository))->init();
         (new Metabox($display, $save))->init();
-        (new PostType())->init();
+        (new PostType($apiHelper))->init();
         (new Assets())->init();
-        (new WebHook($apiHelper, $repository))->init();
+        (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
         (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
 

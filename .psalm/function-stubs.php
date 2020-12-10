@@ -11,6 +11,14 @@ function get_user_meta($userId, $key = '', $single = false)
 {
 }
 
+function update_user_meta(int $userId, string $metaKey, string $previous = '')
+{
+}
+
+function delete_user_meta(int $userId, string $metaKey, string $metaValue = '')
+{
+}
+
 function get_current_user_id(): int
 {
     return 0;
