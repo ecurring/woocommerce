@@ -66,7 +66,7 @@ class MyAccount
             function ($items) {
                 $newItems = [];
                 $newItems['ecurring-subscriptions'] = __('Subscriptions', 'woo-ecurring');
-                $position = array_search('orders', array_keys($items), true) + 1;
+                $position = (int) array_search('orders', array_keys($items), true) + 1;
 
                 $finalItems = array_slice($items, 0, $position, true);
                 $finalItems += $newItems;
