@@ -13,7 +13,7 @@ class Settings
             function () {
                 add_menu_page(
                     'Settings',
-                    'eCurring',
+                    'Mollie Subscriptions',
                     'administrator',
                     __FILE__,
                     function () {
