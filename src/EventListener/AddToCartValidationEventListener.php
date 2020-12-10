@@ -100,10 +100,10 @@ class AddToCartValidationEventListener implements EventListenerInterface
         );
 
         wc_add_notice(
-            sprintf(
+            wp_kses_post(sprintf(
                 '<p>%1$s</p>',
                 $loginNeededMessage
-            ),
+            )),
             'error'
         );
     }
