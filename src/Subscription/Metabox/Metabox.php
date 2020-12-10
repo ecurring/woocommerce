@@ -38,7 +38,7 @@ class Metabox
                 add_meta_box(
                     'ecurring_subscription_general',
                     'General',
-                    function ($post)  {
+                    function ($post) {
                         $this->display->general($post);
                     },
                     'esubscriptions'
