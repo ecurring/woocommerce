@@ -146,6 +146,8 @@ class AddToCartValidationEventListenerTest extends TestCase
         when('_x')->returnArg();
         when('wc_get_page_permalink')->justReturn('');
 
+        when('wp_kses_post')->returnArg();
+
         $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
         $addedToCart = $sut->onAddToCart(true, $productId, 1);
 
