@@ -43,7 +43,7 @@ class Display
         <?php
     }
 
-    public function general($post)
+    public function general($post): void
     {
         $customer = get_post_meta($post->ID, '_ecurring_post_subscription_customer', true);
 
