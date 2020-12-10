@@ -49,8 +49,12 @@ class Settings
         ob_start(); ?>
         <div class="wrap">
             <h1><?php
-                echo esc_html_x('eCurring Settings', 'Settings page title', 'woo-ecurring');
-            ?></h1>
+                echo esc_html_x(
+                    'Mollie Subscriptions Settings',
+                    'Settings page title',
+                    'woo-ecurring'
+                );
+                ?></h1>
             <form method="post" action="options.php">
                 <?php settings_fields('ecurring-settings-group'); ?>
                 <?php do_settings_sections('ecurring-settings-group'); ?>
