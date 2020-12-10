@@ -36,22 +36,21 @@ class Display
             <li>Activated on: <?php echo esc_attr((new DateTime($activatedOn))->format('d-m-Y H:i:s'));?></li>
             <li>(Will be) cancelled on: <?php if ($canceledOn) {
                     echo esc_attr((new DateTime($canceledOn))->format('d-m-Y'));
-                                        } ?></li>
+                } ?></li>
             <li>Mandate ID: <?php echo esc_attr($mandateId);?></li>
         </ul>
 
         <?php
     }
 
-    public function general($post): void
+    public function general($post)
     {
         $customer = get_post_meta($post->ID, '_ecurring_post_subscription_customer', true);
 
         $customerId = $customer->data->id ?? '';
         $firstName = $customer->data->attributes->first_name ?? '';
         $lastName = $customer->data->attributes->last_name ?? '';
-        $email = $customer->data->attributes->email ?? '';
-
+        $email = $customer->data->attributes->email ?? '';;
         ?>
         <ul>
             <li>Customer ID: <?php echo esc_attr($customerId);?></li>
@@ -81,7 +80,7 @@ class Display
             $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
         );
 
-        if (!isset($productsResponse->data)) {
+        if(!isset($productsResponse->data)) {
             return;
         }
 

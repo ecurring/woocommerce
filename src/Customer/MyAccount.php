@@ -58,7 +58,6 @@ class MyAccount
         $this->subscriptions = $subscriptions;
     }
 
-    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     public function init(): void
     {
         add_filter(
@@ -66,7 +65,7 @@ class MyAccount
             function ($items) {
                 $newItems = [];
                 $newItems['ecurring-subscriptions'] = __('Subscriptions', 'woo-ecurring');
-                $position = (int) array_search('orders', array_keys($items), true) + 1;
+                $position = array_search('orders', array_keys($items), true) + 1;
 
                 $finalItems = array_slice($items, 0, $position, true);
                 $finalItems += $newItems;

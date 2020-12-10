@@ -19,7 +19,7 @@ class WebHook
      */
     private $subscriptionsApi;
 
-    public function __construct(SubscriptionsApi $subscriptionsApi, Repository $repository)
+    public function __construct(SubscriptionsApi $subscriptionsApi , Repository $repository)
     {
         $this->subscriptionsApi = $subscriptionsApi;
         $this->repository = $repository;
