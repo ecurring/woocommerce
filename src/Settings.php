@@ -12,8 +12,8 @@ class Settings
             'admin_menu',
             function () {
                 add_menu_page(
-                    'eCurring Settings',
-                    'eCurring',
+                    'Settings',
+                    'Mollie Subscriptions',
                     'administrator',
                     __FILE__,
                     function () {
@@ -44,38 +44,51 @@ class Settings
      *
      * @return string
      */
-    protected function renderSettingsPage(): string
+    protected function renderSettingsPage(): string //phpcs:disable Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         ob_start(); ?>
         <div class="wrap">
-            <h1>eCurring Settings</h1>
+            <h1><?php
+                echo esc_html_x(
+                    'Mollie Subscriptions Settings',
+                    'Settings page title',
+                    'woo-ecurring'
+                );
+                ?></h1>
             <form method="post" action="options.php">
                 <?php settings_fields('ecurring-settings-group'); ?>
                 <?php do_settings_sections('ecurring-settings-group'); ?>
                 <table class="form-table">
                     <tbody>
                     <tr>
-                        <th scope="row">Allow subscription options for customers</th>
+                        <th scope="row"><?php
+                            esc_html_e('Allow subscription options for customers', 'woo-ecurring');
+                        ?></th>
                         <td>
                             <fieldset>
-                                <legend class="screen-reader-text"><span>Allow subscription options for customers</span>
+                                <legend class="screen-reader-text"><span
+                                    ><?php
+                                        esc_html_e(
+                                            'Allow subscription options for customers',
+                                            'woo-ecurring'
+                                        ); ?></span>
                                 </legend>
                                 <label for="ecurring_customer_subscription_pause">
                                     <input name="ecurring_customer_subscription_pause" type="checkbox" value="1"
                                         <?php checked(get_option('ecurring_customer_subscription_pause'), '1'); ?>>
-                                    Pause Subscription
+                                    <?php esc_html_e('Pause Subscription', 'woo-ecurring'); ?>
                                 </label>
                                 <br>
                                 <label for="ecurring_customer_subscription_switch">
                                     <input name="ecurring_customer_subscription_switch" type="checkbox" value="1"
                                         <?php checked(get_option('ecurring_customer_subscription_switch'), '1'); ?>>
-                                    Switch Subscription
+                                    <?php esc_html_e('Switch Subscription', 'woo-ecurring'); ?>
                                 </label>
                                 <br>
                                 <label for="ecurring_customer_subscription_cancel">
                                     <input name="ecurring_customer_subscription_cancel" type="checkbox" value="1"
                                         <?php checked(get_option('ecurring_customer_subscription_cancel'), '1'); ?>>
-                                    Cancel Subscription
+                                    <?php esc_html_e('Cancel Subscription', 'woo-ecurring'); ?>
                                 </label>
                             </fieldset>
                         </td>

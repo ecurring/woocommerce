@@ -4,6 +4,10 @@ if (!defined('WC_VERSION')) {
     define('WC_VERSION', '4.0');
 }
 
+if (!defined('MINUTE_IN_SECONDS')) {
+    define('MINUTE_IN_SECONDS', 60);
+}
+
 class WC_Payment_Gateway
 {
 	public function supports()

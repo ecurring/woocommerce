@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Ecurring\WooEcurringTests\AdminPages\Form;
-
+namespace Ecurring\WooEcurringTests\Unit\AdminPages\Form;
 
 use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\ElementFactory;
@@ -12,57 +10,58 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurringTests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class FormFieldsCollectionBuilderTest extends TestCase {
+class FormFieldsCollectionBuilderTest extends TestCase
+{
 
-	public function testBuildFieldsCollection()
-	{
-		/** @var CollectionElementInterface&MockObject $elementMock */
-		$elementMock = $this->createMock(CollectionElementInterface::class);
+    public function testBuildFieldsCollection()
+    {
+        /** @var CollectionElementInterface&MockObject $elementMock */
+        $elementMock = $this->createMock(CollectionElementInterface::class);
 
-		/** @var ElementFactory&MockObject $elementFactoryMock */
-		$elementFactoryMock = $this->createMock(ElementFactory::class);
+        /** @var ElementFactory&MockObject $elementFactoryMock */
+        $elementFactoryMock = $this->createMock(ElementFactory::class);
 
-		$elementFactoryMock->expects($this->once())
-			->method('create')
-			->willReturn($elementMock);
+        $elementFactoryMock->expects($this->once())
+            ->method('create')
+            ->willReturn($elementMock);
 
-		/** @var ViewFactory&MockObject $viewFactoryMock */
-		$viewFactoryMock = $this->createMock(ViewFactory::class);
+        /** @var ViewFactory&MockObject $viewFactoryMock */
+        $viewFactoryMock = $this->createMock(ViewFactory::class);
 
-		$formFields = [];
+        $formFields = [];
 
-		$sut = new FormFieldsCollectionBuilder(
-			$elementFactoryMock,
-			$viewFactoryMock,
-			$formFields
-		);
+        $sut = new FormFieldsCollectionBuilder(
+            $elementFactoryMock,
+            $viewFactoryMock,
+            $formFields
+        );
 
-		$this->assertSame($elementMock, $sut->buildFieldsCollection());
-	}
+        $this->assertSame($elementMock, $sut->buildFieldsCollection());
+    }
 
-	public function testBuildFormFieldsCollectionView()
-	{
-		/** @var ElementFactory&MockObject $elementFactoryMock */
-		$elementFactoryMock = $this->createMock(ElementFactory::class);
+    public function testBuildFormFieldsCollectionView()
+    {
+        /** @var ElementFactory&MockObject $elementFactoryMock */
+        $elementFactoryMock = $this->createMock(ElementFactory::class);
 
-		/** @var ViewFactory&MockObject $viewFactoryMock */
-		$viewFactoryMock = $this->createMock(ViewFactory::class);
+        /** @var ViewFactory&MockObject $viewFactoryMock */
+        $viewFactoryMock = $this->createMock(ViewFactory::class);
 
-		$collectionViewMock = $this->createMock(RenderableElementInterface::class);
+        $collectionViewMock = $this->createMock(RenderableElementInterface::class);
 
-		$viewFactoryMock->expects($this->once())
-			->method('create')
-			->with('collection')
-			->willReturn($collectionViewMock);
+        $viewFactoryMock->expects($this->once())
+            ->method('create')
+            ->with('collection')
+            ->willReturn($collectionViewMock);
 
-		$formFields = [];
+        $formFields = [];
 
-		$sut = new FormFieldsCollectionBuilder(
-			$elementFactoryMock,
-			$viewFactoryMock,
-			$formFields
-		);
+        $sut = new FormFieldsCollectionBuilder(
+            $elementFactoryMock,
+            $viewFactoryMock,
+            $formFields
+        );
 
-		$this->assertSame($collectionViewMock, $sut->buildFormFieldsCollectionView());
-	}
+        $this->assertSame($collectionViewMock, $sut->buildFormFieldsCollectionView());
+    }
 }

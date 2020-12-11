@@ -16,6 +16,8 @@
  */
 
 use Dhii\Versions\StringVersionFactory;
+use Ecurring\WooEcurring\Api\Customers;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
@@ -29,6 +31,7 @@ use Ecurring\WooEcurring\WebHook;
 use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
+use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
@@ -77,6 +80,7 @@ if (! defined('WOOECUR_PLUGIN_DIR')) {
 if (! defined('WOOECUR_PLUGIN_FILE')) {
     define('WOOECUR_PLUGIN_FILE', __FILE__);
 }
+
 /**
  *  Add 'Retrying payment at eCurring' status
  */
@@ -189,17 +193,20 @@ function eCurringInitialize()
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $customerApi = new Customers($apiHelper);
         $actions = new Actions($apiHelper);
         $repository = new Repository();
         $display = new Display();
         $save = new Save($actions);
-        $subscriptions = new Subscriptions($apiHelper);
+        $subscriptionPlans = new SubscriptionPlans($apiHelper);
+        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
+        $subscriptionsApi = new SubscriptionsApi($apiHelper );
 
         (new SubscriptionsJob($actions, $repository))->init();
         (new Metabox($display, $save))->init();
-        (new PostType())->init();
+        (new PostType($apiHelper))->init();
         (new Assets())->init();
-        (new WebHook($apiHelper, $repository))->init();
+        (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
         (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
 

@@ -37,3 +37,8 @@ function _x(string $text, string $context, string $textDomain): string
 {
     return $text;
 }
+
+function wc_get_page_permalink($page, $fallback = null)
+{
+    return '';
+}
