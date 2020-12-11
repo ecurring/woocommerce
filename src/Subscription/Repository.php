@@ -35,12 +35,12 @@ class Repository
             ]
         );
 
-        $customer = $this->getCustomerApi();
-        $customerDetails = $customer->getCustomerById(
-            $subscription->relationships->customer->data->id
-        );
-
         if ($postId && is_int($postId)) {
+            $customer = $this->getCustomerApi();
+            $customerDetails = $customer->getCustomerById(
+                $subscription->relationships->customer->data->id
+            );
+
             $this->saveSubscriptionData($postId, $subscription, $customerDetails);
         }
     }
