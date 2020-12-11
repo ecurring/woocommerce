@@ -9,11 +9,10 @@ use Ecurring\WooEcurringTests\TestCase;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
+use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
 use WC_Order;
 
 use function Brain\Monkey\Functions\expect;
-
-use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
 use function Brain\Monkey\Functions\when;
 
 class PaymentCompletedEventListenerTest extends TestCase
