@@ -8,13 +8,14 @@ use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
+
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 use function Patchwork\redefine;
 
-class EnvironmentCheckerTest extends TestCase {
-
-	use MockeryPHPUnitIntegration; //to count Mockery expectations properly as assertions
+class EnvironmentCheckerTest extends TestCase
+{
+    use MockeryPHPUnitIntegration; //to count Mockery expectations properly as assertions
 
     public function testCheckEnvironmentCaseEverythingOk()
     {
@@ -27,7 +28,7 @@ class EnvironmentCheckerTest extends TestCase {
         $versionFactoryMock = $this->createConfiguredMock(
             StringVersionFactoryInterface::class,
             [
-                'createVersionFromString' => $versionMock
+                'createVersionFromString' => $versionMock,
             ]
         );
 
@@ -56,7 +57,7 @@ class EnvironmentCheckerTest extends TestCase {
         when('__')
             ->returnArg(1);
 
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             define('M4W_FILE', '');
         }
 
@@ -86,7 +87,7 @@ class EnvironmentCheckerTest extends TestCase {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
         $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
         $versionFactoryMock->method('createVersionFromString')
-           ->willReturnCallback(function (string $version){
+           ->willReturnCallback(function (string $version) {
                 return $this->createConfiguredMock(
                     VersionInterface::class,
                     ['__toString' => $version . '.0']
@@ -112,14 +113,13 @@ class EnvironmentCheckerTest extends TestCase {
         $stringFound = false;
 
         foreach ($errors as $errorMessage) {
-            if(stristr($errorMessage, 'update your PHP')){
+            if (stristr($errorMessage, 'update your PHP')) {
                 $stringFound = true;
                 break;
             }
         }
 
         $this->assertTrue($stringFound, 'Not found expected message about PHP update required.');
-
     }
 
     public function testCheckEnvironmentCaseNoJsonExtension()
@@ -129,7 +129,7 @@ class EnvironmentCheckerTest extends TestCase {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
         $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
         $versionFactoryMock->method('createVersionFromString')
-            ->willReturnCallback(function(string $version){
+            ->willReturnCallback(function (string $version) {
                 return $this->createConfiguredMock(
                     VersionInterface::class,
                     ['__toString' => $version . '.0']
@@ -165,7 +165,7 @@ class EnvironmentCheckerTest extends TestCase {
         when('esc_html__')
             ->returnArg(1);
 
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             define('M4W_FILE', '');
         }
 
@@ -192,10 +192,8 @@ class EnvironmentCheckerTest extends TestCase {
         $errors = $sut->getErrors();
         $stringFound = false;
 
-
-
         foreach ($errors as $errorMessage) {
-            if(stristr($errorMessage, 'requires the JSON extension for PHP')){
+            if (stristr($errorMessage, 'requires the JSON extension for PHP')) {
                 $stringFound = true;
                 break;
             }
@@ -211,7 +209,7 @@ class EnvironmentCheckerTest extends TestCase {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
         $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
         $versionFactoryMock->method('createVersionFromString')
-            ->willReturnCallback(function(string $version){
+            ->willReturnCallback(function (string $version) {
                 return $this->createConfiguredMock(
                     VersionInterface::class,
                     ['__toString' => $version . '.0']
@@ -245,7 +243,7 @@ class EnvironmentCheckerTest extends TestCase {
         when('esc_html__')
             ->returnArg(1);
 
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             define('M4W_FILE', '');
         }
 
@@ -276,7 +274,7 @@ class EnvironmentCheckerTest extends TestCase {
         $stringFound = false;
 
         foreach ($errors as $errorMessage) {
-            if(stristr($errorMessage, 'install and activate') && stristr($errorMessage, 'WooCommerce')){
+            if (stristr($errorMessage, 'install and activate') && stristr($errorMessage, 'WooCommerce')) {
                 $stringFound = true;
                 break;
             }
@@ -296,7 +294,7 @@ class EnvironmentCheckerTest extends TestCase {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
         $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
         $versionFactoryMock->method('createVersionFromString')
-            ->willReturnCallback(function(string $version){
+            ->willReturnCallback(function (string $version) {
                 return $this->createConfiguredMock(
                     VersionInterface::class,
                     ['__toString' => $version]
@@ -310,7 +308,7 @@ class EnvironmentCheckerTest extends TestCase {
             $versionFactoryMock
         );
 
-        redefine('version_compare', function ($version1) use ($actualPhpVersion) {
+        redefine('version_compare', static function ($version1) use ($actualPhpVersion) {
             //return true for PHP version check, false for WC version check
             return $version1 === $actualPhpVersion;
         });
@@ -335,7 +333,7 @@ class EnvironmentCheckerTest extends TestCase {
         when('esc_html__')
             ->returnArg(1);
 
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             define('M4W_FILE', '');
         }
 
@@ -359,12 +357,11 @@ class EnvironmentCheckerTest extends TestCase {
 
         $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
 
-
         $errors = $sut->getErrors();
         $stringFound = false;
 
         foreach ($errors as $errorMessage) {
-            if(stristr($errorMessage, 'update') && stristr($errorMessage, 'WooCommerce')){
+            if (stristr($errorMessage, 'update') && stristr($errorMessage, 'WooCommerce')) {
                 $stringFound = true;
                 break;
             }
@@ -378,7 +375,7 @@ class EnvironmentCheckerTest extends TestCase {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
         $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
         $versionFactoryMock->method('createVersionFromString')
-            ->willReturnCallback(function(string $version){
+            ->willReturnCallback(function (string $version) {
                 return $this->createConfiguredMock(
                     VersionInterface::class,
                     ['__toString' => $version . '.0']
@@ -412,7 +409,7 @@ class EnvironmentCheckerTest extends TestCase {
         when('esc_html__')
             ->returnArg(1);
 
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             define('M4W_FILE', '');
         }
 
@@ -439,7 +436,7 @@ class EnvironmentCheckerTest extends TestCase {
         $stringFound = false;
 
         foreach ($errors as $errorMessage) {
-            if(stristr($errorMessage, 'install and activate') && stristr($errorMessage, 'Mollie Payments')){
+            if (stristr($errorMessage, 'install and activate') && stristr($errorMessage, 'Mollie Payments')) {
                 $stringFound = true;
                 break;
             }
@@ -462,7 +459,7 @@ class EnvironmentCheckerTest extends TestCase {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
         $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
         $versionFactoryMock->method('createVersionFromString')
-            ->willReturnCallback(function(string $version){
+            ->willReturnCallback(function (string $version) {
                 return $this->createConfiguredMock(
                     VersionInterface::class,
                     ['__toString' => $version . '.0']
@@ -496,7 +493,7 @@ class EnvironmentCheckerTest extends TestCase {
         when('esc_html__')
             ->returnArg(1);
 
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             define('M4W_FILE', '');
         }
 
@@ -520,12 +517,11 @@ class EnvironmentCheckerTest extends TestCase {
 
         $this->assertFalse($sut->checkEnvironment(), 'EnvironmentChecker test false positive.');
 
-
         $errors = $sut->getErrors();
         $stringFound = false;
 
         foreach ($errors as $errorMessage) {
-            if(stristr($errorMessage, 'update') && stristr($errorMessage, 'Mollie Payments')){
+            if (stristr($errorMessage, 'update') && stristr($errorMessage, 'Mollie Payments')) {
                 $stringFound = true;
                 break;
             }
@@ -549,7 +545,7 @@ class EnvironmentCheckerTest extends TestCase {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
         $versionFactoryMock = $this->createMock(StringVersionFactoryInterface::class);
         $versionFactoryMock->method('createVersionFromString')
-            ->willReturnCallback(function(string $version){
+            ->willReturnCallback(function (string $version) {
                 $normalizedVersion = $version === '6.0' ? '6.0.0' : $version;
                 return $this->createConfiguredMock(
                     VersionInterface::class,
@@ -559,7 +555,6 @@ class EnvironmentCheckerTest extends TestCase {
 
         expect('phpversion')
             ->andReturn($actualPhpVersion);
-
 
         $sut = new EnvironmentChecker(
             $minRequiredPhpVersion,
@@ -588,7 +583,7 @@ class EnvironmentCheckerTest extends TestCase {
         when('esc_html__')
             ->returnArg(1);
 
-        if(! defined('M4W_FILE')){
+        if (! defined('M4W_FILE')) {
             define('M4W_FILE', '');
         }
 

@@ -80,7 +80,11 @@ class SubscriptionsJob
 
         update_option('ecurring_subscriptions_page', $nextPage);
 
-        if (!$nextPage) {
+        $parts = parse_url($subscriptions->links->last);
+        parse_str($parts['query'] ?? '', $query);
+        $lastPage = $query['page']['number'] ?? null;
+
+        if ($nextPage >= $lastPage) {
             update_option('ecurring_import_finished', true);
         }
     }

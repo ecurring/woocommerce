@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Subscription;
 
+use Ecurring\WooEcurring\Api\Customers;
+use eCurring_WC_Helper_Api;
+use eCurring_WC_Helper_Settings;
+
 class Repository
 {
     /**
@@ -31,8 +35,13 @@ class Repository
             ]
         );
 
+        $customer = $this->getCustomerApi();
+        $customerDetails = $customer->getCustomerById(
+            $subscription->relationships->customer->data->id
+        );
+
         if ($postId && is_int($postId)) {
-            $this->saveSubscriptionData($postId, $subscription);
+            $this->saveSubscriptionData($postId, $subscription, $customerDetails);
         }
     }
 
@@ -46,7 +55,7 @@ class Repository
         $this->saveSubscriptionData($subscriptionPostId, $subscription);
     }
 
-    protected function saveSubscriptionData(int $subscriptionPostId, $subscriptionData): void
+    protected function saveSubscriptionData(int $subscriptionPostId, $subscriptionData, array $customerDetails = []): void
     {
         update_post_meta(
             $subscriptionPostId,
@@ -68,6 +77,14 @@ class Repository
             '_ecurring_post_subscription_relationships',
             $subscriptionData->data->relationships
         );
+
+        if (! empty($customerDetails)) {
+            update_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_customer',
+                $customerDetails
+            );
+        }
     }
 
     /**
@@ -104,5 +121,16 @@ class Repository
         );
 
         return $found[0] ?? 0;
+    }
+
+    /**
+     * @return Customers
+     */
+    protected function getCustomerApi(): Customers
+    {
+        $settingsHelper = new eCurring_WC_Helper_Settings();
+        $api = new eCurring_WC_Helper_Api($settingsHelper);
+        $customer = new Customers($api);
+        return $customer;
     }
 }

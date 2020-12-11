@@ -16,6 +16,8 @@
 
 // Exit if accessed directly.
 use Dhii\Versions\StringVersionFactory;
+use Ecurring\WooEcurring\Api\Customers;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
@@ -29,6 +31,7 @@ use Ecurring\WooEcurring\WebHook;
 use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
+use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -82,27 +85,6 @@ if (! defined( 'WOOECUR_PLUGIN_FILE' ) ) {
 }
 
 /**
- * Called when plugin is loaded
- */
-function ecurring_wc_plugin_init() {
-
-	// Register autoloader
-	eCurring_WC_Autoload::register();
-
-	// Setup and start plugin
-	eCurring_WC_Plugin::init();
-
-	// Add endpoint for eCurring Subscriptions
-	add_rewrite_endpoint( 'ecurring-subscriptions', EP_ROOT | EP_PAGES );
-
-}
-
-// Add custom order status "Retrying payment at eCurring"
-add_action( 'init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
-add_filter( 'wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
-add_filter( 'bulk_actions-edit-shop_order', 'eCurringRegisterNewStatusAsBulkAction', 50, 1 );
-
-/**
  *  Add 'Retrying payment at eCurring' status
  */
 function eCurringRegisterNewStatusAsPostStatus() {
@@ -154,8 +136,6 @@ function eCurringRegisterNewStatusAsBulkAction( $actions ) {
     return $new_actions;
 }
 
-add_action('init', 'ecurring_wc_plugin_init');
-
 /**
  * @throws Throwable
  */
@@ -166,9 +146,22 @@ function initialize()
             include_once __DIR__ . '/vendor/autoload.php';
         }
 
+        require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        require_once 'includes/ecurring/wc/autoload.php';
         require_once 'includes/ecurring/wc/helper/settings.php';
         require_once 'includes/ecurring/wc/helper/api.php';
         require_once 'includes/ecurring/wc/plugin.php';
+
+        add_action('init', static function () {
+            // Register autoloader
+            eCurring_WC_Autoload::register();
+
+            // Setup and start plugin
+            eCurring_WC_Plugin::init();
+
+            // Add endpoint for eCurring Subscriptions
+            add_rewrite_endpoint('ecurring-subscriptions', EP_ROOT | EP_PAGES);
+        });
 
         $versionFactory = new StringVersionFactory();
 
@@ -182,21 +175,26 @@ function initialize()
             foreach ($environmentChecker->getErrors() as $errorMessage) {
                 errorNotice($errorMessage);
             }
+
+            return;
         }
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
+        $customerApi = new Customers($apiHelper);
         $actions = new Actions($apiHelper);
         $repository = new Repository();
         $display = new Display();
         $save = new Save($actions);
-        $subscriptions = new Subscriptions($apiHelper);
+        $subscriptionPlans = new SubscriptionPlans($apiHelper);
+        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
+        $subscriptionsApi = new SubscriptionsApi($apiHelper );
 
         (new SubscriptionsJob($actions, $repository))->init();
         (new Metabox($display, $save))->init();
-        (new PostType())->init();
+        (new PostType($apiHelper))->init();
         (new Assets())->init();
-        (new WebHook($apiHelper, $repository))->init();
+        (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
         (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
 
@@ -219,6 +217,10 @@ function initialize()
             }
         );
 
+        // Add custom order status "Retrying payment at eCurring"
+        add_action('init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
+        add_filter('wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
+        add_filter('bulk_actions-edit-shop_order', 'eCurringRegisterNewStatusAsBulkAction', 50, 1);
     } catch (Throwable $throwable) {
         handleException($throwable);
     }
