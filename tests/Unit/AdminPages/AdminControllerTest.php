@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Ecurring\WooEcurringTests\AdminPages;
-
+namespace Ecurring\WooEcurringTests\Unit\AdminPages;
 
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
@@ -15,103 +13,104 @@ use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
+
 use function Brain\Monkey\Functions\when;
 
-class AdminControllerTest extends TestCase {
+class AdminControllerTest extends TestCase
+{
+    use MockeryPHPUnitIntegration;
 
-	use MockeryPHPUnitIntegration;
+    public function setUp()
+    {
 
-	public function setUp() {
-		$_POST = [];
+        $_POST = [];
 
-		parent::setUp();
-	}
+        parent::setUp();
+    }
 
-	public function testRegisterPluginSettingsTab()
-	{
-		/** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
-		$adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
+    public function testRegisterPluginSettingsTab()
+    {
+        /** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
+        $adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
 
-		/** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
-		$formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
+        /** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
+        $formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
 
-		/** @var SettingsCrudInterface&MockObject $settingsCrudMock */
-		$settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
+        /** @var SettingsCrudInterface&MockObject $settingsCrudMock */
+        $settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
 
-		/** @var NonceInterface&MockObject $nonceMock */
-		$nonceMock = $this->createMock(NonceInterface::class);
+        /** @var NonceInterface&MockObject $nonceMock */
+        $nonceMock = $this->createMock(NonceInterface::class);
 
-		/** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
-		$nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
+        /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
+        $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
 
+        $sut = new AdminController(
+            $adminSettingsPageRendererMock,
+            $formBuilderMock,
+            $settingsCrudMock,
+            '',
+            $nonceMock,
+            $nonceFieldBuilderMock
+        );
 
-		$sut = new AdminController(
-			$adminSettingsPageRendererMock,
-			$formBuilderMock,
-			$settingsCrudMock,
-			'',
-			$nonceMock,
-			$nonceFieldBuilderMock
-		);
+        when('_x')->returnArg();
 
-		when('_x')->returnArg();
+        $tabs = [];
 
-		$tabs = [];
+        $tabsWithPluginTab = $sut->registerPluginSettingsTab($tabs);
 
-		$tabsWithPluginTab = $sut->registerPluginSettingsTab($tabs);
+        $this->assertArrayHasKey('mollie_subscriptions', $tabsWithPluginTab);
+    }
 
-		$this->assertArrayHasKey('mollie_subscriptions', $tabsWithPluginTab);
-	}
+    public function testRenderPluginSettingsPage()
+    {
+        /** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
+        $adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
 
-	public function testRenderPluginSettingsPage()
-	{
-		/** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
-		$adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
+        $renderedContent = 'some rendered content';
 
-		$renderedContent = 'some rendered content';
+        $adminSettingsPageRendererMock->expects($this->once())
+            ->method('render')
+            ->willReturn($renderedContent);
 
-		$adminSettingsPageRendererMock->expects($this->once())
-			->method('render')
-			->willReturn($renderedContent);
+        /** @var CollectionElementInterface&MockObject $formFieldsMock */
+        $formFieldsMock = $this->createMock(CollectionElementInterface::class);
 
-		/** @var CollectionElementInterface&MockObject $formFieldsMock */
-		$formFieldsMock = $this->createMock(CollectionElementInterface::class);
+        /** @var RenderableElementInterface&MockObject $formViewMock */
+        $formViewMock = $this->createMock(RenderableElementInterface::class);
 
-		/** @var RenderableElementInterface&MockObject $formViewMock */
-		$formViewMock = $this->createMock(RenderableElementInterface::class);
+        /** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
+        $formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
 
-		/** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
-		$formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
+        $formBuilderMock->expects($this->once())
+            ->method('buildFieldsCollection')
+            ->willReturn($formFieldsMock);
 
-		$formBuilderMock->expects($this->once())
-			->method('buildFieldsCollection')
-			->willReturn($formFieldsMock);
+        $formBuilderMock->expects($this->once())
+            ->method('buildFormFieldsCollectionView')
+            ->willReturn($formViewMock);
 
-		$formBuilderMock->expects($this->once())
-			->method('buildFormFieldsCollectionView')
-			->willReturn($formViewMock);
+        /** @var SettingsCrudInterface&MockObject $settingsCrudMock */
+        $settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
 
-		/** @var SettingsCrudInterface&MockObject $settingsCrudMock */
-		$settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
+        /** @var NonceInterface&MockObject $nonceMock */
+        $nonceMock = $this->createMock(NonceInterface::class);
 
-		/** @var NonceInterface&MockObject $nonceMock */
-		$nonceMock = $this->createMock(NonceInterface::class);
+        /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
+        $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
 
-		/** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
-		$nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
+        $sut = new AdminController(
+            $adminSettingsPageRendererMock,
+            $formBuilderMock,
+            $settingsCrudMock,
+            '',
+            $nonceMock,
+            $nonceFieldBuilderMock
+        );
 
-		$sut = new AdminController(
-			$adminSettingsPageRendererMock,
-			$formBuilderMock,
-			$settingsCrudMock,
-			'',
-			$nonceMock,
-			$nonceFieldBuilderMock
-		);
+        $this->expectOutputString($renderedContent);
 
-		$this->expectOutputString($renderedContent);
-
-		$sut->renderPluginSettingsPage();
-
-	}
+        $sut->renderPluginSettingsPage();
+    }
 }

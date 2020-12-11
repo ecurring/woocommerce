@@ -18,7 +18,7 @@
         "antecedent/patchwork": " ^2.1",
         "vimeo/psalm": "^3.17",
         "roots/wordpress": "@stable",
-        "woocommerce/woocommerce": "^3.9",
+        "woocommerce/woocommerce": "^4",
         "mollie/mollie-woocommerce": "dev-develop",
         "inpsyde/php-coding-standards": " ^1",
         "woocommerce/action-scheduler": "^3.1.6"

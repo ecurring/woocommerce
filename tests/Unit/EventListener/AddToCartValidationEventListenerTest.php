@@ -1,6 +1,6 @@
 <?php
 
-namespace eCurring\WooEcurringTests\Unit\EventListener;
+namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
@@ -33,6 +33,9 @@ class AddToCartValidationEventListenerTest extends TestCase
         expect('wc_get_product')->with($productId)
             ->andReturn($productMock);
         when('_x')->returnArg();
+
+        expect('get_current_user_id')
+            ->andReturn(456);
 
         /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
         $subscriptionsCrudMock = $this->createConfiguredMock(
@@ -67,6 +70,9 @@ class AddToCartValidationEventListenerTest extends TestCase
             ['getProductSubscriptionId' => $subscriptionId]
         );
 
+        expect('get_current_user_id')
+            ->andReturn(456);
+
         $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
 
         expect('wc_add_notice')->once();
@@ -98,6 +104,9 @@ class AddToCartValidationEventListenerTest extends TestCase
             ['getProductSubscriptionId' => $subscriptionId]
         );
 
+        expect('get_current_user_id')
+            ->andReturn(456);
+
         expect('wc_add_notice')->never();
 
         when('_x')->returnArg();
@@ -106,6 +115,43 @@ class AddToCartValidationEventListenerTest extends TestCase
         $addedToCart = $sut->onAddToCart(true, $productId, 1);
 
         $this->assertSame(true, $addedToCart);
+    }
+
+    public function testOnAddSubscriptionGuestsNotAllowedToAddSubscriptionToCart()
+    {
+        $subscriptionId = '456';
+        $productId = 123;
+
+        $ecurringPlugin = Mockery::mock('alias:eCurring_WC_Plugin');
+        $ecurringPlugin->shouldReceive('eCurringSubscriptionIsInCart')
+            ->andReturn(false);
+
+        /** @var WC_Product&MockObject $productMock */
+        $productMock = $this->createMock(WC_Product::class);
+
+        expect('wc_get_product')->with($productId)
+            ->andReturn($productMock);
+
+        /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
+        $subscriptionsCrudMock = $this->createConfiguredMock(
+            SubscriptionCrudInterface::class,
+            ['getProductSubscriptionId' => $subscriptionId]
+        );
+
+        expect('wc_add_notice')->once();
+
+        expect('get_current_user_id')
+            ->andReturn(0);
+
+        when('_x')->returnArg();
+        when('wc_get_page_permalink')->justReturn('');
+
+        when('wp_kses_post')->returnArg();
+
+        $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
+        $addedToCart = $sut->onAddToCart(true, $productId, 1);
+
+        $this->assertSame(false, $addedToCart);
     }
 
     public function testOnAddToCartItsAllowedToAddSimpleProductsIfSubscriptionAdded()
