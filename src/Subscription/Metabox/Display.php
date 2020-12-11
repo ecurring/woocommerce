@@ -84,14 +84,15 @@ class Display
         <?php
     }
 
-    public function general($post)
+    public function general($post): void
     {
         $customer = get_post_meta($post->ID, '_ecurring_post_subscription_customer', true);
 
         $customerId = $customer->data->id ?? '';
         $firstName = $customer->data->attributes->first_name ?? '';
         $lastName = $customer->data->attributes->last_name ?? '';
-        $email = $customer->data->attributes->email ?? '';;
+        $email = $customer->data->attributes->email ?? '';
+
         ?>
         <ul>
             <li>Customer ID: <?php echo esc_attr($customerId);?></li>
@@ -121,7 +122,7 @@ class Display
             $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
         );
 
-        if(!isset($productsResponse->data)) {
+        if (!isset($productsResponse->data)) {
             return;
         }
 

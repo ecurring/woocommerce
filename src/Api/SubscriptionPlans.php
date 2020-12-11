@@ -17,7 +17,7 @@ class SubscriptionPlans
     public function getSubscriptionPlans()
     {
         $subscriptionPlans = get_transient('ecurring_subscription_plans');
-        if($subscriptionPlans !== false) {
+        if ($subscriptionPlans !== false) {
             return $subscriptionPlans;
         }
 

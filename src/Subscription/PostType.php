@@ -70,6 +70,12 @@ class PostType
 
     protected function listColumns(): void
     {
+        $this->registerPostTypeTableColumns();
+        $this->registerPostTypeTableColumnsContent();
+    }
+
+    protected function registerPostTypeTableColumns(): void
+    {
         add_filter(
             'manage_esubscriptions_posts_columns',
             static function ($columns) {
@@ -84,7 +90,10 @@ class PostType
                 return $columns;
             }
         );
+    }
 
+    protected function registerPostTypeTableColumnsContent(): void
+    {
         add_action(
             'manage_esubscriptions_posts_custom_column',
             function ($column, $postId) {
