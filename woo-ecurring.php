@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Mollie Subscriptions
  * Plugin URI: https://www.ecurring.com/
@@ -14,7 +15,6 @@
  * WC tested up to: 4.6
  */
 
-// Exit if accessed directly.
 use Dhii\Versions\StringVersionFactory;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
@@ -33,69 +33,72 @@ use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
 use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
 
+// Exit if accessed directly.
 if (!defined('ABSPATH')) {
     exit;
 }
-
-require_once(ABSPATH . 'wp-admin/includes/plugin.php');
-require_once 'includes/ecurring/wc/autoload.php';
-require_once 'vendor/autoload.php';
 
 /**
  * Plugin constants
  */
 
 if (!defined('WOOECUR_PLUGIN_ID')) {
-	define( 'WOOECUR_PLUGIN_ID', 'woo-ecurring' );
+    define('WOOECUR_PLUGIN_ID', 'woo-ecurring');
 }
 
-if ( ! defined( 'WOOECUR_PLUGIN_TITLE' ) ) {
-	define( 'WOOECUR_PLUGIN_TITLE', plugin_dir_path( __FILE__ ) );
+if (! defined('WOOECUR_PLUGIN_TITLE')) {
+    define('WOOECUR_PLUGIN_TITLE', plugin_dir_path(__FILE__));
 }
 
-if ( ! defined( 'WOOECUR_PLUGIN_VERSION' ) ) {
-	define( 'WOOECUR_PLUGIN_VERSION', '1.1.0' );
+if (! defined('WOOECUR_PLUGIN_VERSION')) {
+    define('WOOECUR_PLUGIN_VERSION', '1.1.0');
 }
 
-if ( ! defined( 'WOOECUR_DB_VERSION' ) ) {
-	define( 'WOOECUR_DB_VERSION', '1.1.0' );
+if (! defined('WOOECUR_DB_VERSION')) {
+    define('WOOECUR_DB_VERSION', '1.1.0');
 }
 
-if ( ! defined( 'WOOECUR_DB_VERSION_PARAM_NAME' ) ) {
-	define( 'WOOECUR_DB_VERSION_PARAM_NAME', 'ecurring-db-version' );
+if (! defined('WOOECUR_DB_VERSION_PARAM_NAME')) {
+    define('WOOECUR_DB_VERSION_PARAM_NAME', 'ecurring-db-version');
 }
 
-if ( ! defined( 'WOOECUR_PENDING_PAYMENT_DB_TABLE_NAME' ) ) {
-	define( 'WOOECUR_PENDING_PAYMENT_DB_TABLE_NAME', 'ecurring_pending_payment' );
+if (! defined('WOOECUR_PENDING_PAYMENT_DB_TABLE_NAME')) {
+    define('WOOECUR_PENDING_PAYMENT_DB_TABLE_NAME', 'ecurring_pending_payment');
 }
 
 // Plugin folder URL.
-if ( ! defined( 'WOOECUR_PLUGIN_URL' ) ) {
-	define( 'WOOECUR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+if (! defined('WOOECUR_PLUGIN_URL')) {
+    define('WOOECUR_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
 
 // Plugin directory
-if ( ! defined( 'WOOECUR_PLUGIN_DIR' ) ) {
-	define( 'WOOECUR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+if (! defined('WOOECUR_PLUGIN_DIR')) {
+    define('WOOECUR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 }
 
 //Plugin main file
-if (! defined( 'WOOECUR_PLUGIN_FILE' ) ) {
+if (! defined('WOOECUR_PLUGIN_FILE')) {
     define('WOOECUR_PLUGIN_FILE', __FILE__);
 }
 
 /**
  *  Add 'Retrying payment at eCurring' status
  */
-function eCurringRegisterNewStatusAsPostStatus() {
-	register_post_status( 'wc-ecurring-retry', array(
-		'label'                     => __( 'Retrying payment at eCurring', 'Order status', 'woo-ecurring' ),
-		'public'                    => true,
-		'exclude_from_search'       => false,
-		'show_in_admin_all_list'    => true,
-		'show_in_admin_status_list' => true,
-		'label_count'               => _n_noop( 'Retrying payment at eCurring <span class="count">(%s)</span>', 'Retrying payment at eCurring<span class="count">(%s)</span>', 'woo-ecurring' )
-	) );
+function eCurringRegisterNewStatusAsPostStatus()
+{
+
+    register_post_status('wc-ecurring-retry', [
+        'label' => _x('Retrying payment at eCurring', 'Order status', 'woo-ecurring'),
+        'public' => true,
+        'exclude_from_search' => false,
+        'show_in_admin_all_list' => true,
+        'show_in_admin_status_list' => true,
+        'label_count' => _n_noop(
+            'Retrying payment at eCurring <span class="count">(%s)</span>',
+            'Retrying payment at eCurring<span class="count">(%s)</span>',
+            'woo-ecurring'
+        ),
+    ]);
 }
 
 /**
@@ -103,18 +106,22 @@ function eCurringRegisterNewStatusAsPostStatus() {
  *
  * @return array
  */
-function eCurringRegisterNewStatusAsOrderStatus( $order_statuses ) {
+function eCurringRegisterNewStatusAsOrderStatus($order_statuses)
+{
 
-	$new_order_statuses = array();
+    $new_order_statuses = [];
 
-	foreach ( $order_statuses as $key => $status ) {
-		$new_order_statuses[ $key ] = $status;
-		if ( 'wc-processing' === $key ) {
-			$new_order_statuses['wc-ecurring-retry'] = __( 'Retrying payment at eCurring', 'Order status', 'woo-ecurring' );
-		}
-	}
-	return $new_order_statuses;
-
+    foreach ($order_statuses as $key => $status) {
+        $new_order_statuses[ $key ] = $status;
+        if ('wc-processing' === $key) {
+            $new_order_statuses['wc-ecurring-retry'] = _x(
+                'Retrying payment at eCurring',
+                'Order status',
+                'woo-ecurring'
+            );
+        }
+    }
+    return $new_order_statuses;
 }
 
 /**
@@ -122,13 +129,18 @@ function eCurringRegisterNewStatusAsOrderStatus( $order_statuses ) {
  *
  * @return array
  */
-function eCurringRegisterNewStatusAsBulkAction( $actions ) {
-	$new_actions = array();
+function eCurringRegisterNewStatusAsBulkAction($actions)
+{
 
-	foreach ($actions as $key => $action) {
+    $new_actions = [];
+
+    foreach ($actions as $key => $action) {
         if ('mark_processing' === $key) {
-            $new_actions['mark_ecurring-retry'] = __('Change status to Retrying payment at eCurring',
-                'Order status', 'woo-ecurring');
+            $new_actions['mark_ecurring-retry'] = _x(
+                'Change status to Retrying payment at eCurring',
+                'Order status',
+                'woo-ecurring'
+            );
         }
 
         $new_actions[$key] = $action;
@@ -139,7 +151,7 @@ function eCurringRegisterNewStatusAsBulkAction( $actions ) {
 /**
  * @throws Throwable
  */
-function initialize()
+function eCurringInitialize()
 {
     try {
         if (is_readable(__DIR__ . '/vendor/autoload.php')) {
@@ -173,7 +185,7 @@ function initialize()
         );
         if (!$environmentChecker->checkEnvironment()) {
             foreach ($environmentChecker->getErrors() as $errorMessage) {
-                errorNotice($errorMessage);
+                eCurringErrorNotice($errorMessage);
             }
 
             return;
@@ -200,7 +212,7 @@ function initialize()
 
         add_action(
             'woocommerce_payment_complete',
-            function (int $orderId) use ($repository, $apiHelper) {
+            static function (int $orderId) use ($repository, $apiHelper) {
                 $order = wc_get_order($orderId);
                 $subscriptionId = $order->get_meta('_ecurring_subscription_id', true);
 
@@ -222,11 +234,11 @@ function initialize()
         add_filter('wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
         add_filter('bulk_actions-edit-shop_order', 'eCurringRegisterNewStatusAsBulkAction', 50, 1);
     } catch (Throwable $throwable) {
-        handleException($throwable);
+        eCurringHandleException($throwable);
     }
 }
 
-add_action('plugins_loaded', __NAMESPACE__ . '\\initialize', PHP_INT_MAX);
+add_action('plugins_loaded', 'eCurringInitialize', PHP_INT_MAX);
 
 /**
  * Handle any exception that might occur during plugin setup.
@@ -235,11 +247,11 @@ add_action('plugins_loaded', __NAMESPACE__ . '\\initialize', PHP_INT_MAX);
  *
  * @return void
  */
-function handleException(Throwable $throwable)
+function eCurringHandleException(Throwable $throwable)
 {
     do_action('ecurring.woo-ecurring.critical', $throwable);
 
-    errorNotice(
+    eCurringErrorNotice(
         sprintf(
             '<strong>Error:</strong> %s <br><pre>%s</pre>',
             $throwable->getMessage(),
@@ -255,12 +267,12 @@ function handleException(Throwable $throwable)
  *
  * @return void
  */
-function errorNotice(string $message)
+function eCurringErrorNotice(string $message)
 {
     foreach (['admin_notices', 'network_admin_notices'] as $hook) {
         add_action(
             $hook,
-            function () use ($message) {
+            static function () use ($message) {
                 $class = 'notice notice-error';
                 printf(
                     '<div class="%1$s"><p>%2$s</p></div>',
