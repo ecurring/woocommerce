@@ -60,22 +60,22 @@ class Repository
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_id',
-            $subscriptionData->data->id
+            $subscriptionData->id
         );
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_links',
-            $subscriptionData->data->links
+            $subscriptionData->links
         );
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_attributes',
-            $subscriptionData->data->attributes
+            $subscriptionData->attributes
         );
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_relationships',
-            $subscriptionData->data->relationships
+            $subscriptionData->relationships
         );
 
         if ($customerDetails !== null) {
