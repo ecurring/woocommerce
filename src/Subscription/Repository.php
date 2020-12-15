@@ -55,7 +55,7 @@ class Repository
         $this->saveSubscriptionData($subscriptionPostId, $subscription);
     }
 
-    protected function saveSubscriptionData(int $subscriptionPostId, $subscriptionData, array $customerDetails = []): void
+    protected function saveSubscriptionData(int $subscriptionPostId, $subscriptionData, $customerDetails = null): void
     {
         update_post_meta(
             $subscriptionPostId,
@@ -78,7 +78,7 @@ class Repository
             $subscriptionData->data->relationships
         );
 
-        if (! empty($customerDetails)) {
+        if ($customerDetails !== null) {
             update_post_meta(
                 $subscriptionPostId,
                 '_ecurring_post_subscription_customer',
