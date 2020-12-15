@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\AdminPages;
 
 use Brain\Nonces\NonceInterface;
-use ChriCo\Fields\Element\ElementInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
@@ -83,6 +82,7 @@ class AdminController
             [$this, 'renderPluginSettingsPage']
         );
         add_action('admin_init', [$this, 'saveSettings'], 11);
+        add_action('woocommerce_product_data_panels', [$this, 'renderProductDataFields']);
     }
 
     /**
@@ -167,6 +167,58 @@ class AdminController
         $this->settingsCrud->persist();
 
         $this->redirectToSettingsPage();
+    }
+
+    public function renderProductDataFields(): void
+    {
+        global $post;
+
+        $api = eCurring_WC_Plugin::getApiHelper();
+        $page_size = 50;
+        $subscription_plans_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[size]=' . $page_size), true);
+        $subscription_plans_data = isset($subscription_plans_response['data']) ? $subscription_plans_response['data'] : false;
+        if (!$subscription_plans_data) {
+            exit;
+        }
+
+        $subscription_plans = [];
+        $subscription_plans[0] = sprintf(
+            '- %1$s -',
+            _x('No subscription plan', 'Option text for subscription plan select on product page', 'woo-ecurring')
+        );
+        foreach ($subscription_plans_data as $subscription_plan) {
+            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
+                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
+            }
+        }
+
+        if ($subscription_plans_response['links']['next']) {
+            $last_page_link = parse_url($subscription_plans_response['links']['last']);
+            parse_str($last_page_link['query'], $query);
+            $last_page_num = $query['page']['number'];
+
+            if ($last_page_num > 1) {
+                for ($i = 2; $i <= $last_page_num; $i++) {
+                    $next_page_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[number]=' . $i . '&page[size]=' . $page_size), true);
+
+                    if (isset($next_page_response['data'])) {
+                        foreach ($next_page_response['data'] as $subscription_plan) {
+                            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
+                                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
+
+        $pluginDirPath = plugin_dir_path(WOOECUR_PLUGIN_FILE);
+        $tabContentTemplateFile = $pluginDirPath . 'views/admin/product-edit-page/ecurring-tab.php';
+
+        if (file_exists($tabContentTemplateFile)) {
+            require_once $tabContentTemplateFile;
+        }
     }
 
     /**
