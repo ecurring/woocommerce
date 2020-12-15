@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Api;
 
+use eCurring_WC_Plugin;
+
 class ApiClient implements ApiClientInterface
 {
 
@@ -213,5 +215,43 @@ class ApiClient implements ApiClientInterface
         }
 
         return $parsedResponse;
+    }
+
+    public function getAvailableSubscriptionPlans(): array
+    {
+
+        $api = eCurring_WC_Plugin::getApiHelper();
+        $page_size = 50;
+        $subscription_plans_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[size]=' . $page_size), true);
+        $subscription_plans_data = isset($subscription_plans_response['data']) ? (array) $subscription_plans_response['data'] : [];
+
+        foreach ($subscription_plans_data as $subscription_plan) {
+            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
+                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
+            }
+        }
+
+        if ($subscription_plans_response['links']['next']) {
+            $last_page_link = parse_url($subscription_plans_response['links']['last']);
+            parse_str($last_page_link['query'], $query);
+            $last_page_num = $query['page']['number'];
+
+            if ($last_page_num > 1) {
+                for ($i = 2; $i <= $last_page_num; $i++) {
+                    $next_page_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[number]=' . $i . '&page[size]=' . $page_size), true);
+
+                    if (isset($next_page_response['data'])) {
+                        foreach ($next_page_response['data'] as $subscription_plan) {
+                            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
+                                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return $subscription_plans;
     }
 }

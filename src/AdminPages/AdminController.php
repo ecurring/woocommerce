@@ -8,6 +8,7 @@ use Brain\Nonces\NonceInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
+use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -45,6 +46,10 @@ class AdminController
      * @var NonceFieldBuilderInterface
      */
     protected $nonceFieldBuilder;
+    /**
+     * @var ApiClientInterface
+     */
+    protected $apiClient;
 
     /**
      * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
@@ -53,6 +58,7 @@ class AdminController
      * @param string                               $fieldsCollectionName
      * @param NonceInterface                       $nonce
      * @param NonceFieldBuilderInterface           $nonceFieldBuilder
+     * @param ApiClientInterface                   $apiClient
      */
     public function __construct(
         TemplateInterface $adminSettingsPageRenderer,
@@ -60,7 +66,8 @@ class AdminController
         SettingsCrudInterface $settingsCrud,
         string $fieldsCollectionName,
         NonceInterface $nonce,
-        NonceFieldBuilderInterface $nonceFieldBuilder
+        NonceFieldBuilderInterface $nonceFieldBuilder,
+        ApiClientInterface $apiClient
     ) {
 
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
@@ -69,6 +76,7 @@ class AdminController
         $this->settingsCrud = $settingsCrud;
         $this->nonce = $nonce;
         $this->nonceFieldBuilder = $nonceFieldBuilder;
+        $this->apiClient = $apiClient;
     }
 
     /**
@@ -174,43 +182,14 @@ class AdminController
         global $post;
 
         $api = eCurring_WC_Plugin::getApiHelper();
-        $page_size = 50;
-        $subscription_plans_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[size]=' . $page_size), true);
-        $subscription_plans_data = isset($subscription_plans_response['data']) ? $subscription_plans_response['data'] : false;
-        if (!$subscription_plans_data) {
-            exit;
-        }
 
         $subscription_plans = [];
         $subscription_plans[0] = sprintf(
             '- %1$s -',
             _x('No subscription plan', 'Option text for subscription plan select on product page', 'woo-ecurring')
         );
-        foreach ($subscription_plans_data as $subscription_plan) {
-            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
-                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
-            }
-        }
 
-        if ($subscription_plans_response['links']['next']) {
-            $last_page_link = parse_url($subscription_plans_response['links']['last']);
-            parse_str($last_page_link['query'], $query);
-            $last_page_num = $query['page']['number'];
-
-            if ($last_page_num > 1) {
-                for ($i = 2; $i <= $last_page_num; $i++) {
-                    $next_page_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[number]=' . $i . '&page[size]=' . $page_size), true);
-
-                    if (isset($next_page_response['data'])) {
-                        foreach ($next_page_response['data'] as $subscription_plan) {
-                            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
-                                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $subscription_plans += $this->apiClient->getAvailableSubscriptionPlans();
         $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
 
         $pluginDirPath = plugin_dir_path(WOOECUR_PLUGIN_FILE);
