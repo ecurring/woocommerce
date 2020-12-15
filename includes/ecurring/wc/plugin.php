@@ -390,26 +390,14 @@ class eCurring_WC_Plugin
                 }
             }
         }
-        ?>
-        <div id="woo_ecurring_product_data" class="panel woocommerce_options_panel">
+        $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
 
-            <div style="padding: 15px;">
-                <?php
-                echo __('You are adding an eCurring product. The eCurring product determines the price your customers will pay when purchasing this product. Make sure the product price in WooCommerce exactly matches the eCurring product price. Important: the eCurring product determines the price your customers will pay when purchasing this product. Make sure the product price in WooCommerce exactly matches the eCurring product price. The eCurring product price should include all shipping cost. Any additional shipping costs added by WooCommerce will not be charged.', 'woo-ecurring');
-                ?>
-            </div>
-            <?php
-            woocommerce_wp_select([
-                'id' => '_woo_ecurring_product_data',
-                'wrapper_class' => 'show_if_simple',
-                'label' => __('Product', 'woo-ecurring'),
-                'description' => __('', 'woo-ecurring'),
-                'options' => $subscription_plans,
-                'value' => get_post_meta($post->ID, '_ecurring_subscription_plan', true),
-            ]);
-            ?>
-        </div>
-        <?php
+        $pluginDirPath = plugin_dir_path(WOOECUR_PLUGIN_FILE);
+        $tabContentTemplateFile = $pluginDirPath . 'views/admin/product-edit-page/ecurring-tab.php';
+
+        if (file_exists($tabContentTemplateFile)) {
+            require_once $tabContentTemplateFile;
+        }
     }
 
     /**
