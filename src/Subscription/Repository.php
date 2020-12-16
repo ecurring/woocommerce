@@ -202,7 +202,7 @@ class Repository
             [
                 'limit' => 1,
                 'return' => 'ids',
-                '_ecurring_subscription_id' => $subscriptionId
+                '_ecurring_subscription_id' => $subscriptionId,
             ]
         );
 
