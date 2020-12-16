@@ -197,6 +197,7 @@ class Repository
             2
         );
 
+        /** @var array $foundIds */
         $foundIds = wc_get_orders(
             [
                 'limit' => 1,
