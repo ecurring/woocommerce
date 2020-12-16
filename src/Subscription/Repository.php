@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring\Subscription;
 use Ecurring\WooEcurring\Api\Customers;
 use eCurring_WC_Helper_Api;
 use eCurring_WC_Helper_Settings;
+use eCurring_WC_Plugin;
 
 class Repository
 {
@@ -18,10 +19,30 @@ class Repository
     public function createSubscriptions($subscriptions): void
     {
         foreach ($subscriptions->data as $subscription) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Preparing to save subscription %1$s.',
+                    $subscription->id
+                )
+            );
+
             if ($this->subscriptionExistsInDb($subscription->id)) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Subscription %1$s already exists in local database, ' .
+                        'saving will be skipped.',
+                        $subscription->id
+                    )
+                );
                 continue;
             }
             if (! $this->orderWithSubscriptionExists($subscription->id)) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Order not found for the subscription %1$s, saving will be skipped.',
+                        $subscription->id
+                    )
+                );
                 continue;
             }
 
@@ -46,6 +67,14 @@ class Repository
             );
 
             $this->saveSubscriptionData($postId, $subscription, $customerDetails);
+
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Subscription %1$s successfully saved as post %2$d',
+                    $subscription->id,
+                    $postId
+                )
+            );
         }
     }
 
