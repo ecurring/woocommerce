@@ -192,7 +192,9 @@ class Repository
 
         add_filter(
             'woocommerce_order_data_store_cpt_get_orders_query',
-            $addSubscriptionIdMetaSupport
+            $addSubscriptionIdMetaSupport,
+            10,
+            2
         );
 
         $foundIds = wc_get_orders(
