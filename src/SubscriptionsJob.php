@@ -67,7 +67,7 @@ class SubscriptionsJob
 
         $this->repository->createSubscriptions($subscriptions);
 
-        $parts = parse_url($subscriptions->links->next);
+        $parts = parse_url($subscriptions->links->next ?? '');
         parse_str($parts['query'] ?? '', $query);
         $nextPage = $query['page']['number'] ?? null;
 

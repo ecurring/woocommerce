@@ -1999,12 +1999,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "46ad8ac27a325825b30daac540c19a3f72828ba8"
+                "reference": "9243ac2e5a5280f945f872c4a9aae3a69534daaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/46ad8ac27a325825b30daac540c19a3f72828ba8",
-                "reference": "46ad8ac27a325825b30daac540c19a3f72828ba8",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/9243ac2e5a5280f945f872c4a9aae3a69534daaa",
+                "reference": "9243ac2e5a5280f945f872c4a9aae3a69534daaa",
                 "shasum": ""
             },
             "require": {
@@ -2056,7 +2056,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2020-12-10T09:19:53+00:00"
+            "time": "2020-12-11T13:22:47+00:00"
         },
         {
             "name": "mollie/mollie-api-php",
@@ -2151,12 +2151,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/WooCommerce.git",
-                "reference": "23a3d5e14fcea330d8448c88964fffce4d096f43"
+                "reference": "62787de82a520cfa0ab2288a7ba7db66b1d5cc34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/23a3d5e14fcea330d8448c88964fffce4d096f43",
-                "reference": "23a3d5e14fcea330d8448c88964fffce4d096f43",
+                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/62787de82a520cfa0ab2288a7ba7db66b1d5cc34",
+                "reference": "62787de82a520cfa0ab2288a7ba7db66b1d5cc34",
                 "shasum": ""
             },
             "require": {
@@ -2207,7 +2207,7 @@
                 "source": "https://github.com/mollie/WooCommerce/tree/develop",
                 "issues": "https://github.com/mollie/WooCommerce/issues"
             },
-            "time": "2020-12-10T07:31:48+00:00"
+            "time": "2020-12-11T11:20:22+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3453,7 +3453,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6"
+                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6",
+                "reference": "5.6"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -4281,12 +4282,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "a3545743754dcab960a6e0145c5b4f909a406e40"
+                "reference": "ddc59f8d4b9e48faaf3056363f702e3915c552c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/a3545743754dcab960a6e0145c5b4f909a406e40",
-                "reference": "a3545743754dcab960a6e0145c5b4f909a406e40",
+                "url": "https://api.github.com/repos/symfony/console/zipball/ddc59f8d4b9e48faaf3056363f702e3915c552c6",
+                "reference": "ddc59f8d4b9e48faaf3056363f702e3915c552c6",
                 "shasum": ""
             },
             "require": {
@@ -4367,7 +4368,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-08T17:04:48+00:00"
+            "time": "2020-12-10T20:00:07+00:00"
         },
         {
             "name": "symfony/css-selector",
