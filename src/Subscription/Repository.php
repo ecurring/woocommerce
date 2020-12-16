@@ -18,9 +18,14 @@ class Repository
     public function createSubscriptions($subscriptions): void
     {
         foreach ($subscriptions->data as $subscription) {
-            if (! $this->subscriptionExistsInDb($subscription->id) && $this->orderWithSubscriptionExists($subscription->id)) {
-                $this->create($subscription);
+            if ($this->subscriptionExistsInDb($subscription->id)) {
+                continue;
             }
+            if (! $this->orderWithSubscriptionExists($subscription->id)) {
+                continue;
+            }
+
+            $this->create($subscription);
         }
     }
 
