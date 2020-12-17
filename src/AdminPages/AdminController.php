@@ -55,6 +55,10 @@ class AdminController
      * @var PathTemplateFactoryInterface
      */
     protected $pathTemplateFactory;
+    /**
+     * @var string
+     */
+    protected $adminTemplatesPath;
 
     /**
      * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
@@ -85,6 +89,7 @@ class AdminController
         $this->nonceFieldBuilder = $nonceFieldBuilder;
         $this->apiClient = $apiClient;
         $this->pathTemplateFactory = $pathTemplateFactory;
+        $this->adminTemplatesPath = plugin_dir_path(WOOECUR_PLUGIN_FILE) . 'views/admin';
     }
 
     /**
@@ -205,8 +210,7 @@ class AdminController
         $subscriptionPlans += $this->apiClient->getAvailableSubscriptionPlans();
         $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
 
-        $pluginDirPath = plugin_dir_path(WOOECUR_PLUGIN_FILE);
-        $tabContentTemplateFile = $pluginDirPath . 'views/admin/product-edit-page/ecurring-tab.php';
+        $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
 
         $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
 
@@ -230,6 +234,18 @@ class AdminController
                 )
             );
         }
+    }
+
+    /**
+     * Return template full path based on the path relative to the admin templates dir.
+     *
+     * @param string $template Template path in the admin templates dir.
+     *
+     * @return string Full template path
+     */
+    protected function getTemplatePath(string $template): string
+    {
+        return trailingslashit($this->adminTemplatesPath) . $template;
     }
 
     /**
