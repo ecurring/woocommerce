@@ -221,7 +221,7 @@ class AdminController
                     'selectedPlan' => $selectedPlan,
                 ]
             );
-            echo wp_kses_post($tabContent);
+            echo wp_kses($tabContent, $this->getAllowedHtmlForProductDataFields());
 
         } catch (Throwable $throwable) {
             eCurring_WC_Plugin::debug(
@@ -234,6 +234,37 @@ class AdminController
                 )
             );
         }
+    }
+
+    /**
+     * Return set of allowed HTML tags for the ecurring tab on the edit product page.
+     *
+     * @see wp_kses For more details, array structure, etc.
+     *
+     * @return array
+     */
+    protected function getAllowedHtmlForProductDataFields(): array
+    {
+        return [
+            'div' => [
+                'id' => [],
+                'class' => [],
+                'style' => [],
+            ],
+            'p' => [
+                'class' => [],
+                'style' => [],
+            ],
+            'label' => [],
+            'select' => [
+                'style' => [],
+                'id' => [],
+                'class' => [],
+            ],
+            'option' => [
+                'value' => [],
+            ],
+        ];
     }
 
     /**
