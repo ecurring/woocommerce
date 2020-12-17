@@ -24,7 +24,7 @@ declare(strict_types=1);
         'wrapper_class' => 'show_if_simple',
         'label' => __('Product', 'woo-ecurring'),
         'description' => '',
-        'options' => $c('subscription_plans'),
+        'options' => $c('subscriptionPlans'),
         'value' => $c('selectedPlan'),
     ]);
     ?>

@@ -196,13 +196,13 @@ class AdminController
             return;
         }
 
-        $subscription_plans = [];
-        $subscription_plans[0] = sprintf(
+        $subscriptionPlans = [];
+        $subscriptionPlans[0] = sprintf(
             '- %1$s -',
             _x('No subscription plan', 'Option text for subscription plan select on product page', 'woo-ecurring')
         );
 
-        $subscription_plans += $this->apiClient->getAvailableSubscriptionPlans();
+        $subscriptionPlans += $this->apiClient->getAvailableSubscriptionPlans();
         $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
 
         $pluginDirPath = plugin_dir_path(WOOECUR_PLUGIN_FILE);
@@ -213,7 +213,7 @@ class AdminController
         try {
             $tabContent = $template->render(
                 [
-                    'subscription_plans' => $subscription_plans,
+                    'subscriptionPlans' => $subscriptionPlans,
                     'selectedPlan' => $selectedPlan,
                 ]
             );
