@@ -12,7 +12,6 @@ use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring_WC_Plugin;
-use Exception;
 use Throwable;
 
 /**
@@ -220,14 +219,14 @@ class AdminController
             );
             echo wp_kses_post($tabContent);
 
-        } catch (Exception $exception) {
+        } catch (Throwable $throwable) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Failed to render template file %1$s, ' .
                     'exception of type %2$s was caught when trying to render: %3$s',
                     $tabContentTemplateFile,
-                    get_class($exception),
-                    $exception->getMessage()
+                    get_class($throwable),
+                    $throwable->getMessage()
                 )
             );
         }
