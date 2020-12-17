@@ -231,7 +231,7 @@ class ApiClient implements ApiClientInterface
             }
         }
 
-        if ($subscription_plans_response['links']['next']) {
+        if (isset($subscription_plans_response['links']['next'])) {
             $last_page_link = parse_url($subscription_plans_response['links']['last']);
             parse_str($last_page_link['query'], $query);
             $last_page_num = $query['page']['number'];
@@ -252,6 +252,6 @@ class ApiClient implements ApiClientInterface
         }
 
 
-        return $subscription_plans;
+        return $subscription_plans ?? [];
     }
 }

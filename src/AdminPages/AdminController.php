@@ -181,7 +181,9 @@ class AdminController
     {
         global $post;
 
-        $api = eCurring_WC_Plugin::getApiHelper();
+        if (!isset($post, $post->ID)) {
+            return;
+        }
 
         $subscription_plans = [];
         $subscription_plans[0] = sprintf(
