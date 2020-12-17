@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\AdminPages;
 
 use Brain\Nonces\NonceInterface;
+use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring_WC_Plugin;
+use Exception;
 use Throwable;
 
 /**
@@ -50,6 +52,10 @@ class AdminController
      * @var ApiClientInterface
      */
     protected $apiClient;
+    /**
+     * @var PathTemplateFactoryInterface
+     */
+    protected $pathTemplateFactory;
 
     /**
      * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
@@ -59,6 +65,7 @@ class AdminController
      * @param NonceInterface                       $nonce
      * @param NonceFieldBuilderInterface           $nonceFieldBuilder
      * @param ApiClientInterface                   $apiClient
+     * @param PathTemplateFactoryInterface         $pathTemplateFactory
      */
     public function __construct(
         TemplateInterface $adminSettingsPageRenderer,
@@ -67,7 +74,8 @@ class AdminController
         string $fieldsCollectionName,
         NonceInterface $nonce,
         NonceFieldBuilderInterface $nonceFieldBuilder,
-        ApiClientInterface $apiClient
+        ApiClientInterface $apiClient,
+        PathTemplateFactoryInterface $pathTemplateFactory
     ) {
 
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
@@ -77,6 +85,7 @@ class AdminController
         $this->nonce = $nonce;
         $this->nonceFieldBuilder = $nonceFieldBuilder;
         $this->apiClient = $apiClient;
+        $this->pathTemplateFactory = $pathTemplateFactory;
     }
 
     /**
@@ -200,8 +209,27 @@ class AdminController
         $pluginDirPath = plugin_dir_path(WOOECUR_PLUGIN_FILE);
         $tabContentTemplateFile = $pluginDirPath . 'views/admin/product-edit-page/ecurring-tab.php';
 
-        if (file_exists($tabContentTemplateFile)) {
-            require_once $tabContentTemplateFile;
+        $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
+
+        try {
+            $tabContent = $template->render(
+                [
+                    'subscription_plans' => $subscription_plans,
+                    'selectedPlan' => $selectedPlan,
+                ]
+            );
+            echo wp_kses_post($tabContent);
+
+        } catch (Exception $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Failed to render template file %1$s, ' .
+                    'exception of type %2$s was caught when trying to render: %3$s',
+                    $tabContentTemplateFile,
+                    get_class($exception),
+                    $exception->getMessage()
+                )
+            );
         }
     }
 

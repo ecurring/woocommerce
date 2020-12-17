@@ -3,10 +3,9 @@
 declare(strict_types=1);
 
 /**
- * @var array $subscription_plans;
- * @var string $selectedPlan;
+ * @var $c callable
+ * @var $f callable
  */
-
 ?>
 <div id="woo_ecurring_product_data" class="panel woocommerce_options_panel">
 
@@ -25,8 +24,8 @@ declare(strict_types=1);
         'wrapper_class' => 'show_if_simple',
         'label' => __('Product', 'woo-ecurring'),
         'description' => '',
-        'options' => $subscription_plans,
-        'value' => $selectedPlan,
+        'options' => $c('subscription_plans'),
+        'value' => $c('selectedPlan'),
     ]);
     ?>
 </div>

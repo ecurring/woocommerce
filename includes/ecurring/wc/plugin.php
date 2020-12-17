@@ -3,6 +3,8 @@
 use Brain\Nonces\WpNonce;
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\ViewFactory;
+use Dhii\Output\PhpEvaluator\FilePhpEvaluatorFactory;
+use Dhii\Output\Template\PhpTemplate\FilePathTemplateFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
@@ -65,6 +67,12 @@ class eCurring_WC_Plugin
 
             $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
             $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
+            $filePathTemplateFactory = new FilePathTemplateFactory(
+                new FilePhpEvaluatorFactory(),
+                [],
+                []
+            );
+
             (new AdminController(
                 $wcBasedSettingsTemplate,
                 $formBuilder,
@@ -72,7 +80,8 @@ class eCurring_WC_Plugin
                 $settingsFormAction,
                 $nonce,
                 $nonceFieldBuilder,
-                $apiClient
+                $apiClient,
+                $filePathTemplateFactory
             )
             )->init();
         });
