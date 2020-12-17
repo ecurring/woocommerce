@@ -177,6 +177,9 @@ class AdminController
         $this->redirectToSettingsPage();
     }
 
+    /**
+     * Handle rendering of eCurring tab content on the edit product page.
+     */
     public function renderProductDataFields(): void
     {
         global $post;
