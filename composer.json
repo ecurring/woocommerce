@@ -10,7 +10,8 @@
         "chrico/wp-fields": " ^1.0",
         "brain/nonces": " ^1.0",
         "ext-json": "*",
-        "dhii/versions": "^0.1"
+        "dhii/versions": "^0.1",
+        "dhii/php-template": "^0.1.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "^5 || ^7.1",
