@@ -211,7 +211,6 @@ class AdminController
 
         $subscriptionPlans += $this->apiClient->getAvailableSubscriptionPlans();
         $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
-
         $wcSelectTemplate = new WcSelect();
 
         $context = [
@@ -224,9 +223,7 @@ class AdminController
         ];
 
         $selectBlock = new SelectBlock($context, $wcSelectTemplate);
-
         $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
-
         $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
 
         try {
