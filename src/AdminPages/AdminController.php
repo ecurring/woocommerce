@@ -274,9 +274,11 @@ class AdminController
                 'style' => [],
                 'id' => [],
                 'class' => [],
+                'name' => [],
             ],
             'option' => [
                 'value' => [],
+                'selected' => [],
             ],
         ];
     }
