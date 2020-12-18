@@ -11,6 +11,8 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
+use Ecurring\WooEcurring\Template\SelectBlock;
+use Ecurring\WooEcurring\Template\WcSelect;
 use eCurring_WC_Plugin;
 use Throwable;
 
@@ -210,6 +212,19 @@ class AdminController
         $subscriptionPlans += $this->apiClient->getAvailableSubscriptionPlans();
         $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
 
+        $wcSelectTemplate = new WcSelect();
+
+        $context = [
+            'id' => '_woo_ecurring_product_data',
+            'wrapper_class' => 'show_if_simple',
+            'label' => __('Product', 'woo-ecurring'),
+            'description' => '',
+            'subscriptionPlans' => $subscriptionPlans,
+            'selectedPlan' => $selectedPlan,
+        ];
+
+        $selectBlock = new SelectBlock($context, $wcSelectTemplate);
+
         $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
 
         $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
@@ -217,8 +232,7 @@ class AdminController
         try {
             $tabContent = $template->render(
                 [
-                    'subscriptionPlans' => $subscriptionPlans,
-                    'selectedPlan' => $selectedPlan,
+                    'select' => $selectBlock,
                 ]
             );
             echo wp_kses($tabContent, $this->getAllowedHtmlForProductDataFields());
