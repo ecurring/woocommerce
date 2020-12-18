@@ -3,10 +3,7 @@
 namespace Ecurring\WooEcurring\Template;
 
 use Dhii\Output\Block\BlockInterface;
-use Dhii\Output\Exception\CouldNotRenderExceptionInterface;
-use Dhii\Output\Exception\RendererExceptionInterface;
-use Dhii\Util\String\StringableInterface as Stringable;
-use Exception;
+use Dhii\Output\Template\TemplateInterface;
 use Throwable;
 
 /**
@@ -18,18 +15,24 @@ class SelectBlock implements BlockInterface
      * @var array
      */
     protected $context;
+    /**
+     * @var TemplateInterface
+     */
+    protected $wcSelectTemplate;
 
     /**
-     * @param array $context
+     * @param array             $context
+     * @param TemplateInterface $wcSelectTemplate
      */
-    public function __construct(array $context)
+    public function __construct(array $context, TemplateInterface $wcSelectTemplate)
     {
         $this->context = $context;
+        $this->wcSelectTemplate = $wcSelectTemplate;
     }
 
     public function render(): string
     {
-        return sprintf('<div>%1$s</div>', $this->context['wc_select']->render());
+        return sprintf('<div>%1$s</div>', $this->wcSelectTemplate->render($this->context));
     }
 
     public function __toString(): string
