@@ -219,8 +219,8 @@ class AdminController
             'wrapper_class' => 'show_if_simple',
             'label' => __('Product', 'woo-ecurring'),
             'description' => '',
-            'subscriptionPlans' => $subscriptionPlans,
-            'selectedPlan' => $selectedPlan,
+            'options' => $subscriptionPlans,
+            'value' => $selectedPlan,
         ];
 
         $selectBlock = new SelectBlock($context, $wcSelectTemplate);

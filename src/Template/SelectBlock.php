@@ -40,7 +40,12 @@ class SelectBlock implements BlockInterface
         try {
             $content = $this->render();
         } catch (Throwable $throwable) {
-            trigger_error('Caught a throwable when trying to render a template: %1$s', $throwable->getMessage());
+            trigger_error(
+                sprintf(
+                    'Caught a throwable when trying to render a template: %1$s',
+                    $throwable->getMessage()
+                )
+            );
             $content = '';
         }
 

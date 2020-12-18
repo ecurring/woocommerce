@@ -18,14 +18,5 @@ declare(strict_types=1);
         echo wp_kses_post($message);
         ?>
     </div>
-    <?php
-    woocommerce_wp_select([
-        'id' => '_woo_ecurring_product_data',
-        'wrapper_class' => 'show_if_simple',
-        'label' => __('Product', 'woo-ecurring'),
-        'description' => '',
-        'options' => $c('subscriptionPlans'),
-        'value' => $c('selectedPlan'),
-    ]);
-    ?>
+    <?php echo $c('select'); ?>
 </div>

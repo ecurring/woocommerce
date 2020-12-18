@@ -23,11 +23,6 @@ class WcSelect implements TemplateInterface
      */
     public function render($context = null): string
     {
-        if (! $this->context['args'] || ! is_array($this->context['args'])) {
-            throw new Exception(
-                'Not found expected `args` element in the context or it is not an array.'
-            );
-        }
         ob_start();
 
         if (! function_exists('woocommerce_wp_select')) {
@@ -37,7 +32,7 @@ class WcSelect implements TemplateInterface
             );
         }
 
-        woocommerce_wp_select($this->context['args']);
+        woocommerce_wp_select($context ?? []);
 
         return ob_get_clean();
     }
