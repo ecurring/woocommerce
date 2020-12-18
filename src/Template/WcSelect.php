@@ -19,19 +19,6 @@ class WcSelect implements TemplateInterface
     protected $context;
 
     /**
-     * WcSelect constructor.
-     *
-     * @param array $context
-     *    @type array $args Arguments for rendering
-     *                      Woocommerce Select {@link woocommerce_wp_select()}
-     *
-     */
-    public function __construct(array $context = [])
-    {
-        $this->context = $context;
-    }
-
-    /**
      * @inheritDoc
      */
     public function render($context = null): string
