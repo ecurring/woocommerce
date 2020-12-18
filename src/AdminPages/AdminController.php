@@ -233,7 +233,6 @@ class AdminController
                 ]
             );
             echo wp_kses($tabContent, $this->getAllowedHtmlForProductDataFields());
-
         } catch (Throwable $throwable) {
             eCurring_WC_Plugin::debug(
                 sprintf(
