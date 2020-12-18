@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring\Template;
 
 use Dhii\Output\Block\BlockInterface;
