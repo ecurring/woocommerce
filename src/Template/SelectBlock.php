@@ -41,10 +41,11 @@ class SelectBlock implements BlockInterface
             $content = $this->render();
         } catch (Throwable $throwable) {
             trigger_error(
-                sprintf(
+                wp_kses_post(sprintf(
                     'Caught a throwable when trying to render a template: %1$s',
                     $throwable->getMessage()
-                )
+
+                ))
             );
             $content = '';
         }
