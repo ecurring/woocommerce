@@ -116,7 +116,7 @@ class ProductEditPageController
                     'select' => $selectBlock,
                 ]
             );
-            echo wp_kses($tabContent, $this->getAllowedHtmlForProductDataFields());
+            echo wp_kses((string) $tabContent, $this->getAllowedHtmlForProductDataFields());
         } catch (Throwable $throwable) {
             eCurring_WC_Plugin::debug(
                 sprintf(
