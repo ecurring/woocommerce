@@ -7,7 +7,7 @@ namespace Ecurring\WooEcurring\AdminPages;
 use Dhii\Output\Block\TemplateBlockFactoryInterface;
 use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
-use Ecurring\WooEcurring\Template\WcSelect;
+use Ecurring\WooEcurring\Template\WcSelectTemplate;
 use eCurring_WC_Plugin;
 use Throwable;
 
@@ -67,7 +67,7 @@ class ProductEditPageController
     {
         $subscriptionPlans = $this->getSubscriptionPlanOptions();
         $selectedPlan = get_post_meta($productId, '_ecurring_subscription_plan', true);
-        $wcSelectTemplate = new WcSelect();
+        $wcSelectTemplate = new WcSelectTemplate();
 
         $context = [
             'id' => '_woo_ecurring_product_data',

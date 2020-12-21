@@ -10,7 +10,7 @@ use Exception;
 /**
  * Template representing a Woocommerce-style select HTML element.
  */
-class WcSelect implements TemplateInterface
+class WcSelectTemplate implements TemplateInterface
 {
 
     /**
