@@ -68,11 +68,4 @@ interface ApiClientInterface
      * @return array Created customer data.
      */
     public function createCustomer(array $customerAttributes): array;
-
-    /**
-     * Get available subscription plans.
-     *
-     * @return array
-     */
-    public function getAvailableSubscriptionPlans(): array;
 }
