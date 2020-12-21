@@ -76,7 +76,11 @@ class ProductEditPageController
     public function addProductDataTabsToTheDataTabsList(array $productDataTabs): array
     {
         $productDataTabs['woo-ecurring-tab'] = [
-            'label' => __('eCurring', 'woo-ecurring'),
+            'label' => _x(
+                'Mollie Subscriptions',
+                'Tab name on the product edit page',
+                'woo-ecurring'
+            ),
             'target' => 'woo_ecurring_product_data',
         ];
 
