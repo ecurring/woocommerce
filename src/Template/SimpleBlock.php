@@ -9,9 +9,9 @@ use Dhii\Output\Template\TemplateInterface;
 use Throwable;
 
 /**
- * Template part that represents an HTML block containing select element.
+ * Simple template block that renders provided template wrapped into <div> container.
  */
-class SelectBlock implements BlockInterface
+class SimpleBlock implements BlockInterface
 {
     /**
      * @var array
@@ -20,21 +20,21 @@ class SelectBlock implements BlockInterface
     /**
      * @var TemplateInterface
      */
-    protected $wcSelectTemplate;
+    protected $template;
 
     /**
-     * @param array             $context
-     * @param TemplateInterface $wcSelectTemplate
+     * @param array             $context Context to provide to the template.
+     * @param TemplateInterface $template Template to render with context.
      */
-    public function __construct(array $context, TemplateInterface $wcSelectTemplate)
+    public function __construct(array $context, TemplateInterface $template)
     {
         $this->context = $context;
-        $this->wcSelectTemplate = $wcSelectTemplate;
+        $this->template = $template;
     }
 
     public function render(): string
     {
-        return sprintf('<div>%1$s</div>', $this->wcSelectTemplate->render($this->context));
+        return sprintf('<div>%1$s</div>', $this->template->render($this->context));
     }
 
     public function __toString(): string
