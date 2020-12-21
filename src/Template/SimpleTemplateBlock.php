@@ -23,10 +23,10 @@ class SimpleTemplateBlock implements BlockInterface
     protected $template;
 
     /**
-     * @param array             $context Context to provide to the template.
      * @param TemplateInterface $template Template to render with context.
+     * @param array             $context Context to provide to the template.
      */
-    public function __construct(array $context, TemplateInterface $template)
+    public function __construct(TemplateInterface $template, array $context)
     {
         $this->context = $context;
         $this->template = $template;

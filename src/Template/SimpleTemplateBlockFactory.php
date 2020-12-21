@@ -19,6 +19,6 @@ class SimpleTemplateBlockFactory implements TemplateBlockFactoryInterface
      */
     public function fromTemplate(TemplateInterface $template, $context): BlockInterface
     {
-        return new SimpleTemplateBlock($context, $template);
+        return new SimpleTemplateBlock($template, $context);
     }
 }
