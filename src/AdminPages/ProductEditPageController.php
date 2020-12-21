@@ -95,19 +95,9 @@ class ProductEditPageController
     public function renderProductDataFields(int $productId): void
     {
         $wcSelectTemplate = new WcSelectTemplate();
-        $product = wc_get_product($productId);
-
-        $context = [
-            'id' => '_woo_ecurring_product_data',
-            'wrapper_class' => 'show_if_simple',
-            'label' => __('Product', 'woo-ecurring'),
-            'description' => '',
-            'options' => $this->getSubscriptionPlanOptions(),
-            'value' => $this->subscriptionCrud->getProductSubscriptionId($product) ?? '',
-        ];
-
-        $selectBlock = $this->templateBlockFactory->fromTemplate($wcSelectTemplate, $context);
         $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
+        $context = $this->prepareContextForProductDataFieldsTemplate($productId);
+        $selectBlock = $this->templateBlockFactory->fromTemplate($wcSelectTemplate, $context);
         $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
 
         try {
@@ -128,6 +118,27 @@ class ProductEditPageController
                 )
             );
         }
+    }
+
+    /**
+     * Prepare context to render product tab on product edit page.
+     *
+     * @param int $productId Product id to get subscription id from.
+     *
+     * @return array Context for product data fields template.
+     */
+    protected function prepareContextForProductDataFieldsTemplate(int $productId): array
+    {
+        $product = wc_get_product($productId);
+
+        return [
+            'id' => '_woo_ecurring_product_data',
+            'wrapper_class' => 'show_if_simple',
+            'label' => __('Product', 'woo-ecurring'),
+            'description' => '',
+            'options' => $this->getSubscriptionPlanOptions(),
+            'value' => $this->subscriptionCrud->getProductSubscriptionId($product) ?? '',
+        ];
     }
 
     /**
