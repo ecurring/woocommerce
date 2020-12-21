@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring\Template;
 use ArrayAccess;
 use Dhii\Output\Block\BlockInterface;
 use Dhii\Output\Template\TemplateInterface;
+use Psr\Container\ContainerInterface;
 use Throwable;
 
 /**
@@ -15,7 +16,7 @@ use Throwable;
 class SimpleTemplateBlock implements BlockInterface
 {
     /**
-     * @var array
+     * @var array|ArrayAccess|ContainerInterface|null
      */
     protected $context;
     /**
@@ -25,7 +26,7 @@ class SimpleTemplateBlock implements BlockInterface
 
     /**
      * @param TemplateInterface $template Template to render with context.
-     * @param array|ArrayAccess|null $context Context to provide to the template.
+     * @param array|ArrayAccess|ContainerInterface|null $context Context to provide to the template.
      */
     public function __construct(TemplateInterface $template, $context)
     {
@@ -35,7 +36,7 @@ class SimpleTemplateBlock implements BlockInterface
 
     public function render(): string
     {
-        return sprintf('<div>%1$s</div>', $this->template->render($this->context));
+        return sprintf('<div>%1$s</div>', (string) $this->template->render($this->context));
     }
 
     public function __toString(): string
