@@ -5,11 +5,11 @@ namespace Ecurring\WooEcurringTests\Unit\AdminPages;
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
 use ChriCo\Fields\View\RenderableElementInterface;
-use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
+use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
@@ -47,13 +47,14 @@ class AdminControllerTest extends TestCase
         /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
         $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
         $apiClientMock = $this->createMock(ApiClient::class);
-        $pathTemplateFactoryMock = $this->createMock(PathTemplateFactoryInterface::class);
 
         when('plugin_dir_path')->justReturn('');
 
         if (! defined('WOOECUR_PLUGIN_FILE')) {
             define('WOOECUR_PLUGIN_FILE', 'woo-ecurring/woo-ecurring.php');
         }
+
+        $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
 
         $sut = new AdminController(
             $adminSettingsPageRendererMock,
@@ -63,7 +64,7 @@ class AdminControllerTest extends TestCase
             $nonceMock,
             $nonceFieldBuilderMock,
             $apiClientMock,
-            $pathTemplateFactoryMock
+            $productEditPageControllerMock
         );
 
         when('_x')->returnArg();
@@ -112,13 +113,14 @@ class AdminControllerTest extends TestCase
         /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
         $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
         $apiClientMock = $this->createMock(ApiClient::class);
-        $pathTemplateFactoryMock = $this->createMock(PathTemplateFactoryInterface::class);
 
         when('plugin_dir_path')->justReturn('');
 
         if (! defined('WOOECUR_PLUGIN_FILE')) {
             define('WOOECUR_PLUGIN_FILE', 'woo-ecurring/woo-ecurring.php');
         }
+
+        $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
 
         $sut = new AdminController(
             $adminSettingsPageRendererMock,
@@ -128,7 +130,7 @@ class AdminControllerTest extends TestCase
             $nonceMock,
             $nonceFieldBuilderMock,
             $apiClientMock,
-            $pathTemplateFactoryMock
+            $productEditPageControllerMock
         );
 
         $this->expectOutputString($renderedContent);
