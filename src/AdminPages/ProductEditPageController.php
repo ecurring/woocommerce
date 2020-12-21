@@ -65,7 +65,6 @@ class ProductEditPageController
      */
     public function renderProductDataFields(int $productId): void
     {
-        $subscriptionPlans = $this->getSubscriptionPlanOptions();
         $selectedPlan = get_post_meta($productId, '_ecurring_subscription_plan', true);
         $wcSelectTemplate = new WcSelectTemplate();
 
@@ -74,7 +73,7 @@ class ProductEditPageController
             'wrapper_class' => 'show_if_simple',
             'label' => __('Product', 'woo-ecurring'),
             'description' => '',
-            'options' => $subscriptionPlans,
+            'options' => $this->getSubscriptionPlanOptions(),
             'value' => $selectedPlan,
         ];
 
