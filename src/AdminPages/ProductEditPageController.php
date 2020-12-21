@@ -67,6 +67,23 @@ class ProductEditPageController
     }
 
     /**
+     * Add tabs to the edit product page tabs list.
+     *
+     * @param array $productDataTabs
+     *
+     * @return array
+     */
+    public function addProductDataTabsToTheDataTabsList(array $productDataTabs): array
+    {
+        $productDataTabs['woo-ecurring-tab'] = [
+            'label' => __('eCurring', 'woo-ecurring'),
+            'target' => 'woo_ecurring_product_data',
+        ];
+
+        return $productDataTabs;
+    }
+
+    /**
      * Handle rendering of eCurring tab content on the edit product page.
      *
      * @param int $productId The id of the product to render content for.

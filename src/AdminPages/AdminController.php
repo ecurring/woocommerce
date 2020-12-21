@@ -97,7 +97,28 @@ class AdminController
             [$this, 'renderPluginSettingsPage']
         );
         add_action('admin_init', [$this, 'saveSettings'], 11);
+
+        //Product edit page calls
+        add_filter(
+            'woocommerce_product_data_tabs',
+            [$this, 'handleRegisteringProductDataTabs'],
+            99,
+            1
+        );
+
         add_action('woocommerce_product_data_panels', [$this, 'handleRenderingProductDataPanels']);
+    }
+
+    /**
+     * Handle registering data tabs on the product edit page.
+     *
+     * @param array $productDataTabs Already registered tabs.
+     *
+     * @return array All tabs with the ones added by the plugin.
+     */
+    public function handleRegisteringProductDataTabs(array $productDataTabs): array
+    {
+        return $this->productEditPageController->addProductDataTabsToTheDataTabsList($productDataTabs);
     }
 
     /**

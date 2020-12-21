@@ -111,9 +111,6 @@ class eCurring_WC_Plugin
         // admin scripts and styles
         add_action('admin_enqueue_scripts', [ __CLASS__, 'eCurringEnqueueScriptsAndStylesAdmin' ]);
 
-        // Adding eCurring tab to the WC Product
-        add_filter('woocommerce_product_data_tabs', [ __CLASS__, 'eCurringProductDataTab'], 99, 1);
-
         // Save eCurring product in the product post meta - "_ecurring_subscription_plan"
         add_action('woocommerce_process_product_meta', [ __CLASS__, 'eCurringProcessProductMetaFieldsSave']);
 
@@ -347,24 +344,6 @@ class eCurring_WC_Plugin
                 'manual_order_notice' => __('Do not add eCurring products to manual orders: subscriptions and recurring orders will not be created!', 'woo-ecurring'),
              ]
         );
-    }
-
-    /**
-     * Adding eCurring tab to the WC Product
-     *
-     * @param $product_data_tabs
-     *
-     * @return mixed
-     */
-    public static function eCurringProductDataTab($product_data_tabs)
-    {
-
-        $product_data_tabs['woo-ecurring-tab'] = [
-            'label' => __('eCurring', 'woo-ecurring'),
-            'target' => 'woo_ecurring_product_data',
-        ];
-
-        return $product_data_tabs;
     }
 
     /**
