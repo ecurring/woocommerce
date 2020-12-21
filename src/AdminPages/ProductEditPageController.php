@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring\AdminPages;
 use Dhii\Output\Block\TemplateBlockFactoryInterface;
 use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
+use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 use Ecurring\WooEcurring\Template\WcSelectTemplate;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -32,23 +33,29 @@ class ProductEditPageController
      * @var string
      */
     protected $adminTemplatesPath;
+    /**
+     * @var SubscriptionCrud
+     */
+    protected $subscriptionCrud;
 
     /**
-     * @param PathTemplateFactoryInterface $pathTemplateFactory  Service able to create
-     *                                                           a template from a path.
+     * @param PathTemplateFactoryInterface  $pathTemplateFactory  Service able to create
+     *                                                            a template from a path.
      *
      * @param TemplateBlockFactoryInterface $templateBlockFactory Service able to create
-     *                                                           TemplateBlock instance.
+     *                                                            TemplateBlock instance.
      *
-     * @param SubscriptionPlans $subscriptionPlans               Service providing subscription
-     *                                                           plans data.
-     *
-     * @param string $adminTemplatesPath Path to the directory with the admin templates.
+     * @param SubscriptionPlans             $subscriptionPlans    Service providing subscription
+     *                                                            plans data.
+     * @param SubscriptionCrud              $subscriptionCrud
+     * @param string $adminTemplatesPath                          Path to the directory with
+     *                                                            the admin templates.
      */
     public function __construct(
         PathTemplateFactoryInterface $pathTemplateFactory,
         TemplateBlockFactoryInterface $templateBlockFactory,
         SubscriptionPlans $subscriptionPlans,
+        SubscriptionCrud $subscriptionCrud,
         string $adminTemplatesPath
     ) {
 
@@ -56,6 +63,7 @@ class ProductEditPageController
         $this->templateBlockFactory = $templateBlockFactory;
         $this->subscriptionPlans = $subscriptionPlans;
         $this->adminTemplatesPath = $adminTemplatesPath;
+        $this->subscriptionCrud = $subscriptionCrud;
     }
 
     /**
@@ -65,8 +73,8 @@ class ProductEditPageController
      */
     public function renderProductDataFields(int $productId): void
     {
-        $selectedPlan = get_post_meta($productId, '_ecurring_subscription_plan', true);
         $wcSelectTemplate = new WcSelectTemplate();
+        $product = wc_get_product($productId);
 
         $context = [
             'id' => '_woo_ecurring_product_data',
@@ -74,7 +82,7 @@ class ProductEditPageController
             'label' => __('Product', 'woo-ecurring'),
             'description' => '',
             'options' => $this->getSubscriptionPlanOptions(),
-            'value' => $selectedPlan,
+            'value' => $this->subscriptionCrud->getProductSubscriptionId($product) ?? '',
         ];
 
         $selectBlock = $this->templateBlockFactory->fromTemplate($wcSelectTemplate, $context);
