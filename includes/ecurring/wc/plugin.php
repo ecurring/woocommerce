@@ -8,6 +8,7 @@ use Dhii\Output\Template\PhpTemplate\FilePathTemplateFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
+use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Customer\CustomerCrud;
 use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
@@ -78,6 +79,15 @@ class eCurring_WC_Plugin
                 []
             );
 
+            $adminTemplatesPath = plugin_dir_path(WOOECUR_PLUGIN_FILE) . 'views/admin';
+
+            $productEditPageController = new ProductEditPageController(
+                $filePathTemplateFactory,
+                $simpleTemplateBlockFactory,
+                $subscriptionPlans,
+                $adminTemplatesPath
+            );
+
             (new AdminController(
                 $wcBasedSettingsTemplate,
                 $formBuilder,
@@ -86,9 +96,7 @@ class eCurring_WC_Plugin
                 $nonce,
                 $nonceFieldBuilder,
                 $apiClient,
-                $filePathTemplateFactory,
-                $simpleTemplateBlockFactory,
-                $subscriptionPlans
+                $productEditPageController
             )
             )->init();
         });

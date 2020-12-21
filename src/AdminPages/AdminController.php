@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\AdminPages;
 
 use Brain\Nonces\NonceInterface;
-use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
-use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
-use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
-use Ecurring\WooEcurring\Template\WcSelect;
 use eCurring_WC_Plugin;
 use Throwable;
 
@@ -55,21 +51,9 @@ class AdminController
      */
     protected $apiClient;
     /**
-     * @var PathTemplateFactoryInterface
+     * @var ProductEditPageController
      */
-    protected $pathTemplateFactory;
-    /**
-     * @var string
-     */
-    protected $adminTemplatesPath;
-    /**
-     * @var SimpleTemplateBlockFactory
-     */
-    protected $templateBlockFactory;
-    /**
-     * @var SubscriptionPlans
-     */
-    protected $subscriptionPlans;
+    protected $productEditPageController;
 
     /**
      * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
@@ -79,9 +63,7 @@ class AdminController
      * @param NonceInterface                       $nonce
      * @param NonceFieldBuilderInterface           $nonceFieldBuilder
      * @param ApiClientInterface                   $apiClient
-     * @param PathTemplateFactoryInterface         $pathTemplateFactory
-     * @param SimpleTemplateBlockFactory           $templateBlockFactory
-     * @param SubscriptionPlans                    $subscriptionPlans
+     * @param ProductEditPageController            $productEditPageController
      */
     public function __construct(
         TemplateInterface $adminSettingsPageRenderer,
@@ -91,9 +73,7 @@ class AdminController
         NonceInterface $nonce,
         NonceFieldBuilderInterface $nonceFieldBuilder,
         ApiClientInterface $apiClient,
-        PathTemplateFactoryInterface $pathTemplateFactory,
-        SimpleTemplateBlockFactory $templateBlockFactory,
-        SubscriptionPlans $subscriptionPlans
+        ProductEditPageController $productEditPageController
     ) {
 
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
@@ -103,10 +83,7 @@ class AdminController
         $this->nonce = $nonce;
         $this->nonceFieldBuilder = $nonceFieldBuilder;
         $this->apiClient = $apiClient;
-        $this->pathTemplateFactory = $pathTemplateFactory;
-        $this->adminTemplatesPath = plugin_dir_path(WOOECUR_PLUGIN_FILE) . 'views/admin';
-        $this->templateBlockFactory = $templateBlockFactory;
-        $this->subscriptionPlans = $subscriptionPlans;
+        $this->productEditPageController = $productEditPageController;
     }
 
     /**
@@ -120,7 +97,21 @@ class AdminController
             [$this, 'renderPluginSettingsPage']
         );
         add_action('admin_init', [$this, 'saveSettings'], 11);
-        add_action('woocommerce_product_data_panels', [$this, 'renderProductDataFields']);
+        add_action('woocommerce_product_data_panels', [$this, 'handleRenderingProductDataPanels']);
+    }
+
+    /**
+     * Handle rendering content for a plugin tab on a product edit page.
+     */
+    public function handleRenderingProductDataPanels(): void
+    {
+        global $post;
+
+        if (!isset($post, $post->ID)) {
+            return;
+        }
+
+        $this->productEditPageController->renderProductDataFields((int) $post->ID);
     }
 
     /**
@@ -205,129 +196,6 @@ class AdminController
         $this->settingsCrud->persist();
 
         $this->redirectToSettingsPage();
-    }
-
-    /**
-     * Handle rendering of eCurring tab content on the edit product page.
-     */
-    public function renderProductDataFields(): void
-    {
-        global $post;
-
-        if (!isset($post, $post->ID)) {
-            return;
-        }
-
-        $subscriptionPlans = $this->getSubscriptionPlanOptions();
-        $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
-        $wcSelectTemplate = new WcSelect();
-
-        $context = [
-            'id' => '_woo_ecurring_product_data',
-            'wrapper_class' => 'show_if_simple',
-            'label' => __('Product', 'woo-ecurring'),
-            'description' => '',
-            'options' => $subscriptionPlans,
-            'value' => $selectedPlan,
-        ];
-
-        $selectBlock = $this->templateBlockFactory->fromTemplate($wcSelectTemplate, $context);
-        $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
-        $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
-
-        try {
-            $tabContent = $template->render(
-                [
-                    'select' => $selectBlock,
-                ]
-            );
-            echo wp_kses($tabContent, $this->getAllowedHtmlForProductDataFields());
-        } catch (Throwable $throwable) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Failed to render template file %1$s, ' .
-                    'exception of type %2$s was caught when trying to render: %3$s',
-                    $tabContentTemplateFile,
-                    get_class($throwable),
-                    $throwable->getMessage()
-                )
-            );
-        }
-    }
-
-    /**
-     * Get list of the available subscription plans to be displayed as HTML select options.
-     *
-     * @return array Subscription plans array with ids as keys and names as values.
-     */
-    protected function getSubscriptionPlanOptions(): array
-    {
-        $subscriptionPlans = [];
-        $subscriptionPlans[0] = sprintf(
-            '- %1$s -',
-            _x(
-                'No subscription plan',
-                'Option text for subscription plan select on product page',
-                'woo-ecurring'
-            )
-        );
-
-        $subscriptionPlansData = $this->subscriptionPlans->getSubscriptionPlans()->data ?? [];
-
-        $plans = [];
-
-        foreach ($subscriptionPlansData as $plan) {
-            $plans[$plan->id] = $plan->attributes->name;
-        }
-
-        $subscriptionPlans += $plans;
-
-        return $subscriptionPlans;
-    }
-
-    /**
-     * Return set of allowed HTML tags for the ecurring tab on the edit product page.
-     *
-     * @see wp_kses For more details, array structure, etc.
-     *
-     * @return array
-     */
-    protected function getAllowedHtmlForProductDataFields(): array
-    {
-        return [
-            'div' => [
-                'id' => [],
-                'class' => [],
-                'style' => [],
-            ],
-            'p' => [
-                'class' => [],
-                'style' => [],
-            ],
-            'label' => [],
-            'select' => [
-                'style' => [],
-                'id' => [],
-                'class' => [],
-                'name' => [],
-            ],
-            'option' => [
-                'value' => [],
-                'selected' => [],
-            ],
-        ];
-    }
-
-    /**
-     * Return template full path based on the path relative to the admin templates dir.
-     *
-     * @param string $template Template path in the admin templates dir.
-     *
-     * @return string Full template path
-     */
-    protected function getTemplatePath(string $template): string
-    {
-        return trailingslashit($this->adminTemplatesPath) . $template;
     }
 
     /**
