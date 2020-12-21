@@ -11,7 +11,7 @@ use Throwable;
 /**
  * Simple template block that renders provided template wrapped into <div> container.
  */
-class SimpleBlock implements BlockInterface
+class SimpleTemplateBlock implements BlockInterface
 {
     /**
      * @var array

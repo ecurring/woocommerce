@@ -11,7 +11,7 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
-use Ecurring\WooEcurring\Template\SimpleBlock;
+use Ecurring\WooEcurring\Template\SimpleTemplateBlock;
 use Ecurring\WooEcurring\Template\WcSelect;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -222,7 +222,7 @@ class AdminController
             'value' => $selectedPlan,
         ];
 
-        $selectBlock = new SimpleBlock($context, $wcSelectTemplate);
+        $selectBlock = new SimpleTemplateBlock($context, $wcSelectTemplate);
         $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
         $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
 
