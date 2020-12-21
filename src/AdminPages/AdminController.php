@@ -11,7 +11,7 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
-use Ecurring\WooEcurring\Template\SimpleTemplateBlock;
+use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
 use Ecurring\WooEcurring\Template\WcSelect;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -61,6 +61,10 @@ class AdminController
      * @var string
      */
     protected $adminTemplatesPath;
+    /**
+     * @var SimpleTemplateBlockFactory
+     */
+    protected $templateBlockFactory;
 
     /**
      * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
@@ -71,6 +75,7 @@ class AdminController
      * @param NonceFieldBuilderInterface           $nonceFieldBuilder
      * @param ApiClientInterface                   $apiClient
      * @param PathTemplateFactoryInterface         $pathTemplateFactory
+     * @param SimpleTemplateBlockFactory           $templateBlockFactory
      */
     public function __construct(
         TemplateInterface $adminSettingsPageRenderer,
@@ -80,7 +85,8 @@ class AdminController
         NonceInterface $nonce,
         NonceFieldBuilderInterface $nonceFieldBuilder,
         ApiClientInterface $apiClient,
-        PathTemplateFactoryInterface $pathTemplateFactory
+        PathTemplateFactoryInterface $pathTemplateFactory,
+        SimpleTemplateBlockFactory $templateBlockFactory
     ) {
 
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
@@ -92,6 +98,7 @@ class AdminController
         $this->apiClient = $apiClient;
         $this->pathTemplateFactory = $pathTemplateFactory;
         $this->adminTemplatesPath = plugin_dir_path(WOOECUR_PLUGIN_FILE) . 'views/admin';
+        $this->templateBlockFactory = $templateBlockFactory;
     }
 
     /**
@@ -222,7 +229,7 @@ class AdminController
             'value' => $selectedPlan,
         ];
 
-        $selectBlock = new SimpleTemplateBlock($context, $wcSelectTemplate);
+        $selectBlock = $this->templateBlockFactory->fromTemplate($wcSelectTemplate, $context);
         $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
         $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
 

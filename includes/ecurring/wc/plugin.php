@@ -17,6 +17,7 @@ use Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener;
 use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
+use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -67,6 +68,7 @@ class eCurring_WC_Plugin
 
             $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
             $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
+            $simpleTemplateBlockFactory = new SimpleTemplateBlockFactory();
             $filePathTemplateFactory = new FilePathTemplateFactory(
                 new FilePhpEvaluatorFactory(),
                 [],
@@ -81,7 +83,8 @@ class eCurring_WC_Plugin
                 $nonce,
                 $nonceFieldBuilder,
                 $apiClient,
-                $filePathTemplateFactory
+                $filePathTemplateFactory,
+                $simpleTemplateBlockFactory
             )
             )->init();
         });
