@@ -127,6 +127,28 @@ class ProductEditPageController
     }
 
     /**
+     * Save product fields on saving product.
+     *
+     * @param int $productId Id of the product to save fields for.
+     */
+    public function savePostedProductFields(int $productId): void
+    {
+        $subscriptionPlan = filter_input(
+            INPUT_POST,
+            '_woo_ecurring_product_data',
+            FILTER_SANITIZE_STRING
+        );
+
+        if (is_string($subscriptionPlan) && $subscriptionPlan !== '0') {
+            update_post_meta($productId, '_ecurring_subscription_plan', $subscriptionPlan);
+
+            return;
+        }
+
+        delete_post_meta($productId, '_ecurring_subscription_plan');
+    }
+
+    /**
      * Get list of the available subscription plans to be displayed as HTML select options.
      *
      * @return array Subscription plans array with ids as keys and names as values.

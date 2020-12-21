@@ -107,6 +107,8 @@ class AdminController
         );
 
         add_action('woocommerce_product_data_panels', [$this, 'handleRenderingProductDataPanels']);
+
+        add_action('woocommerce_process_product_meta', [$this, 'handleProductSaving']);
     }
 
     /**
@@ -119,6 +121,16 @@ class AdminController
     public function handleRegisteringProductDataTabs(array $productDataTabs): array
     {
         return $this->productEditPageController->addProductDataTabsToTheDataTabsList($productDataTabs);
+    }
+
+    /**
+     * Handle saving product meta data.
+     *
+     * @param $productId
+     */
+    public function handleProductSaving($productId): void
+    {
+        $this->productEditPageController->savePostedProductFields((int)$productId);
     }
 
     /**

@@ -111,9 +111,6 @@ class eCurring_WC_Plugin
         // admin scripts and styles
         add_action('admin_enqueue_scripts', [ __CLASS__, 'eCurringEnqueueScriptsAndStylesAdmin' ]);
 
-        // Save eCurring product in the product post meta - "_ecurring_subscription_plan"
-        add_action('woocommerce_process_product_meta', [ __CLASS__, 'eCurringProcessProductMetaFieldsSave']);
-
         // Hide coupon in cart and checkout if there is eCurring product
         add_filter('woocommerce_coupons_enabled', [ __CLASS__, 'eCurringHideCouponField']);
 
