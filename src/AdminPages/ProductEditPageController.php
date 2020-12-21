@@ -7,7 +7,7 @@ namespace Ecurring\WooEcurring\AdminPages;
 use Dhii\Output\Block\TemplateBlockFactoryInterface;
 use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurring\Template\WcSelectTemplate;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -34,7 +34,7 @@ class ProductEditPageController
      */
     protected $adminTemplatesPath;
     /**
-     * @var SubscriptionCrud
+     * @var SubscriptionCrudInterface
      */
     protected $subscriptionCrud;
 
@@ -47,7 +47,7 @@ class ProductEditPageController
      *
      * @param SubscriptionPlans             $subscriptionPlans    Service providing subscription
      *                                                            plans data.
-     * @param SubscriptionCrud              $subscriptionCrud
+     * @param SubscriptionCrudInterface              $subscriptionCrud
      * @param string $adminTemplatesPath                          Path to the directory with
      *                                                            the admin templates.
      */
@@ -55,7 +55,7 @@ class ProductEditPageController
         PathTemplateFactoryInterface $pathTemplateFactory,
         TemplateBlockFactoryInterface $templateBlockFactory,
         SubscriptionPlans $subscriptionPlans,
-        SubscriptionCrud $subscriptionCrud,
+        SubscriptionCrudInterface $subscriptionCrud,
         string $adminTemplatesPath
     ) {
 
