@@ -10,6 +10,7 @@ use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
 use Ecurring\WooEcurring\Template\WcSelect;
@@ -65,6 +66,10 @@ class AdminController
      * @var SimpleTemplateBlockFactory
      */
     protected $templateBlockFactory;
+    /**
+     * @var SubscriptionPlans
+     */
+    protected $subscriptionPlans;
 
     /**
      * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
@@ -76,6 +81,7 @@ class AdminController
      * @param ApiClientInterface                   $apiClient
      * @param PathTemplateFactoryInterface         $pathTemplateFactory
      * @param SimpleTemplateBlockFactory           $templateBlockFactory
+     * @param SubscriptionPlans                    $subscriptionPlans
      */
     public function __construct(
         TemplateInterface $adminSettingsPageRenderer,
@@ -86,7 +92,8 @@ class AdminController
         NonceFieldBuilderInterface $nonceFieldBuilder,
         ApiClientInterface $apiClient,
         PathTemplateFactoryInterface $pathTemplateFactory,
-        SimpleTemplateBlockFactory $templateBlockFactory
+        SimpleTemplateBlockFactory $templateBlockFactory,
+        SubscriptionPlans $subscriptionPlans
     ) {
 
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
@@ -99,6 +106,7 @@ class AdminController
         $this->pathTemplateFactory = $pathTemplateFactory;
         $this->adminTemplatesPath = plugin_dir_path(WOOECUR_PLUGIN_FILE) . 'views/admin';
         $this->templateBlockFactory = $templateBlockFactory;
+        $this->subscriptionPlans = $subscriptionPlans;
     }
 
     /**
@@ -210,13 +218,7 @@ class AdminController
             return;
         }
 
-        $subscriptionPlans = [];
-        $subscriptionPlans[0] = sprintf(
-            '- %1$s -',
-            _x('No subscription plan', 'Option text for subscription plan select on product page', 'woo-ecurring')
-        );
-
-        $subscriptionPlans += $this->apiClient->getAvailableSubscriptionPlans();
+        $subscriptionPlans = $this->getSubscriptionPlanOptions();
         $selectedPlan = get_post_meta($post->ID, '_ecurring_subscription_plan', true);
         $wcSelectTemplate = new WcSelect();
 
@@ -251,6 +253,36 @@ class AdminController
                 )
             );
         }
+    }
+
+    /**
+     * Get list of the available subscription plans to be displayed as HTML select options.
+     *
+     * @return array Subscription plans array with ids as keys and names as values.
+     */
+    protected function getSubscriptionPlanOptions(): array
+    {
+        $subscriptionPlans = [];
+        $subscriptionPlans[0] = sprintf(
+            '- %1$s -',
+            _x(
+                'No subscription plan',
+                'Option text for subscription plan select on product page',
+                'woo-ecurring'
+            )
+        );
+
+        $subscriptionPlansData = $this->subscriptionPlans->getSubscriptionPlans()->data ?? [];
+
+        $plans = [];
+
+        foreach ($subscriptionPlansData as $plan) {
+            $plans[$plan->id] = $plan->attributes->name;
+        }
+
+        $subscriptionPlans += $plans;
+
+        return $subscriptionPlans;
     }
 
     /**

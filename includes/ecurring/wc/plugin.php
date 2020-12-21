@@ -8,6 +8,7 @@ use Dhii\Output\Template\PhpTemplate\FilePathTemplateFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Customer\CustomerCrud;
 use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
 use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
@@ -66,6 +67,8 @@ class eCurring_WC_Plugin
             );
             $viewFactory = new ViewFactory();
 
+            $subscriptionPlans = new SubscriptionPlans(self::getApiHelper());
+
             $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
             $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
             $simpleTemplateBlockFactory = new SimpleTemplateBlockFactory();
@@ -84,7 +87,8 @@ class eCurring_WC_Plugin
                 $nonceFieldBuilder,
                 $apiClient,
                 $filePathTemplateFactory,
-                $simpleTemplateBlockFactory
+                $simpleTemplateBlockFactory,
+                $subscriptionPlans
             )
             )->init();
         });
