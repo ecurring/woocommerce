@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Template;
 
+use ArrayAccess;
 use Dhii\Output\Block\BlockInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Throwable;
@@ -24,9 +25,9 @@ class SimpleTemplateBlock implements BlockInterface
 
     /**
      * @param TemplateInterface $template Template to render with context.
-     * @param array             $context Context to provide to the template.
+     * @param array|ArrayAccess|null $context Context to provide to the template.
      */
-    public function __construct(TemplateInterface $template, array $context)
+    public function __construct(TemplateInterface $template, $context)
     {
         $this->context = $context;
         $this->template = $template;
