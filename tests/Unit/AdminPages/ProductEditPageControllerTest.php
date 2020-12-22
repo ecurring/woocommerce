@@ -47,7 +47,8 @@ class ProductEditPageControllerTest extends TestCase
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
             $subscriptionCrudMock,
-            ''
+            '',
+            true
         );
 
         when('_x')
@@ -111,7 +112,8 @@ class ProductEditPageControllerTest extends TestCase
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
             $subscriptionCrudMock,
-            ''
+            '',
+            true
         );
 
         expect('update_post_meta')
@@ -147,7 +149,8 @@ class ProductEditPageControllerTest extends TestCase
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
             $subscriptionCrudMock,
-            ''
+            '',
+            true
         );
 
         expect('delete_post_meta')
@@ -172,7 +175,6 @@ class ProductEditPageControllerTest extends TestCase
 
         $tabContentTemplateMock->expects($this->once())
             ->method('render')
-            ->with(['select' => $selectBlockMock])
             ->willReturnCallback(static function () use ($templateContent) {
                 echo $templateContent;
             });
@@ -203,7 +205,8 @@ class ProductEditPageControllerTest extends TestCase
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
             $subscriptionCrudMock,
-            ''
+            '',
+            true
         );
 
         when('wc_get_product')
@@ -240,7 +243,6 @@ class ProductEditPageControllerTest extends TestCase
 
         $tabContentTemplateMock->expects($this->once())
             ->method('render')
-            ->with(['select' => $selectBlockMock])
             ->willThrowException($exception);
 
         /** @var PathTemplateFactoryInterface&MockObject $pathTemplateFactoryMock */
@@ -269,7 +271,8 @@ class ProductEditPageControllerTest extends TestCase
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
             $subscriptionCrudMock,
-            ''
+            '',
+            true
         );
 
         when('wc_get_product')
