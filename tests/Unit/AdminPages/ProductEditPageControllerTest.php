@@ -14,8 +14,8 @@ use Exception;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
-
 use WC_Product;
+
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 
@@ -173,7 +173,7 @@ class ProductEditPageControllerTest extends TestCase
         $tabContentTemplateMock->expects($this->once())
             ->method('render')
             ->with(['select' => $selectBlockMock])
-            ->willReturnCallback(function() use ($templateContent){
+            ->willReturnCallback(static function () use ($templateContent) {
                 echo $templateContent;
             });
 
