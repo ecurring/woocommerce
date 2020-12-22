@@ -9,18 +9,14 @@ use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use eCurring_WC_Helper_Api;
 use Exception;
-use WP_Post;
 
 use function in_the_loop;
 use function add_action;
 use function add_filter;
 use function filter_input;
 use function json_decode;
-use function get_post_meta;
-use function update_post_meta;
 use function home_url;
 use function add_query_arg;
-use function get_posts;
 use function wp_die;
 
 class MyAccount
@@ -58,8 +54,24 @@ class MyAccount
         $this->subscriptions = $subscriptions;
     }
 
+    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     public function init(): void
     {
+        add_filter(
+            'woocommerce_account_menu_items',
+            function ($items) {
+                $newItems = [];
+                $newItems['ecurring-subscriptions'] = __('Subscriptions', 'woo-ecurring');
+                $position = (int) array_search('orders', array_keys($items), true) + 1;
+
+                $finalItems = array_slice($items, 0, $position, true);
+                $finalItems += $newItems;
+                $finalItems += array_slice($items, $position, count($items) - $position, true);
+
+                return $finalItems;
+            }
+        );
+
         add_action(
             'woocommerce_account_ecurring-subscriptions_endpoint',
             function () {
@@ -187,8 +199,7 @@ class MyAccount
             )
         );
 
-        $postSubscription = new Repository();
-        $postSubscription->create($response->data);
+        $this->repository->create($response);
     }
 
     /**
@@ -304,44 +315,12 @@ class MyAccount
     }
 
     /**
-     * @param $response
+     * @param $subscriptionData
      *
      * @return void
      */
-    protected function updatePostSubscription($response): void
+    protected function updatePostSubscription($subscriptionData): void
     {
-        /**
-         * @var array<WP_Post>
-         */
-        $subscriptionPosts = get_posts(
-            [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
-            ]
-        );
-
-        foreach ($subscriptionPosts as $post) {
-            $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
-
-            if ($postSubscriptionId && $postSubscriptionId === $response->data->id) {
-                update_post_meta($post->ID, '_ecurring_post_subscription_id', $response->data->id);
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_links',
-                    $response->data->links
-                );
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_attributes',
-                    $response->data->attributes
-                );
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_relationships',
-                    $response->data->relationships
-                );
-            }
-        }
+        $this->repository->update($subscriptionData);
     }
 }

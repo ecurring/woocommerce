@@ -11,7 +11,7 @@ use WP_Post;
 
 class Display
 {
-    public function details(WP_Post $post): void
+    public function details(WP_Post $post): void //phpcs:disable Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
@@ -29,15 +29,77 @@ class Display
         $mandateId = $attributes->mandate_code;
         ?>
         <ul>
-            <li>Status: <?php echo esc_attr(ucfirst($status)); ?></li>
-            <li>Subscription ID: <?php echo esc_attr($subscriptionId);?></li>
-            <li>Product ID: <?php echo esc_attr($productId);?></li>
-            <li>Start date: <?php echo esc_attr((new DateTime($startDate))->format('d-m-Y'));?></li>
-            <li>Activated on: <?php echo esc_attr((new DateTime($activatedOn))->format('d-m-Y H:i:s'));?></li>
-            <li>(Will be) cancelled on: <?php echo esc_attr((new DateTime($canceledOn))->format('d-m-Y'));?></li>
-            <li>Mandate ID: <?php echo esc_attr($mandateId);?></li>
+            <li><?php
+                    echo esc_html_x(
+                        'Status:',
+                        'Admin meta box subscription data',
+                        'woo-ecurring'
+                    );
+                ?> <?php echo esc_attr(ucfirst($status)); ?>
+            </li>
+            <li><?php
+                echo esc_html_x(
+                    'Subscription ID:',
+                    'Admin meta box subscription data',
+                    'woo-ecurring'
+                );
+                ?> <?php echo esc_attr($subscriptionId);?></li>
+            <li><?php
+                echo esc_html_x(
+                    'Product ID:',
+                    'Admin meta box subscription data',
+                    'woo-ecurring'
+                );
+                ?> <?php echo esc_attr($productId);?></li>
+            <li><?php
+                echo esc_html_x(
+                    'Start date:',
+                    'Admin meta box subscription data',
+                    'woo-ecurring'
+                );
+                ?> <?php echo esc_attr((new DateTime($startDate))->format('d-m-Y'));?></li>
+            <li><?php
+                echo esc_html_x(
+                    'Activated on:',
+                    'Admin meta box subscription data',
+                    'woo-ecurring'
+                );
+                ?> <?php echo esc_attr((new DateTime($activatedOn))->format('d-m-Y H:i:s'));?></li>
+            <li><?php
+                echo esc_html_x(
+                    '(Will be) cancelled on:',
+                    'Admin meta box subscription data',
+                    'woo-ecurring'
+                );
+                ?> <?php echo esc_attr((new DateTime($canceledOn))->format('d-m-Y'));?></li>
+            <li><?php
+                echo esc_html_x(
+                    'Mandate ID',
+                    'Admin meta box subscription data',
+                    'woo-ecurring'
+                );
+                ?> <?php echo esc_attr($mandateId);?></li>
         </ul>
 
+        <?php
+    }
+
+    public function general($post): void
+    {
+        $customer = get_post_meta($post->ID, '_ecurring_post_subscription_customer', true);
+
+        $customerId = $customer->data->id ?? '';
+        $firstName = $customer->data->attributes->first_name ?? '';
+        $lastName = $customer->data->attributes->last_name ?? '';
+        $email = $customer->data->attributes->email ?? '';
+
+        ?>
+        <ul>
+            <li>Customer ID: <?php echo esc_attr($customerId);?></li>
+            <li>First Name: <?php echo esc_attr($firstName);?></li>
+            <li>Last Name: <?php echo esc_attr($lastName);?></li>
+            <li>Email: <?php echo esc_attr($email);?></li>
+        </ul>
         <?php
     }
 
@@ -59,6 +121,11 @@ class Display
         $productsResponse = json_decode(
             $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
         );
+
+        if (!isset($productsResponse->data)) {
+            return;
+        }
+
         $products = [];
         foreach ($productsResponse->data as $product) {
             $products[$product->id] = $product->attributes->name;
@@ -67,35 +134,106 @@ class Display
         <input type="hidden" name="ecurring_subscription_id"
                value="<?php echo esc_attr($subscriptionId) ?>">
         <select name="ecurring_subscription" id="ecurring_subscription_options">
-            <option value="">Select an option</option>
-            <?php if ($status === 'paused') { ?>
-                <option value="resume">Resume subscription</option>
-            <?php } else { ?>
-                <option value="pause">Pause subscription</option>
-                <option value="switch">Switch subscription</option>
-            <?php } ?>
-            <option value="cancel">Cancel subscription</option>
+            <option value=""
+            ><?php
+                echo esc_html_x(
+                    'Select an option',
+                    'Admin meta box option name',
+                    'woo-ecurring'
+                ); ?>
+            </option><?php if ($status === 'paused') { ?>
+                <option value="resume"
+                ><?php
+                   echo esc_html_x(
+                       'Resume subscription',
+                       'Admin meta box option name',
+                       'woo-ecurring'
+                   ); ?></option>
+                     <?php } else { ?>
+                <option value="pause"
+                ><?php
+                    echo esc_html_x(
+                        'Pause subscription',
+                        'Admin meta box option name',
+                        'woo-ecurring'
+                    ); ?></option>
+                <option value="switch"
+                ><?php
+                    echo esc_html_x(
+                        'Switch subscription',
+                        'Admin meta box option name',
+                        'woo-ecurring'
+                    ); ?></option>
+                     <?php } ?>
+            <option value="cancel"
+            ><?php
+                echo esc_html_x(
+                    'Cancel subscription',
+                    'Admin meta box option name',
+                    'woo-ecurring'
+                ); ?></option>
         </select>
         <div class="ecurring-hide" id="pause-form">
-            <h3>Pause subscription - <?php echo esc_attr($subscriptionId); ?></h3>
-            <p>Please select until when this subscription should be paused.</p>
-            <h4>Pause until</h4>
+            <h3><?php
+                echo esc_html_x(
+                    'Pause subscription',
+                    'Admin meta box content',
+                    'woo-ecurring'
+                ); ?> - <?php echo esc_attr($subscriptionId); ?></h3>
+            <p><?php
+                echo esc_html_x(
+                    'Please select until when this subscription should be paused.',
+                    'Admin meta box content',
+                    'woo-ecurring'
+                ); ?></p>
+            <h4><?php
+                echo esc_html_x(
+                    'Pause until',
+                    'Admin meta box content',
+                    'woo-ecurring'
+                ); ?></h4>
             <label><input name="ecurring_pause_subscription" type="radio" value="infinite"
                           class="tog"
-                          checked="checked"/>Infinite</label>
+                          checked="checked"/><?php
+                                                    echo esc_html_x(
+                                                        'Infinite',
+                                                        'Admin meta box context',
+                                                        'woo-ecurring'
+                                                    );?></label>
             <label><input name="ecurring_pause_subscription" type="radio" value="specific-date"
-                          class="tog"/>Specific
-                date</label>
+                          class="tog"
+                /><?php
+                        echo esc_html_x(
+                            'Specific date',
+                            'Admin meta box label (pause subscription until)',
+                            'woo-ecurring'
+                        );
+                    ?></label>
             <input name="ecurring_resume_date" type="date"
                    value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
         </div>
         <div class="ecurring-hide" id="switch-form">
-            <h3>Switch subscription - <?php echo esc_attr($subscriptionId); ?></h3>
-            <p>This form allows you to automatically switch a subscription to a different plan on a
-                desired date. The current mandate will be used for the new subscription, no
-                confirmation from the client is necessary.
+            <h3><?php
+                echo esc_html_x(
+                    'Switch subscription',
+                    'Admin meta box label (pause subscription until)',
+                    'woo-ecurring'
+                );
+                ?> - <?php echo esc_attr($subscriptionId); ?></h3>
+            <p><?php
+                echo esc_html_x(
+                    'This form allows you to automatically switch a subscription to a different 
+                    plan on a desired date. The current mandate will be used for the 
+                    new subscription, no confirmation from the client is necessary.',
+                    'Admin meta box form description',
+                    'woo-ecurring'
+                ); ?>
             </p>
-            <p>Current product: <?php echo esc_attr($products[$currentProduct]); ?></p>
+            <p><?php
+                esc_html_e(
+                    'Current product:',
+                    'woo-ecurring'
+                ); ?> <?php echo esc_attr($products[$currentProduct]); ?></p>
             <select id="ecurring_subscription_plan" name="ecurring_subscription_plan">
                 <?php foreach ($products as $key => $value) { ?>
                     <option value="<?php echo esc_attr($key); ?>"
@@ -103,24 +241,68 @@ class Display
                     ><?php echo esc_attr($value); ?></option>
                 <?php }; ?>
             </select>
-            <p>Indicate the date on which the new subscription should start. The current
-                subscription will automatically be terminated on this date</p>
-            <h4>Switch on</h4>
-            <label><input name="ecurring_switch_subscription" type="radio" value="immediately" class="tog"
-                          checked="checked"/>Immediately</label>
+            <p><?php
+                echo esc_html_x(
+                    'Indicate the date on which the new subscription should start. The current
+                          subscription will automatically be terminated on this date',
+                    'Admin meta box content',
+                    'woo-ecurring'
+                ); ?>
+                </p>
+            <h4><?php
+                echo esc_html_x(
+                    'Switch on',
+                    'Admin meta box label (pause subscription until)',
+                    'woo-ecurring'
+                ); ?></h4>
+            <label><input
+                        name="ecurring_switch_subscription"
+                        type="radio"
+                        value="immediately"
+                        class="tog"
+                        checked="checked"
+                /><?php
+                            echo esc_html_x(
+                                'Immediately',
+                                'Admin meta box label text',
+                                'woo-ecurring'
+                            );
+                    ?></label>
             <label><input name="ecurring_switch_subscription" type="radio" value="specific-date"
-                          class="tog"/>Specific date</label>
+                          class="tog"/><?php
+                                        echo esc_html_x(
+                                            'Specific date',
+                                            'Admin meta box label text',
+                                            'woo-ecurring'
+                                        );
+                                        ?></label>
             <input name="ecurring_switch_date" type="date"
                    value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
         </div>
         <div class="ecurring-hide" id="cancel-form">
-            <h3>Cancel subscription - <?php echo esc_attr($subscriptionId);?></h3>
-            <p>Please choose when to cancel the subscription.</p>
-            <h4>Cancel on</h4>
-            <label><input name="ecurring_cancel_subscription" type="radio" value="infinite" class="tog"
-                          checked="checked"/>Infinite</label>
+            <h3><?php
+                echo esc_html_x(
+                    'Cancel subscription',
+                    'Admin meta box content',
+                    'woo-ecurring'
+                );
+                ?> - <?php echo esc_attr($subscriptionId); ?></h3>
+            <p><?php
+                echo esc_html_x(
+                    'Please choose when to cancel the subscription.',
+                    'Admin meta box content',
+                    'woo-ecurring'
+                ); ?></p>
+            <h4><?php echo esc_html_x('Cancel on', '', 'woo-ecurring'); ?></h4>
+            <label><input
+                        name="ecurring_cancel_subscription"
+                        type="radio"
+                        value="infinite"
+                        class="tog"
+                        checked="checked"
+                /><?php esc_html_x('Infinite', 'Admin meta box content', 'woo-ecurring');?></label>
             <label><input name="ecurring_cancel_subscription" type="radio" value="specific-date"
-                          class="tog"/>Specific date</label>
+                          class="tog"/><?php esc_html_x('Specific date', 'Admin meta box content', 'woo-ecurring'); ?></label>
             <input name="ecurring_cancel_date" type="date"
                    value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
         </div>

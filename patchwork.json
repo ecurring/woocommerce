@@ -4,6 +4,7 @@
     "date",
     "extension_loaded",
     "phpversion",
-    "version_compare"
+    "version_compare",
+    "filter_input"
   ]
 }
