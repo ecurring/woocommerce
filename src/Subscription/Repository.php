@@ -7,7 +7,7 @@ namespace Ecurring\WooEcurring\Subscription;
 use Ecurring\WooEcurring\Api\Customers;
 use eCurring_WC_Helper_Api;
 use eCurring_WC_Helper_Settings;
-use WP_Post;
+use eCurring_WC_Plugin;
 
 class Repository
 {
@@ -18,31 +18,31 @@ class Repository
      */
     public function createSubscriptions($subscriptions): void
     {
-
-        /**
-         * @var WP_Post[] $subscriptionPosts
-         *
-         * @todo use WP_Query instead of get_posts
-         */
-        $subscriptionPosts = get_posts(
-            [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
-            ]
-        );
-
-        $subscriptionIds = [];
-        foreach ($subscriptionPosts as $post) {
-            $subscriptionIds[] = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
-        }
-
         foreach ($subscriptions->data as $subscription) {
-            if (!$this->orderSubscriptionExist($subscription)) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Preparing to save subscription %1$s.',
+                    $subscription->id
+                )
+            );
+
+            if ($this->subscriptionExistsInDb($subscription->id)) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Subscription %1$s already exists in local database, ' .
+                        'saving will be skipped.',
+                        $subscription->id
+                    )
+                );
                 continue;
             }
-
-            if (in_array($subscription->id, $subscriptionIds, true)) {
+            if (! $this->orderWithSubscriptionExists($subscription->id)) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Order not found for the subscription %1$s, saving will be skipped.',
+                        $subscription->id
+                    )
+                );
                 continue;
             }
 
@@ -65,92 +65,153 @@ class Repository
             $customerDetails = $customer->getCustomerById(
                 $subscription->relationships->customer->data->id
             );
-            add_post_meta($postId, '_ecurring_post_subscription_customer', $customerDetails);
 
-            add_post_meta($postId, '_ecurring_post_subscription_id', $subscription->id);
-            add_post_meta($postId, '_ecurring_post_subscription_links', $subscription->links);
-            add_post_meta(
-                $postId,
-                '_ecurring_post_subscription_attributes',
-                $subscription->attributes
-            );
-            add_post_meta(
-                $postId,
-                '_ecurring_post_subscription_relationships',
-                $subscription->relationships
+            $this->saveSubscriptionData($postId, $subscription, $customerDetails);
+
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Subscription %1$s successfully saved as post %2$d',
+                    $subscription->id,
+                    $postId
+                )
             );
         }
     }
 
     public function update($subscription): void
     {
-        /**
-         * @var WP_Post[]
-         *
-         * @todo use WP_Query instead of get_posts
-         */
-        $subscriptionPosts = get_posts(
-            [
-                'post_type' => 'esubscriptions',
-                'posts_per_page' => -1,
-                'post_status' => 'publish',
-            ]
-        );
-        foreach ($subscriptionPosts as $post) {
-            $postSubscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
+        $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscription->data->id);
+        if ($subscriptionPostId === 0) {
+            return;
+        }
 
-            if ($postSubscriptionId && $postSubscriptionId === $subscription->data->id) {
-                update_post_meta($post->ID, '_ecurring_post_subscription_id', $subscription->data->id);
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_links',
-                    $subscription->data->links
-                );
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_attributes',
-                    $subscription->data->attributes
-                );
-                update_post_meta(
-                    $post->ID,
-                    '_ecurring_post_subscription_relationships',
-                    $subscription->data->relationships
-                );
-            }
+        $this->saveSubscriptionData($subscriptionPostId, $subscription);
+    }
+
+    protected function saveSubscriptionData(int $subscriptionPostId, $subscriptionData, $customerDetails = null): void
+    {
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_id',
+            $subscriptionData->id
+        );
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_links',
+            $subscriptionData->links
+        );
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_attributes',
+            $subscriptionData->attributes
+        );
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_relationships',
+            $subscriptionData->relationships
+        );
+
+        if ($customerDetails !== null) {
+            update_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_customer',
+                $customerDetails
+            );
         }
     }
 
     /**
-     * Check if subscription id exist in orders post meta.
+     * Check if subscription already saved in the local DB.
      *
-     * @param $subscription
+     * @param string $subscriptionId The subscription id to check for.
      *
      * @return bool
-     *
-     * @todo: This seems to be very ineffective and potentially may lead to crash of DB has a lot of orders.
-     *        Check and rewrite if needed.
      */
-    protected function orderSubscriptionExist($subscription): bool
+    protected function subscriptionExistsInDb(string $subscriptionId): bool
     {
-        $orders = wc_get_orders(
+        $found = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
+
+        return $found !== 0;
+    }
+
+    /**
+     * @param string $subscriptionId
+     *
+     * @return int
+     */
+    protected function findSubscriptionPostIdBySubscriptionId(string $subscriptionId): int
+    {
+        /** @var int[] $found */
+        $found = get_posts(
             [
-                'posts_per_page' => -1,
+                'post_type' => 'esubscriptions',
+                'numberposts' => 1,
+                'post_status' => 'publish',
+                'fields' => 'ids',
+                'meta_key' => '_ecurring_post_subscription_id',
+                'meta_value' => $subscriptionId,
             ]
         );
 
-        foreach ($orders as $order) {
-            $subscriptionId = get_post_meta(
-                $order->get_id(),
-                '_ecurring_subscription_id',
-                true
-            );
+        return $found[0] ?? 0;
+    }
 
-            if ($subscriptionId === $subscription->id) {
-                return true;
+    /**
+     * Check if order with the given subscription id exists.
+     *
+     * @param string $subscriptionId The id of the subscription to look for.
+     *
+     * @return bool True if order containing given subscription id exists, false otherwise.
+     */
+    protected function orderWithSubscriptionExists(string $subscriptionId): bool
+    {
+        $foundOrderId = $this->findSubscriptionOrderIdBySubscriptionId($subscriptionId);
+
+        return $foundOrderId !== 0;
+    }
+
+    /**
+     * Return an id of the order containing given subscription, return 0 if not found.
+     *
+     * @param string $subscriptionId Subscription id to find order with.
+     *
+     * @return int Found order id.
+     */
+    protected function findSubscriptionOrderIdBySubscriptionId(string $subscriptionId): int
+    {
+        $addSubscriptionIdMetaSupport = function (array $wpQueryArgs, array $wcOrdersQueryArgs) use ($subscriptionId): array {
+            if (! empty($wcOrdersQueryArgs['_ecurring_subscription_id'])) {
+                $wpQueryArgs['meta_query'][] = [
+                    'key' => '_ecurring_subscription_id',
+                    'value' => $subscriptionId,
+                ];
             }
-        }
 
-        return false;
+            return $wpQueryArgs;
+        };
+
+        add_filter(
+            'woocommerce_order_data_store_cpt_get_orders_query',
+            $addSubscriptionIdMetaSupport,
+            10,
+            2
+        );
+
+        /** @var array $foundIds */
+        $foundIds = wc_get_orders(
+            [
+                'limit' => 1,
+                'return' => 'ids',
+                '_ecurring_subscription_id' => $subscriptionId,
+            ]
+        );
+
+        remove_filter(
+            'woocommerce_order_data_store_cpt_get_orders_query',
+            $addSubscriptionIdMetaSupport
+        );
+
+        return $foundIds[0] ?? 0;
     }
 
     /**
