@@ -8,7 +8,6 @@ use Brain\Nonces\NonceInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
-use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -47,10 +46,6 @@ class AdminController
      */
     protected $nonceFieldBuilder;
     /**
-     * @var ApiClientInterface
-     */
-    protected $apiClient;
-    /**
      * @var ProductEditPageController
      */
     protected $productEditPageController;
@@ -62,7 +57,6 @@ class AdminController
      * @param string                               $fieldsCollectionName
      * @param NonceInterface                       $nonce
      * @param NonceFieldBuilderInterface           $nonceFieldBuilder
-     * @param ApiClientInterface                   $apiClient
      * @param ProductEditPageController            $productEditPageController
      */
     public function __construct(
@@ -72,7 +66,6 @@ class AdminController
         string $fieldsCollectionName,
         NonceInterface $nonce,
         NonceFieldBuilderInterface $nonceFieldBuilder,
-        ApiClientInterface $apiClient,
         ProductEditPageController $productEditPageController
     ) {
 
@@ -82,7 +75,6 @@ class AdminController
         $this->settingsCrud = $settingsCrud;
         $this->nonce = $nonce;
         $this->nonceFieldBuilder = $nonceFieldBuilder;
-        $this->apiClient = $apiClient;
         $this->productEditPageController = $productEditPageController;
     }
 

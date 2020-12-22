@@ -55,7 +55,7 @@ class eCurring_WC_Plugin
         (new AddToCartValidationEventListener($subscriptionCrud))->init();
         (new PaymentCompletedEventListener($apiClient, $subscriptionCrud, $customerCrud))->init();
 
-        add_action('admin_init', static function () use ($apiClient, $subscriptionCrud) {
+        add_action('admin_init', static function () use ($subscriptionCrud) {
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
             $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
@@ -96,7 +96,6 @@ class eCurring_WC_Plugin
                 $settingsFormAction,
                 $nonce,
                 $nonceFieldBuilder,
-                $apiClient,
                 $productEditPageController
             )
             )->init();

@@ -10,7 +10,6 @@ use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
-use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -46,7 +45,6 @@ class AdminControllerTest extends TestCase
 
         /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
         $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
-        $apiClientMock = $this->createMock(ApiClient::class);
 
         when('plugin_dir_path')->justReturn('');
 
@@ -63,7 +61,6 @@ class AdminControllerTest extends TestCase
             '',
             $nonceMock,
             $nonceFieldBuilderMock,
-            $apiClientMock,
             $productEditPageControllerMock
         );
 
@@ -112,7 +109,6 @@ class AdminControllerTest extends TestCase
 
         /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
         $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
-        $apiClientMock = $this->createMock(ApiClient::class);
 
         when('plugin_dir_path')->justReturn('');
 
@@ -129,7 +125,6 @@ class AdminControllerTest extends TestCase
             '',
             $nonceMock,
             $nonceFieldBuilderMock,
-            $apiClientMock,
             $productEditPageControllerMock
         );
 
