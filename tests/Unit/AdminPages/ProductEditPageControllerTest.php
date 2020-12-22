@@ -287,4 +287,70 @@ class ProductEditPageControllerTest extends TestCase
 
         $sut->renderProductDataFields($productId);
     }
+
+    public function testRenderProductDataFieldsNoApiKey()
+    {
+        $pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
+        $pluginMock->shouldReceive('debug');
+
+        $templateContent = 'template content';
+
+        $productId = 15;
+
+        /** @var TemplateInterface&MockObject $tabContentTemplateMock */
+        $tabContentTemplateMock = $this->createMock(TemplateInterface::class);
+
+        $tabContentTemplateMock->expects($this->once())
+            ->method('render')
+            ->willReturnCallback(function (array $context) use ($templateContent): string {
+                $this->assertStringContainsString(
+                    'Please, enter an API key',
+                    $context['message']
+                );
+
+                $this->assertSame('', $context['select']);
+
+                return $templateContent;
+            });
+
+        /** @var PathTemplateFactoryInterface&MockObject $pathTemplateFactoryMock */
+        $pathTemplateFactoryMock = $this->createMock(PathTemplateFactoryInterface::class);
+        $pathTemplateFactoryMock->method('fromPath')
+            ->willReturn($tabContentTemplateMock);
+
+        /**
+         * @var TemplateBlockFactoryInterface&MockObject
+         */
+        $templateBlockFactoryMock = $this->createMock(TemplateBlockFactoryInterface::class);
+
+        /** @var SubscriptionPlans&MockObject $subscriptionPlansMock */
+        $subscriptionPlansMock = $this->createMock(SubscriptionPlans::class);
+
+        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
+        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
+
+        $sut = new ProductEditPageController(
+            $pathTemplateFactoryMock,
+            $templateBlockFactoryMock,
+            $subscriptionPlansMock,
+            $subscriptionCrudMock,
+            '',
+            false
+        );
+
+        when('_x')
+            ->returnArg(1);
+
+        when('admin_url')
+            ->justReturn('');
+
+        when('esc_url')
+            ->justReturn('');
+        when('wp_kses')
+            ->returnArg(1);
+
+        $this->expectOutputString($templateContent);
+
+        $sut->renderProductDataFields($productId);
+    }
 }
