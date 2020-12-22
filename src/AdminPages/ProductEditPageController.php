@@ -169,6 +169,7 @@ class ProductEditPageController
         $closingTag = '</a>';
 
         return sprintf(
+            /* translators: %1$s is replaced with the opening a HTML tag, %2$s is replaced with the closing a tag. */
             _x(
                 'Please, enter an API key on the %1$splugin settings page%2$s to be able to connect subscription to this product.',
                 'Message on the product edit page, Mollie Subscriptions tab',
