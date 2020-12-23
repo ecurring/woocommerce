@@ -6,6 +6,9 @@ namespace Ecurring\WooEcurring\Subscription\Status;
 
 use DateTime;
 
+/**
+ * Entity that represents subscription status, it's previous and future changes.
+ */
 interface SubscriptionStatusInterface
 {
     /**
@@ -14,7 +17,7 @@ interface SubscriptionStatusInterface
      * @return string Subscription status.
      */
     public function getCurrentStatus(): string;
-    
+
     /**
      * Return a date when a subscription was or will be started.
      *
