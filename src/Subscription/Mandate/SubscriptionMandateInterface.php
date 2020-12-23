@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Subscription\Mandate;
 
 use DateTime;
-use Psr\Http\Message\UriInterface;
 
 /**
  * Entity that represents an eCurring mandate.
@@ -38,9 +37,9 @@ interface SubscriptionMandateInterface
     /**
      * A link to the page where mandate can be accepted.
      *
-     * @return UriInterface Subscription activation page uri.
+     * @return string Subscription activation page uri.
      */
-    public function getConfirmationPageUrl(): UriInterface;
+    public function getConfirmationPageUrl(): string;
 
     /**
      * Whether the confirmation page URI was sent to the customer.
