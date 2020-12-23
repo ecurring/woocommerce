@@ -53,14 +53,14 @@ interface SubscriptionStatusInterface
     /**
      * Return the date and time when subscription was created.
      *
-     * @return DateTime
+     * @return DateTime|null
      */
-    public function getCreatedAt(): DateTime;
+    public function getCreatedAt(): ?DateTime;
 
     /**
      * Return the date and time when subscription was updated last time.
      *
-     * @return DateTime
+     * @return DateTime|null
      */
-    public function getUpdatedAt(): DateTime;
+    public function getUpdatedAt(): ?DateTime;
 }
