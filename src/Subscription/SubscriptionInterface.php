@@ -27,7 +27,7 @@ interface SubscriptionInterface
     public function getMandate(): SubscriptionMandateInterface;
 
     /**
-     * Return subscription status interface.
+     * Return object aware of subscription status, it's previous and future changes.
      *
      * @return SubscriptionStatusInterface
      */
