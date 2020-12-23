@@ -9,6 +9,7 @@ use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
+use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -45,13 +46,22 @@ class AdminControllerTest extends TestCase
         /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
         $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
 
+        when('plugin_dir_path')->justReturn('');
+
+        if (! defined('WOOECUR_PLUGIN_FILE')) {
+            define('WOOECUR_PLUGIN_FILE', 'woo-ecurring/woo-ecurring.php');
+        }
+
+        $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
+
         $sut = new AdminController(
             $adminSettingsPageRendererMock,
             $formBuilderMock,
             $settingsCrudMock,
             '',
             $nonceMock,
-            $nonceFieldBuilderMock
+            $nonceFieldBuilderMock,
+            $productEditPageControllerMock
         );
 
         when('_x')->returnArg();
@@ -100,13 +110,22 @@ class AdminControllerTest extends TestCase
         /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
         $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
 
+        when('plugin_dir_path')->justReturn('');
+
+        if (! defined('WOOECUR_PLUGIN_FILE')) {
+            define('WOOECUR_PLUGIN_FILE', 'woo-ecurring/woo-ecurring.php');
+        }
+
+        $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
+
         $sut = new AdminController(
             $adminSettingsPageRendererMock,
             $formBuilderMock,
             $settingsCrudMock,
             '',
             $nonceMock,
-            $nonceFieldBuilderMock
+            $nonceFieldBuilderMock,
+            $productEditPageControllerMock
         );
 
         $this->expectOutputString($renderedContent);

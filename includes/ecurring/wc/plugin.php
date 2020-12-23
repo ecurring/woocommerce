@@ -3,9 +3,13 @@
 use Brain\Nonces\WpNonce;
 use ChriCo\Fields\ElementFactory;
 use ChriCo\Fields\ViewFactory;
+use Dhii\Output\PhpEvaluator\FilePhpEvaluatorFactory;
+use Dhii\Output\Template\PhpTemplate\FilePathTemplateFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
+use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
+use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Customer\CustomerCrud;
 use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
 use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
@@ -15,6 +19,7 @@ use Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener;
 use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
+use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
 
 // Require Webhook functions
 require_once dirname(dirname(dirname(__FILE__))) . '/webhook_functions.php';
@@ -50,7 +55,7 @@ class eCurring_WC_Plugin
         (new AddToCartValidationEventListener($subscriptionCrud))->init();
         (new PaymentCompletedEventListener($apiClient, $subscriptionCrud, $customerCrud))->init();
 
-        add_action('admin_init', static function () {
+        add_action('admin_init', static function () use ($subscriptionCrud) {
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
             $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
@@ -63,15 +68,35 @@ class eCurring_WC_Plugin
             );
             $viewFactory = new ViewFactory();
 
+            $subscriptionPlans = new SubscriptionPlans(self::getApiHelper());
+
             $formBuilder = new FormFieldsCollectionBuilder($elementFactory, $viewFactory, $formConfig);
             $nonceFieldBuilder = new NonceFieldBuilder($elementFactory, $viewFactory);
+            $simpleTemplateBlockFactory = new SimpleTemplateBlockFactory();
+            $filePathTemplateFactory = new FilePathTemplateFactory(
+                new FilePhpEvaluatorFactory(),
+                [],
+                []
+            );
+
+            $adminTemplatesPath = plugin_dir_path(WOOECUR_PLUGIN_FILE) . 'views/admin';
+
+            $productEditPageController = new ProductEditPageController(
+                $filePathTemplateFactory,
+                $simpleTemplateBlockFactory,
+                $subscriptionPlans,
+                $subscriptionCrud,
+                $adminTemplatesPath
+            );
+
             (new AdminController(
                 $wcBasedSettingsTemplate,
                 $formBuilder,
                 $settingsCrud,
                 $settingsFormAction,
                 $nonce,
-                $nonceFieldBuilder
+                $nonceFieldBuilder,
+                $productEditPageController
             )
             )->init();
         });
@@ -84,15 +109,6 @@ class eCurring_WC_Plugin
 
         // admin scripts and styles
         add_action('admin_enqueue_scripts', [ __CLASS__, 'eCurringEnqueueScriptsAndStylesAdmin' ]);
-
-        // Adding eCurring tab to the WC Product
-        add_filter('woocommerce_product_data_tabs', [ __CLASS__, 'eCurringProductDataTab'], 99, 1);
-
-        // Adding list of products to the eCurring tab
-        add_action('woocommerce_product_data_panels', [ __CLASS__, 'eCurringProductDataFields']);
-
-        // Save eCurring product in the product post meta - "_ecurring_subscription_plan"
-        add_action('woocommerce_process_product_meta', [ __CLASS__, 'eCurringProcessProductMetaFieldsSave']);
 
         // Hide coupon in cart and checkout if there is eCurring product
         add_filter('woocommerce_coupons_enabled', [ __CLASS__, 'eCurringHideCouponField']);
@@ -324,115 +340,6 @@ class eCurring_WC_Plugin
                 'manual_order_notice' => __('Do not add eCurring products to manual orders: subscriptions and recurring orders will not be created!', 'woo-ecurring'),
              ]
         );
-    }
-
-    /**
-     * Adding eCurring tab to the WC Product
-     *
-     * @param $product_data_tabs
-     *
-     * @return mixed
-     */
-    public static function eCurringProductDataTab($product_data_tabs)
-    {
-
-        $product_data_tabs['woo-ecurring-tab'] = [
-            'label' => __('eCurring', 'woo-ecurring'),
-            'target' => 'woo_ecurring_product_data',
-        ];
-
-        return $product_data_tabs;
-    }
-
-    /**
-     * Adding list of products to the eCurring tab
-     */
-    public static function eCurringProductDataFields()
-    {
-
-        global $post;
-
-        $api = eCurring_WC_Plugin::getApiHelper();
-        $page_size = 50;
-        $subscription_plans_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[size]=' . $page_size), true);
-        $subscription_plans_data = isset($subscription_plans_response['data']) ? $subscription_plans_response['data'] : false;
-        if (!$subscription_plans_data) {
-            exit;
-        }
-
-        $subscription_plans = [];
-        $subscription_plans[0] = sprintf(
-            '- %1$s -',
-            _x('No subscription plan', 'Option text for subscription plan select on product page', 'woo-ecurring')
-        );
-        foreach ($subscription_plans_data as $subscription_plan) {
-            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
-                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
-            }
-        }
-
-        if ($subscription_plans_response['links']['next']) {
-            $last_page_link = parse_url($subscription_plans_response['links']['last']);
-            parse_str($last_page_link['query'], $query);
-            $last_page_num = $query['page']['number'];
-
-            if ($last_page_num > 1) {
-                for ($i = 2; $i <= $last_page_num; $i++) {
-                    $next_page_response = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans?page[number]=' . $i . '&page[size]=' . $page_size), true);
-
-                    if (isset($next_page_response['data'])) {
-                        foreach ($next_page_response['data'] as $subscription_plan) {
-                            if ($subscription_plan['attributes']['status'] == 'active' && $subscription_plan['attributes']['mandate_authentication_method'] == 'first_payment') {
-                                $subscription_plans[ $subscription_plan['id'] ] = $subscription_plan['attributes']['name'];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        ?>
-        <div id="woo_ecurring_product_data" class="panel woocommerce_options_panel">
-
-            <div style="padding: 15px;">
-                <?php
-                echo __('You are adding an eCurring product. The eCurring product determines the price your customers will pay when purchasing this product. Make sure the product price in WooCommerce exactly matches the eCurring product price. Important: the eCurring product determines the price your customers will pay when purchasing this product. Make sure the product price in WooCommerce exactly matches the eCurring product price. The eCurring product price should include all shipping cost. Any additional shipping costs added by WooCommerce will not be charged.', 'woo-ecurring');
-                ?>
-            </div>
-            <?php
-            woocommerce_wp_select([
-                'id' => '_woo_ecurring_product_data',
-                'wrapper_class' => 'show_if_simple',
-                'label' => __('Product', 'woo-ecurring'),
-                'description' => __('', 'woo-ecurring'),
-                'options' => $subscription_plans,
-                'value' => get_post_meta($post->ID, '_ecurring_subscription_plan', true),
-            ]);
-            ?>
-        </div>
-        <?php
-    }
-
-    /**
-     * Save eCurring product in the product post meta - "_ecurring_subscription_plan"
-     *
-     * @param $postId
-     */
-    public static function eCurringProcessProductMetaFieldsSave($postId)
-    {
-
-        $subscriptionPlan = filter_input(
-            INPUT_POST,
-            '_woo_ecurring_product_data',
-            FILTER_SANITIZE_STRING
-        );
-
-        if (is_string($subscriptionPlan) && $subscriptionPlan !== '0') {
-            update_post_meta($postId, '_ecurring_subscription_plan', $subscriptionPlan);
-
-            return;
-        }
-
-        delete_post_meta($postId, '_ecurring_subscription_plan');
     }
 
     /**
@@ -909,4 +816,3 @@ class eCurring_WC_Plugin
         echo '</p>';
     }
 }
-
