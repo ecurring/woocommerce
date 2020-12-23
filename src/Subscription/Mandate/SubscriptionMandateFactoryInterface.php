@@ -12,6 +12,8 @@ use DateTime;
 interface SubscriptionMandateFactoryInterface
 {
     /**
+     * Create a new mandate instance.
+     *
      * @param string $code Mandate code.
      * @param string $confirmationPageUrl URL of the page where mandate can be accepted.
      * @param bool $confirmationSent Whether confirmation with
