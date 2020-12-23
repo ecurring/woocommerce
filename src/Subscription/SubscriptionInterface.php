@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Subscription;
 
 use DateTime;
-use Psr\Http\Message\UriInterface;
+use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateInterface;
 
 /**
  * Entity that represents an eCurring subscription.
@@ -13,26 +13,11 @@ use Psr\Http\Message\UriInterface;
 interface SubscriptionInterface
 {
     /**
-     * Return a mandate code.
+     * Return subscription mandate instance.
      *
-     * @return string Mandate code or empty string if not set.
+     * @return SubscriptionMandateInterface
      */
-    public function getMandateCode(): string;
-
-    /**
-     * Whether mandate was accepted.
-     *
-     * @return bool
-     */
-    public function getMandateAccepted(): bool;
-
-    /**
-     * Return a date when a mandate was accepted, null if not set.
-     *
-     * @return DateTime|null Date and time or null if not set.
-     */
-    public function getMandateAcceptedDate(): ?DateTime;
-
+    public function getMandate(): SubscriptionMandateInterface;
     /**
      * Return a date when a subscription was or will be started.
      *
@@ -64,20 +49,6 @@ interface SubscriptionInterface
      * @return DateTime|null Date and time or null if not set.
      */
     public function getResumeDate(): ?DateTime;
-
-    /**
-     * A link to a subscription activation and mandate acceptation page.
-     *
-     * @return UriInterface Subscription activation page uri.
-     */
-    public function getConfirmationPage(): UriInterface;
-
-    /**
-     * Whether the confirmation page URI was sent to the customer.
-     *
-     * @return bool
-     */
-    public function getConfirmationSent(): bool;
 
     /**
      * Whether subscription was archived.
