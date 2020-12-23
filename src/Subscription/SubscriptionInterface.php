@@ -21,7 +21,7 @@ interface SubscriptionInterface
 
     /**
      * Return subscription status interface.
-     * 
+     *
      * @return SubscriptionStatusInterface
      */
     public function getStatus(): SubscriptionStatusInterface;
