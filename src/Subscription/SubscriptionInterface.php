@@ -13,6 +13,13 @@ use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusInterface;
 interface SubscriptionInterface
 {
     /**
+     * Return subscription id in the eCurring.
+     *
+     * @return string
+     */
+    public function getId(): string;
+
+    /**
      * Return subscription mandate instance.
      *
      * @return SubscriptionMandateInterface
