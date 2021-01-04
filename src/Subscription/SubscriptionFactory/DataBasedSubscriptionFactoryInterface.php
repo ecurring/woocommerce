@@ -15,11 +15,12 @@ interface DataBasedSubscriptionFactoryInterface
     /**
      * Create a new subscription from given data array.
      *
-     * @param array|ArrayAccess $subscriptionData
+     * @param string $subscriptionId Subscription id in the eCurring system.
+     * @param array|ArrayAccess $subscriptionData Subscription attributes formatted as map.
      *
      * @return SubscriptionInterface Created subscription instance.
      *
      * @throws SubscriptionFactoryException If cannot create a new subscription instance.
      */
-    public function createSubscription($subscriptionData): SubscriptionInterface;
+    public function createSubscription(string $subscriptionId, $subscriptionData): SubscriptionInterface;
 }
