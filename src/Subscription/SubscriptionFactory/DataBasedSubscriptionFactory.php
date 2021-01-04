@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Subscription\SubscriptionFactory;
 
+use ArrayAccess;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactoryInterface;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactoryInterface;
 use Ecurring\WooEcurring\Subscription\Subscription;
@@ -72,7 +73,7 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
     }
 
     /**
-     * @param $subscriptionData
+     * @param array|ArrayAccess $subscriptionData Subscription data that need to be normalized.
      *
      * @return array
      */
