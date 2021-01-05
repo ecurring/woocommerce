@@ -73,11 +73,11 @@ class SubscriptionsJob
     {
         $page = get_option('ecurring_subscriptions_page', 1);
 
-        $subscriptions = json_decode($this->actions->import((int)$page));
+        $subscriptions = json_decode($this->actions->import((int)$page), true);
 
         $this->saveSubscriptionsBunch($subscriptions);
 
-        $parts = parse_url($subscriptions->links->next ?? '');
+        $parts = parse_url($subscriptions['links']['next'] ?? '');
         parse_str($parts['query'] ?? '', $query);
         $nextPage = $query['page']['number'] ?? null;
 
@@ -90,7 +90,7 @@ class SubscriptionsJob
 
         update_option('ecurring_subscriptions_page', $nextPage);
 
-        $parts = parse_url($subscriptions->links->last);
+        $parts = parse_url($subscriptions['links']['last']);
         parse_str($parts['query'] ?? '', $query);
         $lastPage = $query['page']['number'] ?? null;
 
@@ -101,7 +101,7 @@ class SubscriptionsJob
 
     protected function saveSubscriptionsBunch($subscriptionsData): void
     {
-        foreach ($subscriptionsData->data as $subscriptionFields) {
+        foreach ($subscriptionsData['data'] as $subscriptionFields) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Preparing to save subscription %1$s.',
@@ -110,7 +110,10 @@ class SubscriptionsJob
             );
 
             try {
-                $subscription = $this->subscriptionFactory->createSubscription($subscriptionFields->id, (array) $subscriptionFields->attributes);
+                $subscription = $this->subscriptionFactory->createSubscription(
+                    $subscriptionFields['id'],
+                    (array) $subscriptionFields['attributes']
+                );
                 $this->repository->insert($subscription);
 
             } catch (SubscriptionFactoryException $exception) {
