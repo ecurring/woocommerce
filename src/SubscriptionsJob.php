@@ -110,10 +110,7 @@ class SubscriptionsJob
             );
 
             try {
-                $subscription = $this->subscriptionFactory->createSubscription(
-                    $subscriptionFields['id'],
-                    (array) $subscriptionFields['attributes']
-                );
+                $subscription = $this->subscriptionFactory->createSubscription($subscriptionFields);
                 $this->repository->insert($subscription);
 
             } catch (SubscriptionFactoryException $exception) {
