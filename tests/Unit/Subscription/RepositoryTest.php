@@ -2,38 +2,13 @@
 
 namespace Ecurring\WooEcurringTests\Unit\Subscription;
 
-use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurringTests\TestCase;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use function Brain\Monkey\Functions\expect;
-use function Brain\Monkey\Functions\when;
+
 
 class RepositoryTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
-
-    /**
-     * @dataProvider subscriptionsDataProvider
-     */
-    public function testCreateSubscriptions($subscriptions)
-    {
-        //Prevent calling static eCurring_WC_Plugin::debug() method.
-        $pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
-        $pluginMock->shouldReceive('debug');
-
-        $sut = new Repository();
-
-        when('get_posts')
-            ->justReturn([]);
-
-        when('wc_get_orders')
-            ->justReturn([11]);
-
-        expect('wp_insert_post')->twice();
-
-        $sut->createSubscriptions($subscriptions);
-    }
 
     public function subscriptionsDataProvider(): array
     {
