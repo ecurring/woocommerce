@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Subscription\SubscriptionFactory;
 
-use ArrayAccess;
 use DateTime;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactoryInterface;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactoryInterface;
@@ -44,7 +43,7 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
     /**
      * @inheritDoc
      */
-    public function createSubscription(string $subscriptionId, $subscriptionData): SubscriptionInterface
+    public function createSubscription($subscriptionData): SubscriptionInterface
     {
         $normalizedData = $this->normalizeSubscriptionData($subscriptionData);
 
@@ -68,38 +67,41 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
         );
 
         return new Subscription(
-            $subscriptionId,
+            $normalizedData['subscription_id'],
+            $normalizedData['customer_id'],
             $subscriptionMandate,
             $subscriptionStatus
         );
     }
 
     /**
-     * @param array|ArrayAccess $subscriptionData Subscription data that need to be normalized.
+     * @param array $subscriptionData Subscription data that need to be normalized.
      *
      * @return array
      * @throws SubscriptionFactoryException
      */
-    protected function normalizeSubscriptionData($subscriptionData): array
+    protected function normalizeSubscriptionData(array $subscriptionData): array
     {
-        $subscriptionData = (array) $subscriptionData;
+        $subscriptionAttributes = (array) $subscriptionData['attributes'];
 
         return [
-            'mandate_code' => $subscriptionData['mandate_code'] ?? '',
-            'confirmation_page' => $subscriptionData['confirmation_page'] ?? '',
-            'confirmation_sent' => $subscriptionData['confirmation_sent'] ?? false,
-            'mandate_accepted' => $subscriptionData['mandate_accepted'] ?? false,
+            'subscription_id' => $subscriptionData['id'],
+            'customer_id' => $subscriptionData['relationships']['customer']['id'],
+            'mandate_code' => $subscriptionAttributes['mandate_code'] ?? '',
+            'confirmation_page' => $subscriptionAttributes['confirmation_page'] ?? '',
+            'confirmation_sent' => $subscriptionAttributes['confirmation_sent'] ?? false,
+            'mandate_accepted' => $subscriptionAttributes['mandate_accepted'] ?? false,
             'mandate_accepted_date' => $this->createDateFromArrayField(
-                $subscriptionData,
+                $subscriptionAttributes,
                 'mandate_accepted_date'
             ),
-            'status' => $subscriptionData['status'] ?? '',
-            'start_date' => $this->createDateFromArrayField($subscriptionData, 'start_date'),
-            'cancel_date' => $this->createDateFromArrayField($subscriptionData, 'cancel_date'),
-            'resume_date' => $this->createDateFromArrayField($subscriptionData, 'resume_date'),
-            'created_at' => $this->createDateFromArrayField($subscriptionData, 'created_at'),
-            'updated_at' => $this->createDateFromArrayField($subscriptionData, 'updated_at'),
-            'archived' => $subscriptionData['archived'] ?? false,
+            'status' => $subscriptionAttributes['status'] ?? '',
+            'start_date' => $this->createDateFromArrayField($subscriptionAttributes, 'start_date'),
+            'cancel_date' => $this->createDateFromArrayField($subscriptionAttributes, 'cancel_date'),
+            'resume_date' => $this->createDateFromArrayField($subscriptionAttributes, 'resume_date'),
+            'created_at' => $this->createDateFromArrayField($subscriptionAttributes, 'created_at'),
+            'updated_at' => $this->createDateFromArrayField($subscriptionAttributes, 'updated_at'),
+            'archived' => $subscriptionAttributes['archived'] ?? false,
         ];
     }
 
