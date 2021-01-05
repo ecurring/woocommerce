@@ -20,6 +20,13 @@ interface SubscriptionInterface
     public function getId(): string;
 
     /**
+     * Return eCurring subscription customer id.
+     *
+     * @return string
+     */
+    public function getCustomerId(): string;
+
+    /**
      * Return subscription mandate instance.
      *
      * @return SubscriptionMandateInterface
