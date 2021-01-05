@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Plugin;
 
 class SubscriptionsJob
@@ -108,9 +109,19 @@ class SubscriptionsJob
                 )
             );
 
-            $this->subscriptionFactory->createSubscription($subscription->id, (array) $subscription->attributes);
+            try {
+                $this->subscriptionFactory->createSubscription($subscription->id, (array) $subscription->attributes);
+                $this->repository->insert($subscription);
 
-            $this->repository->insert($subscription);
+            } catch (SubscriptionFactoryException $exception) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Couldn\'t create subscription instance from received data. Exception was caught with message: %1$s',
+                        $exception->getMessage()
+                    )
+                );
+            }
+
         }
     }
 }
