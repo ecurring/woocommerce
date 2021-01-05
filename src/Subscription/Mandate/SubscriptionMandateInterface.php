@@ -18,7 +18,7 @@ interface SubscriptionMandateInterface
      *
      * @return string
      */
-    public function getCode(): string;
+    public function getMandateCode(): string;
 
     /**
      * Whether this mandate was accepted.
