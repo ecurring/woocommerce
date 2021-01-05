@@ -65,7 +65,7 @@ class SubscriptionsJob
 
         $subscriptions = json_decode($this->actions->import((int)$page));
 
-        $this->repository->createSubscriptions($subscriptions);
+        $this->saveSubscriptionsBunch($subscriptions);
 
         $parts = parse_url($subscriptions->links->next ?? '');
         parse_str($parts['query'] ?? '', $query);
@@ -86,6 +86,20 @@ class SubscriptionsJob
 
         if ($nextPage >= $lastPage) {
             update_option('ecurring_import_finished', true);
+        }
+    }
+
+    protected function saveSubscriptionsBunch($subscriptionsData): void
+    {
+        foreach ($subscriptionsData->data as $subscription) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Preparing to save subscription %1$s.',
+                    $subscription->id
+                )
+            );
+
+            $this->repository->create($subscription);
         }
     }
 }

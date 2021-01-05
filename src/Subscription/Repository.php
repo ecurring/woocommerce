@@ -52,6 +52,31 @@ class Repository
 
     public function create($subscription): void
     {
+        if ($this->subscriptionExistsInDb($subscription->id)) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Subscription %1$s already exists in local database, ' .
+                    'saving will be skipped.',
+                    $subscription->id
+                )
+            );
+            return;
+        }
+        if (! $this->orderWithSubscriptionExists($subscription->id)) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Order not found for the subscription %1$s, saving will be skipped.',
+                    $subscription->id
+                )
+            );
+            return;
+        }
+
+        $this->insertSubscription($subscription);
+    }
+
+    protected function insertSubscription($subscription): void
+    {
         $postId = wp_insert_post(
             [
                 'post_type' => 'esubscriptions',
