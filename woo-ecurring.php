@@ -20,7 +20,10 @@ use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\SubscriptionsJob;
 use Ecurring\WooEcurring\Subscription\PostType;
 use Ecurring\WooEcurring\Subscription\Metabox\Display;
@@ -200,9 +203,16 @@ function eCurringInitialize()
         $save = new Save($actions);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
-        $subscriptionsApi = new SubscriptionsApi($apiHelper );
+        $subscriptionsApi = new SubscriptionsApi($apiHelper);
 
-        (new SubscriptionsJob($actions, $repository))->init();
+        $subscriptionMandateFactory = new SubscriptionMandateFactory();
+        $subscriptionStatusFactory = new SubscriptionStatusFactory();
+        $subscriptionsFactory = new DataBasedSubscriptionFactory(
+            $subscriptionMandateFactory,
+            $subscriptionStatusFactory
+        );
+
+        (new SubscriptionsJob($actions, $repository, $subscriptionsFactory))->init();
         (new Metabox($display, $save))->init();
         (new PostType($apiHelper))->init();
         (new Assets())->init();
