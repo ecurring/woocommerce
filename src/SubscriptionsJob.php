@@ -105,7 +105,7 @@ class SubscriptionsJob
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Preparing to save subscription %1$s.',
-                    $subscriptionFields->id
+                    $subscriptionFields['id']
                 )
             );
 
