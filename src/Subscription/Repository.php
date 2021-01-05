@@ -12,23 +12,25 @@ use eCurring_WC_Plugin;
 class Repository
 {
 
-    public function insert($subscription): void
+    public function insert(SubscriptionInterface $subscription): void
     {
-        if ($this->subscriptionExistsInDb($subscription->id)) {
+        $subscriptionId = $subscription->getId();
+
+        if ($this->subscriptionExistsInDb($subscriptionId)) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Subscription %1$s already exists in local database, ' .
                     'saving will be skipped.',
-                    $subscription->id
+                    $subscriptionId
                 )
             );
             return;
         }
-        if (! $this->orderWithSubscriptionExists($subscription->id)) {
+        if (! $this->orderWithSubscriptionExists($subscriptionId)) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Order not found for the subscription %1$s, saving will be skipped.',
-                    $subscription->id
+                    $subscriptionId
                 )
             );
             return;
