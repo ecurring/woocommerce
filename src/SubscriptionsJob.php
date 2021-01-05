@@ -101,16 +101,16 @@ class SubscriptionsJob
 
     protected function saveSubscriptionsBunch($subscriptionsData): void
     {
-        foreach ($subscriptionsData->data as $subscription) {
+        foreach ($subscriptionsData->data as $subscriptionFields) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Preparing to save subscription %1$s.',
-                    $subscription->id
+                    $subscriptionFields->id
                 )
             );
 
             try {
-                $this->subscriptionFactory->createSubscription($subscription->id, (array) $subscription->attributes);
+                $subscription = $this->subscriptionFactory->createSubscription($subscriptionFields->id, (array) $subscriptionFields->attributes);
                 $this->repository->insert($subscription);
 
             } catch (SubscriptionFactoryException $exception) {
