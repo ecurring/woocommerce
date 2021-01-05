@@ -117,7 +117,7 @@ class Save
         ));
 
         $postSubscription = new Repository();
-        $postSubscription->create($create->data);
+        $postSubscription->insert($create->data);
     }
 
     /**

@@ -12,7 +12,7 @@ use eCurring_WC_Plugin;
 class Repository
 {
 
-    public function create($subscription): void
+    public function insert($subscription): void
     {
         if ($this->subscriptionExistsInDb($subscription->id)) {
             eCurring_WC_Plugin::debug(
@@ -34,10 +34,10 @@ class Repository
             return;
         }
 
-        $this->insertSubscription($subscription);
+        $this->persistSubscription($subscription);
     }
 
-    protected function insertSubscription($subscription): void
+    protected function persistSubscription($subscription): void
     {
         $postId = wp_insert_post(
             [

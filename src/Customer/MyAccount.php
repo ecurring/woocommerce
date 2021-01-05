@@ -199,7 +199,7 @@ class MyAccount
             )
         );
 
-        $this->repository->create($response);
+        $this->repository->insert($response);
     }
 
     /**

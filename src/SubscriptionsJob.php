@@ -110,7 +110,7 @@ class SubscriptionsJob
 
             $this->subscriptionFactory->createSubscription($subscription->id, (array) $subscription->attributes);
 
-            $this->repository->create($subscription);
+            $this->repository->insert($subscription);
         }
     }
 }

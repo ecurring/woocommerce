@@ -224,7 +224,7 @@ function eCurringInitialize()
                         )
                     );
 
-                    $repository->create($response->data);
+                    $repository->insert($response->data);
                 }
             }
         );
