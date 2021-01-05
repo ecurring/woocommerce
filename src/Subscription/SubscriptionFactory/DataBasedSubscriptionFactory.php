@@ -86,7 +86,7 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
 
         return [
             'subscription_id' => $subscriptionData['id'],
-            'customer_id' => $subscriptionData['relationships']['customer']['id'],
+            'customer_id' => $subscriptionData['relationships']['customer']['data']['id'],
             'mandate_code' => $subscriptionAttributes['mandate_code'] ?? '',
             'confirmation_page' => $subscriptionAttributes['confirmation_page'] ?? '',
             'confirmation_sent' => $subscriptionAttributes['confirmation_sent'] ?? false,
