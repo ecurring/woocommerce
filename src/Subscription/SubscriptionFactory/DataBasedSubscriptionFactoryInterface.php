@@ -15,7 +15,7 @@ interface DataBasedSubscriptionFactoryInterface
      * Create a new subscription from given data array.
      *
      * @param array $subscriptionData Subscription data formatted
-     *                                  as {@link https://docs.ecurring.com/subscriptions/get/ eCurring subscription}
+     *    as {@link https://docs.ecurring.com/subscriptions/get/ eCurring subscription}
      *
      * @return SubscriptionInterface Created subscription instance.
      *
