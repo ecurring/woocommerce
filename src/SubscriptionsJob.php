@@ -6,10 +6,15 @@ namespace Ecurring\WooEcurring;
 
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use eCurring_WC_Plugin;
 
 class SubscriptionsJob
 {
+    /**
+     * @var DataBasedSubscriptionFactoryInterface
+     */
+    protected $subscriptionFactory;
     /**
      * @var Actions Subscription actions.
      */
@@ -20,10 +25,14 @@ class SubscriptionsJob
      */
     private $repository;
 
-    public function __construct(Actions $actions, Repository $repository)
-    {
+    public function __construct(
+        Actions $actions,
+        Repository $repository,
+        DataBasedSubscriptionFactoryInterface $subscriptionFactory
+    ) {
         $this->actions = $actions;
         $this->repository = $repository;
+        $this->subscriptionFactory = $subscriptionFactory;
     }
 
     public function init(): void
@@ -98,6 +107,8 @@ class SubscriptionsJob
                     $subscription->id
                 )
             );
+
+            $this->subscriptionFactory->createSubscription($subscription->id, (array) $subscription->attributes);
 
             $this->repository->create($subscription);
         }
