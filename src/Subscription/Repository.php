@@ -292,6 +292,30 @@ class Repository
         return $foundIds[0] ?? 0;
     }
 
+    public function findSubscriptionIdByOrderId(int $orderId): string
+    {
+        /**
+         * @var $found array<int>
+         */
+        $found = get_posts(
+            [
+                'numberposts' => 1,
+                'post_type' => 'esubscriptions',
+                'meta_key' => '_ecurring_post_subscription_order_id',
+                'meta_value' => $orderId,
+                'fields' => 'ids',
+            ]
+        );
+
+        $subscriptionPostId = $found[0] ?? 0;
+
+        return (string) get_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_id',
+            true
+        );
+    }
+
     /**
      * @return Customers
      */
