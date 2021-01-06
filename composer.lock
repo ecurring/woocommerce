@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d9ba2982e1952f86a586ed45b1b9e4d",
+    "content-hash": "c04307d713462d446dbf60d125457969",
     "packages": [
         {
             "name": "brain/nonces",
@@ -205,6 +205,54 @@
             ],
             "description": "Interfaces for package-related interop",
             "time": "2020-05-14T19:54:39+00:00"
+        },
+        {
+            "name": "dhii/php-template",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dhii/php-template.git",
+                "reference": "7473f6621213de8e8fd86c28795f5ba19bda2ea6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dhii/php-template/zipball/7473f6621213de8e8fd86c28795f5ba19bda2ea6",
+                "reference": "7473f6621213de8e8fd86c28795f5ba19bda2ea6",
+                "shasum": ""
+            },
+            "require": {
+                "dhii/output-renderer-interface": "^0.4",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "dhii/stringable-interface": "^0.1",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^6.0 || ^7.0",
+                "psr/container": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dhii\\Output\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dhii Team",
+                    "email": "development@dhii.co"
+                }
+            ],
+            "description": "A concrete PHP (PHTML) template implementation.",
+            "time": "2020-07-07T13:24:31+00:00"
         },
         {
             "name": "dhii/stringable-interface",
@@ -3385,8 +3433,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6",
-                "reference": "5.6"
+                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -4214,12 +4261,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "a90b04b90b4f6b3617986464a4c212ab8b0dd6b3"
+                "reference": "da4c3663721420520b024e5aede66b813019e744"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/a90b04b90b4f6b3617986464a4c212ab8b0dd6b3",
-                "reference": "a90b04b90b4f6b3617986464a4c212ab8b0dd6b3",
+                "url": "https://api.github.com/repos/symfony/console/zipball/da4c3663721420520b024e5aede66b813019e744",
+                "reference": "da4c3663721420520b024e5aede66b813019e744",
                 "shasum": ""
             },
             "require": {
@@ -4300,7 +4347,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-05T14:08:22+00:00"
+            "time": "2021-01-05T20:16:44+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -4370,12 +4417,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "7130f348df2f842044038aaae9d6653dc9d67649"
+                "reference": "7c0a3c5420fd802637c4260e595d6c674b23d578"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/7130f348df2f842044038aaae9d6653dc9d67649",
-                "reference": "7130f348df2f842044038aaae9d6653dc9d67649",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/7c0a3c5420fd802637c4260e595d6c674b23d578",
+                "reference": "7c0a3c5420fd802637c4260e595d6c674b23d578",
                 "shasum": ""
             },
             "require": {
@@ -4438,7 +4485,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-27T09:28:48+00:00"
+            "time": "2021-01-06T10:19:43+00:00"
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
@@ -4446,12 +4493,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "e314d4992832c3a0a68ca731fadd959917320fda"
+                "reference": "32b651134d58efe1786c95352d846913a42d8331"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/e314d4992832c3a0a68ca731fadd959917320fda",
-                "reference": "e314d4992832c3a0a68ca731fadd959917320fda",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/32b651134d58efe1786c95352d846913a42d8331",
+                "reference": "32b651134d58efe1786c95352d846913a42d8331",
                 "shasum": ""
             },
             "require": {
@@ -4516,7 +4563,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-27T09:28:48+00:00"
+            "time": "2021-01-06T10:19:43+00:00"
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
@@ -4524,12 +4571,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-                "reference": "3a79a2226897adae0cab81688fbc5144e2fc53f6"
+                "reference": "8592bf62da8352927fc3857484e84baacddec301"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/3a79a2226897adae0cab81688fbc5144e2fc53f6",
-                "reference": "3a79a2226897adae0cab81688fbc5144e2fc53f6",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/8592bf62da8352927fc3857484e84baacddec301",
+                "reference": "8592bf62da8352927fc3857484e84baacddec301",
                 "shasum": ""
             },
             "require": {
@@ -4597,7 +4644,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-27T22:11:44+00:00"
+            "time": "2021-01-06T10:19:43+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -4605,12 +4652,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "de14691dc88bbbc5535de7f0e32080977dc1d23f"
+                "reference": "ec0101071dcbc6bdd5046da11df686f8515fa815"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/de14691dc88bbbc5535de7f0e32080977dc1d23f",
-                "reference": "de14691dc88bbbc5535de7f0e32080977dc1d23f",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/ec0101071dcbc6bdd5046da11df686f8515fa815",
+                "reference": "ec0101071dcbc6bdd5046da11df686f8515fa815",
                 "shasum": ""
             },
             "require": {
@@ -4674,7 +4721,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-27T09:28:48+00:00"
+            "time": "2021-01-06T10:19:43+00:00"
         },
         {
             "name": "symfony/polyfill-php73",
@@ -4682,12 +4729,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php73.git",
-                "reference": "8c0d39c1526009b97f43beea4cc685bbc353a70b"
+                "reference": "6d0e293e2b13580b866090a135900aea4adcb308"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/8c0d39c1526009b97f43beea4cc685bbc353a70b",
-                "reference": "8c0d39c1526009b97f43beea4cc685bbc353a70b",
+                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/6d0e293e2b13580b866090a135900aea4adcb308",
+                "reference": "6d0e293e2b13580b866090a135900aea4adcb308",
                 "shasum": ""
             },
             "require": {
@@ -4750,7 +4797,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-26T13:35:45+00:00"
+            "time": "2021-01-06T10:19:43+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -4758,12 +4805,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "54cc82c30ba7ed02bc64f5d010488c159b5f1706"
+                "reference": "69e5da91ad9c080f6ac1e010ddffefe71b14bd6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/54cc82c30ba7ed02bc64f5d010488c159b5f1706",
-                "reference": "54cc82c30ba7ed02bc64f5d010488c159b5f1706",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/69e5da91ad9c080f6ac1e010ddffefe71b14bd6e",
+                "reference": "69e5da91ad9c080f6ac1e010ddffefe71b14bd6e",
                 "shasum": ""
             },
             "require": {
@@ -4830,7 +4877,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-27T09:28:48+00:00"
+            "time": "2021-01-06T10:19:43+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -5527,6 +5574,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "dhii/php-template": 20,
         "roots/wordpress": 0,
         "mollie/mollie-woocommerce": 20
     },
