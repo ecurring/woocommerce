@@ -118,7 +118,7 @@ class PostType
                         }
 
                         $productId = get_post_meta($postId, '_ecurring_post_subscription_plan_id', true);
-                        echo esc_attr($products[$productId]);
+                        echo esc_attr($products[$productId] ?? '');
                         break;
                     case 'start_date':
                         $startDate = get_post_meta($postId, '_ecurring_post_subscription_start_date', true);

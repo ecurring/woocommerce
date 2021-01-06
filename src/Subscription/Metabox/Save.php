@@ -7,18 +7,34 @@ namespace Ecurring\WooEcurring\Subscription\Metabox;
 use DateTime;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
+use eCurring_WC_Plugin;
 use Exception;
 
 class Save
 {
     /**
+     * @var Repository
+     */
+    protected $repository;
+    /**
+     * @var DataBasedSubscriptionFactoryInterface
+     */
+    protected $subscriptionFactory;
+    /**
      * @var Actions
      */
     private $actions;
 
-    public function __construct(Actions $actions)
-    {
+    public function __construct(
+        Actions $actions,
+        Repository $repository,
+        DataBasedSubscriptionFactoryInterface $subscriptionFactory
+    ) {
         $this->actions = $actions;
+        $this->repository = $repository;
+        $this->subscriptionFactory = $subscriptionFactory;
     }
 
     /**
@@ -56,19 +72,20 @@ class Save
                     $this->actions->pause(
                         $subscriptionId,
                         $this->detectResumeDate()
-                    )
+                    ),
+                    true
                 );
                 $this->updateSubscription($postId, $response);
                 break;
             case 'resume':
-                $response = json_decode($this->actions->resume($subscriptionId));
+                $response = json_decode($this->actions->resume($subscriptionId), true);
                 $this->updateSubscription($postId, $response);
                 break;
             case 'switch':
                 $this->handleSubscriptionSwitch($subscriptionId, $switchDate, (int)$postId);
                 break;
             case 'cancel':
-                $response = json_decode($this->actions->cancel($subscriptionId, $this->detectCancelDate()));
+                $response = json_decode($this->actions->cancel($subscriptionId, $this->detectCancelDate()), true);
                 $this->updateSubscription($postId, $response);
                 break;
         }
@@ -76,7 +93,7 @@ class Save
 
     protected function handleSubscriptionSwitch(string $subscriptionId, string $switchDate, int $postId): void
     {
-        $cancel = json_decode($this->actions->cancel($subscriptionId, $switchDate));
+        $cancel = json_decode($this->actions->cancel($subscriptionId, $switchDate), true);
         $this->updateSubscription($postId, $cancel);
 
         $productId = filter_input(
@@ -96,8 +113,9 @@ class Save
             home_url('/')
         );
 
-        $create = json_decode($this->actions->create(
-            [
+        $create = json_decode(
+            $this->actions->create(
+                [
                 'data' => [
                     'type' => 'subscription',
                     'attributes' => [
@@ -113,8 +131,10 @@ class Save
                         "start_date" => $switchDate,
                     ],
                 ],
-            ]
-        ));
+                ]
+            ),
+            true
+        );
 
         $postSubscription = new Repository();
         $postSubscription->insert($create->data);
@@ -213,6 +233,17 @@ class Save
      */
     protected function updateSubscription(int $postId, $response): void
     {
-        update_post_meta($postId, '_ecurring_post_subscription_attributes', $response->data->attributes);
+
+        try {
+            $subscription = $this->subscriptionFactory->createSubscription($response['data']);
+            $this->repository->update($subscription);
+        } catch (SubscriptionFactoryException $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Couldn\'t create subscription from the API response. Exception caught: %1$s',
+                    $exception->getMessage()
+                )
+            );
+        }
     }
 }

@@ -199,18 +199,19 @@ function eCurringInitialize()
         $customerApi = new Customers($apiHelper);
         $actions = new Actions($apiHelper);
         $repository = new Repository();
-        $display = new Display();
-        $save = new Save($actions);
-        $subscriptionPlans = new SubscriptionPlans($apiHelper);
-        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
-        $subscriptionsApi = new SubscriptionsApi($apiHelper);
-
         $subscriptionMandateFactory = new SubscriptionMandateFactory();
         $subscriptionStatusFactory = new SubscriptionStatusFactory();
         $subscriptionsFactory = new DataBasedSubscriptionFactory(
             $subscriptionMandateFactory,
             $subscriptionStatusFactory
         );
+        $display = new Display();
+        $save = new Save($actions, $repository, $subscriptionsFactory);
+        $subscriptionPlans = new SubscriptionPlans($apiHelper);
+        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
+        $subscriptionsApi = new SubscriptionsApi($apiHelper);
+
+
 
         (new SubscriptionsJob($actions, $repository, $subscriptionsFactory))->init();
         (new Metabox($display, $save))->init();
