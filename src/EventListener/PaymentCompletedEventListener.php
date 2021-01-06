@@ -9,6 +9,7 @@ use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
+use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 use WC_Order;
@@ -30,21 +31,28 @@ class PaymentCompletedEventListener implements EventListenerInterface
      * @var CustomerCrudInterface
      */
     protected $customerCrud;
+    /**
+     * @var Repository
+     */
+    protected $repository;
 
     /**
-     * @param ApiClientInterface        $apiClient To make eCurring API calls.
+     * @param ApiClientInterface $apiClient To make eCurring API calls.
      * @param SubscriptionCrudInterface $subscriptionCrud Service able to read subscription data.
-     * @param CustomerCrudInterface     $customerCrud Service able to provide customer data.
+     * @param CustomerCrudInterface $customerCrud Service able to provide customer data.
+     * @param Repository $repository
      */
     public function __construct(
         ApiClientInterface $apiClient,
         SubscriptionCrudInterface $subscriptionCrud,
-        CustomerCrudInterface $customerCrud
+        CustomerCrudInterface $customerCrud,
+        Repository $repository
     ) {
 
         $this->apiClient = $apiClient;
         $this->subscriptionCrud = $subscriptionCrud;
         $this->customerCrud = $customerCrud;
+        $this->repository = $repository;
     }
 
     public function init(): void
@@ -71,7 +79,7 @@ class PaymentCompletedEventListener implements EventListenerInterface
             return;
         }
 
-        $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
+        $subscriptionId = $this->repository->findSubscriptionIdByOrderId($orderId);
 
         if (! $subscriptionId) {
             return;

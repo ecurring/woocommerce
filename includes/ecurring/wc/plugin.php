@@ -65,7 +65,7 @@ class eCurring_WC_Plugin
         $repository = new Repository();
         (new MollieMandateCreatedEventListener($apiClient, $subscriptionFactory, $repository, $customerCrud))->init();
         (new AddToCartValidationEventListener($subscriptionCrud))->init();
-        (new PaymentCompletedEventListener($apiClient, $subscriptionCrud, $customerCrud))->init();
+        (new PaymentCompletedEventListener($apiClient, $subscriptionCrud, $customerCrud, $repository))->init();
 
         add_action('admin_init', static function () use ($subscriptionCrud, $settingsHelper) {
             $elementFactory = new ElementFactory();
