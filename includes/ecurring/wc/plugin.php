@@ -17,7 +17,11 @@ use Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewa
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener;
 use Ecurring\WooEcurring\Settings\SettingsCrud;
+use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
+use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
 
@@ -51,7 +55,15 @@ class eCurring_WC_Plugin
         $customerCrud = new CustomerCrud();
 
         $apiClient = new ApiClient($settingsHelper->getApiKey());
-        (new MollieMandateCreatedEventListener($apiClient, $subscriptionCrud, $customerCrud))->init();
+        $subscriptionMandateFactory = new SubscriptionMandateFactory();
+        $subscriptionStatusFactory = new SubscriptionStatusFactory();
+        $subscriptionFactory = new DataBasedSubscriptionFactory(
+            $subscriptionMandateFactory,
+            $subscriptionStatusFactory
+        );
+
+        $repository = new Repository();
+        (new MollieMandateCreatedEventListener($apiClient, $subscriptionFactory, $repository, $customerCrud))->init();
         (new AddToCartValidationEventListener($subscriptionCrud))->init();
         (new PaymentCompletedEventListener($apiClient, $subscriptionCrud, $customerCrud))->init();
 
