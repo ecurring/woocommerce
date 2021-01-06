@@ -69,9 +69,9 @@ class Repository
         }
     }
 
-    public function update($subscription): void
+    public function update(SubscriptionInterface $subscription): void
     {
-        $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscription->data->id);
+        $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscription->getId());
         if ($subscriptionPostId === 0) {
             return;
         }
