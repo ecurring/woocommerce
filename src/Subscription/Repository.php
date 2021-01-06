@@ -18,16 +18,6 @@ class Repository
     {
         $subscriptionId = $subscription->getId();
 
-        if ($this->subscriptionExistsInDb($subscriptionId)) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Subscription %1$s already exists in local database, saving will be skipped.',
-                    $subscriptionId
-                )
-            );
-            return;
-        }
-
         $subscriptionOrderId = $this->findSubscriptionOrderIdBySubscriptionId($subscriptionId);
 
         if ($subscriptionOrderId === 0) {
@@ -210,20 +200,6 @@ class Repository
             '_ecurring_post_subscription_archived',
             $subscriptionStatus->getArchived()
         );
-    }
-
-    /**
-     * Check if subscription already saved in the local DB.
-     *
-     * @param string $subscriptionId The subscription id to check for.
-     *
-     * @return bool
-     */
-    protected function subscriptionExistsInDb(string $subscriptionId): bool
-    {
-        $found = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
-
-        return $found !== 0;
     }
 
     /**
