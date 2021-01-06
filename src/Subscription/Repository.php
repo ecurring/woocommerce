@@ -100,6 +100,12 @@ class Repository
             $subscription->getCustomerId()
         );
 
+        update_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_plan_id',
+            $subscription->getSubscriptionPlanId()
+        );
+
         $this->saveMandateFields($subscriptionPostId, $subscription->getMandate());
         $this->saveSubscriptionStatusFields($subscriptionPostId, $subscription->getStatus());
 
