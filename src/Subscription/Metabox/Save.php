@@ -75,18 +75,18 @@ class Save
                     ),
                     true
                 );
-                $this->updateSubscription($postId, $response);
+                $this->updateSubscription($response);
                 break;
             case 'resume':
                 $response = json_decode($this->actions->resume($subscriptionId), true);
-                $this->updateSubscription($postId, $response);
+                $this->updateSubscription($response);
                 break;
             case 'switch':
                 $this->handleSubscriptionSwitch($subscriptionId, $switchDate, (int)$postId);
                 break;
             case 'cancel':
                 $response = json_decode($this->actions->cancel($subscriptionId, $this->detectCancelDate()), true);
-                $this->updateSubscription($postId, $response);
+                $this->updateSubscription($response);
                 break;
         }
     }
@@ -94,7 +94,7 @@ class Save
     protected function handleSubscriptionSwitch(string $subscriptionId, string $switchDate, int $postId): void
     {
         $cancel = json_decode($this->actions->cancel($subscriptionId, $switchDate), true);
-        $this->updateSubscription($postId, $cancel);
+        $this->updateSubscription($cancel);
 
         $productId = filter_input(
             INPUT_POST,
@@ -226,12 +226,11 @@ class Save
     }
 
     /**
-     * @param $postId
      * @param $response
      *
      * @return void
      */
-    protected function updateSubscription(int $postId, $response): void
+    protected function updateSubscription( $response): void
     {
 
         try {
