@@ -40,7 +40,7 @@ class Save
     /**
      * @return void
      */
-    public function save($postId)
+    public function save()
     {
         $subscriptionType = $subscriptionType = filter_input(
             INPUT_POST,
@@ -82,7 +82,7 @@ class Save
                 $this->updateSubscription($response);
                 break;
             case 'switch':
-                $this->handleSubscriptionSwitch($subscriptionId, $switchDate, (int)$postId);
+                $this->handleSubscriptionSwitch($subscriptionId, $switchDate);
                 break;
             case 'cancel':
                 $response = json_decode($this->actions->cancel($subscriptionId, $this->detectCancelDate()), true);
@@ -91,7 +91,7 @@ class Save
         }
     }
 
-    protected function handleSubscriptionSwitch(string $subscriptionId, string $switchDate, int $postId): void
+    protected function handleSubscriptionSwitch(string $subscriptionId, string $switchDate): void
     {
         $cancel = json_decode($this->actions->cancel($subscriptionId, $switchDate), true);
         $this->updateSubscription($cancel);
@@ -230,11 +230,21 @@ class Save
      *
      * @return void
      */
-    protected function updateSubscription( $response): void
+    protected function updateSubscription($response): void
     {
 
+        if (! isset($response['data'])) {
+            eCurring_WC_Plugin::debug(
+                'Couldn\'t update subscription from the API response. No data found in the response.'
+            );
+
+            return;
+        }
+
+        $subscriptionData = $response['data'] ?? [];
+
         try {
-            $subscription = $this->subscriptionFactory->createSubscription($response['data']);
+            $subscription = $this->subscriptionFactory->createSubscription($subscriptionData);
             $this->repository->update($subscription);
         } catch (SubscriptionFactoryException $exception) {
             eCurring_WC_Plugin::debug(
