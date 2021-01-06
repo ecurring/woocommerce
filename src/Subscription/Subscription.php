@@ -28,16 +28,22 @@ class Subscription implements SubscriptionInterface
      * @var string
      */
     protected $customerId;
+    /**
+     * @var string
+     */
+    protected $subscriptionPlanId;
 
     /**
      * @param string $id Subscription id in the eCurring system.
      * @param string $customerId Subscription customer id in the eCurring system.
+     * @param string $subscriptionPlanId Subscription plan id (product id) in the eCurring system.
      * @param SubscriptionMandateInterface $mandate Subscription mandate entity.
      * @param SubscriptionStatusInterface $subscriptionStatus Subscription status entity.
      */
     public function __construct(
         string $id,
         string $customerId,
+        string $subscriptionPlanId,
         SubscriptionMandateInterface $mandate,
         SubscriptionStatusInterface $subscriptionStatus
     ) {
@@ -46,6 +52,7 @@ class Subscription implements SubscriptionInterface
         $this->mandate = $mandate;
         $this->subscriptionStatus = $subscriptionStatus;
         $this->customerId = $customerId;
+        $this->subscriptionPlanId = $subscriptionPlanId;
     }
 
     /**
@@ -62,6 +69,11 @@ class Subscription implements SubscriptionInterface
     public function getCustomerId(): string
     {
         return $this->customerId;
+    }
+
+    public function getSubscriptionPlanId(): string
+    {
+        return $this->subscriptionPlanId;
     }
 
     /**
