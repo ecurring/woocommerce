@@ -10,7 +10,6 @@ use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Plugin;
@@ -30,10 +29,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     protected $apiClient;
 
-    /**
-     * @var SubscriptionCrudInterface
-     */
-    protected $subscriptionCrud;
     /**
      * @var CustomerCrudInterface
      */
@@ -174,7 +169,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 
         $product = $item->get_product();
 
-        return (string) $this->subscriptionCrud->getProductSubscriptionId($product);
+        return (string) $product->get_meta('_ecurring_subscription_plan');
     }
 
     /**
@@ -186,7 +181,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     protected function subscriptionForOrderExists(WC_Order $order): bool
     {
-        $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
+        $subscriptionId = $this->repository->findSubscriptionIdByOrderId($order->get_id());
 
         if ($subscriptionId === null) {
             return false;
