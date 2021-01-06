@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring\AdminPages;
 use Dhii\Output\Block\TemplateBlockFactoryInterface;
 use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
+use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurring\Template\WcSelectTemplate;
 use eCurring_WC_Plugin;
@@ -37,26 +38,37 @@ class ProductEditPageController
      * @var SubscriptionCrudInterface
      */
     protected $subscriptionCrud;
+    /**
+     * @var SettingsCrud
+     */
+    protected $settingsCrud;
+    /**
+     * @var bool
+     */
+    protected $apiKeyEntered;
 
     /**
-     * @param PathTemplateFactoryInterface  $pathTemplateFactory  Service able to create
+     * @param PathTemplateFactoryInterface $pathTemplateFactory Service able to create
      *                                                            a template from a path.
      *
      * @param TemplateBlockFactoryInterface $templateBlockFactory Service able to create
      *                                                            TemplateBlock instance.
      *
-     * @param SubscriptionPlans             $subscriptionPlans    Service providing subscription
-     *                                                            plans data.
-     * @param SubscriptionCrudInterface              $subscriptionCrud
-     * @param string $adminTemplatesPath                          Path to the directory with
-     *                                                            the admin templates.
+     * @param SubscriptionPlans $subscriptionPlans Service providing subscription plans data.
+     *
+     * @param SubscriptionCrudInterface $subscriptionCrud Service providing subscriptions data.
+     *
+     * @param string $adminTemplatesPath Path to the directory with the admin templates.
+     *
+     * @param bool $apiKeyEntered Flag if API key was entered on the settings plugin page.
      */
     public function __construct(
         PathTemplateFactoryInterface $pathTemplateFactory,
         TemplateBlockFactoryInterface $templateBlockFactory,
         SubscriptionPlans $subscriptionPlans,
         SubscriptionCrudInterface $subscriptionCrud,
-        string $adminTemplatesPath
+        string $adminTemplatesPath,
+        bool $apiKeyEntered
     ) {
 
         $this->pathTemplateFactory = $pathTemplateFactory;
@@ -64,6 +76,7 @@ class ProductEditPageController
         $this->subscriptionPlans = $subscriptionPlans;
         $this->adminTemplatesPath = $adminTemplatesPath;
         $this->subscriptionCrud = $subscriptionCrud;
+        $this->apiKeyEntered = $apiKeyEntered;
     }
 
     /**
@@ -94,17 +107,12 @@ class ProductEditPageController
      */
     public function renderProductDataFields(int $productId): void
     {
-        $wcSelectTemplate = new WcSelectTemplate();
         $tabContentTemplateFile = $this->getTemplatePath('product-edit-page/ecurring-tab.php');
-        $context = $this->prepareContextForProductDataFieldsTemplate($productId);
-        $selectBlock = $this->templateBlockFactory->fromTemplate($wcSelectTemplate, $context);
         $template = $this->pathTemplateFactory->fromPath($tabContentTemplateFile);
 
         try {
             $tabContent = $template->render(
-                [
-                    'select' => $selectBlock,
-                ]
+                $this->prepareMainTemplateContext($productId)
             );
             echo wp_kses((string) $tabContent, $this->getAllowedHtmlForProductDataFields());
         } catch (Throwable $throwable) {
@@ -118,6 +126,58 @@ class ProductEditPageController
                 )
             );
         }
+    }
+
+    /**
+     * Prepare a context for the product data fields template to be rendered with.
+     *
+     * @param int $productId
+     *
+     * @return string[]
+     */
+    protected function prepareMainTemplateContext(int $productId): array
+    {
+        if (! $this->apiKeyEntered) {
+            return [
+                'message' => $this->prepareNoApiKeyMessage(),
+                'select' => '',
+            ];
+        }
+
+        $wcSelectTemplate = new WcSelectTemplate();
+        $context = $this->prepareContextForProductDataFieldsTemplate($productId);
+        $selectBlock = $this->templateBlockFactory->fromTemplate($wcSelectTemplate, $context);
+
+        return [
+            'message' =>  __(
+                'You are adding an eCurring product. The eCurring product determines the price your customers will pay when purchasing this product. Make sure the product price in WooCommerce exactly matches the eCurring product price. Important: the eCurring product determines the price your customers will pay when purchasing this product. Make sure the product price in WooCommerce exactly matches the eCurring product price. The eCurring product price should include all shipping cost. Any additional shipping costs added by WooCommerce will not be charged.',
+                'woo-ecurring'
+            ),
+            'select' => $selectBlock,
+        ];
+    }
+
+    /**
+     * Prepare the message for displaying if no API key was entered.
+     *
+     * @return string
+     */
+    protected function prepareNoApiKeyMessage(): string
+    {
+        $adminPageUrl = admin_url('admin.php?page=wc-settings&tab=mollie_subscriptions');
+        $openingTag = sprintf('<a href="%1$s">', esc_url($adminPageUrl));
+        $closingTag = '</a>';
+
+        return sprintf(
+            /* translators: %1$s is replaced with the opening a HTML tag, %2$s is replaced with the closing a tag. */
+            _x(
+                'Please, enter an API key on the %1$splugin settings page%2$s to be able to connect subscription to this product.',
+                'Message on the product edit page, Mollie Subscriptions tab',
+                'woo-ecurring'
+            ),
+            $openingTag,
+            $closingTag
+        );
     }
 
     /**
@@ -222,6 +282,9 @@ class ProductEditPageController
             'option' => [
                 'value' => [],
                 'selected' => [],
+            ],
+            'a' => [
+                'href' => [],
             ],
         ];
     }
