@@ -97,11 +97,6 @@ class PostType
         add_action(
             'manage_esubscriptions_posts_custom_column',
             function ($column, $postId) {
-                $attributes = get_post_meta(
-                    $postId,
-                    '_ecurring_post_subscription_attributes',
-                    true
-                );
                 switch ($column) {
                     case 'customer':
                         $customer = get_post_meta($postId, '_ecurring_post_subscription_customer', true);
@@ -122,20 +117,16 @@ class PostType
                             $products[$product->id] = $product->attributes->name ?: '';
                         }
 
-                        $relationships = get_post_meta(
-                            $postId,
-                            '_ecurring_post_subscription_relationships',
-                            true
-                        );
-                        $productId = $relationships->{'subscription-plan'}->data->id;
+                        $productId = get_post_meta($postId, '_ecurring_post_subscription_plan_id', true);
                         echo esc_attr($products[$productId]);
                         break;
                     case 'start_date':
-                        $startDate = $attributes->start_date;
-                        echo esc_attr((new DateTime($startDate))->format('d-m-Y'));
+                        $startDate = get_post_meta($postId, '_ecurring_post_subscription_start_date', true);
+                        $startDate = DateTime::createFromFormat('c', $startDate) ?? '';
+                        echo esc_attr($startDate);
                         break;
                     case 'status':
-                        echo esc_attr(ucfirst($attributes->status));
+                        echo esc_attr(ucfirst(get_post_meta($postId, '_ecurring_post_subscription_status', true)));
                         break;
                 }
             },
