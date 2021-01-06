@@ -14,11 +14,11 @@ use eCurring_WC_Plugin;
 class Repository
 {
 
-    public function insert(SubscriptionInterface $subscription): void
+    public function insert(SubscriptionInterface $subscription, int $orderId = null): void
     {
         $subscriptionId = $subscription->getId();
 
-        $subscriptionOrderId = $this->findSubscriptionOrderIdBySubscriptionId($subscriptionId);
+        $subscriptionOrderId = $orderId ?: $this->findSubscriptionOrderIdBySubscriptionId($subscriptionId);
 
         if ($subscriptionOrderId === 0) {
             eCurring_WC_Plugin::debug(

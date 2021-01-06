@@ -219,7 +219,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 
                 try {
                     $subscription = $this->dataBasedSubscriptionFactory->createSubscription($subscriptionData['data']);
-                    $this->repository->insert($subscription);
+                    $this->repository->insert($subscription, $order->get_id());
                     eCurring_WC_Plugin::debug(
                         'A new eCurring subscription was successfully created.'
                     );
