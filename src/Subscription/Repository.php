@@ -21,14 +21,16 @@ class Repository
         if ($this->subscriptionExistsInDb($subscriptionId)) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Subscription %1$s already exists in local database, ' .
-                    'saving will be skipped.',
+                    'Subscription %1$s already exists in local database, saving will be skipped.',
                     $subscriptionId
                 )
             );
             return;
         }
-        if (! $this->orderWithSubscriptionExists($subscriptionId)) {
+
+        $subscriptionOrderId = $this->findSubscriptionOrderIdBySubscriptionId($subscriptionId);
+
+        if ($subscriptionOrderId === 0) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Order not found for the subscription %1$s, saving will be skipped.',
@@ -38,10 +40,10 @@ class Repository
             return;
         }
 
-        $this->persistSubscription($subscription);
+        $this->persistSubscription($subscription, $subscriptionOrderId);
     }
 
-    protected function persistSubscription(SubscriptionInterface $subscription): void
+    protected function persistSubscription(SubscriptionInterface $subscription, int $orderId): void
     {
         $postId = wp_insert_post(
             [
@@ -58,6 +60,7 @@ class Repository
             );
 
             $this->saveSubscriptionData($postId, $subscription, $customerDetails);
+            update_post_meta($postId, '_ecurring_post_subscription_order_id', $orderId);
 
             eCurring_WC_Plugin::debug(
                 sprintf(
@@ -246,27 +249,13 @@ class Repository
     }
 
     /**
-     * Check if order with the given subscription id exists.
-     *
-     * @param string $subscriptionId The id of the subscription to look for.
-     *
-     * @return bool True if order containing given subscription id exists, false otherwise.
-     */
-    protected function orderWithSubscriptionExists(string $subscriptionId): bool
-    {
-        $foundOrderId = $this->findSubscriptionOrderIdBySubscriptionId($subscriptionId);
-
-        return $foundOrderId !== 0;
-    }
-
-    /**
      * Return an id of the order containing given subscription, return 0 if not found.
      *
      * @param string $subscriptionId Subscription id to find order with.
      *
      * @return int Found order id.
      */
-    protected function findSubscriptionOrderIdBySubscriptionId(string $subscriptionId): int
+    public function findSubscriptionOrderIdBySubscriptionId(string $subscriptionId): int
     {
         $addSubscriptionIdMetaSupport = static function (array $wpQueryArgs, array $wcOrdersQueryArgs) use ($subscriptionId): array {
             if (! empty($wcOrdersQueryArgs['_ecurring_subscription_id'])) {
