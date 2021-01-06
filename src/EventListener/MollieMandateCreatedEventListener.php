@@ -6,7 +6,6 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
-use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
@@ -209,7 +208,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @param WC_Order $order Order to create subscriptions for.
      * @param string $ecurringCustomerId The eCurring customer ID to create subscription for.
      *
-     * @throws ApiClientException|CustomerCrudException If problems occurred when tried to create.
+     * @throws ApiClientException If problems occurred when tried to create.
      */
     public function createEcurringSubscriptionsFromOrder(WC_Order $order, string $ecurringCustomerId): void
     {
@@ -219,7 +218,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
                 $subscriptionData = $this->createEcurringSubscription($ecurringCustomerId, $subscriptionId);
 
                 try {
-                    $subscription = $this->dataBasedSubscriptionFactory->createSubscription($subscriptionData);
+                    $subscription = $this->dataBasedSubscriptionFactory->createSubscription($subscriptionData['data']);
                     $this->repository->insert($subscription);
                     eCurring_WC_Plugin::debug(
                         'A new eCurring subscription was successfully created.'
