@@ -27,6 +27,13 @@ interface SubscriptionInterface
     public function getCustomerId(): string;
 
     /**
+     * Return ecurring subscription plan (product) id.
+     *
+     * @return string
+     */
+    public function getSubscriptionPlanId(): string;
+
+    /**
      * Return subscription mandate instance.
      *
      * @return SubscriptionMandateInterface
