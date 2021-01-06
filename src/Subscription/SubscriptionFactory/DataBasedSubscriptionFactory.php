@@ -69,6 +69,7 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
         return new Subscription(
             $normalizedData['subscription_id'],
             $normalizedData['customer_id'],
+            $normalizedData['subscription_plan_id'],
             $subscriptionMandate,
             $subscriptionStatus
         );
@@ -87,6 +88,7 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
         return [
             'subscription_id' => $subscriptionData['id'],
             'customer_id' => $subscriptionData['relationships']['customer']['data']['id'],
+            'subscription_plan_id' => $subscriptionData['relationships']['subscription-plan']['data']['id'],
             'mandate_code' => $subscriptionAttributes['mandate_code'] ?? '',
             'confirmation_page' => $subscriptionAttributes['confirmation_page'] ?? '',
             'confirmation_sent' => $subscriptionAttributes['confirmation_sent'] ?? false,
