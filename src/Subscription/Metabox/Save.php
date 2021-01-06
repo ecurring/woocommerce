@@ -119,11 +119,11 @@ class Save
                 'data' => [
                     'type' => 'subscription',
                     'attributes' => [
-                        'customer_id' => $cancel->data->relationships->customer->data->id,
+                        'customer_id' => $cancel['data']['relationships']['customer']['data']['id'],
                         'subscription_plan_id' => $productId,
-                        'mandate_code' => $cancel->data->attributes->mandate_code,
+                        'mandate_code' => $cancel['data']['attributes']['mandate_code'],
                         'mandate_accepted' => true,
-                        'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
+                        'mandate_accepted_date' => $cancel['data']['attributes']['mandate_accepted_date'],
                         'confirmation_sent' => 'true',
                         'subscription_webhook_url' => $subscriptionWebhookUrl,
                         'transaction_webhook_url' => $transactionWebhookUrl,
@@ -136,8 +136,8 @@ class Save
             true
         );
 
-        $postSubscription = new Repository();
-        $postSubscription->insert($create->data);
+        $subscription = $this->subscriptionFactory->createSubscription($create['data']);
+        $this->repository->insert($subscription);
     }
 
     /**
