@@ -231,7 +231,7 @@ class Repository
      *
      * @return int
      */
-    protected function findSubscriptionPostIdBySubscriptionId(string $subscriptionId): int
+    public function findSubscriptionPostIdBySubscriptionId(string $subscriptionId): int
     {
         /** @var int[] $found */
         $found = get_posts(
