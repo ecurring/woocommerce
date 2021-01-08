@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring\EventListener;
 use DateTime;
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
+use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
@@ -31,14 +32,20 @@ class PaymentCompletedEventListener implements EventListenerInterface
      * @var Repository
      */
     protected $repository;
+    /**
+     * @var Subscriptions
+     */
+    protected $subscriptionsApiClient;
 
     /**
      * @param ApiClientInterface $apiClient To make eCurring API calls.
+     * @param Subscriptions $subscriptionsApiClient Service able to send API requests related to subscriptions.
      * @param CustomerCrudInterface $customerCrud Service able to provide customer data.
      * @param Repository $repository
      */
     public function __construct(
         ApiClientInterface $apiClient,
+        Subscriptions $subscriptionsApiClient,
         CustomerCrudInterface $customerCrud,
         Repository $repository
     ) {
@@ -46,6 +53,7 @@ class PaymentCompletedEventListener implements EventListenerInterface
         $this->apiClient = $apiClient;
         $this->customerCrud = $customerCrud;
         $this->repository = $repository;
+        $this->subscriptionsApiClient = $subscriptionsApiClient;
     }
 
     public function init(): void
@@ -100,6 +108,9 @@ class PaymentCompletedEventListener implements EventListenerInterface
                     print_r($result, true)
                 )
             );
+
+            $subscription = $this->subscriptionsApiClient->getSubscriptionById($subscriptionId);
+            $this->repository->update($subscription);
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
