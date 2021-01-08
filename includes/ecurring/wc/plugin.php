@@ -20,7 +20,6 @@ use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrud;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
@@ -51,7 +50,6 @@ class eCurring_WC_Plugin
 
         $pluginBasename = self::getPluginFile();
         $settingsHelper = self::getSettingsHelper();
-        $subscriptionCrud = new SubscriptionCrud();
         $customerCrud = new CustomerCrud();
 
         $apiClient = new ApiClient($settingsHelper->getApiKey());
@@ -64,10 +62,10 @@ class eCurring_WC_Plugin
 
         $repository = new Repository();
         (new MollieMandateCreatedEventListener($apiClient, $subscriptionFactory, $repository, $customerCrud))->init();
-        (new AddToCartValidationEventListener($subscriptionCrud))->init();
-        (new PaymentCompletedEventListener($apiClient, $subscriptionCrud, $customerCrud, $repository))->init();
+        (new AddToCartValidationEventListener())->init();
+        (new PaymentCompletedEventListener($apiClient, $customerCrud, $repository))->init();
 
-        add_action('admin_init', static function () use ($subscriptionCrud, $settingsHelper) {
+        add_action('admin_init', static function () use ($settingsHelper) {
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
             $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
@@ -97,7 +95,6 @@ class eCurring_WC_Plugin
                 $filePathTemplateFactory,
                 $simpleTemplateBlockFactory,
                 $subscriptionPlans,
-                $subscriptionCrud,
                 $adminTemplatesPath,
                 ! empty($settingsHelper->getApiKey())
             );

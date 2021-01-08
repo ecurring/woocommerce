@@ -8,7 +8,6 @@ use Dhii\Output\Block\TemplateBlockFactoryInterface;
 use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Settings\SettingsCrud;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurring\Template\WcSelectTemplate;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -35,10 +34,6 @@ class ProductEditPageController
      */
     protected $adminTemplatesPath;
     /**
-     * @var SubscriptionCrudInterface
-     */
-    protected $subscriptionCrud;
-    /**
      * @var SettingsCrud
      */
     protected $settingsCrud;
@@ -56,8 +51,6 @@ class ProductEditPageController
      *
      * @param SubscriptionPlans $subscriptionPlans Service providing subscription plans data.
      *
-     * @param SubscriptionCrudInterface $subscriptionCrud Service providing subscriptions data.
-     *
      * @param string $adminTemplatesPath Path to the directory with the admin templates.
      *
      * @param bool $apiKeyEntered Flag if API key was entered on the settings plugin page.
@@ -66,7 +59,6 @@ class ProductEditPageController
         PathTemplateFactoryInterface $pathTemplateFactory,
         TemplateBlockFactoryInterface $templateBlockFactory,
         SubscriptionPlans $subscriptionPlans,
-        SubscriptionCrudInterface $subscriptionCrud,
         string $adminTemplatesPath,
         bool $apiKeyEntered
     ) {
@@ -75,7 +67,6 @@ class ProductEditPageController
         $this->templateBlockFactory = $templateBlockFactory;
         $this->subscriptionPlans = $subscriptionPlans;
         $this->adminTemplatesPath = $adminTemplatesPath;
-        $this->subscriptionCrud = $subscriptionCrud;
         $this->apiKeyEntered = $apiKeyEntered;
     }
 

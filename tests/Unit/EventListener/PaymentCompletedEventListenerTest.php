@@ -4,7 +4,6 @@ namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -25,13 +24,10 @@ class PaymentCompletedEventListenerTest extends TestCase
         /** @var ApiClientInterface&MockObject $apiClientMock */
         $apiClientMock = $this->createMock(ApiClientInterface::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-
         /** @var CustomerCrudInterface&MockObject $customerCrudMock */
         $customerCrudMock = $this->createMock(CustomerCrudInterface::class);
 
-        $sut = new PaymentCompletedEventListener($apiClientMock, $subscriptionCrudMock, $customerCrudMock);
+        $sut = new PaymentCompletedEventListener($apiClientMock, $customerCrudMock);
 
         expect('add_action')
             ->once()

@@ -5,7 +5,6 @@ namespace Ecurring\WooEcurringTests\Unit\EventListener;
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -28,13 +27,10 @@ class MollieMandateCreatedEventListenerTest extends TestCase
         /** @var ApiClient&MockObject $apiClientMock */
         $apiClientMock = $this->createMock(ApiClient::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-
         /** @var CustomerCrudInterface&MockObject $customerCrudMock */
         $customerCrudMock = $this->createMock(CustomerCrudInterface::class);
 
-        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionCrudMock, $customerCrudMock);
+        $sut = new MollieMandateCreatedEventListener($apiClientMock, $customerCrudMock);
 
         expect('add_action')
         ->once()
@@ -63,9 +59,6 @@ class MollieMandateCreatedEventListenerTest extends TestCase
         /** @var ApiClient&MockObject $apiClientMock */
         $apiClientMock = $this->createMock(ApiClient::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-
         /** @var CustomerCrudInterface&MockObject $customerCrudMock */
         $customerCrudMock = $this->createMock(CustomerCrudInterface::class);
         $customerCrudMock->expects($this->once())
@@ -81,7 +74,7 @@ class MollieMandateCreatedEventListenerTest extends TestCase
             ->method('saveEcurringCustomerId')
             ->with($localUserId, $ecurringCustomerId);
 
-        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionCrudMock, $customerCrudMock);
+        $sut = new MollieMandateCreatedEventListener($apiClientMock, $customerCrudMock);
         $orderMock = $this->createMock(WC_Order::class);
         $orderMock->method('get_customer_id')
             ->willReturn($localUserId);
@@ -103,11 +96,6 @@ class MollieMandateCreatedEventListenerTest extends TestCase
             ->willReturn('Name');
 
         $productMock = $this->createMock(WC_Product::class);
-
-        $subscriptionCrudMock->expects($this->once())
-            ->method('getProductSubscriptionId')
-            ->with($productMock)
-            ->willReturn($ecurringSubscriptionId);
 
         $orderItemProductMock->expects($this->once())
             ->method('get_product')
