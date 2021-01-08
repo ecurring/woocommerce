@@ -39,7 +39,8 @@ class PaymentCompletedEventListener implements EventListenerInterface
 
     /**
      * @param ApiClientInterface $apiClient To make eCurring API calls.
-     * @param Subscriptions $subscriptionsApiClient Service able to send API requests related to subscriptions.
+     * @param Subscriptions $subscriptionsApiClient Service able to send API requests
+     *          related to subscriptions.
      * @param CustomerCrudInterface $customerCrud Service able to provide customer data.
      * @param Repository $repository
      */
