@@ -197,7 +197,7 @@ class ProductEditPageController
             'label' => __('Product', 'woo-ecurring'),
             'description' => '',
             'options' => $this->getSubscriptionPlanOptions(),
-            'value' => $this->subscriptionCrud->getProductSubscriptionId($product) ?? '',
+            'value' => $product->get_meta('_ecurring_subscription_plan') ?? '',
         ];
     }
 
