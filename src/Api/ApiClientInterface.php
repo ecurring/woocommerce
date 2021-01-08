@@ -37,16 +37,6 @@ interface ApiClientInterface
     public function getSubscriptionById(string $subscriptionId): array;
 
     /**
-     * @param string $subscriptionId Id of the subscription to activate.
-     * @param string $mandateAcceptedDate Date string formatted according to ISO 8601.
-     *
-     * @return array Subscription data.
-     *
-     * @throws ApiClientException If request failed.
-     */
-    public function activateSubscription(string $subscriptionId, string $mandateAcceptedDate): array;
-
-    /**
      * Add Mollie mandate id to the eCurring customer.
      *
      * @param string $customerId      eCurring customer id to add mandate to.
