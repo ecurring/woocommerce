@@ -111,6 +111,11 @@ class Repository
         }
     }
 
+    public function getSubscriptionById(string $subscriptionId): SubscriptionInterface
+    {
+        //todo
+    }
+
     /**
      * @param int $subscriptionPostId
      * @param SubscriptionMandateInterface $mandate
