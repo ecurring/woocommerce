@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Api;
 
+use DateTime;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
@@ -34,6 +35,35 @@ class Subscriptions
         $this->apiHelper = $apiHelper;
         $this->apiClient = $apiClient;
         $this->subscriptionFactory = $subscriptionFactory;
+    }
+
+    /**
+     * Send request to the eCurring API to activate the subscription.
+     *
+     * @param string $subscriptionId
+     * @param DateTime $mandateAcceptedDate
+     *
+     * @throws ApiClientException
+     */
+    public function activate(string $subscriptionId, DateTime $mandateAcceptedDate): void
+    {
+        $requestData = [
+            'data' => [
+                'type' => 'subscription',
+                'id' => $subscriptionId,
+                'attributes' => [
+                    'status' => 'active',
+                    'mandate_accepted' => true,
+                    'mandate_accepted_date' => $mandateAcceptedDate->format('c'),
+                ],
+            ],
+        ];
+
+        $this->apiClient->apiCall(
+            'PATCH',
+            sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
+            $requestData
+        );
     }
 
     /**
