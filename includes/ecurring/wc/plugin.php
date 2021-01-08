@@ -10,6 +10,7 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
+use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrud;
 use Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener;
 use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
@@ -60,10 +61,12 @@ class eCurring_WC_Plugin
             $subscriptionStatusFactory
         );
 
+        $subscriptions = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
+
         $repository = new Repository();
         (new MollieMandateCreatedEventListener($apiClient, $subscriptionFactory, $repository, $customerCrud))->init();
         (new AddToCartValidationEventListener())->init();
-        (new PaymentCompletedEventListener($apiClient, $customerCrud, $repository))->init();
+        (new PaymentCompletedEventListener($apiClient, $subscriptions, $customerCrud, $repository))->init();
 
         add_action('admin_init', static function () use ($settingsHelper) {
             $elementFactory = new ElementFactory();
