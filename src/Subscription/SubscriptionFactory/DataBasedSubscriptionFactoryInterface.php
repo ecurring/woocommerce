@@ -21,5 +21,5 @@ interface DataBasedSubscriptionFactoryInterface
      *
      * @throws SubscriptionFactoryException If cannot create a new subscription instance.
      */
-    public function createSubscription($subscriptionData): SubscriptionInterface;
+    public function createSubscription(array $subscriptionData): SubscriptionInterface;
 }
