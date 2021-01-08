@@ -92,7 +92,14 @@ class PaymentCompletedEventListener implements EventListenerInterface
             if ($this->customerCrud->getFlagCustomerNeedsMollieMandate($userId)) {
                 $this->addMollieMandateToTheCustomer($userId);
             }
-            $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate->format('c'));
+            $result = $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate->format('c'));
+
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Subscription activation request was sent. Returned result: %1$s',
+                    print_r($result, true)
+                )
+            );
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
