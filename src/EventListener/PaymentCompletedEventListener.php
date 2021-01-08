@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EventListener;
 
+use DateTime;
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Customer\CustomerCrudException;
@@ -92,14 +93,14 @@ class PaymentCompletedEventListener implements EventListenerInterface
                 $subscriptionId
             )
         );
-        $mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
+        $mandateAcceptedDate = $order->get_date_created() ?? new DateTime();
         $userId = $order->get_customer_id();
 
         try {
             if ($this->customerCrud->getFlagCustomerNeedsMollieMandate($userId)) {
                 $this->addMollieMandateToTheCustomer($userId);
             }
-            $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate);
+            $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate->format('c'));
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
