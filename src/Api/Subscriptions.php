@@ -2,10 +2,19 @@
 
 namespace Ecurring\WooEcurring\Api;
 
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use eCurring_WC_Helper_Api;
 
 class Subscriptions
 {
+    /**
+     * @var ApiClient
+     */
+    protected $apiClient;
+    /**
+     * @var DataBasedSubscriptionFactory
+     */
+    protected $subscriptionFactory;
     /**
      * @var eCurring_WC_Helper_Api
      */
@@ -13,10 +22,14 @@ class Subscriptions
 
     /**
      * @param eCurring_WC_Helper_Api $apiHelper
+     * @param ApiClient $apiClient
+     * @param DataBasedSubscriptionFactory $subscriptionFactory
      */
-    public function __construct(eCurring_WC_Helper_Api $apiHelper)
+    public function __construct(eCurring_WC_Helper_Api $apiHelper, ApiClient $apiClient, DataBasedSubscriptionFactory $subscriptionFactory)
     {
         $this->apiHelper = $apiHelper;
+        $this->apiClient = $apiClient;
+        $this->subscriptionFactory = $subscriptionFactory;
     }
 
     /**
@@ -107,11 +120,8 @@ class Subscriptions
 
     public function getSubscriptionById($subscriptionId)
     {
-        return json_decode(
-            $this->apiHelper->apiCall(
-                'GET',
-                "https://api.ecurring.com/subscriptions/{$subscriptionId}"
-            )
-        );
+        $response = $this->apiClient->getSubscriptionById($subscriptionId);
+
+        return $this->subscriptionFactory->createSubscription($response['data']);
     }
 }
