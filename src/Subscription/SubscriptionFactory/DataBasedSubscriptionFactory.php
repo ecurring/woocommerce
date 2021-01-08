@@ -43,7 +43,7 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
     /**
      * @inheritDoc
      */
-    public function createSubscription($subscriptionData): SubscriptionInterface
+    public function createSubscription(array $subscriptionData): SubscriptionInterface
     {
         $normalizedData = $this->normalizeSubscriptionData($subscriptionData);
 
