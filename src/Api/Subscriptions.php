@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ecurring\WooEcurring\Api;
 
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
