@@ -25,10 +25,11 @@ interface SubscriptionStatusSwitcherInterface
      * Pause a subscription.
      *
      * @param string $subscriptionId
+     * @param DateTime $resumeDate
      *
      * @throws SubscriptionStatusSwitcherException If failed to pause subscription.
      */
-    public function pause(string $subscriptionId): void;
+    public function pause(string $subscriptionId, DateTime $resumeDate): void;
 
     /**
      * Resume paused subscription.
@@ -43,8 +44,9 @@ interface SubscriptionStatusSwitcherInterface
      * Cancel a subscription.
      *
      * @param string $subscriptionId
+     * @param DateTime $cancelDate
      *
      * @throws SubscriptionStatusSwitcherException If failed to cancel subscription.
      */
-    public function cancel(string $subscriptionId): void;
+    public function cancel(string $subscriptionId, DateTime $cancelDate): void;
 }
