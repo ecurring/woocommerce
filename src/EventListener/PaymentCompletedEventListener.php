@@ -12,6 +12,7 @@ use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use eCurring_WC_Plugin;
 use WC_Order;
 
@@ -36,18 +37,24 @@ class PaymentCompletedEventListener implements EventListenerInterface
      * @var Subscriptions
      */
     protected $subscriptionsApiClient;
+    /**
+     * @var SubscriptionStatusSwitcherInterface
+     */
+    protected $subscriptionStatusSwitcher;
 
     /**
      * @param ApiClientInterface $apiClient To make eCurring API calls.
      * @param Subscriptions $subscriptionsApiClient Service able to send API requests
      *          related to subscriptions.
      * @param CustomerCrudInterface $customerCrud Service able to provide customer data.
+     * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher To activate subscription.
      * @param Repository $repository
      */
     public function __construct(
         ApiClientInterface $apiClient,
         Subscriptions $subscriptionsApiClient,
         CustomerCrudInterface $customerCrud,
+        SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher,
         Repository $repository
     ) {
 
@@ -55,6 +62,7 @@ class PaymentCompletedEventListener implements EventListenerInterface
         $this->customerCrud = $customerCrud;
         $this->repository = $repository;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
+        $this->subscriptionStatusSwitcher = $subscriptionStatusSwitcher;
     }
 
     public function init(): void
@@ -101,17 +109,9 @@ class PaymentCompletedEventListener implements EventListenerInterface
             if ($this->customerCrud->getFlagCustomerNeedsMollieMandate($userId)) {
                 $this->addMollieMandateToTheCustomer($userId);
             }
-            $result = $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate->format('c'));
 
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Subscription activation request was sent. Returned result: %1$s',
-                    print_r($result, true)
-                )
-            );
+            $this->subscriptionStatusSwitcher->activate($subscriptionId, $mandateAcceptedDate);
 
-            $subscription = $this->subscriptionsApiClient->getSubscriptionById($subscriptionId);
-            $this->repository->update($subscription);
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
