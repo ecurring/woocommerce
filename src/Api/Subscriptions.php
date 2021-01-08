@@ -2,7 +2,6 @@
 
 namespace Ecurring\WooEcurring\Api;
 
-use Ecurring\WooEcurring\Subscription\Subscription;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
@@ -125,10 +124,11 @@ class Subscriptions
      * @param $subscriptionId
      *
      * @return SubscriptionInterface
+     *
      * @throws ApiClientException
      * @throws SubscriptionFactoryException
      */
-    public function getSubscriptionById($subscriptionId): Subscription
+    public function getSubscriptionById(string $subscriptionId): SubscriptionInterface
     {
         $response = $this->apiClient->getSubscriptionById($subscriptionId);
 
