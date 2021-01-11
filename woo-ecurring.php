@@ -37,6 +37,7 @@ use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
 use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
+use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcher;
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
@@ -211,8 +212,14 @@ function eCurringInitialize()
         $subscriptionsApi = new SubscriptionsApi($apiHelper, $apiClient, $subscriptionsFactory);
 
         $subscriptionStatusSwitcher = new SubscriptionStatusSwitcher($subscriptionsApi, $repository);
+        $subscriptionPlanSwitcher = new SubscriptionPlanSwitcher(
+            $subscriptionStatusSwitcher,
+            $subscriptionsFactory,
+            $subscriptionsApi,
+            $repository
+        );
         $display = new Display();
-        $save = new Save($repository, $subscriptionsFactory, $subscriptionStatusSwitcher, $subscriptionsApi);
+        $save = new Save($repository, $subscriptionsFactory, $subscriptionStatusSwitcher, $subscriptionPlanSwitcher, $subscriptionsApi);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
 
