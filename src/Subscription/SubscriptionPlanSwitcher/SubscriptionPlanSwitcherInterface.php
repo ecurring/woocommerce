@@ -15,14 +15,14 @@ interface SubscriptionPlanSwitcherInterface
     /**
      * Switch subscription plan on the remote API and return a new subscription instance.
      *
-     * @param SubscriptionInterface $oldSubscriptionInstance Subscription instance with
+     * @param SubscriptionInterface $oldSubscription Subscription instance with
      *          current subscription plan.
      * @param string $newPlanId Id of the subscription plan to switch to.
      *
      * @return SubscriptionInterface A new subscription instance with given subscription plan.
      */
     public function switchSubscriptionPlan(
-        SubscriptionInterface $oldSubscriptionInstance,
+        SubscriptionInterface $oldSubscription,
         string $newPlanId
     ): SubscriptionInterface;
 }
