@@ -12,7 +12,6 @@ use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
-use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 use eCurring_WC_Plugin;
 use Mollie\Api\Resources\Payment;
 use WC_Order;
@@ -253,31 +252,5 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
                 )
             );
         }
-    }
-
-    /**
-     * Create an eCurring subscription on eCurring side.
-     *
-     * @param string $ecurringCustomerId id of the customer in eCurring.
-     * @param string $subscriptionId id of the subscription plan in eCurring.
-     *
-     * @return SubscriptionInterface Created subscription instance.
-     *
-     * @throws ApiClientException
-     * @throws SubscriptionFactoryException
-     */
-    protected function createEcurringSubscription(string $ecurringCustomerId, string $subscriptionId): SubscriptionInterface
-    {
-        return $this->subscriptionsApiClient->create(
-            $ecurringCustomerId,
-            $subscriptionId,
-            [
-                'transaction_webhook_url' => add_query_arg(
-                    'ecurring-webhook',
-                    'transaction',
-                    home_url('/')
-                ),
-            ]
-        );
     }
 }
