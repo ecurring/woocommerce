@@ -18,14 +18,14 @@ interface SubscriptionPlanSwitcherInterface
      *
      * @param SubscriptionInterface $oldSubscription Subscription instance with
      *          current subscription plan.
-     * @param string $newPlanId Id of the subscription plan to switch to.
+     * @param string $newSubscriptionPlanId Id of the subscription plan to switch to.
      * @param DateTime $switchDate The date when the switch should happen.
      *
      * @return SubscriptionInterface A new subscription instance with given subscription plan.
      */
     public function switchSubscriptionPlan(
         SubscriptionInterface $oldSubscription,
-        string $newPlanId,
+        string $newSubscriptionPlanId,
         DateTime $switchDate
     ): SubscriptionInterface;
 }
