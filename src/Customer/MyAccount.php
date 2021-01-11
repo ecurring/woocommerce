@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring\Customer;
 use DateTime;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcherInterface;
 use eCurring_WC_Helper_Api;
 use Exception;
 
@@ -15,12 +16,14 @@ use function add_action;
 use function add_filter;
 use function filter_input;
 use function json_decode;
-use function home_url;
-use function add_query_arg;
 use function wp_die;
 
 class MyAccount
 {
+    /**
+     * @var SubscriptionPlanSwitcherInterface
+     */
+    protected $subscriptionPlanSwitcher;
     /**
      * @var eCurring_WC_Helper_Api
      */
@@ -41,17 +44,28 @@ class MyAccount
      */
     private $subscriptions;
 
+    /**
+     * MyAccount constructor.
+     *
+     * @param eCurring_WC_Helper_Api $api
+     * @param Actions $actions
+     * @param Repository $repository
+     * @param Subscriptions $subscriptions
+     * @param SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
+     */
     public function __construct(
         eCurring_WC_Helper_Api $api,
         Actions $actions,
         Repository $repository,
-        Subscriptions $subscriptions
+        Subscriptions $subscriptions,
+        SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
     ) {
 
         $this->api = $api;
         $this->actions = $actions;
         $this->repository = $repository;
         $this->subscriptions = $subscriptions;
+        $this->subscriptionPlanSwitcher = $subscriptionPlanSwitcher;
     }
 
     //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
@@ -136,8 +150,6 @@ class MyAccount
             FILTER_SANITIZE_STRING
         );
 
-        $switchDate = $this->detectSubscriptionSwitchDate();
-
         switch ($subscriptionType) {
             case 'pause':
                 $response = json_decode(
@@ -153,7 +165,11 @@ class MyAccount
                 $this->updatePostSubscription($response);
                 break;
             case 'switch':
-                $this->doSubscriptionSwitch($actions, $subscriptionId, $switchDate);
+                $this->doSubscriptionSwitch(
+                    $subscriptionId,
+                    $this->detectNewSubscriptionPlanId(),
+                    $this->detectSubscriptionSwitchDate()
+                );
                 break;
             case 'cancel':
                 $response = json_decode(
@@ -166,85 +182,28 @@ class MyAccount
         wp_die();
     }
 
-    protected function doSubscriptionSwitch(Actions $actions, string $subscriptionId, string $switchDate): void
+    protected function doSubscriptionSwitch(string $subscriptionId, string $newSubscriptionPlanId, DateTime $switchDate): void
     {
-        $cancel = json_decode($actions->cancel($subscriptionId, $switchDate));
-        $this->updatePostSubscription($cancel);
+        $subscription = $this->repository->getSubscriptionById($subscriptionId);
 
-        $productId = filter_input(
-            INPUT_POST,
-            'ecurring_subscription_plan',
-            FILTER_SANITIZE_STRING
-        );
-
-        $response = json_decode(
-            $actions->create(
-                [
-                    'data' => [
-                        'type' => 'subscription',
-                        'attributes' => [
-                            'customer_id' => $cancel->data->relationships->customer->data->id,
-                            'subscription_plan_id' => $productId,
-                            'mandate_code' => $cancel->data->attributes->mandate_code,
-                            'mandate_accepted' => true,
-                            'mandate_accepted_date' => $cancel->data->attributes->mandate_accepted_date,
-                            'confirmation_sent' => 'true',
-                            'subscription_webhook_url' => $this->buildSubscriptionWebhookUrl(),
-                            'transaction_webhook_url' => $this->buildTransactionWebhookUrl(),
-                            'status' => 'active',
-                            "start_date" => $switchDate,
-                        ],
-                    ],
-                ]
-            )
-        );
-
-        $this->repository->insert($response);
-    }
-
-    /**
-     * Build and return url to be used for a subscription webhook call.
-     *
-     * @return string
-     */
-    protected function buildSubscriptionWebhookUrl(): string
-    {
-        return add_query_arg(
-            'ecurring-webhook',
-            'subscription',
-            home_url('/')
-        );
-    }
-
-    /**
-     * Build and return url to be used for a transaction webhook call.
-     *
-     * @return string
-     */
-    protected function buildTransactionWebhookUrl(): string
-    {
-        return add_query_arg(
-            'ecurring-webhook',
-            'transaction',
-            home_url('/')
-        );
+        $this->subscriptionPlanSwitcher->switchSubscriptionPlan($subscription, $newSubscriptionPlanId, $switchDate);
     }
 
     /**
      * Get formatted subscription switch date from posted data.
      *
-     * @return string Formatted subscription switch date.
+     * @return DateTime Subscription switch date.
      *
      * @throws Exception If cannot create DateTime object.
      */
-    protected function detectSubscriptionSwitchDate(): string
+    protected function detectSubscriptionSwitchDate(): DateTime
     {
         $switchSubscription = filter_input(
             INPUT_POST,
             'ecurring_switch_subscription',
             FILTER_SANITIZE_STRING
         );
-        $switchDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
+        $switchDate = (new DateTime('now'));
         if ($switchSubscription === 'specific-date') {
             $switchDate = filter_input(
                 INPUT_POST,
@@ -252,10 +211,22 @@ class MyAccount
                 FILTER_SANITIZE_STRING
             );
 
-            $switchDate = (new DateTime($switchDate))->format('Y-m-d\TH:i:sP');
+            $switchDate = (new DateTime($switchDate));
         }
 
         return $switchDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function detectNewSubscriptionPlanId(): string
+    {
+        return (string) filter_input(
+            INPUT_POST,
+            'ecurring_subscription_plan',
+            FILTER_SANITIZE_STRING
+        );
     }
 
     /**
