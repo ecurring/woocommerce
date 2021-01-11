@@ -11,23 +11,6 @@ interface ApiClientInterface
 {
 
     /**
-     * API call to create subscription.
-     *
-     * @param string $ecurringCustomerId    eCurring customer id.
-     * @param string $subscriptionPlanId    eCurring subscription product id.
-     * @param array<array-key, mixed> $attributes Optional attributes array.
-     *
-     * @return array Created subscription data or error details.
-     *
-     * @throws ApiClientException If request failed.
-     */
-    public function createSubscription(
-        string $ecurringCustomerId,
-        string $subscriptionPlanId,
-        array $attributes = []
-    ): array;
-
-    /**
      * @param string $subscriptionId
      *
      * @return array Subscription data or request error details.
