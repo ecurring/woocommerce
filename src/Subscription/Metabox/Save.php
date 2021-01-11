@@ -92,7 +92,7 @@ class Save
 
         switch ($subscriptionType) {
             case 'pause':
-                $this->subscriptionStatusSwitcher->pause($subscriptionId, $switchDate);
+                $this->subscriptionStatusSwitcher->pause($subscriptionId, $this->detectResumeDate());
                 break;
             case 'resume':
                 $this->subscriptionStatusSwitcher->resume($subscriptionId);
@@ -167,18 +167,18 @@ class Save
     /**
      * Detect subscription resume date from posted data.
      *
-     * @return string
+     * @return DateTime|null
      *
      * @throws Exception If cannot create DateTime object.
      */
-    protected function detectResumeDate(): string
+    protected function detectResumeDate(): ?DateTime
     {
         $pauseSubscription = filter_input(
             INPUT_POST,
             'ecurring_pause_subscription',
             FILTER_SANITIZE_STRING
         );
-        $resumeDate = '';
+        $resumeDate = null;
         if ($pauseSubscription === 'specific-date') {
             $resumeDate = filter_input(
                 INPUT_POST,
@@ -186,7 +186,7 @@ class Save
                 FILTER_SANITIZE_STRING
             );
 
-            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
+            $resumeDate = (new DateTime($resumeDate));
         }
 
         return $resumeDate;
