@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher;
 
 use DateTime;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherException;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 
 /**
@@ -22,6 +23,8 @@ interface SubscriptionPlanSwitcherInterface
      * @param DateTime $switchDate The date when the switch should happen.
      *
      * @return SubscriptionInterface A new subscription instance with given subscription plan.
+     *
+     * @throws SubscriptionStatusSwitcherException If failed to switch subscription.
      */
     public function switchSubscriptionPlan(
         SubscriptionInterface $oldSubscription,
