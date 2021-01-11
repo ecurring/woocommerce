@@ -229,7 +229,7 @@ function eCurringInitialize()
         (new Assets())->init();
         (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
-        (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
+        (new MyAccount($apiHelper, $actions, $repository, $subscriptions, $subscriptionPlanSwitcher))->init();
 
         add_action(
             'woocommerce_payment_complete',
