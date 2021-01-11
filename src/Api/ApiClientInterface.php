@@ -15,7 +15,7 @@ interface ApiClientInterface
      *
      * @param string $ecurringCustomerId    eCurring customer id.
      * @param string $subscriptionPlanId    eCurring subscription product id.
-     * @param string $transactionWebhookUrl Webhook URL will be triggered by eCurring on transaction.
+     * @param array<array-key, mixed> $attributes Optional attributes array.
      *
      * @return array Created subscription data or error details.
      *
@@ -24,7 +24,7 @@ interface ApiClientInterface
     public function createSubscription(
         string $ecurringCustomerId,
         string $subscriptionPlanId,
-        string $transactionWebhookUrl = ''
+        array $attributes = []
     ): array;
 
     /**
