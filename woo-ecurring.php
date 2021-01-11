@@ -24,6 +24,7 @@ use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcher;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\SubscriptionsJob;
 use Ecurring\WooEcurring\Subscription\PostType;
@@ -207,11 +208,13 @@ function eCurringInitialize()
             $subscriptionMandateFactory,
             $subscriptionStatusFactory
         );
+        $subscriptionsApi = new SubscriptionsApi($apiHelper, $apiClient, $subscriptionsFactory);
+
+        $subscriptionStatusSwitcher = new SubscriptionStatusSwitcher($subscriptionsApi, $repository);
         $display = new Display();
-        $save = new Save($actions, $repository, $subscriptionsFactory);
+        $save = new Save($repository, $subscriptionsFactory, $subscriptionStatusSwitcher, $subscriptionsApi);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
-        $subscriptionsApi = new SubscriptionsApi($apiHelper, $apiClient, $subscriptionsFactory);
 
         (new SubscriptionsJob($actions, $repository, $subscriptionsFactory))->init();
         (new Metabox($display, $save))->init();

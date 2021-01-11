@@ -21,6 +21,7 @@ use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcher;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
@@ -60,13 +61,16 @@ class eCurring_WC_Plugin
             $subscriptionMandateFactory,
             $subscriptionStatusFactory
         );
+        $repository = new Repository();
 
         $subscriptions = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
+        $subscriptionsApiClient = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
+        $subscriptionsSwitcher = new SubscriptionStatusSwitcher($subscriptionsApiClient, $repository);
 
         $repository = new Repository();
         (new MollieMandateCreatedEventListener($apiClient, $subscriptionFactory, $repository, $customerCrud))->init();
         (new AddToCartValidationEventListener())->init();
-        (new PaymentCompletedEventListener($apiClient, $subscriptions, $customerCrud, $repository))->init();
+        (new PaymentCompletedEventListener($apiClient, $subscriptions, $customerCrud, $subscriptionsSwitcher, $repository))->init();
 
         add_action('admin_init', static function () use ($settingsHelper) {
             $elementFactory = new ElementFactory();
