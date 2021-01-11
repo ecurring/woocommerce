@@ -10,9 +10,7 @@ use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherException;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
-use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcher;
-use eCurring_WC_Plugin;
 use Exception;
 
 class Save
@@ -219,36 +217,5 @@ class Save
         }
 
         return $switchDate;
-    }
-
-    /**
-     * @param $response
-     *
-     * @return void
-     */
-    protected function updateSubscription($response): void
-    {
-
-        if (! isset($response['data'])) {
-            eCurring_WC_Plugin::debug(
-                'Couldn\'t update subscription from the API response. No data found in the response.'
-            );
-
-            return;
-        }
-
-        $subscriptionData = $response['data'] ?? [];
-
-        try {
-            $subscription = $this->subscriptionFactory->createSubscription($subscriptionData);
-            $this->repository->update($subscription);
-        } catch (SubscriptionFactoryException $exception) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Couldn\'t create subscription from the API response. Exception caught: %1$s',
-                    $exception->getMessage()
-                )
-            );
-        }
     }
 }
