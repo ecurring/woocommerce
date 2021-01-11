@@ -24,32 +24,6 @@ class ApiClient implements ApiClientInterface
     /**
      * @inheritDoc
      */
-    public function createSubscription(
-        string $ecurringCustomerId,
-        string $subscriptionPlanId,
-        array $attributes = []
-    ): array {
-
-        $attributes['customer_id'] = $ecurringCustomerId;
-        $attributes['subscription_plan_id'] = $subscriptionPlanId;
-
-        $requestData = [
-            'data' => [
-                'type' => 'subscription',
-                'attributes' => $attributes,
-            ],
-        ];
-
-        return $this->apiCall(
-            'POST',
-            'https://api.ecurring.com/subscriptions',
-            $requestData
-        );
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getSubscriptionById(string $subscription_id): array
     {
         $url = 'https://api.ecurring.com/subscriptions/' . $subscription_id;
