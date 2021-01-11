@@ -10,6 +10,7 @@ use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
+use eCurring_WC_Plugin;
 
 /**
  * Service for switching subscription status using eCurring API and update its local status.
@@ -48,6 +49,11 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
         try {
             $this->subscriptionsApiClient->activate($subscriptionId, $mandateAcceptedDate);
             $this->updateSubscriptionFromApi($subscriptionId);
+
+            eCurring_WC_Plugin::debug(
+                sprintf('Subscription %1$s was activated.', $subscriptionId)
+            );
+
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
@@ -67,6 +73,11 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
             $resumeDate = $resumeDate ? $resumeDate->format('c') : false;
             $this->subscriptionsApiClient->pause($subscriptionId, $resumeDate);
             $this->updateSubscriptionFromApi($subscriptionId);
+
+            eCurring_WC_Plugin::debug(
+                sprintf('Subscription %1$s was paused.', $subscriptionId)
+            );
+
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
@@ -85,6 +96,11 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
         try {
             $this->subscriptionsApiClient->resume($subscriptionId);
             $this->updateSubscriptionFromApi($subscriptionId);
+
+            eCurring_WC_Plugin::debug(
+                sprintf('Subscription %1$s was resumed.', $subscriptionId)
+            );
+
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
@@ -104,6 +120,11 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
             $cancelDate = $cancelDate ? $cancelDate->format('c') : false;
             $this->subscriptionsApiClient->cancel($subscriptionId, $cancelDate);
             $this->updateSubscriptionFromApi($subscriptionId);
+
+            eCurring_WC_Plugin::debug(
+                sprintf('Subscription %1$s was cancelled.', $subscriptionId)
+            );
+
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
