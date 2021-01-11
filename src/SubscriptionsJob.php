@@ -116,7 +116,8 @@ class SubscriptionsJob
             } catch (SubscriptionFactoryException $exception) {
                 eCurring_WC_Plugin::debug(
                     sprintf(
-                        'Couldn\'t create subscription instance from received data. Exception was caught with message: %1$s',
+                        'Couldn\'t create subscription instance from received data.' .
+                        'Exception was caught with message: %1$s',
                         $exception->getMessage()
                     )
                 );
