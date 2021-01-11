@@ -90,24 +90,29 @@ class Subscriptions
     }
 
     /**
-     * @param false|string $resumeDate
+     * @param DateTime|null $resumeDate
      */
-    public function pause($subscriptionId, $resumeDate)
+    public function pause($subscriptionId, $resumeDate = null)
     {
+        $subscriptionData = [
+            'data' => [
+                'type' => 'subscription',
+                'id' => $subscriptionId,
+                'attributes' => [
+                    'status' => 'paused',
+                ],
+            ],
+        ];
+
+        if ($resumeDate) {
+            $subscriptionData['data']['attributes']['resume_date'] = $resumeDate->format('Y-m-d\TH:i:sP');
+        }
+
         return json_decode(
             $this->apiHelper->apiCall(
                 'PATCH',
                 "https://api.ecurring.com/subscriptions/{$subscriptionId}",
-                [
-                    'data' => [
-                        'type' => 'subscription',
-                        'id' => $subscriptionId,
-                        'attributes' => [
-                            'status' => 'paused',
-                            'resume_date' => $resumeDate,
-                        ],
-                    ],
-                ]
+                $subscriptionData
             )
         );
     }

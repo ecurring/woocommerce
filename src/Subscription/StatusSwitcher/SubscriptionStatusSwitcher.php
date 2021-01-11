@@ -70,12 +70,15 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
     public function pause(string $subscriptionId, DateTime $resumeDate = null): void
     {
         try {
-            $resumeDate = $resumeDate ? $resumeDate->format('c') : false;
-            $this->subscriptionsApiClient->pause($subscriptionId, $resumeDate);
+            $response = $this->subscriptionsApiClient->pause($subscriptionId, $resumeDate);
             $this->updateSubscriptionFromApi($subscriptionId);
 
             eCurring_WC_Plugin::debug(
                 sprintf('Subscription %1$s was paused.', $subscriptionId)
+            );
+
+            eCurring_WC_Plugin::debug(
+                sprintf('API response: %1$s', print_r($response, true))
             );
 
         } catch (EcurringException $exception) {
