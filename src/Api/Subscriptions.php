@@ -136,15 +136,50 @@ class Subscriptions
         );
     }
 
-    public function create(array $data)
-    {
-        return json_decode(
-            $this->apiHelper->apiCall(
-                'POST',
-                'https://api.ecurring.com/subscriptions',
-                $data
-            )
+    /**
+     * @param string $ecurringCustomerId
+     * @param string $subscriptionPlanId
+     * @param array $attributes
+     *
+     * @return SubscriptionInterface
+     *
+     * @throws ApiClientException
+     * @throws SubscriptionFactoryException
+     */
+    public function create(
+        string $ecurringCustomerId,
+        string $subscriptionPlanId,
+        array $attributes = []
+    ): SubscriptionInterface {
+
+        $attributes['customer_id'] = $ecurringCustomerId;
+        $attributes['subscription_plan_id'] = $subscriptionPlanId;
+
+        $requestData = [
+            'data' => [
+                'type' => 'subscription',
+                'attributes' => $attributes,
+            ],
+        ];
+
+        $response = $this->apiClient->apiCall(
+            'POST',
+            'https://api.ecurring.com/subscriptions',
+            $requestData
         );
+
+        if (!isset($response['data'])) {
+            throw new ApiClientException(
+                sprintf(
+                    'Failed to create subscription.' .
+                    'No required \'data\' section was found in the response. ' .
+                    'Response content: %1$s',
+                    print_r($response, true)
+                )
+            );
+        }
+
+        return $this->subscriptionFactory->createSubscription($response['data']);
     }
 
     public function getSubscriptions(int $page)
