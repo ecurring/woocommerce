@@ -112,12 +112,12 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
                 'subscription_plan_id' => $newSubscriptionPlanId,
                 'mandate_code' => $mandate->getMandateCode(),
                 'mandate_accepted' => true,
-                'mandate_accepted_date' => $mandateAcceptedDate ? $mandateAcceptedDate->format('c') : '',
+                'mandate_accepted_date' => $mandateAcceptedDate ? $mandateAcceptedDate->format('Y-m-d\TH:i:sP') : '',
                 'confirmation_sent' => 'true',
                 'subscription_webhook_url' => $subscriptionWebhookUrl,
                 'transaction_webhook_url' => $transactionWebhookUrl,
                 'status' => 'active',
-                "start_date" => $startDate->format('c'),
+                "start_date" => $startDate->format('Y-m-d\TH:i:sP'),
             ],
         ];
 

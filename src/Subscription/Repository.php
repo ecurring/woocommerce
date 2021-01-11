@@ -132,7 +132,7 @@ class Repository
         update_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_mandate_accepted_date',
-            $mandateAcceptedDate ? $mandateAcceptedDate->format('c') : ''
+            $mandateAcceptedDate ? $mandateAcceptedDate->format('Y-m-d\TH:i:sP') : ''
         );
 
         update_post_meta(
