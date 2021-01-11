@@ -27,19 +27,16 @@ class ApiClient implements ApiClientInterface
     public function createSubscription(
         string $ecurringCustomerId,
         string $subscriptionPlanId,
-        string $transactionWebhookUrl = ''
+        array $attributes = []
     ): array {
+
+        $attributes['customer_id'] = $ecurringCustomerId;
+        $attributes['subscription_plan_id'] = $subscriptionPlanId;
 
         $requestData = [
             'data' => [
                 'type' => 'subscription',
-                'attributes' => [
-                    'customer_id' => $ecurringCustomerId,
-                    'subscription_plan_id' => $subscriptionPlanId,
-                    'transaction_webhook_url' => $transactionWebhookUrl,
-                    'confirmation_sent' => true,
-                    'metadata' => ['source' => 'woocommerce'],
-                ],
+                'attributes' => $attributes,
             ],
         ];
 
