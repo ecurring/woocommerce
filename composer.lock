@@ -490,12 +490,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/amp.git",
-                "reference": "dbb3c28ece24b36efa91be205f6f0b015bddc27c"
+                "reference": "efca2b32a7580087adb8aabbff6be1dc1bb924a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/amp/zipball/dbb3c28ece24b36efa91be205f6f0b015bddc27c",
-                "reference": "dbb3c28ece24b36efa91be205f6f0b015bddc27c",
+                "url": "https://api.github.com/repos/amphp/amp/zipball/efca2b32a7580087adb8aabbff6be1dc1bb924a9",
+                "reference": "efca2b32a7580087adb8aabbff6be1dc1bb924a9",
                 "shasum": ""
             },
             "require": {
@@ -566,7 +566,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-14T16:44:06+00:00"
+            "time": "2021-01-10T17:06:37+00:00"
         },
         {
             "name": "amphp/byte-stream",
@@ -686,32 +686,29 @@
         },
         {
             "name": "automattic/jetpack-autoloader",
-            "version": "v2.7.1",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Automattic/jetpack-autoloader.git",
-                "reference": "5437697a56aefbdf707849b9833e1b36093d7a73"
+                "reference": "66a5d150b3928be718d86696f85631a7f0b98a7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/5437697a56aefbdf707849b9833e1b36093d7a73",
-                "reference": "5437697a56aefbdf707849b9833e1b36093d7a73",
+                "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/66a5d150b3928be718d86696f85631a7f0b98a7b",
+                "reference": "66a5d150b3928be718d86696f85631a7f0b98a7b",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.1 || ^2.0"
             },
             "require-dev": {
-                "yoast/phpunit-polyfills": "0.2.0"
+                "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5"
             },
             "type": "composer-plugin",
             "extra": {
                 "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin"
             },
             "autoload": {
-                "classmap": [
-                    "src/AutoloadGenerator.php"
-                ],
                 "psr-4": {
                     "Automattic\\Jetpack\\Autoloader\\": "src"
                 }
@@ -721,20 +718,20 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Creates a custom autoloader for a plugin or theme.",
-            "time": "2020-12-18T22:33:59+00:00"
+            "time": "2020-08-14T20:34:36+00:00"
         },
         {
             "name": "automattic/jetpack-constants",
-            "version": "v1.5.1",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Automattic/jetpack-constants.git",
-                "reference": "18f772daddc8be5df76c9f4a92e017a3c2569a5b"
+                "reference": "9827a2f446b8c4faafaf1c740483031c073a381d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Automattic/jetpack-constants/zipball/18f772daddc8be5df76c9f4a92e017a3c2569a5b",
-                "reference": "18f772daddc8be5df76c9f4a92e017a3c2569a5b",
+                "url": "https://api.github.com/repos/Automattic/jetpack-constants/zipball/9827a2f446b8c4faafaf1c740483031c073a381d",
+                "reference": "9827a2f446b8c4faafaf1c740483031c073a381d",
                 "shasum": ""
             },
             "require-dev": {
@@ -752,7 +749,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "A wrapper for defining constants in a more testable way.",
-            "time": "2020-10-28T19:00:31+00:00"
+            "time": "2020-08-13T14:33:09+00:00"
         },
         {
             "name": "automattic/phpcs-neutron-standard",
@@ -1492,25 +1489,25 @@
         },
         {
             "name": "felixfbecker/advanced-json-rpc",
-            "version": "v3.1.1",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/felixfbecker/php-advanced-json-rpc.git",
-                "reference": "0ed363f8de17d284d479ec813c9ad3f6834b5c40"
+                "reference": "06f0b06043c7438959dbdeed8bb3f699a19be22e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/felixfbecker/php-advanced-json-rpc/zipball/0ed363f8de17d284d479ec813c9ad3f6834b5c40",
-                "reference": "0ed363f8de17d284d479ec813c9ad3f6834b5c40",
+                "url": "https://api.github.com/repos/felixfbecker/php-advanced-json-rpc/zipball/06f0b06043c7438959dbdeed8bb3f699a19be22e",
+                "reference": "06f0b06043c7438959dbdeed8bb3f699a19be22e",
                 "shasum": ""
             },
             "require": {
                 "netresearch/jsonmapper": "^1.0 || ^2.0",
-                "php": ">=7.0",
-                "phpdocumentor/reflection-docblock": "^4.0.0 || ^5.0.0"
+                "php": "^7.1 || ^8.0",
+                "phpdocumentor/reflection-docblock": "^4.3.4 || ^5.0.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.0.0"
+                "phpunit/phpunit": "^7.0 || ^8.0"
             },
             "type": "library",
             "autoload": {
@@ -1529,7 +1526,7 @@
                 }
             ],
             "description": "A more advanced JSONRPC implementation",
-            "time": "2020-03-11T15:21:41+00:00"
+            "time": "2021-01-10T17:48:47+00:00"
         },
         {
             "name": "felixfbecker/language-server-protocol",
@@ -1914,6 +1911,78 @@
             "time": "2020-10-17T22:47:35+00:00"
         },
         {
+            "name": "league/container",
+            "version": "3.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/container.git",
+                "reference": "7dc67bdf89efc338e674863c0ea70a63efe4de05"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/container/zipball/7dc67bdf89efc338e674863c0ea70a63efe4de05",
+                "reference": "7dc67bdf89efc338e674863c0ea70a63efe4de05",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0 || ^8.0",
+                "psr/container": "^1.0"
+            },
+            "provide": {
+                "psr/container-implementation": "^1.0"
+            },
+            "replace": {
+                "orno/di": "~2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0",
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-3.x": "3.x-dev",
+                    "dev-2.x": "2.x-dev",
+                    "dev-1.x": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Container\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Phil Bennett",
+                    "email": "philipobenito@gmail.com",
+                    "homepage": "http://www.philipobenito.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A fast and intuitive dependency injection container.",
+            "homepage": "https://github.com/thephpleague/container",
+            "keywords": [
+                "container",
+                "dependency",
+                "di",
+                "injection",
+                "league",
+                "provider",
+                "service"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/philipobenito",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-09-28T13:38:44+00:00"
+        },
+        {
             "name": "maxmind-db/reader",
             "version": "v1.6.0",
             "source": {
@@ -2131,12 +2200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/WooCommerce.git",
-                "reference": "fd7c74724f7700d7fdffdd7d142b75887726a143"
+                "reference": "2c6349d2757d647b1dbde8a512fd11dbc0d472bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/fd7c74724f7700d7fdffdd7d142b75887726a143",
-                "reference": "fd7c74724f7700d7fdffdd7d142b75887726a143",
+                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/2c6349d2757d647b1dbde8a512fd11dbc0d472bc",
+                "reference": "2c6349d2757d647b1dbde8a512fd11dbc0d472bc",
                 "shasum": ""
             },
             "require": {
@@ -2187,7 +2256,7 @@
                 "source": "https://github.com/mollie/WooCommerce/tree/develop",
                 "issues": "https://github.com/mollie/WooCommerce/issues"
             },
-            "time": "2021-01-05T06:39:09+00:00"
+            "time": "2021-01-11T08:20:21+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3433,7 +3502,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6"
+                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6",
+                "reference": "5.6"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -4162,12 +4232,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sirbrillig/phpcs-variable-analysis.git",
-                "reference": "6a0b28f85bd7174d86aab04408c663ae33f22474"
+                "reference": "0775e0c683badad52c03b11c2cd86a9fdecb937a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sirbrillig/phpcs-variable-analysis/zipball/6a0b28f85bd7174d86aab04408c663ae33f22474",
-                "reference": "6a0b28f85bd7174d86aab04408c663ae33f22474",
+                "url": "https://api.github.com/repos/sirbrillig/phpcs-variable-analysis/zipball/0775e0c683badad52c03b11c2cd86a9fdecb937a",
+                "reference": "0775e0c683badad52c03b11c2cd86a9fdecb937a",
                 "shasum": ""
             },
             "require": {
@@ -4202,7 +4272,7 @@
                 }
             ],
             "description": "A PHPCS sniff to detect problems with variables.",
-            "time": "2020-12-30T23:07:19+00:00"
+            "time": "2021-01-08T16:31:05+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -4261,12 +4331,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "da4c3663721420520b024e5aede66b813019e744"
+                "reference": "cca7e479371112b3b67a3cbed146b1805f16220d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/da4c3663721420520b024e5aede66b813019e744",
-                "reference": "da4c3663721420520b024e5aede66b813019e744",
+                "url": "https://api.github.com/repos/symfony/console/zipball/cca7e479371112b3b67a3cbed146b1805f16220d",
+                "reference": "cca7e479371112b3b67a3cbed146b1805f16220d",
                 "shasum": ""
             },
             "require": {
@@ -4325,7 +4395,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony Console Component",
+            "description": "Eases the creation of beautiful and testable command line interfaces",
             "homepage": "https://symfony.com",
             "keywords": [
                 "cli",
@@ -4347,7 +4417,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-05T20:16:44+00:00"
+            "time": "2021-01-11T09:52:33+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -4355,12 +4425,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "cae52f750588574e51c51dabc08a8903ee5c7ffc"
+                "reference": "dfcc8276b4bea4c6cfd08b195169f0060d2a78f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/cae52f750588574e51c51dabc08a8903ee5c7ffc",
-                "reference": "cae52f750588574e51c51dabc08a8903ee5c7ffc",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/dfcc8276b4bea4c6cfd08b195169f0060d2a78f0",
+                "reference": "dfcc8276b4bea4c6cfd08b195169f0060d2a78f0",
                 "shasum": ""
             },
             "require": {
@@ -4393,7 +4463,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony CssSelector Component",
+            "description": "Converts CSS selectors to XPath expressions",
             "homepage": "https://symfony.com",
             "funding": [
                 {
@@ -4409,7 +4479,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-01T09:25:51+00:00"
+            "time": "2021-01-11T09:50:50+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4417,12 +4487,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "7c0a3c5420fd802637c4260e595d6c674b23d578"
+                "reference": "c6c942b1ac76c82448322025e084cadc56048b4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/7c0a3c5420fd802637c4260e595d6c674b23d578",
-                "reference": "7c0a3c5420fd802637c4260e595d6c674b23d578",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/c6c942b1ac76c82448322025e084cadc56048b4e",
+                "reference": "c6c942b1ac76c82448322025e084cadc56048b4e",
                 "shasum": ""
             },
             "require": {
@@ -4434,7 +4504,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.21-dev"
+                    "dev-main": "1.22-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4485,7 +4555,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-06T10:19:43+00:00"
+            "time": "2021-01-07T16:49:33+00:00"
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
@@ -4493,12 +4563,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "32b651134d58efe1786c95352d846913a42d8331"
+                "reference": "267a9adeb8ecb8071040a740930e077cdfb987af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/32b651134d58efe1786c95352d846913a42d8331",
-                "reference": "32b651134d58efe1786c95352d846913a42d8331",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/267a9adeb8ecb8071040a740930e077cdfb987af",
+                "reference": "267a9adeb8ecb8071040a740930e077cdfb987af",
                 "shasum": ""
             },
             "require": {
@@ -4510,7 +4580,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.21-dev"
+                    "dev-main": "1.22-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4563,7 +4633,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-06T10:19:43+00:00"
+            "time": "2021-01-07T16:49:33+00:00"
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
@@ -4571,12 +4641,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-                "reference": "8592bf62da8352927fc3857484e84baacddec301"
+                "reference": "6e971c891537eb617a00bb07a43d182a6915faba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/8592bf62da8352927fc3857484e84baacddec301",
-                "reference": "8592bf62da8352927fc3857484e84baacddec301",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/6e971c891537eb617a00bb07a43d182a6915faba",
+                "reference": "6e971c891537eb617a00bb07a43d182a6915faba",
                 "shasum": ""
             },
             "require": {
@@ -4588,7 +4658,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.21-dev"
+                    "dev-main": "1.22-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4644,7 +4714,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-06T10:19:43+00:00"
+            "time": "2021-01-07T17:09:11+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -4652,12 +4722,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "ec0101071dcbc6bdd5046da11df686f8515fa815"
+                "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/ec0101071dcbc6bdd5046da11df686f8515fa815",
-                "reference": "ec0101071dcbc6bdd5046da11df686f8515fa815",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
+                "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
                 "shasum": ""
             },
             "require": {
@@ -4669,7 +4739,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.21-dev"
+                    "dev-main": "1.22-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4721,7 +4791,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-06T10:19:43+00:00"
+            "time": "2021-01-07T16:49:33+00:00"
         },
         {
             "name": "symfony/polyfill-php73",
@@ -4729,12 +4799,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php73.git",
-                "reference": "6d0e293e2b13580b866090a135900aea4adcb308"
+                "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/6d0e293e2b13580b866090a135900aea4adcb308",
-                "reference": "6d0e293e2b13580b866090a135900aea4adcb308",
+                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
+                "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
                 "shasum": ""
             },
             "require": {
@@ -4743,7 +4813,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.21-dev"
+                    "dev-main": "1.22-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4797,7 +4867,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-06T10:19:43+00:00"
+            "time": "2021-01-07T16:49:33+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
@@ -4805,12 +4875,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "69e5da91ad9c080f6ac1e010ddffefe71b14bd6e"
+                "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/69e5da91ad9c080f6ac1e010ddffefe71b14bd6e",
-                "reference": "69e5da91ad9c080f6ac1e010ddffefe71b14bd6e",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dc3063ba22c2a1fd2f45ed856374d79114998f91",
+                "reference": "dc3063ba22c2a1fd2f45ed856374d79114998f91",
                 "shasum": ""
             },
             "require": {
@@ -4819,7 +4889,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "1.21-dev"
+                    "dev-main": "1.22-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -4877,7 +4947,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-06T10:19:43+00:00"
+            "time": "2021-01-07T16:49:33+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -4885,12 +4955,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "e0d43e6e2f909287d2e4e867ca5c131a661f08ef"
+                "reference": "cea83947622b432b60b809d14c7b42df9f0f5823"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/e0d43e6e2f909287d2e4e867ca5c131a661f08ef",
-                "reference": "e0d43e6e2f909287d2e4e867ca5c131a661f08ef",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/cea83947622b432b60b809d14c7b42df9f0f5823",
+                "reference": "cea83947622b432b60b809d14c7b42df9f0f5823",
                 "shasum": ""
             },
             "require": {
@@ -4954,7 +5024,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-01T09:26:45+00:00"
+            "time": "2021-01-11T09:51:46+00:00"
         },
         {
             "name": "symfony/string",
@@ -4962,12 +5032,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "99f25957efe05db14a1aa6cff643eca0f83a952c"
+                "reference": "7a62495108b3dc7e749b709357ae720fccb5a39b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/99f25957efe05db14a1aa6cff643eca0f83a952c",
-                "reference": "99f25957efe05db14a1aa6cff643eca0f83a952c",
+                "url": "https://api.github.com/repos/symfony/string/zipball/7a62495108b3dc7e749b709357ae720fccb5a39b",
+                "reference": "7a62495108b3dc7e749b709357ae720fccb5a39b",
                 "shasum": ""
             },
             "require": {
@@ -5010,7 +5080,7 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony String component",
+            "description": "Provides an object-oriented API to strings and deals with bytes, UTF-8 code points and grapheme clusters in a unified way",
             "homepage": "https://symfony.com",
             "keywords": [
                 "grapheme",
@@ -5034,7 +5104,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-01T09:26:45+00:00"
+            "time": "2021-01-10T16:38:27+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -5361,29 +5431,30 @@
         },
         {
             "name": "woocommerce/woocommerce",
-            "version": "4.9.0-rc.1",
+            "version": "4.9.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/woocommerce.git",
-                "reference": "a1420604db3ebdd3c4697c6895795e62998a4b34"
+                "reference": "89cb493c868211d35c63bf6e63938d3ce63fffab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/woocommerce/zipball/a1420604db3ebdd3c4697c6895795e62998a4b34",
-                "reference": "a1420604db3ebdd3c4697c6895795e62998a4b34",
+                "url": "https://api.github.com/repos/woocommerce/woocommerce/zipball/89cb493c868211d35c63bf6e63938d3ce63fffab",
+                "reference": "89cb493c868211d35c63bf6e63938d3ce63fffab",
                 "shasum": ""
             },
             "require": {
-                "automattic/jetpack-autoloader": "2.7.1",
-                "automattic/jetpack-constants": "1.5.1",
+                "automattic/jetpack-autoloader": "2.2.0",
+                "automattic/jetpack-constants": "1.5.0",
                 "composer/installers": "~1.7",
+                "league/container": "3.3.3",
                 "maxmind-db/reader": "1.6.0",
                 "pelago/emogrifier": "3.1.0",
                 "php": ">=7.0",
                 "psr/container": "1.0.0",
                 "woocommerce/action-scheduler": "3.1.6",
-                "woocommerce/woocommerce-admin": "1.8.2",
-                "woocommerce/woocommerce-blocks": "4.0.0"
+                "woocommerce/woocommerce-admin": "1.7.3",
+                "woocommerce/woocommerce-blocks": "3.8.1"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.4"
@@ -5418,10 +5489,7 @@
                 ],
                 "psr-4": {
                     "Automattic\\WooCommerce\\": "src/",
-                    "Automattic\\WooCommerce\\Vendor\\": "lib/packages/"
-                },
-                "psr-0": {
-                    "Automattic\\WooCommerce\\Vendor\\": "lib/packages/"
+                    "Automattic\\WooCommerce\\Vendor\\League\\Container\\": "vendor/league/container/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -5430,20 +5498,20 @@
             ],
             "description": "An eCommerce toolkit that helps you sell anything. Beautifully.",
             "homepage": "https://woocommerce.com/",
-            "time": "2020-12-29T09:08:31+00:00"
+            "time": "2020-12-04T04:28:48+00:00"
         },
         {
             "name": "woocommerce/woocommerce-admin",
-            "version": "1.8.2",
+            "version": "1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/woocommerce-admin.git",
-                "reference": "a890bc4131d3cf8c93bb8aeefff96db1a95f547d"
+                "reference": "16de972f319e5e6fc8dbebf5024dd263234f39e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/woocommerce-admin/zipball/a890bc4131d3cf8c93bb8aeefff96db1a95f547d",
-                "reference": "a890bc4131d3cf8c93bb8aeefff96db1a95f547d",
+                "url": "https://api.github.com/repos/woocommerce/woocommerce-admin/zipball/16de972f319e5e6fc8dbebf5024dd263234f39e0",
+                "reference": "16de972f319e5e6fc8dbebf5024dd263234f39e0",
                 "shasum": ""
             },
             "require": {
@@ -5475,20 +5543,20 @@
             ],
             "description": "A modern, javascript-driven WooCommerce Admin experience.",
             "homepage": "https://github.com/woocommerce/woocommerce-admin",
-            "time": "2020-12-23T01:26:52+00:00"
+            "time": "2020-12-03T21:12:01+00:00"
         },
         {
             "name": "woocommerce/woocommerce-blocks",
-            "version": "v4.0.0",
+            "version": "v3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/woocommerce-gutenberg-products-block.git",
-                "reference": "f5b2485254f36f0b85fd0f30c28e17bdf44a8d1e"
+                "reference": "e5aef9eddd13c5511ba673eb70ed8cb3e80d828c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/woocommerce-gutenberg-products-block/zipball/f5b2485254f36f0b85fd0f30c28e17bdf44a8d1e",
-                "reference": "f5b2485254f36f0b85fd0f30c28e17bdf44a8d1e",
+                "url": "https://api.github.com/repos/woocommerce/woocommerce-gutenberg-products-block/zipball/e5aef9eddd13c5511ba673eb70ed8cb3e80d828c",
+                "reference": "e5aef9eddd13c5511ba673eb70ed8cb3e80d828c",
                 "shasum": ""
             },
             "require": {
@@ -5522,7 +5590,7 @@
                 "gutenberg",
                 "woocommerce"
             ],
-            "time": "2020-12-08T13:17:01+00:00"
+            "time": "2020-11-23T20:48:39+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
