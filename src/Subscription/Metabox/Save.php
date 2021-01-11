@@ -7,9 +7,11 @@ namespace Ecurring\WooEcurring\Subscription\Metabox;
 use DateTime;
 use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherException;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
+use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcher;
 use eCurring_WC_Plugin;
 use Exception;
 
@@ -31,6 +33,10 @@ class Save
      * @var Subscriptions
      */
     protected $subscriptionsApiClient;
+    /**
+     * @var SubscriptionPlanSwitcher
+     */
+    protected $subscriptionPlanSwitcher;
 
     /**
      * Save constructor.
@@ -38,18 +44,21 @@ class Save
      * @param Repository $repository
      * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
      * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
+     * @param SubscriptionPlanSwitcher $subscriptionPlanSwitcher
      * @param Subscriptions $subscriptionsApiClient
      */
     public function __construct(
         Repository $repository,
         DataBasedSubscriptionFactoryInterface $subscriptionFactory,
         SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher,
+        SubscriptionPlanSwitcher $subscriptionPlanSwitcher,
         Subscriptions $subscriptionsApiClient
     ) {
         $this->repository = $repository;
         $this->subscriptionFactory = $subscriptionFactory;
         $this->subscriptionStatusSwitcher = $subscriptionStatusSwitcher;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
+        $this->subscriptionPlanSwitcher = $subscriptionPlanSwitcher;
     }
 
     /**
@@ -89,7 +98,11 @@ class Save
                 $this->subscriptionStatusSwitcher->resume($subscriptionId);
                 break;
             case 'switch':
-                $this->handleSubscriptionSwitch($subscriptionId, $switchDate);
+                $this->handleSubscriptionSwitch(
+                    $subscriptionId,
+                    $this->getPostedNewSubscriptionPlanId(),
+                    $switchDate
+                );
                 break;
             case 'cancel':
                 $this->subscriptionStatusSwitcher->cancel($subscriptionId, $switchDate);
@@ -97,56 +110,30 @@ class Save
         }
     }
 
-    protected function handleSubscriptionSwitch(string $subscriptionId, DateTime $switchDate): void
+    /**
+     * @param string $subscriptionId
+     * @param string $newSubscriptionPlanId
+     * @param DateTime $switchDate
+     *
+     * @throws SubscriptionStatusSwitcherException
+     */
+    protected function handleSubscriptionSwitch(string $subscriptionId, string $newSubscriptionPlanId, DateTime $switchDate): void
     {
-        $this->subscriptionStatusSwitcher->cancel($subscriptionId, $switchDate);
+        $currentSubscription = $this->repository->getSubscriptionById($subscriptionId);
 
-        $newSubscriptionPlanId = filter_input(
+        $this->subscriptionPlanSwitcher->switchSubscriptionPlan($currentSubscription, $newSubscriptionPlanId, $switchDate);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPostedNewSubscriptionPlanId(): string
+    {
+        return (string) filter_input(
             INPUT_POST,
             'ecurring_subscription_plan',
             FILTER_SANITIZE_STRING
         );
-
-        $subscriptionWebhookUrl = add_query_arg(
-            'ecurring-webhook',
-            'subscription',
-            home_url('/')
-        );
-        $transactionWebhookUrl = add_query_arg(
-            'ecurring-webhook',
-            'transaction',
-            home_url('/')
-        );
-
-        $cancelledSubscription = $this->repository->getSubscriptionById($subscriptionId);
-
-        $mandateCode = $cancelledSubscription->getMandate()->getMandateCode();
-        $mandateAcceptedDate = $cancelledSubscription->getMandate()->getAcceptedDate();
-
-        $newSubscriptionData = [
-            'type' => 'subscription',
-            'attributes' => [
-                'customer_id' => $cancelledSubscription->getCustomerId(),
-                'subscription_plan_id' => $newSubscriptionPlanId,
-                'mandate_code' => $mandateCode,
-                'mandate_accepted' => true,
-                'mandate_accepted_date' => $mandateAcceptedDate ? $mandateAcceptedDate->format('c') : '',
-                'confirmation_sent' => 'true',
-                'subscription_webhook_url' => $subscriptionWebhookUrl,
-                'transaction_webhook_url' => $transactionWebhookUrl,
-                'status' => 'active',
-                "start_date" => $switchDate,
-            ],
-        ];
-
-        $this->subscriptionsApiClient->create(
-            [
-                'data' => $newSubscriptionData
-            ]
-        );
-
-        $newSubscription = $this->subscriptionFactory->createSubscription($newSubscriptionData);
-        $this->repository->insert($newSubscription);
     }
 
     /**
