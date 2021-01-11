@@ -105,7 +105,7 @@ class Save
                 );
                 break;
             case 'cancel':
-                $this->subscriptionStatusSwitcher->cancel($subscriptionId, $switchDate);
+                $this->subscriptionStatusSwitcher->cancel($subscriptionId, $this->detectCancelDate());
                 break;
         }
     }
@@ -139,18 +139,18 @@ class Save
     /**
      * Get formatted subscription cancel date, if no cancellation date so return an empty string.
      *
-     * @return string Formatted subscription cancel date or empty string if no cancel date defined.
+     * @return DateTime Subscription cancel date, using current date if no cancel date defined.
      *
      * @throws Exception If cannot create DateTime object.
      */
-    protected function detectCancelDate(): string
+    protected function detectCancelDate(): DateTime
     {
         $cancelSubscription = filter_input(
             INPUT_POST,
             'ecurring_cancel_subscription',
             FILTER_SANITIZE_STRING
         );
-        $cancelDate = '';
+        $cancelDate = new DateTime();
         if ($cancelSubscription === 'specific-date') {
             $cancelDate = filter_input(
                 INPUT_POST,
@@ -158,7 +158,7 @@ class Save
                 FILTER_SANITIZE_STRING
             );
 
-            $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
+            $cancelDate = new DateTime($cancelDate);
         }
 
         return $cancelDate;
