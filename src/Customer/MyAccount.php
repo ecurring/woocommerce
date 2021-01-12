@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
-use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcherInterface;
@@ -29,11 +28,6 @@ class MyAccount
     protected $subscriptionStatusSwitcher;
 
     /**
-     * @var Actions
-     */
-    private $actions;
-
-    /**
      * @var Repository
      */
     private $repository;
@@ -46,21 +40,18 @@ class MyAccount
     /**
      * MyAccount constructor.
      *
-     * @param Actions $actions
      * @param Repository $repository
      * @param Subscriptions $subscriptions
      * @param SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
      * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
      */
     public function __construct(
-        Actions $actions,
         Repository $repository,
         Subscriptions $subscriptions,
         SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher,
         SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
     ) {
 
-        $this->actions = $actions;
         $this->repository = $repository;
         $this->subscriptions = $subscriptions;
         $this->subscriptionPlanSwitcher = $subscriptionPlanSwitcher;
