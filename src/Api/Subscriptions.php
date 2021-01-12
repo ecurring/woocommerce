@@ -182,14 +182,39 @@ class Subscriptions
         return $this->subscriptionFactory->createSubscription($response['data']);
     }
 
+    /**
+     * @param int $page
+     *
+     * @return array
+     * @throws ApiClientException
+     * @throws SubscriptionFactoryException
+     */
     public function getSubscriptions(int $page)
     {
-        return json_decode(
-            $this->apiHelper->apiCall(
+        $response = $this->apiClient
+            ->apiCall(
                 'GET',
                 "https://api.ecurring.com/subscriptions?page[number]={$page}"
-            )
-        );
+            );
+
+        if (!isset($response['data'])) {
+            throw new ApiClientException(
+                sprintf(
+                    'Failed to get subscriptions list.' .
+                    'No required \'data\' section was found in the response. ' .
+                    'Response content: %1$s',
+                    print_r($response, true)
+                )
+            );
+        }
+
+        $subscriptions = [];
+
+        foreach ($subscriptions['data'] as $subscriptionData) {
+            $subscriptions[] = $this->subscriptionFactory->createSubscription($subscriptionData);
+        }
+
+        return $subscriptions;
     }
 
     /**
