@@ -34,7 +34,7 @@ class Repository
         $this->subscriptionFactory = $subscriptionFactory;
     }
 
-    public function insert(SubscriptionInterface $subscription, int $orderId = null): void
+    public function insert(SubscriptionInterface $subscription, int $orderId): void
     {
         $subscriptionId = $subscription->getId();
 
