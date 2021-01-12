@@ -8,6 +8,7 @@ use DateTime;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherException;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcher;
 use Exception;
 
@@ -98,6 +99,7 @@ class Save
      * @param DateTime $switchDate
      *
      * @throws SubscriptionStatusSwitcherException
+     * @throws SubscriptionFactoryException
      */
     protected function handleSubscriptionSwitch(string $subscriptionId, string $newSubscriptionPlanId, DateTime $switchDate): void
     {
