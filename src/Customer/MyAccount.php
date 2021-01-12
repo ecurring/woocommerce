@@ -8,7 +8,6 @@ use DateTime;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcherInterface;
-use eCurring_WC_Helper_Api;
 use Exception;
 
 use function in_the_loop;
@@ -24,10 +23,6 @@ class MyAccount
      * @var SubscriptionPlanSwitcherInterface
      */
     protected $subscriptionPlanSwitcher;
-    /**
-     * @var eCurring_WC_Helper_Api
-     */
-    private $api;
 
     /**
      * @var Actions
@@ -47,21 +42,18 @@ class MyAccount
     /**
      * MyAccount constructor.
      *
-     * @param eCurring_WC_Helper_Api $api
      * @param Actions $actions
      * @param Repository $repository
      * @param Subscriptions $subscriptions
      * @param SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
      */
     public function __construct(
-        eCurring_WC_Helper_Api $api,
         Actions $actions,
         Repository $repository,
         Subscriptions $subscriptions,
         SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
     ) {
 
-        $this->api = $api;
         $this->actions = $actions;
         $this->repository = $repository;
         $this->subscriptions = $subscriptions;
