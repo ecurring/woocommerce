@@ -144,7 +144,7 @@ class Repository
     {
         $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
 
-        if ($subscriptionId === 0) {
+        if ($subscriptionPostId === 0) {
             return null;
         }
 
@@ -178,7 +178,7 @@ class Repository
         );
 
         $subscriptionData = [
-            'subscription_id' => $subscriptionPostId,
+            'subscription_id' => $subscriptionId,
             'customer_id' => get_post_meta(
                 $subscriptionPostId,
                 '_ecurring_post_subscription_customer_id',
