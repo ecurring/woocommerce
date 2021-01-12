@@ -201,7 +201,6 @@ function eCurringInitialize()
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
         $customerApi = new Customers($apiHelper);
         $actions = new Actions($apiHelper);
-        $repository = new Repository();
         $apiClient = new ApiClient($settingsHelper->getApiKey() ?? '');
         $subscriptionMandateFactory = new SubscriptionMandateFactory();
         $subscriptionStatusFactory = new SubscriptionStatusFactory();
@@ -209,6 +208,7 @@ function eCurringInitialize()
             $subscriptionMandateFactory,
             $subscriptionStatusFactory
         );
+        $repository = new Repository($subscriptionsFactory);
         $subscriptionsApi = new SubscriptionsApi($apiHelper, $apiClient, $subscriptionsFactory);
 
         $subscriptionStatusSwitcher = new SubscriptionStatusSwitcher($subscriptionsApi, $repository);
