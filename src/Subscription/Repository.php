@@ -76,6 +76,12 @@ class Repository
     {
         $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscription->getId());
         if ($subscriptionPostId === 0) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Failed to update subscription %1$s: no existing subscription with this id was found.',
+                    $subscription->getId()
+                )
+            );
             return;
         }
 
