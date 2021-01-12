@@ -7,7 +7,6 @@ namespace Ecurring\WooEcurring;
 use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
-use Ecurring\WooEcurring\Subscription\Subscription;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 use eCurring_WC_Plugin;
