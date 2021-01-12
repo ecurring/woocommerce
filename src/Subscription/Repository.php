@@ -367,7 +367,13 @@ class Repository
      */
     public function findSubscriptionOrderIdBySubscriptionId(string $subscriptionId): int
     {
+        $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
 
+        return (int) get_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_order_id',
+            true
+        );
     }
 
     public function findSubscriptionIdByOrderId(int $orderId): string
