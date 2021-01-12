@@ -105,27 +105,22 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
         $subscriptionWebhookUrl = $this->getSubscriptionWebhookUrl();
         $transactionWebhookUrl = $this->getTransactionWebhookUrl();
 
-        $newSubscriptionData = [
-            'type' => 'subscription',
-            'attributes' => [
-                'customer_id' => $oldSubscription->getCustomerId(),
-                'subscription_plan_id' => $newSubscriptionPlanId,
-                'mandate_code' => $mandate->getMandateCode(),
-                'mandate_accepted' => true,
-                'mandate_accepted_date' => $mandateAcceptedDate ? $mandateAcceptedDate->format('Y-m-d\TH:i:sP') : '',
-                'confirmation_sent' => 'true',
-                'subscription_webhook_url' => $subscriptionWebhookUrl,
-                'transaction_webhook_url' => $transactionWebhookUrl,
-                'status' => 'active',
-                "start_date" => $startDate->format('Y-m-d\TH:i:sP'),
-            ],
+       $subscriptionAttributes = [
+            'mandate_code' => $mandate->getMandateCode(),
+            'mandate_accepted' => true,
+            'mandate_accepted_date' => $mandateAcceptedDate ? $mandateAcceptedDate->format('Y-m-d\TH:i:sP') : '',
+            'confirmation_sent' => 'true',
+            'subscription_webhook_url' => $subscriptionWebhookUrl,
+            'transaction_webhook_url' => $transactionWebhookUrl,
+            'status' => 'active',
+            "start_date" => $startDate->format('Y-m-d\TH:i:sP'),
         ];
 
-        $response = $this->subscriptionsApiClient->create($newSubscriptionData);
-
-        $newSubscriptionId = $response->data->id;
-
-        return $this->subscriptionsApiClient->getSubscriptionById($newSubscriptionId);
+        return $this->subscriptionsApiClient->create(
+            $oldSubscription->getCustomerId(),
+            $newSubscriptionPlanId,
+            $subscriptionAttributes
+        );
     }
 
     /**
