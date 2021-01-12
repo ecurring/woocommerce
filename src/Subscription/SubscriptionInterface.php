@@ -34,6 +34,13 @@ interface SubscriptionInterface
     public function getSubscriptionPlanId(): string;
 
     /**
+     * Return meta data added to subscription on creating.
+     *
+     * @return array
+     */
+    public function getMeta(): array;
+
+    /**
      * Return subscription mandate instance.
      *
      * @return SubscriptionMandateInterface

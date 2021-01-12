@@ -32,6 +32,10 @@ class Subscription implements SubscriptionInterface
      * @var string
      */
     protected $subscriptionPlanId;
+    /**
+     * @var array
+     */
+    protected $meta;
 
     /**
      * @param string $id Subscription id in the eCurring system.
@@ -39,13 +43,15 @@ class Subscription implements SubscriptionInterface
      * @param string $subscriptionPlanId Subscription plan id (product id) in the eCurring system.
      * @param SubscriptionMandateInterface $mandate Subscription mandate entity.
      * @param SubscriptionStatusInterface $subscriptionStatus Subscription status entity.
+     * @param array $meta Custom meta data.
      */
     public function __construct(
         string $id,
         string $customerId,
         string $subscriptionPlanId,
         SubscriptionMandateInterface $mandate,
-        SubscriptionStatusInterface $subscriptionStatus
+        SubscriptionStatusInterface $subscriptionStatus,
+        array $meta = []
     ) {
 
         $this->id = $id;
@@ -53,6 +59,7 @@ class Subscription implements SubscriptionInterface
         $this->subscriptionStatus = $subscriptionStatus;
         $this->customerId = $customerId;
         $this->subscriptionPlanId = $subscriptionPlanId;
+        $this->meta = $meta;
     }
 
     /**
@@ -74,6 +81,11 @@ class Subscription implements SubscriptionInterface
     public function getSubscriptionPlanId(): string
     {
         return $this->subscriptionPlanId;
+    }
+
+    public function getMeta(): array
+    {
+        return (array) $this->meta;
     }
 
     /**
