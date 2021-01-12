@@ -231,25 +231,6 @@ function eCurringInitialize()
         (new Settings())->init();
         (new MyAccount($apiHelper, $actions, $repository, $subscriptions, $subscriptionPlanSwitcher))->init();
 
-        add_action(
-            'woocommerce_payment_complete',
-            static function (int $orderId) use ($repository, $apiHelper) {
-                $order = wc_get_order($orderId);
-                $subscriptionId = $order->get_meta('_ecurring_subscription_id', true);
-
-                if ($subscriptionId) {
-                    $response = json_decode(
-                        $apiHelper->apiCall(
-                            'GET',
-                            "https://api.ecurring.com/subscriptions/{$subscriptionId}"
-                        )
-                    );
-
-                    $repository->insert($response->data);
-                }
-            }
-        );
-
         // Add custom order status "Retrying payment at eCurring"
         add_action('init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
         add_filter('wc_order_statuses', 'eCurringRegisterNewStatusAsOrderStatus', 10, 2);
