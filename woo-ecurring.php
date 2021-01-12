@@ -216,7 +216,7 @@ function eCurringInitialize()
             $repository
         );
         $display = new Display();
-        $save = new Save($repository, $subscriptionStatusSwitcher, $subscriptionPlanSwitcher);
+        $save = new Save($subscriptionStatusSwitcher, $subscriptionPlanSwitcher);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
 

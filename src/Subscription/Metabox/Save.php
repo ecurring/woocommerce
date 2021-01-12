@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
-use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherException;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
@@ -14,10 +13,6 @@ use Exception;
 
 class Save
 {
-    /**
-     * @var Repository
-     */
-    protected $repository;
     /**
      * @var SubscriptionStatusSwitcherInterface
      */
@@ -30,16 +25,13 @@ class Save
     /**
      * Save constructor.
      *
-     * @param Repository $repository
      * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
      * @param SubscriptionPlanSwitcher $subscriptionPlanSwitcher
      */
     public function __construct(
-        Repository $repository,
         SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher,
         SubscriptionPlanSwitcher $subscriptionPlanSwitcher
     ) {
-        $this->repository = $repository;
         $this->subscriptionStatusSwitcher = $subscriptionStatusSwitcher;
         $this->subscriptionPlanSwitcher = $subscriptionPlanSwitcher;
     }
