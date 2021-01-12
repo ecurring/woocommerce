@@ -10,7 +10,6 @@ use Ecurring\WooEcurring\Api\SubscriptionPlans;
 
 use function get_user_meta;
 use function get_current_user_id;
-use function json_decode;
 use function esc_attr;
 use function ucfirst;
 use function get_option;
