@@ -4,15 +4,35 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\Subscription;
 
+use DateTime;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateInterface;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusInterface;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Helper_Api;
 use eCurring_WC_Helper_Settings;
 use eCurring_WC_Plugin;
+use Exception;
 
 class Repository
 {
+    /**
+     * @var DataBasedSubscriptionFactoryInterface
+     */
+    protected $subscriptionFactory;
+
+    /**
+     * Repository constructor.
+     *
+     * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
+     */
+    public function __construct(
+        DataBasedSubscriptionFactoryInterface $subscriptionFactory
+    ) {
+
+        $this->subscriptionFactory = $subscriptionFactory;
+    }
 
     public function insert(SubscriptionInterface $subscription, int $orderId = null): void
     {
@@ -111,9 +131,76 @@ class Repository
         }
     }
 
-    public function getSubscriptionById(string $subscriptionId): SubscriptionInterface
+    /**
+     * Get the subscription by id.
+     *
+     * @param string $subscriptionId The id of the subscription to look for.
+     *
+     * @return SubscriptionInterface|null Found subscription.
+     *
+     * @throws SubscriptionFactoryException If cannot build a subscription from existing data.
+     */
+    public function getSubscriptionById(string $subscriptionId): ?SubscriptionInterface
     {
-        //todo
+        $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
+
+        if ($subscriptionId === 0) {
+            return null;
+        }
+
+        $subscriptionPostMeta = get_post_meta($subscriptionPostId);
+
+        $startDate = $subscriptionPostMeta['_ecurring_post_subscription_start_date'];
+        $cancelDate = $subscriptionPostMeta['_ecurring_post_subscription_cancel_date'];
+        $mandateAcceptedDate = $subscriptionPostMeta['_ecurring_post_subscription_mandate_accepted_date'];
+        $resumeDate = $subscriptionPostMeta['_ecurring_post_subscription_resume_date'];
+        $createdAt = $subscriptionPostMeta['_ecurring_post_subscription_created_at'];
+        $updatedAt = $subscriptionPostMeta['_ecurring_post_subscription_updated_at'];
+
+        $subscriptionData = [
+            'subscription_id' => $subscriptionPostId,
+            'customer_id' => $subscriptionPostMeta['_ecurring_post_subscription_customer_id'],
+            'subscription_plan_id' => $subscriptionPostMeta['_ecurring_post_subscription_plan_id'],
+            'mandate_code' => $subscriptionPostMeta['_ecurring_post_subscription_mandate_code'],
+            'status' => $subscriptionPostMeta['_ecurring_post_subscription_status'],
+            'confirmation_page' => $subscriptionPostMeta['_ecurring_post_subscription_mandate_confirmation_page'],
+            'confirmation_sent' => (bool) $subscriptionPostMeta['_ecurring_post_subscription_mandate_confirmation_sent'],
+            'mandate_accepted' => (bool) $subscriptionPostMeta['_ecurring_post_subscription_mandate_accepted'],
+            'mandate_accepted_date' => $this->createDateFromString($mandateAcceptedDate),
+            'start_date' => $this->createDateFromString($startDate),
+            'cancel_date' => $this->createDateFromString($cancelDate),
+            'resume_date' => $this->createDateFromString($resumeDate),
+            'created_at' => $this->createDateFromString($createdAt),
+            'updated_at' => $this->createDateFromString($updatedAt),
+            'archived' => (bool) $subscriptionPostMeta['_ecurring_post_subscription_archived'],
+        ];
+
+        return $this->subscriptionFactory->createSubscription($subscriptionData);
+    }
+
+    /**
+     * Create a DateTime object from string.
+     *
+     * @param string $date
+     *
+     * @return DateTime|null
+     */
+    protected function createDateFromString(string $date): ?DateTime
+    {
+        try {
+            $dateTime = new DateTime($date);
+        } catch (Exception $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Failed to create a DateTime object from string. Exception caught: %1$s',
+                    $exception->getMessage()
+                )
+            );
+
+            return null;
+        }
+
+        return $dateTime;
     }
 
     /**
