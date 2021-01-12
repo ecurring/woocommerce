@@ -20,7 +20,6 @@ use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
-use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
@@ -200,7 +199,6 @@ function eCurringInitialize()
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
         $customerApi = new Customers($apiHelper);
-        $actions = new Actions($apiHelper);
         $apiClient = new ApiClient($settingsHelper->getApiKey() ?? '');
         $subscriptionMandateFactory = new SubscriptionMandateFactory();
         $subscriptionStatusFactory = new SubscriptionStatusFactory();
