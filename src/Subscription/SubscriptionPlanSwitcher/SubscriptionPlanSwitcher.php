@@ -11,7 +11,6 @@ use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherException;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
-use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 
@@ -25,10 +24,6 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
      */
     protected $subscriptionStatusSwitcher;
     /**
-     * @var DataBasedSubscriptionFactoryInterface
-     */
-    protected $subscriptionFactory;
-    /**
      * @var Subscriptions
      */
     protected $subscriptionsApiClient;
@@ -41,19 +36,16 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
      * SubscriptionPlanSwitcher constructor.
      *
      * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
-     * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
      * @param Subscriptions $subscriptionsApiClient
      * @param Repository $repository
      */
     public function __construct(
         SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher,
-        DataBasedSubscriptionFactoryInterface $subscriptionFactory,
         Subscriptions $subscriptionsApiClient,
         Repository $repository
     ) {
 
         $this->subscriptionStatusSwitcher = $subscriptionStatusSwitcher;
-        $this->subscriptionFactory = $subscriptionFactory;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
         $this->repository = $repository;
     }

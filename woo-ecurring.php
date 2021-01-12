@@ -212,7 +212,6 @@ function eCurringInitialize()
         $subscriptionStatusSwitcher = new SubscriptionStatusSwitcher($subscriptionsApi, $repository);
         $subscriptionPlanSwitcher = new SubscriptionPlanSwitcher(
             $subscriptionStatusSwitcher,
-            $subscriptionsFactory,
             $subscriptionsApi,
             $repository
         );
