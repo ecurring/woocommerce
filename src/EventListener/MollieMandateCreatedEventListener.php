@@ -235,14 +235,17 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @throws ApiClientException
      */
-    protected function handleSubscriptionCreating(string $ecurringCustomerId, string $subscriptionPlanId, int $subscriptionOrderId): void
-    {
+    protected function handleSubscriptionCreating(
+        string $ecurringCustomerId,
+        string $subscriptionPlanId,
+        int $subscriptionOrderId
+    ): void {
         try {
             $attributes = [
                 'metadata' => json_encode([
                     'source' => 'WooCommerce',
                     'shop_url' => get_site_url(get_current_blog_id()),
-                    'order_id' => $subscriptionOrderId
+                    'order_id' => $subscriptionOrderId,
                 ]),
             ];
             $subscription = $this->subscriptionsApiClient->create($ecurringCustomerId, $subscriptionPlanId, $attributes);

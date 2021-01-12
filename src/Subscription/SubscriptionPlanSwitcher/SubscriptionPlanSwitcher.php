@@ -116,7 +116,8 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
             'subscription_webhook_url' => $subscriptionWebhookUrl,
             'transaction_webhook_url' => $transactionWebhookUrl,
             'status' => 'active',
-            "start_date" => $startDate->format('Y-m-d\TH:i:sP'),
+            'start_date' => $startDate->format('Y-m-d\TH:i:sP'),
+            'metadata' => json_encode($oldSubscription->getMeta()),
         ];
 
         return $this->subscriptionsApiClient->create(
