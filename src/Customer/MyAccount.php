@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
-use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcherInterface;
 use Exception;
@@ -28,11 +27,6 @@ class MyAccount
     protected $subscriptionStatusSwitcher;
 
     /**
-     * @var Repository
-     */
-    private $repository;
-
-    /**
      * @var Subscriptions
      */
     private $subscriptions;
@@ -40,25 +34,20 @@ class MyAccount
     /**
      * MyAccount constructor.
      *
-     * @param Repository $repository
      * @param Subscriptions $subscriptions
      * @param SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
      * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
      */
     public function __construct(
-        Repository $repository,
         Subscriptions $subscriptions,
         SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher,
         SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
     ) {
-
-        $this->repository = $repository;
         $this->subscriptions = $subscriptions;
         $this->subscriptionPlanSwitcher = $subscriptionPlanSwitcher;
         $this->subscriptionStatusSwitcher = $subscriptionStatusSwitcher;
     }
 
-    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     public function init(): void
     {
         add_filter(
