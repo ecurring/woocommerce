@@ -238,7 +238,14 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     protected function handleSubscriptionCreating(string $ecurringCustomerId, string $subscriptionPlanId, int $subscriptionOrderId): void
     {
         try {
-            $subscription = $this->subscriptionsApiClient->create($ecurringCustomerId, $subscriptionPlanId);
+            $attributes = [
+                'metadata' => json_encode([
+                    'source' => 'WooCommerce',
+                    'shop_url' => get_site_url(get_current_blog_id()),
+                    'order_id' => $subscriptionOrderId
+                ]),
+            ];
+            $subscription = $this->subscriptionsApiClient->create($ecurringCustomerId, $subscriptionPlanId, $attributes);
             $this->repository->insert($subscription, $subscriptionOrderId);
             eCurring_WC_Plugin::debug(
                 'A new eCurring subscription was successfully created.'
