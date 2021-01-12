@@ -135,6 +135,12 @@ class SubscriptionsJob
         $subscriptionOrderId = $this->findOrderIdBySubscriptionId($subscription->getId());
 
         if ($subscriptionOrderId === 0) {
+            $subscriptionOrderId = isset($subscription->getMeta()['order_id']) ?
+                (int) $subscription->getMeta()['order_id'] :
+                0;
+        }
+
+        if ($subscriptionOrderId === 0) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Order not found for the subscription %1$s, saving will be skipped.',
