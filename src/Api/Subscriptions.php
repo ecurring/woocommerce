@@ -9,6 +9,7 @@ use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionF
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 use eCurring_WC_Helper_Api;
+use Exception;
 
 class Subscriptions
 {
@@ -179,7 +180,9 @@ class Subscriptions
             );
         }
 
-        return $this->subscriptionFactory->createSubscription($response['data']);
+        $normalizedSubscriptionData = $this->normalizeSubscriptionData($response['data']);
+
+        return $this->subscriptionFactory->createSubscription($normalizedSubscriptionData);
     }
 
     /**
@@ -211,7 +214,8 @@ class Subscriptions
         $subscriptions = [];
 
         foreach ($subscriptions['data'] as $subscriptionData) {
-            $subscriptions[] = $this->subscriptionFactory->createSubscription($subscriptionData);
+            $normalizedSubscriptionData = $this->normalizeSubscriptionData($subscriptionData);
+            $subscriptions[] = $this->subscriptionFactory->createSubscription($normalizedSubscriptionData);
         }
 
         return $subscriptions;
@@ -228,7 +232,66 @@ class Subscriptions
     public function getSubscriptionById(string $subscriptionId): SubscriptionInterface
     {
         $response = $this->apiClient->getSubscriptionById($subscriptionId);
+        $normalizedSubscriptionData = $this->normalizeSubscriptionData($response['data']);
 
-        return $this->subscriptionFactory->createSubscription($response['data']);
+        return $this->subscriptionFactory->createSubscription($normalizedSubscriptionData);
+    }
+
+    /**
+     * @param array $subscriptionData Subscription data that need to be normalized.
+     *
+     * @return array
+     * @throws SubscriptionFactoryException
+     */
+    protected function normalizeSubscriptionData(array $subscriptionData): array
+    {
+        $subscriptionAttributes = (array) $subscriptionData['attributes'];
+
+        return [
+            'subscription_id' => $subscriptionData['id'],
+            'customer_id' => $subscriptionData['relationships']['customer']['data']['id'],
+            'subscription_plan_id' => $subscriptionData['relationships']['subscription-plan']['data']['id'],
+            'mandate_code' => $subscriptionAttributes['mandate_code'] ?? '',
+            'confirmation_page' => $subscriptionAttributes['confirmation_page'] ?? '',
+            'confirmation_sent' => $subscriptionAttributes['confirmation_sent'] ?? false,
+            'mandate_accepted' => $subscriptionAttributes['mandate_accepted'] ?? false,
+            'mandate_accepted_date' => $this->createDateFromArrayField(
+                $subscriptionAttributes,
+                'mandate_accepted_date'
+            ),
+            'status' => $subscriptionAttributes['status'] ?? '',
+            'start_date' => $this->createDateFromArrayField($subscriptionAttributes, 'start_date'),
+            'cancel_date' => $this->createDateFromArrayField($subscriptionAttributes, 'cancel_date'),
+            'resume_date' => $this->createDateFromArrayField($subscriptionAttributes, 'resume_date'),
+            'created_at' => $this->createDateFromArrayField($subscriptionAttributes, 'created_at'),
+            'updated_at' => $this->createDateFromArrayField($subscriptionAttributes, 'updated_at'),
+            'archived' => $subscriptionAttributes['archived'] ?? false,
+        ];
+    }
+
+    /**
+     * @param array $subscriptionDataArray
+     * @param string $dateFieldName
+     *
+     * @return DateTime|null Created object or null if field not set or equals null.
+     *
+     * @throws SubscriptionFactoryException If cannot create date from array field.
+     */
+    protected function createDateFromArrayField(array $subscriptionDataArray, string $dateFieldName): ?DateTime
+    {
+        try {
+            $date = $subscriptionDataArray[$dateFieldName] ?
+                new DateTime($subscriptionDataArray[$dateFieldName]) :
+                null;
+        } catch (Exception $exception) {
+            throw new SubscriptionFactoryException(
+                sprintf(
+                    'Couldn\'t parse date in subscription data. Exception caught when trying to create a DateTime object: %1$s',
+                    $exception->getMessage()
+                )
+            );
+        }
+
+        return $date;
     }
 }
