@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring;
 
 use Ecurring\WooEcurring\Api\Subscriptions;
-use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
@@ -21,10 +20,6 @@ class SubscriptionsJob
      * @var Subscriptions
      */
     protected $subscriptionsApiClient;
-    /**
-     * @var Actions Subscription actions.
-     */
-    private $actions;
 
     /**
      * @var Repository
@@ -34,18 +29,15 @@ class SubscriptionsJob
     /**
      * SubscriptionsJob constructor.
      *
-     * @param Actions $actions
      * @param Repository $repository
      * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
      * @param Subscriptions $subscriptionsApiClient
      */
     public function __construct(
-        Actions $actions,
         Repository $repository,
         DataBasedSubscriptionFactoryInterface $subscriptionFactory,
         Subscriptions $subscriptionsApiClient
     ) {
-        $this->actions = $actions;
         $this->repository = $repository;
         $this->subscriptionFactory = $subscriptionFactory;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
