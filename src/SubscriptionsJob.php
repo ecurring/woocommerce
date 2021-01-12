@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring;
 
+use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
-use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Plugin;
 
 class SubscriptionsJob
@@ -16,6 +16,10 @@ class SubscriptionsJob
      * @var DataBasedSubscriptionFactoryInterface
      */
     protected $subscriptionFactory;
+    /**
+     * @var Subscriptions
+     */
+    protected $subscriptionsApiClient;
     /**
      * @var Actions Subscription actions.
      */
@@ -26,14 +30,24 @@ class SubscriptionsJob
      */
     private $repository;
 
+    /**
+     * SubscriptionsJob constructor.
+     *
+     * @param Actions $actions
+     * @param Repository $repository
+     * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
+     * @param Subscriptions $subscriptionsApiClient
+     */
     public function __construct(
         Actions $actions,
         Repository $repository,
-        DataBasedSubscriptionFactoryInterface $subscriptionFactory
+        DataBasedSubscriptionFactoryInterface $subscriptionFactory,
+        Subscriptions $subscriptionsApiClient
     ) {
         $this->actions = $actions;
         $this->repository = $repository;
         $this->subscriptionFactory = $subscriptionFactory;
+        $this->subscriptionsApiClient = $subscriptionsApiClient;
     }
 
     public function init(): void
@@ -69,60 +83,45 @@ class SubscriptionsJob
         );
     }
 
+    /**
+     * Do subscriptions import, one page (10 subscriptions by default) at once.
+     */
     public function importSubscriptions(): void
     {
         $page = get_option('ecurring_subscriptions_page', 1);
 
-        $subscriptions = json_decode($this->actions->import((int)$page), true);
-
-        $this->saveSubscriptionsBunch($subscriptions);
-
-        $parts = parse_url($subscriptions['links']['next'] ?? '');
-        parse_str($parts['query'] ?? '', $query);
-        $nextPage = $query['page']['number'] ?? null;
-
-        if ($nextPage  === null) {
-            eCurring_WC_Plugin::debug(
-                'Could not get the next page number from API response.' .
-                'Subscriptions import failed.'
-            );
-        }
-
-        update_option('ecurring_subscriptions_page', $nextPage);
-
-        $parts = parse_url($subscriptions['links']['last']);
-        parse_str($parts['query'] ?? '', $query);
-        $lastPage = $query['page']['number'] ?? null;
-
-        if ($nextPage >= $lastPage) {
-            update_option('ecurring_import_finished', true);
-        }
-    }
-
-    protected function saveSubscriptionsBunch($subscriptionsData): void
-    {
-        foreach ($subscriptionsData['data'] as $subscriptionFields) {
+        try{
+            $subscriptions = $this->subscriptionsApiClient->getSubscriptions($page);
+        }catch (EcurringException $exception){
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Preparing to save subscription %1$s.',
-                    $subscriptionFields['id']
+                    'Failed to get subscriptions from page %1$d. Exception was caught: %2$s',
+                    $page,
+                    $exception->getMessage()
                 )
             );
 
-            try {
-                $subscription = $this->subscriptionFactory->createSubscription($subscriptionFields);
-                $this->repository->insert($subscription);
-
-            } catch (SubscriptionFactoryException $exception) {
-                eCurring_WC_Plugin::debug(
-                    sprintf(
-                        'Couldn\'t create subscription instance from received data.' .
-                        'Exception was caught with message: %1$s',
-                        $exception->getMessage()
-                    )
-                );
-            }
-
+            return;
         }
+
+
+        if (! $subscriptions) {
+            update_option('ecurring_import_finished', true);
+
+            return;
+        }
+
+        foreach ($subscriptions as $subscription) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Preparing to save subscription %1$s.',
+                    $subscription->getId()
+                )
+            );
+
+            $this->repository->insert($subscription);
+        }
+
+        update_option('ecurring_subscriptions_page', ++$page);
     }
 }

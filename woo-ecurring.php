@@ -223,7 +223,7 @@ function eCurringInitialize()
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
 
-        (new SubscriptionsJob($actions, $repository, $subscriptionsFactory))->init();
+        (new SubscriptionsJob($actions, $repository, $subscriptionsFactory, $subscriptionsApi))->init();
         (new Metabox($display, $save))->init();
         (new PostType($apiHelper))->init();
         (new Assets())->init();
