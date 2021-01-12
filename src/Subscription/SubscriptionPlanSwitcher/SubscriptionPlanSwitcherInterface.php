@@ -17,8 +17,7 @@ interface SubscriptionPlanSwitcherInterface
     /**
      * Switch subscription plan on the remote API and return a new subscription instance.
      *
-     * @param SubscriptionInterface $oldSubscription Subscription instance with
-     *          current subscription plan.
+     * @param string $subscriptionId The id of the subscription that should be changed.
      * @param string $newSubscriptionPlanId Id of the subscription plan to switch to.
      * @param DateTime $switchDate The date when the switch should happen.
      *
@@ -27,7 +26,7 @@ interface SubscriptionPlanSwitcherInterface
      * @throws SubscriptionStatusSwitcherException If failed to switch subscription.
      */
     public function switchSubscriptionPlan(
-        SubscriptionInterface $oldSubscription,
+        string $subscriptionId,
         string $newSubscriptionPlanId,
         DateTime $switchDate
     ): SubscriptionInterface;

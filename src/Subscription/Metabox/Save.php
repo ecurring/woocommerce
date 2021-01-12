@@ -103,9 +103,7 @@ class Save
      */
     protected function handleSubscriptionSwitch(string $subscriptionId, string $newSubscriptionPlanId, DateTime $switchDate): void
     {
-        $currentSubscription = $this->repository->getSubscriptionById($subscriptionId);
-
-        $this->subscriptionPlanSwitcher->switchSubscriptionPlan($currentSubscription, $newSubscriptionPlanId, $switchDate);
+        $this->subscriptionPlanSwitcher->switchSubscriptionPlan($subscriptionId, $newSubscriptionPlanId, $switchDate);
     }
 
     /**

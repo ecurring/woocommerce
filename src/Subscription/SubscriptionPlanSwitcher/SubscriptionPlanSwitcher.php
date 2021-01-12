@@ -62,12 +62,13 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
      * @inheritDoc
      */
     public function switchSubscriptionPlan(
-        SubscriptionInterface $oldSubscription,
+        string $subscriptionId,
         string $newSubscriptionPlanId,
         DateTime $switchDate
     ): SubscriptionInterface {
 
         try {
+            $oldSubscription = $this->repository->getSubscriptionById($subscriptionId);
             $this->subscriptionStatusSwitcher->cancel($oldSubscription->getId(), $switchDate);
             $newSubscription = $this->createNewSubscriptionFromTheOldOne($oldSubscription, $newSubscriptionPlanId, $switchDate);
             $orderId = $this->repository->findSubscriptionOrderIdBySubscriptionId($oldSubscription->getId());

@@ -161,9 +161,7 @@ class MyAccount
 
     protected function doSubscriptionSwitch(string $subscriptionId, string $newSubscriptionPlanId, DateTime $switchDate): void
     {
-        $subscription = $this->repository->getSubscriptionById($subscriptionId);
-
-        $this->subscriptionPlanSwitcher->switchSubscriptionPlan($subscription, $newSubscriptionPlanId, $switchDate);
+        $this->subscriptionPlanSwitcher->switchSubscriptionPlan($subscriptionId, $newSubscriptionPlanId, $switchDate);
     }
 
     /**
