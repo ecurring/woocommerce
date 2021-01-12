@@ -70,7 +70,8 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
         try {
             $this->subscriptionStatusSwitcher->cancel($oldSubscription->getId(), $switchDate);
             $newSubscription = $this->createNewSubscriptionFromTheOldOne($oldSubscription, $newSubscriptionPlanId, $switchDate);
-            $this->repository->insert($newSubscription);
+            $orderId = $this->repository->findSubscriptionOrderIdBySubscriptionId($oldSubscription->getId());
+            $this->repository->insert($newSubscription, $orderId);
 
             return $newSubscription;
         } catch (EcurringException $exception) {
