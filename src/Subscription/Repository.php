@@ -148,31 +148,83 @@ class Repository
             return null;
         }
 
-        $subscriptionPostMeta = get_post_meta($subscriptionPostId);
+        $startDate = get_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_start_date',
+            true
+        );
+        $cancelDate = get_post_meta($subscriptionPostId, '_ecurring_post_subscription_cancel_date', true);
+        $mandateAcceptedDate = get_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_mandate_accepted_date',
+            true
+        );
+        $resumeDate = get_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_resume_date',
+            true
+        );
 
-        $startDate = $subscriptionPostMeta['_ecurring_post_subscription_start_date'];
-        $cancelDate = $subscriptionPostMeta['_ecurring_post_subscription_cancel_date'];
-        $mandateAcceptedDate = $subscriptionPostMeta['_ecurring_post_subscription_mandate_accepted_date'];
-        $resumeDate = $subscriptionPostMeta['_ecurring_post_subscription_resume_date'];
-        $createdAt = $subscriptionPostMeta['_ecurring_post_subscription_created_at'];
-        $updatedAt = $subscriptionPostMeta['_ecurring_post_subscription_updated_at'];
+        $createdAt = get_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_created_at',
+            true
+        );
+
+        $updatedAt = get_post_meta(
+            $subscriptionPostId,
+            '_ecurring_post_subscription_updated_at',
+            true
+        );
 
         $subscriptionData = [
             'subscription_id' => $subscriptionPostId,
-            'customer_id' => $subscriptionPostMeta['_ecurring_post_subscription_customer_id'],
-            'subscription_plan_id' => $subscriptionPostMeta['_ecurring_post_subscription_plan_id'],
-            'mandate_code' => $subscriptionPostMeta['_ecurring_post_subscription_mandate_code'],
-            'status' => $subscriptionPostMeta['_ecurring_post_subscription_status'],
-            'confirmation_page' => $subscriptionPostMeta['_ecurring_post_subscription_mandate_confirmation_page'],
-            'confirmation_sent' => (bool) $subscriptionPostMeta['_ecurring_post_subscription_mandate_confirmation_sent'],
-            'mandate_accepted' => (bool) $subscriptionPostMeta['_ecurring_post_subscription_mandate_accepted'],
+            'customer_id' => get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_customer_id',
+                true
+            ),
+            'subscription_plan_id' => get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_plan_id',
+                true
+            ),
+            'mandate_code' => get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_mandate_code',
+                true
+            ),
+            'status' => get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_status',
+                true
+            ),
+            'confirmation_page' => get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_mandate_confirmation_page',
+                true
+            ),
+            'confirmation_sent' => (bool) get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_mandate_confirmation_sent',
+                true
+            ),
+            'mandate_accepted' => (bool) get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_mandate_accepted',
+                true
+            ),
+            'archived' => (bool) get_post_meta(
+                $subscriptionPostId,
+                '_ecurring_post_subscription_archived',
+                true
+            ),
             'mandate_accepted_date' => $this->createDateFromString($mandateAcceptedDate),
             'start_date' => $this->createDateFromString($startDate),
             'cancel_date' => $this->createDateFromString($cancelDate),
             'resume_date' => $this->createDateFromString($resumeDate),
             'created_at' => $this->createDateFromString($createdAt),
             'updated_at' => $this->createDateFromString($updatedAt),
-            'archived' => (bool) $subscriptionPostMeta['_ecurring_post_subscription_archived'],
         ];
 
         return $this->subscriptionFactory->createSubscription($subscriptionData);
