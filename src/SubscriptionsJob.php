@@ -91,9 +91,9 @@ class SubscriptionsJob
     {
         $page = get_option('ecurring_subscriptions_page', 1);
 
-        try{
+        try {
             $subscriptions = $this->subscriptionsApiClient->getSubscriptions($page);
-        }catch (EcurringException $exception){
+        } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
                     'Failed to get subscriptions from page %1$d. Exception was caught: %2$s',
@@ -104,7 +104,6 @@ class SubscriptionsJob
 
             return;
         }
-
 
         if (! $subscriptions) {
             update_option('ecurring_import_finished', true);
