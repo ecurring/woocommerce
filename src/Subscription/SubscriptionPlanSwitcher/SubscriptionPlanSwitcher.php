@@ -105,10 +105,12 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
         $subscriptionWebhookUrl = $this->getSubscriptionWebhookUrl();
         $transactionWebhookUrl = $this->getTransactionWebhookUrl();
 
-       $subscriptionAttributes = [
+        $subscriptionAttributes = [
             'mandate_code' => $mandate->getMandateCode(),
             'mandate_accepted' => true,
-            'mandate_accepted_date' => $mandateAcceptedDate ? $mandateAcceptedDate->format('Y-m-d\TH:i:sP') : '',
+            'mandate_accepted_date' => $mandateAcceptedDate ?
+                $mandateAcceptedDate->format('Y-m-d\TH:i:sP') :
+                '',
             'confirmation_sent' => 'true',
             'subscription_webhook_url' => $subscriptionWebhookUrl,
             'transaction_webhook_url' => $transactionWebhookUrl,
