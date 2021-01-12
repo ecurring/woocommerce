@@ -114,12 +114,6 @@ class MyAccount
                 $this->doSubscriptionAction($this->actions);
             }
         );
-        add_action(
-            'wp_ajax_nopriv_ecurring_customer_subscriptions',
-            function () {
-                $this->doSubscriptionAction($this->actions);
-            }
-        );
     }
 
     /**
