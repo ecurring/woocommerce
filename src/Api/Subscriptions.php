@@ -185,7 +185,7 @@ class Subscriptions
     /**
      * @param int $page
      *
-     * @return array
+     * @return SubscriptionInterface[]
      * @throws ApiClientException
      * @throws SubscriptionFactoryException
      */
