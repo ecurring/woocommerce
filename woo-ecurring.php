@@ -229,7 +229,7 @@ function eCurringInitialize()
         (new Assets())->init();
         (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
-        (new MyAccount($actions, $repository, $subscriptions, $subscriptionPlanSwitcher))->init();
+        (new MyAccount($repository, $subscriptions, $subscriptionPlanSwitcher, $subscriptionStatusSwitcher))->init();
 
         // Add custom order status "Retrying payment at eCurring"
         add_action('init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);
