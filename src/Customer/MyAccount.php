@@ -7,6 +7,7 @@ namespace Ecurring\WooEcurring\Customer;
 use DateTime;
 use Ecurring\WooEcurring\Subscription\Actions;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcherInterface;
 use Exception;
 
@@ -14,7 +15,6 @@ use function in_the_loop;
 use function add_action;
 use function add_filter;
 use function filter_input;
-use function json_decode;
 use function wp_die;
 
 class MyAccount
@@ -23,6 +23,10 @@ class MyAccount
      * @var SubscriptionPlanSwitcherInterface
      */
     protected $subscriptionPlanSwitcher;
+    /**
+     * @var SubscriptionStatusSwitcherInterface
+     */
+    protected $subscriptionStatusSwitcher;
 
     /**
      * @var Actions
@@ -46,18 +50,21 @@ class MyAccount
      * @param Repository $repository
      * @param Subscriptions $subscriptions
      * @param SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
+     * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
      */
     public function __construct(
         Actions $actions,
         Repository $repository,
         Subscriptions $subscriptions,
-        SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher
+        SubscriptionPlanSwitcherInterface $subscriptionPlanSwitcher,
+        SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher
     ) {
 
         $this->actions = $actions;
         $this->repository = $repository;
         $this->subscriptions = $subscriptions;
         $this->subscriptionPlanSwitcher = $subscriptionPlanSwitcher;
+        $this->subscriptionStatusSwitcher = $subscriptionStatusSwitcher;
     }
 
     //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
@@ -65,7 +72,7 @@ class MyAccount
     {
         add_filter(
             'woocommerce_account_menu_items',
-            function ($items) {
+            static function ($items) {
                 $newItems = [];
                 $newItems['ecurring-subscriptions'] = __('Subscriptions', 'woo-ecurring');
                 $position = (int) array_search('orders', array_keys($items), true) + 1;
@@ -111,18 +118,17 @@ class MyAccount
         add_action(
             'wp_ajax_ecurring_customer_subscriptions',
             function () {
-                $this->doSubscriptionAction($this->actions);
+                $this->doSubscriptionAction();
+                wp_die();
             }
         );
     }
 
     /**
-     * @param Actions $actions
      * @throws Exception
      */
-    protected function doSubscriptionAction(
-        Actions $actions
-    ): void {
+    protected function doSubscriptionAction(): void
+    {
 
         $subscriptionType = filter_input(
             INPUT_POST,
@@ -138,17 +144,13 @@ class MyAccount
 
         switch ($subscriptionType) {
             case 'pause':
-                $response = json_decode(
-                    $actions->pause(
-                        $subscriptionId,
-                        $this->detectSubscriptionResumeDate()
-                    )
+                $this->subscriptionStatusSwitcher->pause(
+                    $subscriptionId,
+                    $this->detectSubscriptionResumeDate()
                 );
-                $this->updatePostSubscription($response);
                 break;
             case 'resume':
-                $response = json_decode($actions->resume($subscriptionId));
-                $this->updatePostSubscription($response);
+                $this->subscriptionStatusSwitcher->resume($subscriptionId);
                 break;
             case 'switch':
                 $this->doSubscriptionSwitch(
@@ -158,14 +160,12 @@ class MyAccount
                 );
                 break;
             case 'cancel':
-                $response = json_decode(
-                    $actions->cancel($subscriptionId, $this->detectSubscriptionCancelDate())
+                $this->subscriptionStatusSwitcher->cancel(
+                    $subscriptionId,
+                    $this->detectSubscriptionCancelDate()
                 );
-                $this->updatePostSubscription($response);
                 break;
         }
-
-        wp_die();
     }
 
     protected function doSubscriptionSwitch(string $subscriptionId, string $newSubscriptionPlanId, DateTime $switchDate): void
@@ -218,18 +218,18 @@ class MyAccount
     /**
      * Get formatted subscription resume date from posted data.
      *
-     * @return string Formatted subscription cancel date.
+     * @return DateTime|null Subscription resume date.
      *
      * @throws Exception If cannot create DateTime object.
      */
-    protected function detectSubscriptionResumeDate(): string
+    protected function detectSubscriptionResumeDate(): ?DateTime
     {
         $pauseSubscription = filter_input(
             INPUT_POST,
             'ecurring_pause_subscription',
             FILTER_SANITIZE_STRING
         );
-        $resumeDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
+        $resumeDate = null;
         if ($pauseSubscription === 'specific-date') {
             $resumeDate = filter_input(
                 INPUT_POST,
@@ -237,7 +237,7 @@ class MyAccount
                 FILTER_SANITIZE_STRING
             );
 
-            $resumeDate = (new DateTime($resumeDate))->format('Y-m-d\TH:i:sP');
+            $resumeDate = new DateTime($resumeDate);
         }
 
         return $resumeDate;
@@ -246,18 +246,18 @@ class MyAccount
     /**
      * Get formatted subscription cancel date from posted data.
      *
-     * @return string Formatted subscription cancel date.
+     * @return DateTime Subscription cancel date.
      *
      * @throws Exception If cannot create DateTime object.
      */
-    protected function detectSubscriptionCancelDate(): string
+    protected function detectSubscriptionCancelDate(): DateTime
     {
         $cancelSubscription = filter_input(
             INPUT_POST,
             'ecurring_cancel_subscription',
             FILTER_SANITIZE_STRING
         );
-        $cancelDate = (new DateTime('now'))->format('Y-m-d\TH:i:sP');
+        $cancelDate = new DateTime('now');
         if ($cancelSubscription === 'specific-date') {
             $cancelDate = filter_input(
                 INPUT_POST,
@@ -265,19 +265,9 @@ class MyAccount
                 FILTER_SANITIZE_STRING
             );
 
-            $cancelDate = (new DateTime($cancelDate))->format('Y-m-d\TH:i:sP');
+            $cancelDate = new DateTime($cancelDate);
         }
 
         return $cancelDate;
-    }
-
-    /**
-     * @param $subscriptionData
-     *
-     * @return void
-     */
-    protected function updatePostSubscription($subscriptionData): void
-    {
-        $this->repository->update($subscriptionData);
     }
 }
