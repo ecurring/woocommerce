@@ -40,16 +40,6 @@ class Repository
 
         $subscriptionOrderId = $orderId ?: $this->findSubscriptionOrderIdBySubscriptionId($subscriptionId);
 
-        if ($subscriptionOrderId === 0) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Order not found for the subscription %1$s, saving will be skipped.',
-                    $subscriptionId
-                )
-            );
-            return;
-        }
-
         $this->persistSubscription($subscription, $subscriptionOrderId);
     }
 
@@ -377,39 +367,7 @@ class Repository
      */
     public function findSubscriptionOrderIdBySubscriptionId(string $subscriptionId): int
     {
-        $addSubscriptionIdMetaSupport = static function (array $wpQueryArgs, array $wcOrdersQueryArgs) use ($subscriptionId): array {
-            if (! empty($wcOrdersQueryArgs['_ecurring_subscription_id'])) {
-                $wpQueryArgs['meta_query'][] = [
-                    'key' => '_ecurring_subscription_id',
-                    'value' => $subscriptionId,
-                ];
-            }
 
-            return $wpQueryArgs;
-        };
-
-        add_filter(
-            'woocommerce_order_data_store_cpt_get_orders_query',
-            $addSubscriptionIdMetaSupport,
-            10,
-            2
-        );
-
-        /** @var array $foundIds */
-        $foundIds = wc_get_orders(
-            [
-                'limit' => 1,
-                'return' => 'ids',
-                '_ecurring_subscription_id' => $subscriptionId,
-            ]
-        );
-
-        remove_filter(
-            'woocommerce_order_data_store_cpt_get_orders_query',
-            $addSubscriptionIdMetaSupport
-        );
-
-        return $foundIds[0] ?? 0;
     }
 
     public function findSubscriptionIdByOrderId(int $orderId): string
