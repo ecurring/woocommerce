@@ -69,7 +69,7 @@ class OrderEditPageController
             return;
         }
 
-        $transactionId = get_post_meta($postId, '_transaction_id', true);
+        $transactionId = get_post_meta($postId, '_ecurring_transaction_id', true);
 
         if (! $transactionId) {
             _e('No known transaction yet.', 'woo-ecurring');
