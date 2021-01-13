@@ -7,7 +7,6 @@ namespace Ecurring\WooEcurring\AdminPages;
 use Dhii\Output\Block\TemplateBlockFactoryInterface;
 use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
-use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Template\WcSelectTemplate;
 use eCurring_WC_Plugin;
 use Throwable;
@@ -33,10 +32,6 @@ class ProductEditPageController
      * @var string
      */
     protected $adminTemplatesPath;
-    /**
-     * @var SettingsCrud
-     */
-    protected $settingsCrud;
     /**
      * @var bool
      */
