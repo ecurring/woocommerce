@@ -113,18 +113,18 @@ class Save
     /**
      * Get formatted subscription cancel date, if no cancellation date so return an empty string.
      *
-     * @return DateTime Subscription cancel date, using current date if no cancel date defined.
+     * @return DateTime|null Subscription cancel date or null if no cancel date defined.
      *
      * @throws Exception If cannot create DateTime object.
      */
-    protected function detectCancelDate(): DateTime
+    protected function detectCancelDate(): ?DateTime
     {
         $cancelSubscription = filter_input(
             INPUT_POST,
             'ecurring_cancel_subscription',
             FILTER_SANITIZE_STRING
         );
-        $cancelDate = new DateTime();
+        $cancelDate = null;
         if ($cancelSubscription === 'specific-date') {
             $cancelDate = filter_input(
                 INPUT_POST,

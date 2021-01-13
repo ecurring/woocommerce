@@ -44,9 +44,9 @@ interface SubscriptionStatusSwitcherInterface
      * Cancel a subscription.
      *
      * @param string $subscriptionId
-     * @param DateTime $cancelDate
+     * @param DateTime|null $cancelDate
      *
      * @throws SubscriptionStatusSwitcherException If failed to cancel subscription.
      */
-    public function cancel(string $subscriptionId, DateTime $cancelDate): void;
+    public function cancel(string $subscriptionId, DateTime $cancelDate = null): void;
 }
