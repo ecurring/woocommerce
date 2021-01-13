@@ -10,7 +10,6 @@ use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
-use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Plugin;
 use Mollie\Api\Resources\Payment;
@@ -34,10 +33,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     protected $customerCrud;
     /**
-     * @var DataBasedSubscriptionFactoryInterface
-     */
-    protected $dataBasedSubscriptionFactory;
-    /**
      * @var Repository
      */
     protected $repository;
@@ -51,21 +46,18 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      *
      * @param ApiClient $apiClient Service able to perform actions against eCurring API.
      * @param Subscriptions $subscriptionsApiClient
-     * @param DataBasedSubscriptionFactoryInterface $dataBasedSubscriptionFactory
      * @param Repository $repository
      * @param CustomerCrudInterface $customerCrud
      */
     public function __construct(
         ApiClient $apiClient,
         Subscriptions $subscriptionsApiClient,
-        DataBasedSubscriptionFactoryInterface $dataBasedSubscriptionFactory,
         Repository $repository,
         CustomerCrudInterface $customerCrud
     ) {
 
         $this->apiClient = $apiClient;
         $this->customerCrud = $customerCrud;
-        $this->dataBasedSubscriptionFactory = $dataBasedSubscriptionFactory;
         $this->repository = $repository;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
     }
