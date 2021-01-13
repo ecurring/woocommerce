@@ -10,8 +10,6 @@ use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateInterface;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
-use eCurring_WC_Helper_Api;
-use eCurring_WC_Helper_Settings;
 use eCurring_WC_Plugin;
 use Exception;
 
@@ -21,17 +19,24 @@ class Repository
      * @var DataBasedSubscriptionFactoryInterface
      */
     protected $subscriptionFactory;
+    /**
+     * @var Customers
+     */
+    protected $customersApiClient;
 
     /**
      * Repository constructor.
      *
      * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
+     * @param Customers $customersApiClient
      */
     public function __construct(
-        DataBasedSubscriptionFactoryInterface $subscriptionFactory
+        DataBasedSubscriptionFactoryInterface $subscriptionFactory,
+        Customers $customersApiClient
     ) {
 
         $this->subscriptionFactory = $subscriptionFactory;
+        $this->customersApiClient = $customersApiClient;
     }
 
     public function insert(SubscriptionInterface $subscription, int $orderId): void
@@ -54,8 +59,7 @@ class Repository
         );
 
         if ($postId && is_int($postId)) {
-            $customer = $this->getCustomerApi();
-            $customerDetails = $customer->getCustomerById(
+            $customerDetails = $this->customersApiClient->getCustomerById(
                 $subscription->getCustomerId()
             );
 
@@ -404,16 +408,5 @@ class Repository
             '_ecurring_post_subscription_id',
             true
         );
-    }
-
-    /**
-     * @return Customers
-     */
-    protected function getCustomerApi(): Customers
-    {
-        $settingsHelper = new eCurring_WC_Helper_Settings();
-        $api = new eCurring_WC_Helper_Api($settingsHelper);
-        $customer = new Customers($api);
-        return $customer;
     }
 }
