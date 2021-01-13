@@ -9,6 +9,7 @@ use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
+use Ecurring\WooEcurring\AdminPages\OrderEditPageController;
 use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
@@ -54,6 +55,8 @@ class AdminControllerTest extends TestCase
 
         $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
 
+        $orderEditPageControllerMock = $this->createMock(OrderEditPageController::class);
+
         $sut = new AdminController(
             $adminSettingsPageRendererMock,
             $formBuilderMock,
@@ -61,7 +64,8 @@ class AdminControllerTest extends TestCase
             '',
             $nonceMock,
             $nonceFieldBuilderMock,
-            $productEditPageControllerMock
+            $productEditPageControllerMock,
+            $orderEditPageControllerMock
         );
 
         when('_x')->returnArg();
@@ -118,6 +122,8 @@ class AdminControllerTest extends TestCase
 
         $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
 
+        $orderEditPageControllerMock = $this->createMock(OrderEditPageController::class);
+
         $sut = new AdminController(
             $adminSettingsPageRendererMock,
             $formBuilderMock,
@@ -125,7 +131,8 @@ class AdminControllerTest extends TestCase
             '',
             $nonceMock,
             $nonceFieldBuilderMock,
-            $productEditPageControllerMock
+            $productEditPageControllerMock,
+            $orderEditPageControllerMock
         );
 
         $this->expectOutputString($renderedContent);
