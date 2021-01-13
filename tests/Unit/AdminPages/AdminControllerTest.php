@@ -139,4 +139,24 @@ class AdminControllerTest extends TestCase
 
         $sut->renderPluginSettingsPage();
     }
+
+    public function testHandleRegisteringMetaBox()
+    {
+        $orderEditPageControllerMock = $this->createMock(OrderEditPageController::class);
+        $orderEditPageControllerMock->expects($this->once())
+            ->method('registerEditOrderPageMetaBox');
+
+        $sut = new AdminController(
+            $this->createMock(TemplateInterface::class),
+            $this->createMock(FormFieldsCollectionBuilderInterface::class),
+            $this->createMock(SettingsCrudInterface::class),
+            '',
+            $this->createMock(NonceInterface::class),
+            $this->createMock(NonceFieldBuilderInterface::class),
+            $this->createMock(ProductEditPageController::class),
+            $orderEditPageControllerMock
+        );
+
+        $sut->handleRegisteringMetaBoxes();
+    }
 }
