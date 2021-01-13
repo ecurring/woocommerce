@@ -8,6 +8,7 @@ use Dhii\Output\Template\PhpTemplate\FilePathTemplateFactory;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
+use Ecurring\WooEcurring\AdminPages\OrderEditPageController;
 use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Api\Subscriptions;
@@ -61,7 +62,9 @@ class eCurring_WC_Plugin
             $subscriptionMandateFactory,
             $subscriptionStatusFactory
         );
-        $repository = new Repository($subscriptionFactory);
+
+        $customersApiClient = new \Ecurring\WooEcurring\Api\Customers(self::getApiHelper());
+        $repository = new Repository($subscriptionFactory, $customersApiClient);
 
         $subscriptions = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
         $subscriptionsApiClient = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
@@ -71,7 +74,7 @@ class eCurring_WC_Plugin
         (new AddToCartValidationEventListener())->init();
         (new PaymentCompletedEventListener($apiClient, $subscriptions, $customerCrud, $subscriptionsSwitcher, $repository))->init();
 
-        add_action('admin_init', static function () use ($settingsHelper) {
+        add_action('admin_init', static function () use ($settingsHelper, $repository) {
             $elementFactory = new ElementFactory();
             $wcBasedSettingsTemplate = new SettingsFormTemplate();
             $settingsFormAction = 'mollie-subscriptions-settings-form-submit';
@@ -105,6 +108,12 @@ class eCurring_WC_Plugin
                 ! empty($settingsHelper->getApiKey())
             );
 
+            $orderEditPageController = new OrderEditPageController(
+                $repository,
+                $filePathTemplateFactory,
+                $adminTemplatesPath
+            );
+
             (new AdminController(
                 $wcBasedSettingsTemplate,
                 $formBuilder,
@@ -112,7 +121,8 @@ class eCurring_WC_Plugin
                 $settingsFormAction,
                 $nonce,
                 $nonceFieldBuilder,
-                $productEditPageController
+                $productEditPageController,
+                $orderEditPageController
             )
             )->init();
         });
@@ -159,9 +169,6 @@ class eCurring_WC_Plugin
         // eCurring add to cart button text
         add_filter('woocommerce_product_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
         add_filter('woocommerce_product_single_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
-
-        // Add 'eCurring details' metabox to WooCommerce Order Edit
-        add_action('add_meta_boxes', [ __CLASS__, 'eCurringAddOrdersMetaBox']);
 
         add_filter('mollie-payments-for-woocommerce_is_subscription_payment', [__CLASS__, 'eCurringSubscriptionIsInCart']);
 
@@ -762,73 +769,5 @@ class eCurring_WC_Plugin
             wp_send_json([ 'result' => 'failed' ]);
             wp_die();
         }
-    }
-
-    /**
-     * Add 'eCurring details' meta box
-     */
-    public static function eCurringAddOrdersMetaBox()
-    {
-
-        add_meta_box('woo_ecurring_orders_metabox', __('eCurring details', 'woo-ecurring'), [
-            __CLASS__,
-            'eCurringAddOrdersMetaBoxCallback',
-        ], 'shop_order', 'side', 'core');
-    }
-
-    /**
-     * eCurring details meta box callback
-     */
-    public static function eCurringAddOrdersMetaBoxCallback()
-    {
-
-        global $post;
-
-        if (! get_post_meta($post->ID, '_ecurring_subscription_id', true)) {
-            $subscription_id = get_post_meta($post->ID, '_ecurring_subscription_relation', true);
-        } else {
-            $subscription_id = get_post_meta($post->ID, '_ecurring_subscription_id', true);
-        }
-
-        if (! $subscription_id) {
-            echo __('No eCurring subscription found for this order.', 'woo-ecurring');
-
-            return;
-        }
-
-        // Load Helpers
-        $api = eCurring_WC_Plugin::getApiHelper();
-        $data = eCurring_WC_Plugin::getDataHelper();
-
-        $subscription = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscriptions/' . $subscription_id), true);
-
-        $customer_id = $subscription['data']['relationships']['customer']['data']['id'];
-
-        echo '<h2 style="padding: 8px 0px;">' . __('General details', 'woo-ecurring') . '</h2>';
-        echo '<p style="padding-left: 15px; line-height: 25px;">';
-
-        echo __('Subscription ID', 'woo-ecurring') . ': ' . $subscription_id . '<br />';
-        echo __('Customer ID', 'woo-ecurring') . ': ' . $customer_id . '<br />';
-        echo '</p>';
-
-        echo '<h2 style="padding: 8px 0px;">' . __('Transaction details', 'woo-ecurring') . '</h2>';
-        echo '<p style="padding-left: 15px; line-height: 25px;">';
-
-        if (! get_post_meta($post->ID, '_transaction_id', true)) {
-            echo __('No known transaction yet.', 'woo-ecurring');
-
-            return;
-        } else {
-            $transaction_id = get_post_meta($post->ID, '_transaction_id', true);
-
-            $api = eCurring_WC_Plugin::getApiHelper();
-            $transaction = json_decode($api->apiCall('GET', 'https://api.ecurring.com/transactions/' . $transaction_id), true);
-
-            echo __('ID', 'woo-ecurring') . ': <a href="https://app.ecurring.com/transactions/' . $transaction_id . '" target="_blank">' . $transaction_id . '</a><br />';
-            echo __('Status', 'woo-ecurring') . ': ' . $data->geteCurringPrettyStatus($transaction['data']['attributes']['status']) . '<br />';
-            echo __('Amount', 'woo-ecurring') . ': ' . wc_price($transaction['data']['attributes']['amount']) . '<br />';
-            echo __('Method', 'woo-ecurring') . ': ' . $transaction['data']['attributes']['payment_method'] . '<br />';
-        }
-        echo '</p>';
     }
 }

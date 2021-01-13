@@ -206,7 +206,7 @@ function eCurringInitialize()
             $subscriptionMandateFactory,
             $subscriptionStatusFactory
         );
-        $repository = new Repository($subscriptionsFactory);
+        $repository = new Repository($subscriptionsFactory, $customerApi);
         $subscriptionsApi = new SubscriptionsApi($apiHelper, $apiClient, $subscriptionsFactory);
 
         $subscriptionStatusSwitcher = new SubscriptionStatusSwitcher($subscriptionsApi, $repository);

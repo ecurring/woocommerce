@@ -6,12 +6,6 @@ declare(strict_types=1);
  * @var $c callable
  * @var $f callable
  */
-
-if (!$c('subscription')) {
-    _e('No eCurring subscription found for this order.', 'woo-ecurring');
-
-    return;
-}
 ?>
 
 <h2 style="padding: 8px 0;"><?php esc_html_e('General details', 'woo-ecurring'); ?> </h2>
@@ -20,7 +14,7 @@ if (!$c('subscription')) {
     <?php printf(
     /* translators: %1$s is replaced with the subscription ID. */
         esc_html__('Subscription ID: %1$s', 'woo-ecurring'),
-        $c('subscription')->getId()
+        $c('subscription_id')
     ); ?>
     <br>
     <?php
@@ -50,7 +44,7 @@ if (!$c('subscription')) {
         $transactionIdElement
     );
     ?>
-
+    <br>
 
     <?php
     printf(
@@ -60,12 +54,11 @@ if (!$c('subscription')) {
     ); ?>
     <br>
 
-    <br>
     <?php
     printf(
     /* translators: ID is replaced with transaction amount */
         esc_html__('Amount: %1$s', 'woo-ecurring'),
-        $c('transaction_amount') ? $f('format_price', $c('transaction_amount')) : ''
+        $c('transaction_amount') ?? ''
     ); ?>
     <br>
 
@@ -73,7 +66,7 @@ if (!$c('subscription')) {
     printf(
     /* translators: ID is replaced with transaction payment method */
         esc_html__('Method: %1$s', 'woo-ecurring'),
-        $c('transaction_payment_method') ?? ''
+        $c('transaction_method') ?? ''
     ); ?>
     <br>
 </p>
