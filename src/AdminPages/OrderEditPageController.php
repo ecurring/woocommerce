@@ -82,7 +82,7 @@ class OrderEditPageController
             true
         );
 
-        if(! isset($transactionData['data'])){
+        if (! isset($transactionData['data'])) {
             _e('Failed to get transaction data', 'woo-ecurring');
 
             return;
