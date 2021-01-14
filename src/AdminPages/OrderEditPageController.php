@@ -64,7 +64,7 @@ class OrderEditPageController
         );
 
         if ($subscription === null) {
-            _e('No eCurring subscription found for this order.', 'woo-ecurring');
+            esc_html_e('No eCurring subscription found for this order.', 'woo-ecurring');
 
             return;
         }
@@ -72,7 +72,7 @@ class OrderEditPageController
         $transactionId = get_post_meta($postId, '_ecurring_transaction_id', true);
 
         if (! $transactionId) {
-            _e('No known transaction yet.', 'woo-ecurring');
+            esc_html_e('No known transaction yet.', 'woo-ecurring');
             return;
         }
 
@@ -83,20 +83,25 @@ class OrderEditPageController
         );
 
         if (! isset($transactionData['data'])) {
-            _e('Failed to get transaction data', 'woo-ecurring');
+            esc_html_e('Failed to get transaction data', 'woo-ecurring');
 
             return;
         }
 
         $transactionAmount = $transactionData['data']['attributes']['amount'];
+        $transactionMethod = $transactionData['data']['attributes']['payment_method'] ?? '';
 
-        echo $metaBoxTemplate->render([
-            'subscription_id' => $subscription->getId(),
-            'customer_id' => $subscription->getCustomerId(),
-            'transaction_id' => $transactionId,
-            'transaction_status' => $transactionData['data']['attributes']['status'] ?? '',
-            'transaction_amount' => $transactionAmount ? wc_price($transactionAmount) : '',
-            'transaction_method' => $transactionData['data']['attributes']['payment_method'] ?? '',
-        ]);
+        echo wp_kses_post(
+            $metaBoxTemplate->render(
+                [
+                    'subscription_id' => $subscription->getId(),
+                    'customer_id' => $subscription->getCustomerId(),
+                    'transaction_id' => $transactionId,
+                    'transaction_status' => $transactionData['data']['attributes']['status'] ?? '',
+                    'transaction_amount' => $transactionAmount ? wc_price($transactionAmount) : '',
+                    'transaction_method' => $transactionMethod,
+                ]
+            )
+        );
     }
 }
