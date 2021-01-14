@@ -111,7 +111,6 @@ class PaymentCompletedEventListener implements EventListenerInterface
             }
 
             $this->subscriptionStatusSwitcher->activate($subscriptionId, $mandateAcceptedDate);
-
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(

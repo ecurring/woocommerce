@@ -53,7 +53,6 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
             eCurring_WC_Plugin::debug(
                 sprintf('Subscription %1$s was activated.', $subscriptionId)
             );
-
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
@@ -80,7 +79,6 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
             eCurring_WC_Plugin::debug(
                 sprintf('API response: %1$s', print_r($response, true))
             );
-
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
@@ -103,7 +101,6 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
             eCurring_WC_Plugin::debug(
                 sprintf('Subscription %1$s was resumed.', $subscriptionId)
             );
-
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
@@ -127,7 +124,6 @@ class SubscriptionStatusSwitcher implements SubscriptionStatusSwitcherInterface
             eCurring_WC_Plugin::debug(
                 sprintf('Subscription %1$s was cancelled.', $subscriptionId)
             );
-
         } catch (EcurringException $exception) {
             throw new SubscriptionStatusSwitcherException(
                 sprintf(
