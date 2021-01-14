@@ -212,9 +212,20 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function createEcurringSubscriptionsFromOrder(WC_Order $order, string $ecurringCustomerId): void
     {
+        if ($ecurringCustomerId === '') {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Failed to create a subscription from order %1$d: the eCurring customer id is empty.',
+                    $order->get_id()
+                )
+            );
+
+            return;
+        }
+
         foreach ($order->get_items() as $item) {
             $subscriptionPlanId = $this->getSubscriptionPlanIdByOrderItem($item);
-            if ($subscriptionPlanId !== '' && $ecurringCustomerId !== '') {
+            if ($subscriptionPlanId !== '') {
                 $this->handleSubscriptionCreating($ecurringCustomerId, $subscriptionPlanId, $order->get_id());
             }
         }
