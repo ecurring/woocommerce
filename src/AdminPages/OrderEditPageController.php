@@ -92,7 +92,7 @@ class OrderEditPageController
         $transactionMethod = $transactionData['data']['attributes']['payment_method'] ?? '';
 
         echo wp_kses_post(
-            $metaBoxTemplate->render(
+            (string) $metaBoxTemplate->render(
                 [
                     'subscription_id' => $subscription->getId(),
                     'customer_id' => $subscription->getCustomerId(),
