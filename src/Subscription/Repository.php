@@ -140,7 +140,7 @@ class Repository
      *
      * @throws SubscriptionFactoryException If cannot build a subscription from existing data.
      */
-    public function getSubscriptionById(string $subscriptionId): ?SubscriptionInterface
+    public function getSubscriptionById(string $subscriptionId): ?SubscriptionInterface //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
 
