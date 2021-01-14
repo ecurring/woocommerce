@@ -35,7 +35,7 @@ class AddToCartValidationEventListener implements EventListenerInterface
     {
         $productToAdd = wc_get_product($productId);
 
-        if ($productToAdd->get_meta('_ecurring_subscription_plan')) {
+        if (! $productToAdd->get_meta('_ecurring_subscription_plan')) {
             return $validationPassed;
         }
 
