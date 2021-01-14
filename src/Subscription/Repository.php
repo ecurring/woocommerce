@@ -389,7 +389,7 @@ class Repository
     public function findSubscriptionIdByOrderId(int $orderId): string
     {
         /**
-         * @var $found array<int>
+         * @var array<int> $found
          */
         $found = get_posts(
             [
