@@ -122,7 +122,7 @@ class PostType
                         break;
                     case 'start_date':
                         $startDate = get_post_meta($postId, '_ecurring_post_subscription_start_date', true);
-                        $startDate = DateTime::createFromFormat('c', $startDate) ?? '';
+                        $startDate = (new DateTime($startDate))->format('Y-m-d\TH:i:sP');
                         echo esc_attr($startDate);
                         break;
                     case 'status':

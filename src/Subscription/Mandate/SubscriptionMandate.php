@@ -28,7 +28,7 @@ class SubscriptionMandate implements SubscriptionMandateInterface
      */
     protected $confirmationSent;
     /**
-     * @var DateTime
+     * @var DateTime|null
      */
     protected $acceptedDate;
 
