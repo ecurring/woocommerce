@@ -302,20 +302,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Dhii/validation-interface.git",
-                "reference": "f5c15606b1387df2381134e4fc6e1971cbc284a0"
+                "reference": "0e73c7bf3d2421ceb79331c60a9bc1b1d5eb65a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Dhii/validation-interface/zipball/f5c15606b1387df2381134e4fc6e1971cbc284a0",
-                "reference": "f5c15606b1387df2381134e4fc6e1971cbc284a0",
+                "url": "https://api.github.com/repos/Dhii/validation-interface/zipball/0e73c7bf3d2421ceb79331c60a9bc1b1d5eb65a6",
+                "reference": "0e73c7bf3d2421ceb79331c60a9bc1b1d5eb65a6",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1"
+                "php": "^7.1 | ^8.0"
             },
             "require-dev": {
-                "dhii/stringable-interface": "^0.1",
-                "phpunit/phpunit": "^7.0 | ^8.0"
+                "phpunit/phpunit": "^7.0 | ^8.0 | ^9.0",
+                "slevomat/coding-standard": "^6.0",
+                "symfony/polyfill-mbstring": "1.20",
+                "symfony/polyfill-php80": "^1.19",
+                "vimeo/psalm": "^3.11.7 | ^4.0"
             },
             "type": "library",
             "extra": {
@@ -339,7 +342,7 @@
                 }
             ],
             "description": "A base interface for validators",
-            "time": "2020-05-14T00:22:48+00:00"
+            "time": "2021-01-14T16:19:20+00:00"
         },
         {
             "name": "dhii/versions",
@@ -490,23 +493,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/amphp/amp.git",
-                "reference": "efca2b32a7580087adb8aabbff6be1dc1bb924a9"
+                "reference": "7d4bbc6e0b47c6bb39b6cce1a4b5942e0c5125fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amphp/amp/zipball/efca2b32a7580087adb8aabbff6be1dc1bb924a9",
-                "reference": "efca2b32a7580087adb8aabbff6be1dc1bb924a9",
+                "url": "https://api.github.com/repos/amphp/amp/zipball/7d4bbc6e0b47c6bb39b6cce1a4b5942e0c5125fb",
+                "reference": "7d4bbc6e0b47c6bb39b6cce1a4b5942e0c5125fb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7"
+                "php": ">=7.1"
             },
             "require-dev": {
                 "amphp/php-cs-fixer-config": "dev-master",
                 "amphp/phpunit-util": "^1",
                 "ext-json": "*",
                 "jetbrains/phpstorm-stubs": "^2019.3",
-                "phpunit/phpunit": "^6.0.9 | ^7",
+                "phpunit/phpunit": "^7 | ^8 | ^9",
                 "psalm/phar": "^3.11@dev",
                 "react/promise": "^2"
             },
@@ -566,7 +569,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-01-10T17:06:37+00:00"
+            "time": "2021-01-13T19:16:50+00:00"
         },
         {
             "name": "amphp/byte-stream",
@@ -913,12 +916,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "3a36f1011de3d8ce95f5eb3eb89f737f64801d77"
+                "reference": "78a0e288fdcebf92aa2318a8d3656168da6ac1a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/3a36f1011de3d8ce95f5eb3eb89f737f64801d77",
-                "reference": "3a36f1011de3d8ce95f5eb3eb89f737f64801d77",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/78a0e288fdcebf92aa2318a8d3656168da6ac1a5",
+                "reference": "78a0e288fdcebf92aa2318a8d3656168da6ac1a5",
                 "shasum": ""
             },
             "require": {
@@ -976,7 +979,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-09T09:45:04+00:00"
+            "time": "2021-01-12T12:10:35+00:00"
         },
         {
             "name": "composer/installers",
@@ -984,12 +987,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "7f3c618fcbfc787cca2bb7a127e7eb3a146c7046"
+                "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/7f3c618fcbfc787cca2bb7a127e7eb3a146c7046",
-                "reference": "7f3c618fcbfc787cca2bb7a127e7eb3a146c7046",
+                "url": "https://api.github.com/repos/composer/installers/zipball/1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
+                "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
                 "shasum": ""
             },
             "require": {
@@ -1049,6 +1052,7 @@
                 "Porto",
                 "RadPHP",
                 "SMF",
+                "Starbug",
                 "Thelia",
                 "Whmcs",
                 "WolfCMS",
@@ -1089,6 +1093,7 @@
                 "phpbb",
                 "piwik",
                 "ppi",
+                "processwire",
                 "puppet",
                 "pxcms",
                 "reindex",
@@ -1118,7 +1123,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-08T15:13:21+00:00"
+            "time": "2021-01-14T11:07:16+00:00"
         },
         {
             "name": "composer/package-versions-deprecated",
@@ -2109,16 +2114,16 @@
         },
         {
             "name": "mollie/mollie-api-php",
-            "version": "v2.27.1",
+            "version": "v2.27.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/mollie-api-php.git",
-                "reference": "84ce19b6ab73392592ac1f1e13e37caabb69482a"
+                "reference": "e8db8cd08e3754b31dd355b07525cce8733a0ec6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/mollie-api-php/zipball/84ce19b6ab73392592ac1f1e13e37caabb69482a",
-                "reference": "84ce19b6ab73392592ac1f1e13e37caabb69482a",
+                "url": "https://api.github.com/repos/mollie/mollie-api-php/zipball/e8db8cd08e3754b31dd355b07525cce8733a0ec6",
+                "reference": "e8db8cd08e3754b31dd355b07525cce8733a0ec6",
                 "shasum": ""
             },
             "require": {
@@ -2192,7 +2197,7 @@
                 "sofortbanking",
                 "subscriptions"
             ],
-            "time": "2020-12-15T09:00:48+00:00"
+            "time": "2021-01-13T09:49:36+00:00"
         },
         {
             "name": "mollie/mollie-woocommerce",
@@ -2200,12 +2205,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/WooCommerce.git",
-                "reference": "2c6349d2757d647b1dbde8a512fd11dbc0d472bc"
+                "reference": "74e42d5382446649495243136b0a25e40dfe3002"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/2c6349d2757d647b1dbde8a512fd11dbc0d472bc",
-                "reference": "2c6349d2757d647b1dbde8a512fd11dbc0d472bc",
+                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/74e42d5382446649495243136b0a25e40dfe3002",
+                "reference": "74e42d5382446649495243136b0a25e40dfe3002",
                 "shasum": ""
             },
             "require": {
@@ -2256,7 +2261,7 @@
                 "source": "https://github.com/mollie/WooCommerce/tree/develop",
                 "issues": "https://github.com/mollie/WooCommerce/issues"
             },
-            "time": "2021-01-11T08:20:21+00:00"
+            "time": "2021-01-14T08:30:43+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4331,12 +4336,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "cca7e479371112b3b67a3cbed146b1805f16220d"
+                "reference": "356c70659d6b48595f9f275cd7c4de0d5544c49c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/cca7e479371112b3b67a3cbed146b1805f16220d",
-                "reference": "cca7e479371112b3b67a3cbed146b1805f16220d",
+                "url": "https://api.github.com/repos/symfony/console/zipball/356c70659d6b48595f9f275cd7c4de0d5544c49c",
+                "reference": "356c70659d6b48595f9f275cd7c4de0d5544c49c",
                 "shasum": ""
             },
             "require": {
@@ -4417,7 +4422,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-11T09:52:33+00:00"
+            "time": "2021-01-14T15:43:35+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -5032,12 +5037,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "7a62495108b3dc7e749b709357ae720fccb5a39b"
+                "reference": "2f833cf54d5fe9646638c50778016a06b6fe1603"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/7a62495108b3dc7e749b709357ae720fccb5a39b",
-                "reference": "7a62495108b3dc7e749b709357ae720fccb5a39b",
+                "url": "https://api.github.com/repos/symfony/string/zipball/2f833cf54d5fe9646638c50778016a06b6fe1603",
+                "reference": "2f833cf54d5fe9646638c50778016a06b6fe1603",
                 "shasum": ""
             },
             "require": {
@@ -5104,7 +5109,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-10T16:38:27+00:00"
+            "time": "2021-01-12T14:28:55+00:00"
         },
         {
             "name": "theseer/tokenizer",
