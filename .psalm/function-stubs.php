@@ -42,3 +42,8 @@ function wc_get_page_permalink($page, $fallback = null)
 {
     return '';
 }
+
+function wc_price($value): string
+{
+    return (string) $value;
+}
