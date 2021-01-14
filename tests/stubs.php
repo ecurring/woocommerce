@@ -90,3 +90,17 @@ if(! class_exists(WC_Product::class))
 		}
 	}
 }
+
+if(! class_exists(WP_Error::class))
+{
+    class WP_Error
+    {
+        public function get_error_code()
+        {
+        }
+
+        public function get_error_message()
+        {
+        }
+    }
+}
