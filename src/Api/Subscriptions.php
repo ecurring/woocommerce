@@ -213,7 +213,7 @@ class Subscriptions
 
         $subscriptions = [];
 
-        foreach ($subscriptions['data'] as $subscriptionData) {
+        foreach ($response['data'] as $subscriptionData) {
             $normalizedSubscriptionData = $this->normalizeSubscriptionData($subscriptionData);
             $subscriptions[] = $this->subscriptionFactory->createSubscription($normalizedSubscriptionData);
         }
