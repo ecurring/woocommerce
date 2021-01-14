@@ -61,6 +61,16 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
 
         try {
             $oldSubscription = $this->repository->getSubscriptionById($subscriptionId);
+
+            if($oldSubscription === null){
+                throw new SubscriptionStatusSwitcherException(
+                    sprintf(
+                        'Cannot find subscription %1$s to change subscription plan.',
+                        $subscriptionId
+                    )
+                );
+            }
+
             $this->subscriptionStatusSwitcher->cancel($oldSubscription->getId(), $switchDate);
             $newSubscription = $this->createNewSubscriptionFromTheOldOne($oldSubscription, $newSubscriptionPlanId, $switchDate);
             $orderId = $this->repository->findSubscriptionOrderIdBySubscriptionId($oldSubscription->getId());
