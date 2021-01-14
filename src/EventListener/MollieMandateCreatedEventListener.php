@@ -182,7 +182,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     {
         $subscriptionId = $this->repository->findSubscriptionIdByOrderId($order->get_id());
 
-        if ($subscriptionId === null) {
+        if ($subscriptionId === '') {
             return false;
         }
 
