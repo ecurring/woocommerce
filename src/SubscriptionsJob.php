@@ -81,7 +81,7 @@ class SubscriptionsJob
      */
     public function importSubscriptions(): void
     {
-        $page = get_option('ecurring_subscriptions_page', 1);
+        $page = (int) get_option('ecurring_subscriptions_page', 1);
 
         try {
             $subscriptions = $this->subscriptionsApiClient->getSubscriptions($page);
