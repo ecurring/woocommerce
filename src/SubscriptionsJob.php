@@ -126,7 +126,7 @@ class SubscriptionsJob
     {
         $subscriptionOrderId = $this->findOrderIdBySubscriptionId($subscription->getId());
 
-        if ($subscriptionOrderId === 0) {
+        if ($subscriptionOrderId === 0 && $this->subscriptionIsFromCurrentDomain($subscription)) {
             $subscriptionOrderId = isset($subscription->getMeta()['order_id']) ?
                 (int) $subscription->getMeta()['order_id'] :
                 0;
@@ -189,5 +189,25 @@ class SubscriptionsJob
         );
 
         return $foundIds[0] ?? 0;
+    }
+
+    /**
+     * Check if subscription meta contain current site url.
+     *
+     * @param SubscriptionInterface $subscription
+     *
+     * @return bool
+     */
+    protected function subscriptionIsFromCurrentDomain(SubscriptionInterface $subscription): bool
+    {
+        $subscriptionMeta = $subscription->getMeta();
+        if(! isset($subscriptionMeta['shop_url']) || ! is_string($subscriptionMeta['shop_url'])){
+            return false;
+        }
+
+        $subscriptionDomain = parse_url($subscriptionMeta['shop_url'], PHP_URL_HOST);
+        $siteDomain = parse_url(get_site_url(get_current_blog_id()), PHP_URL_HOST);
+
+        return $subscriptionDomain === $siteDomain;
     }
 }
