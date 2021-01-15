@@ -67,7 +67,8 @@ class DataBasedSubscriptionFactory implements DataBasedSubscriptionFactoryInterf
             $subscriptionData['customer_id'],
             $subscriptionData['subscription_plan_id'],
             $subscriptionMandate,
-            $subscriptionStatus
+            $subscriptionStatus,
+            $subscriptionData['metadata'] ?? []
         );
     }
 }
