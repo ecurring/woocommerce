@@ -124,6 +124,16 @@ class SubscriptionsJob
      */
     protected function handleSubscriptionSaving(SubscriptionInterface $subscription): void
     {
+        if($this->repository->getSubscriptionById($subscription->getId()) !== null)
+        {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Subscription %1$s already exists locally, saving will be skipped.',
+                    $subscription->getId()
+                )
+            );
+        }
+        
         $subscriptionOrderId = $this->findOrderIdBySubscriptionId($subscription->getId());
 
         if ($subscriptionOrderId === 0 && $this->subscriptionIsFromCurrentDomain($subscription)) {
