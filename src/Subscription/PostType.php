@@ -100,8 +100,8 @@ class PostType
                 switch ($column) {
                     case 'customer':
                         $customer = get_post_meta($postId, '_ecurring_post_subscription_customer', true);
-                        echo esc_attr($customer->data->attributes->first_name) . ' '
-                            . esc_attr($customer->data->attributes->last_name);
+                        echo esc_attr($customer->data->attributes->first_name ?? '')  . ' '
+                            . esc_attr($customer->data->attributes->last_name ?? '') ;
                         break;
                     case 'product':
                         $subscriptionPlans = (new SubscriptionPlans(
