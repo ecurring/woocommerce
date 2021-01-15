@@ -66,13 +66,12 @@ class eCurring_WC_Plugin
         $customersApiClient = new \Ecurring\WooEcurring\Api\Customers(self::getApiHelper());
         $repository = new Repository($subscriptionFactory, $customersApiClient);
 
-        $subscriptions = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
         $subscriptionsApiClient = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
         $subscriptionsSwitcher = new SubscriptionStatusSwitcher($subscriptionsApiClient, $repository);
 
         (new MollieMandateCreatedEventListener($apiClient, $subscriptionsApiClient, $repository, $customerCrud))->init();
         (new AddToCartValidationEventListener())->init();
-        (new PaymentCompletedEventListener($apiClient, $subscriptions, $customerCrud, $subscriptionsSwitcher, $repository))->init();
+        (new PaymentCompletedEventListener($apiClient, $subscriptionsApiClient, $customerCrud, $subscriptionsSwitcher, $repository))->init();
 
         add_action('admin_init', static function () use ($settingsHelper, $repository) {
             $elementFactory = new ElementFactory();
