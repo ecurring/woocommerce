@@ -49,6 +49,11 @@ class WC_Order
     {
         return '';
     }
+
+    public function get_date_created(): ?DateTime
+    {
+        return new DateTime();
+    }
 }
 
 class WC_Order_Item

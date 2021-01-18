@@ -16,11 +16,15 @@
  */
 
 use Dhii\Versions\StringVersionFactory;
+use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
-use Ecurring\WooEcurring\Subscription\Actions;
+use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
 use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcher;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
 use Ecurring\WooEcurring\SubscriptionsJob;
 use Ecurring\WooEcurring\Subscription\PostType;
 use Ecurring\WooEcurring\Subscription\Metabox\Display;
@@ -32,6 +36,7 @@ use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
 use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
+use Ecurring\WooEcurring\Subscription\SubscriptionPlanSwitcher\SubscriptionPlanSwitcher;
 
 // Exit if accessed directly.
 if (!defined('ABSPATH')) {
@@ -194,40 +199,34 @@ function eCurringInitialize()
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
         $customerApi = new Customers($apiHelper);
-        $actions = new Actions($apiHelper);
-        $repository = new Repository();
+        $apiClient = new ApiClient($settingsHelper->getApiKey() ?? '');
+        $subscriptionMandateFactory = new SubscriptionMandateFactory();
+        $subscriptionStatusFactory = new SubscriptionStatusFactory();
+        $subscriptionsFactory = new DataBasedSubscriptionFactory(
+            $subscriptionMandateFactory,
+            $subscriptionStatusFactory
+        );
+        $repository = new Repository($subscriptionsFactory, $customerApi);
+        $subscriptionsApi = new SubscriptionsApi($apiHelper, $apiClient, $subscriptionsFactory);
+
+        $subscriptionStatusSwitcher = new SubscriptionStatusSwitcher($subscriptionsApi, $repository);
+        $subscriptionPlanSwitcher = new SubscriptionPlanSwitcher(
+            $subscriptionStatusSwitcher,
+            $subscriptionsApi,
+            $repository
+        );
         $display = new Display();
-        $save = new Save($actions);
+        $save = new Save($subscriptionStatusSwitcher, $subscriptionPlanSwitcher);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
-        $subscriptionsApi = new SubscriptionsApi($apiHelper );
 
-        (new SubscriptionsJob($actions, $repository))->init();
+        (new SubscriptionsJob($repository, $subscriptionsFactory, $subscriptionsApi))->init();
         (new Metabox($display, $save))->init();
         (new PostType($apiHelper))->init();
         (new Assets())->init();
         (new WebHook($subscriptionsApi, $repository))->init();
         (new Settings())->init();
-        (new MyAccount($apiHelper, $actions, $repository, $subscriptions))->init();
-
-        add_action(
-            'woocommerce_payment_complete',
-            static function (int $orderId) use ($repository, $apiHelper) {
-                $order = wc_get_order($orderId);
-                $subscriptionId = $order->get_meta('_ecurring_subscription_id', true);
-
-                if ($subscriptionId) {
-                    $response = json_decode(
-                        $apiHelper->apiCall(
-                            'GET',
-                            "https://api.ecurring.com/subscriptions/{$subscriptionId}"
-                        )
-                    );
-
-                    $repository->create($response->data);
-                }
-            }
-        );
+        (new MyAccount($subscriptions, $subscriptionPlanSwitcher, $subscriptionStatusSwitcher))->init();
 
         // Add custom order status "Retrying payment at eCurring"
         add_action('init', 'eCurringRegisterNewStatusAsPostStatus', 10, 2);

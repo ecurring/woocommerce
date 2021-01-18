@@ -49,15 +49,20 @@ class AdminController
      * @var ProductEditPageController
      */
     protected $productEditPageController;
+    /**
+     * @var OrderEditPageController
+     */
+    protected $orderEditPageController;
 
     /**
-     * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
+     * @param TemplateInterface $adminSettingsPageRenderer To render admin settings page content.
      * @param FormFieldsCollectionBuilderInterface $formBuilder
-     * @param SettingsCrudInterface                $settingsCrud
-     * @param string                               $fieldsCollectionName
-     * @param NonceInterface                       $nonce
-     * @param NonceFieldBuilderInterface           $nonceFieldBuilder
-     * @param ProductEditPageController            $productEditPageController
+     * @param SettingsCrudInterface $settingsCrud
+     * @param string $fieldsCollectionName
+     * @param NonceInterface $nonce
+     * @param NonceFieldBuilderInterface $nonceFieldBuilder
+     * @param ProductEditPageController $productEditPageController
+     * @param OrderEditPageController $orderEditPageController
      */
     public function __construct(
         TemplateInterface $adminSettingsPageRenderer,
@@ -66,7 +71,8 @@ class AdminController
         string $fieldsCollectionName,
         NonceInterface $nonce,
         NonceFieldBuilderInterface $nonceFieldBuilder,
-        ProductEditPageController $productEditPageController
+        ProductEditPageController $productEditPageController,
+        OrderEditPageController $orderEditPageController
     ) {
 
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
@@ -76,6 +82,7 @@ class AdminController
         $this->nonce = $nonce;
         $this->nonceFieldBuilder = $nonceFieldBuilder;
         $this->productEditPageController = $productEditPageController;
+        $this->orderEditPageController = $orderEditPageController;
     }
 
     /**
@@ -101,6 +108,8 @@ class AdminController
         add_action('woocommerce_product_data_panels', [$this, 'handleRenderingProductDataPanels']);
 
         add_action('woocommerce_process_product_meta', [$this, 'handleProductSaving']);
+
+        add_action('add_meta_boxes', [$this, 'handleRegisteringMetaBoxes']);
     }
 
     /**
@@ -137,6 +146,14 @@ class AdminController
         }
 
         $this->productEditPageController->renderProductDataFields((int) $post->ID);
+    }
+
+    /**
+     * Handle rendering content for a meta box on the edit order page.
+     */
+    public function handleRegisteringMetaBoxes()
+    {
+        $this->orderEditPageController->registerEditOrderPageMetaBox();
     }
 
     /**

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EventListener;
 
+use DateTime;
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\ApiClientInterface;
+use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudException;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
+use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcherInterface;
 use eCurring_WC_Plugin;
 use WC_Order;
 
@@ -23,28 +26,43 @@ class PaymentCompletedEventListener implements EventListenerInterface
      */
     protected $apiClient;
     /**
-     * @var SubscriptionCrudInterface
-     */
-    protected $subscriptionCrud;
-    /**
      * @var CustomerCrudInterface
      */
     protected $customerCrud;
+    /**
+     * @var Repository
+     */
+    protected $repository;
+    /**
+     * @var Subscriptions
+     */
+    protected $subscriptionsApiClient;
+    /**
+     * @var SubscriptionStatusSwitcherInterface
+     */
+    protected $subscriptionStatusSwitcher;
 
     /**
-     * @param ApiClientInterface        $apiClient To make eCurring API calls.
-     * @param SubscriptionCrudInterface $subscriptionCrud Service able to read subscription data.
-     * @param CustomerCrudInterface     $customerCrud Service able to provide customer data.
+     * @param ApiClientInterface $apiClient To make eCurring API calls.
+     * @param Subscriptions $subscriptionsApiClient Service able to send API requests
+     *          related to subscriptions.
+     * @param CustomerCrudInterface $customerCrud Service able to provide customer data.
+     * @param SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher To activate subscription.
+     * @param Repository $repository
      */
     public function __construct(
         ApiClientInterface $apiClient,
-        SubscriptionCrudInterface $subscriptionCrud,
-        CustomerCrudInterface $customerCrud
+        Subscriptions $subscriptionsApiClient,
+        CustomerCrudInterface $customerCrud,
+        SubscriptionStatusSwitcherInterface $subscriptionStatusSwitcher,
+        Repository $repository
     ) {
 
         $this->apiClient = $apiClient;
-        $this->subscriptionCrud = $subscriptionCrud;
         $this->customerCrud = $customerCrud;
+        $this->repository = $repository;
+        $this->subscriptionsApiClient = $subscriptionsApiClient;
+        $this->subscriptionStatusSwitcher = $subscriptionStatusSwitcher;
     }
 
     public function init(): void
@@ -71,7 +89,7 @@ class PaymentCompletedEventListener implements EventListenerInterface
             return;
         }
 
-        $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
+        $subscriptionId = $this->repository->findSubscriptionIdByOrderId($orderId);
 
         if (! $subscriptionId) {
             return;
@@ -84,14 +102,15 @@ class PaymentCompletedEventListener implements EventListenerInterface
                 $subscriptionId
             )
         );
-        $mandateAcceptedDate = $order->get_meta(SubscriptionCrudInterface::MANDATE_ACCEPTED_DATE_FIELD);
+        $mandateAcceptedDate = $order->get_date_created() ?? new DateTime();
         $userId = $order->get_customer_id();
 
         try {
             if ($this->customerCrud->getFlagCustomerNeedsMollieMandate($userId)) {
                 $this->addMollieMandateToTheCustomer($userId);
             }
-            $this->apiClient->activateSubscription($subscriptionId, $mandateAcceptedDate);
+
+            $this->subscriptionStatusSwitcher->activate($subscriptionId, $mandateAcceptedDate);
         } catch (EcurringException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(

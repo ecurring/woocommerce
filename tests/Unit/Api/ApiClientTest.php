@@ -3,109 +3,115 @@
 namespace Ecurring\WooEcurringTests\Unit\Api;
 
 use Ecurring\WooEcurring\Api\ApiClient;
+use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use WP_Error;
 
 use function Brain\Monkey\Functions\expect;
 
 class ApiClientTest extends TestCase
 {
+
     //This trait usage is needed so PhpUnit can detect expect() function as assertion.
     use MockeryPHPUnitIntegration;
-
-    public function testCreateSubscription()
+    /**
+     * @dataProvider apiCallDataProvider
+     */
+    public function testApiCall(array $requestData, string $apiKey, array $expectedRequestArgs, $testResponse)
     {
-        $apiKey = 'someapikey135';
-        $ecurringCustomerId = 'ecurringcustomer123';
-        $subscriptionPlanId = 'subscription564';
-        $transactionWebhookUrl = 'http://ecurring.loc/transaction';
-        $method = 'POST';
-
         $sut = new ApiClient($apiKey);
-
-        $requestData = [
-            'data' => [
-                'type' => 'subscription',
-                'attributes' => [
-                    'customer_id' => $ecurringCustomerId,
-                    'subscription_plan_id' => $subscriptionPlanId,
-                    'transaction_webhook_url' => $transactionWebhookUrl,
-                    'confirmation_sent' => true,
-                    'metadata' => ['source' => 'woocommerce'],
-                ],
-            ],
-        ];
-
-        $requestArgs = [
-            'method' => $method,
-            'headers' => [
-                'X-Authorization' => $apiKey,
-                'Content-Type' => 'application/vnd.api+json',
-                'Accept' => 'application/vnd.api+json',
-            ],
-            'body' => json_encode($requestData),
-        ];
 
         expect('wp_remote_request')
             ->once()
-            ->with(
-                'https://api.ecurring.com/subscriptions',
-                $requestArgs
-            )
-            ->andReturn([
-                'body' => '{"field": "value"}',
-            ]);
+            ->with($requestData['url'], $expectedRequestArgs)
+            ->andReturn($testResponse);
 
-        $sut->createSubscription(
-            $ecurringCustomerId,
-            $subscriptionPlanId,
-            $transactionWebhookUrl
-        );
+        expect('is_wp_error')
+            ->once()
+            ->andReturnUsing(function ($itemToCheck) {
+                return $itemToCheck instanceof WP_Error;
+            });
+
+        if ($testResponse instanceof WP_Error) {
+            $this->expectException(ApiClientException::class);
+            $this->expectExceptionMessage('WP_Error returned for the API request: ' . $testResponse->get_error_message());
+        }
+
+        $sut->apiCall($requestData['method'], $requestData['url'], $requestData['data']);
     }
 
-    public function testActivateSubscription()
+    /**
+     * @return array
+     */
+    public function apiCallDataProvider(): array
     {
-        $subscriptionId = 'subscription12345';
-        $apiKey = 'apikey098765';
-        $method = 'PATCH';
-        $mandateAcceptedDate = date('c');
-
-        $requestData = [
-            'data' => [
-                'type' => 'subscription',
-                'id' => $subscriptionId,
-                'attributes' => [
-                    'status' => 'active',
-                    'mandate_accepted' => true,
-                    'mandate_accepted_date' => $mandateAcceptedDate,
-                ],
-            ],
+        $testResponse = [
+            'body' => json_encode(['test' => '123']),
         ];
 
-        $requestArgs = [
-            'method' => $method,
-            'headers' => [
+        $getRequestArgs = [
+            'method' => 'GET',
+            'url' => 'http://example.com',
+            'data' => [],
+        ];
+
+        $apiKey = 'sometestapikey123';
+
+        $getRequestExpectedArgs = [
+            'method' => $getRequestArgs['method'],
+            'headers' =>  [
                 'X-Authorization' => $apiKey,
                 'Content-Type' => 'application/vnd.api+json',
                 'Accept' => 'application/vnd.api+json',
             ],
-            'body' => json_encode($requestData),
+            'body' => '',
         ];
 
-        expect('wp_remote_request')
-            ->once()
-            ->with(
-                sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
-                $requestArgs
-            )
-        ->andReturn(
+        $postRequestData = [
+            'type' => 'subscription',
+            'attributes' => [
+                'customer_id' => '12345',
+                'subscription_plan_id' => '5678',
+                'transaction_webhook_url' => 'myhost.com/test?param=value',
+                'confirmation_sent' => true,
+                'metadata' => ['source' => 'woocommerce'],
+            ],
+        ];
+
+        $postRequestArgs = [
+            'method' => 'POST',
+            'url' => 'http://example.com/postrequests',
+            'data' => $postRequestData,
+            ];
+
+        $postExpectedArgs = [
+            'method' => $postRequestArgs['method'],
+            'headers' =>  [
+                'X-Authorization' => $apiKey,
+                'Content-Type' => 'application/vnd.api+json',
+                'Accept' => 'application/vnd.api+json',
+            ],
+            'body' => json_encode($postRequestData),
+        ];
+
+        return [
             [
-                'body' => '{"field": "value"}',
-            ]
-        );
+                $getRequestArgs, $apiKey, $getRequestExpectedArgs, $testResponse,
+            ],
 
-        $sut = new ApiClient($apiKey);
-
-        $sut->activateSubscription($subscriptionId, $mandateAcceptedDate);
+            [
+                $postRequestArgs, $apiKey, $postExpectedArgs, $testResponse,
+            ],
+            [
+                $getRequestArgs, $apiKey, $getRequestExpectedArgs, $this->createConfiguredMock(
+                    WP_Error::class,
+                    [
+                    'get_error_message' => 'This is the test error message.',
+                    'get_error_code' => 12345,
+                    ]
+                ),
+            ],
+        ];
     }
 }

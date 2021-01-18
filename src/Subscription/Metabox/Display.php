@@ -5,28 +5,21 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Subscription\Metabox;
 
 use DateTime;
-use eCurring_WC_Helper_Api;
-use eCurring_WC_Helper_Settings;
+use eCurring_WC_Plugin;
 use WP_Post;
 
 class Display
 {
     public function details(WP_Post $post): void //phpcs:disable Inpsyde.CodeQuality.FunctionLength.TooLong
     {
-        $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
-        $relationships = get_post_meta(
-            $post->ID,
-            '_ecurring_post_subscription_relationships',
-            true
-        );
 
-        $status = $attributes->status;
-        $productId = $relationships->{'subscription-plan'}->data->id;
-        $startDate = $attributes->start_date;
-        $activatedOn = $attributes->created_at;
-        $canceledOn = $attributes->cancel_date;
-        $mandateId = $attributes->mandate_code;
+        $status = get_post_meta($post->ID, '_ecurring_post_subscription_status', true);
+        $productId = get_post_meta($post->ID, '_ecurring_post_subscription_plan_id', true);
+        $startDate = get_post_meta($post->ID, '_ecurring_post_subscription_start_date', true);
+        $activatedOn = get_post_meta($post->ID, '_ecurring_post_subscription_created_at', true);
+        $canceledOn = get_post_meta($post->ID, '_ecurring_post_subscription_cancel_date', true);
+        $mandateId = get_post_meta($post->ID, '_ecurring_post_subscription_mandate_code', true);
         ?>
         <ul>
             <li><?php
@@ -106,18 +99,11 @@ class Display
     public function options(WP_Post $post): void //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     {
         $subscriptionId = get_post_meta($post->ID, '_ecurring_post_subscription_id', true);
-        $attributes = get_post_meta($post->ID, '_ecurring_post_subscription_attributes', true);
-        $status = $attributes->status;
+        $status = get_post_meta($post->ID, '_ecurring_post_subscription_status', true);
 
-        $relationships = get_post_meta(
-            $post->ID,
-            '_ecurring_post_subscription_relationships',
-            true
-        );
-        $currentProduct = $relationships->{'subscription-plan'}->data->id;
+        $currentProduct = get_post_meta($post->ID, '_ecurring_post_subscription_plan_id', true);
 
-        $settingsHelper = new eCurring_WC_Helper_Settings();
-        $api = new eCurring_WC_Helper_Api($settingsHelper);
+        $api = eCurring_WC_Plugin::getApiHelper();
         $productsResponse = json_decode(
             $api->apiCall('GET', 'https://api.ecurring.com/subscription-plans')
         );

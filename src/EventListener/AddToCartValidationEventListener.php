@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EventListener;
 
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use eCurring_WC_Plugin;
 
 use function add_filter;
@@ -17,20 +16,6 @@ use function _x;
  */
 class AddToCartValidationEventListener implements EventListenerInterface
 {
-
-    /**
-     * @var SubscriptionCrudInterface
-     */
-    protected $subscriptionCrud;
-
-    /**
-     * @param SubscriptionCrudInterface $subscriptionCrud To check if product is subscription product.
-     */
-    public function __construct(SubscriptionCrudInterface $subscriptionCrud)
-    {
-
-        $this->subscriptionCrud = $subscriptionCrud;
-    }
 
     public function init(): void
     {
@@ -50,7 +35,7 @@ class AddToCartValidationEventListener implements EventListenerInterface
     {
         $productToAdd = wc_get_product($productId);
 
-        if ($this->subscriptionCrud->getProductSubscriptionId($productToAdd) === null) {
+        if (! $productToAdd->get_meta('_ecurring_subscription_plan')) {
             return $validationPassed;
         }
 

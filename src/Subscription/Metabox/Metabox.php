@@ -56,9 +56,7 @@ class Metabox
 
         add_action(
             'post_updated',
-            function ($postId) {
-                $this->save->save($postId);
-            }
+            [$this->save, 'save']
         );
     }
 }

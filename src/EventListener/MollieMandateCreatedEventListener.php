@@ -6,10 +6,11 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
-use Ecurring\WooEcurring\Customer\CustomerCrudException;
+use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
+use Ecurring\WooEcurring\Subscription\Repository;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Plugin;
 use Mollie\Api\Resources\Payment;
 use WC_Order;
@@ -28,30 +29,37 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     protected $apiClient;
 
     /**
-     * @var SubscriptionCrudInterface
-     */
-    protected $subscriptionCrud;
-    /**
      * @var CustomerCrudInterface
      */
     protected $customerCrud;
+    /**
+     * @var Repository
+     */
+    protected $repository;
+    /**
+     * @var Subscriptions
+     */
+    protected $subscriptionsApiClient;
 
     /**
      * MollieMandateCreatedEventListener constructor.
      *
      * @param ApiClient $apiClient Service able to perform actions against eCurring API.
-     * @param SubscriptionCrudInterface $subscriptionCrud
+     * @param Subscriptions $subscriptionsApiClient
+     * @param Repository $repository
      * @param CustomerCrudInterface $customerCrud
      */
     public function __construct(
         ApiClient $apiClient,
-        SubscriptionCrudInterface $subscriptionCrud,
+        Subscriptions $subscriptionsApiClient,
+        Repository $repository,
         CustomerCrudInterface $customerCrud
     ) {
 
         $this->apiClient = $apiClient;
-        $this->subscriptionCrud = $subscriptionCrud;
         $this->customerCrud = $customerCrud;
+        $this->repository = $repository;
+        $this->subscriptionsApiClient = $subscriptionsApiClient;
     }
 
     /**
@@ -160,7 +168,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 
         $product = $item->get_product();
 
-        return (string) $this->subscriptionCrud->getProductSubscriptionId($product);
+        return (string) $product->get_meta('_ecurring_subscription_plan');
     }
 
     /**
@@ -172,9 +180,9 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     protected function subscriptionForOrderExists(WC_Order $order): bool
     {
-        $subscriptionId = $this->subscriptionCrud->getSubscriptionIdByOrder($order);
+        $subscriptionId = $this->repository->findSubscriptionIdByOrderId($order->get_id());
 
-        if ($subscriptionId === null) {
+        if ($subscriptionId === '') {
             return false;
         }
 
@@ -200,37 +208,62 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @param WC_Order $order Order to create subscriptions for.
      * @param string $ecurringCustomerId The eCurring customer ID to create subscription for.
      *
-     * @throws ApiClientException|CustomerCrudException If problems occurred when tried to create.
+     * @throws ApiClientException If problems occurred when tried to create.
      */
     public function createEcurringSubscriptionsFromOrder(WC_Order $order, string $ecurringCustomerId): void
     {
-        foreach ($order->get_items() as $item) {
-            $subscriptionId = $this->getSubscriptionPlanIdByOrderItem($item);
-            if ($subscriptionId !== '' && $ecurringCustomerId !== '') {
-                $subscriptionData = $this->createEcurringSubscription($ecurringCustomerId, $subscriptionId);
-                $this->subscriptionCrud->saveSubscription($subscriptionData, $order);
+        if ($ecurringCustomerId === '') {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Failed to create a subscription from order %1$d: the eCurring customer id is empty.',
+                    $order->get_id()
+                )
+            );
 
-                eCurring_WC_Plugin::debug('A new eCurring subscription was successfully created.');
+            return;
+        }
+
+        foreach ($order->get_items() as $item) {
+            $subscriptionPlanId = $this->getSubscriptionPlanIdByOrderItem($item);
+            if ($subscriptionPlanId !== '') {
+                $this->handleSubscriptionCreating($ecurringCustomerId, $subscriptionPlanId, $order->get_id());
             }
         }
     }
 
     /**
-     * Create an eCurring subscription on eCurring side.
-     *
-     * @param string $ecurringCustomerId id of the customer in eCurring.
-     * @param string $subscriptionId id of the subscription plan in eCurring.
-     *
-     * @return array Saved subscription data.
+     * @param string $ecurringCustomerId
+     * @param string $subscriptionPlanId
+     * @param int $subscriptionOrderId
      *
      * @throws ApiClientException
      */
-    protected function createEcurringSubscription(string $ecurringCustomerId, string $subscriptionId): array
-    {
-        return $this->apiClient->createSubscription(
-            $ecurringCustomerId,
-            $subscriptionId,
-            add_query_arg('ecurring-webhook', 'transaction', home_url('/'))
-        );
+    protected function handleSubscriptionCreating(
+        string $ecurringCustomerId,
+        string $subscriptionPlanId,
+        int $subscriptionOrderId
+    ): void {
+        try {
+            $attributes = [
+                'metadata' => json_encode([
+                    'source' => 'WooCommerce',
+                    'shop_url' => get_site_url(get_current_blog_id()),
+                    'order_id' => $subscriptionOrderId,
+                ]),
+            ];
+            $subscription = $this->subscriptionsApiClient->create($ecurringCustomerId, $subscriptionPlanId, $attributes);
+            $this->repository->insert($subscription, $subscriptionOrderId);
+            eCurring_WC_Plugin::debug(
+                'A new eCurring subscription was successfully created.'
+            );
+        } catch (SubscriptionFactoryException $exception) {
+            eCurring_WC_Plugin::debug(
+                sprintf(
+                    'Couldn\'t create subscription from the API response.' .
+                    ' Exception caught: %1$s',
+                    $exception->getMessage()
+                )
+            );
+        }
     }
 }

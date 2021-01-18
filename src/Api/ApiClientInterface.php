@@ -11,23 +11,6 @@ interface ApiClientInterface
 {
 
     /**
-     * API call to create subscription.
-     *
-     * @param string $ecurringCustomerId    eCurring customer id.
-     * @param string $subscriptionPlanId    eCurring subscription product id.
-     * @param string $transactionWebhookUrl Webhook URL will be triggered by eCurring on transaction.
-     *
-     * @return array Created subscription data or error details.
-     *
-     * @throws ApiClientException If request failed.
-     */
-    public function createSubscription(
-        string $ecurringCustomerId,
-        string $subscriptionPlanId,
-        string $transactionWebhookUrl = ''
-    ): array;
-
-    /**
      * @param string $subscriptionId
      *
      * @return array Subscription data or request error details.
@@ -35,16 +18,6 @@ interface ApiClientInterface
      * @throws ApiClientException If request failed.
      */
     public function getSubscriptionById(string $subscriptionId): array;
-
-    /**
-     * @param string $subscriptionId Id of the subscription to activate.
-     * @param string $mandateAcceptedDate Date string formatted according to ISO 8601.
-     *
-     * @return array Subscription data.
-     *
-     * @throws ApiClientException If request failed.
-     */
-    public function activateSubscription(string $subscriptionId, string $mandateAcceptedDate): array;
 
     /**
      * Add Mollie mandate id to the eCurring customer.

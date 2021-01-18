@@ -58,6 +58,10 @@ class WC_Order
     public function get_billing_email()
     {
     }
+
+    public function get_date_created()
+    {
+    }
 }
 
 if(! class_exists(WC_Order_Item::class))
@@ -89,4 +93,25 @@ if(! class_exists(WC_Product::class))
 		{
 		}
 	}
+}
+
+if(! class_exists(WP_Error::class))
+{
+    class WP_Error
+    {
+        public function get_error_code()
+        {
+        }
+
+        public function get_error_message()
+        {
+        }
+    }
+}
+
+if(! class_exists(WC_DateTime::class))
+{
+    class WC_DateTime extends DateTime
+    {
+    }
 }

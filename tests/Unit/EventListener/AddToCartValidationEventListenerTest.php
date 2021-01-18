@@ -3,8 +3,7 @@
 namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
-use eCurring\WooEcurringTests\TestCase;
+use Ecurring\WooEcurringTests\TestCase;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -19,8 +18,6 @@ class AddToCartValidationEventListenerTest extends TestCase
 
     public function testOnAddToCartNotAllowedToAddSecondSubscription()
     {
-        $subscriptionId = '456';
-
         $ecurringPlugin = Mockery::mock('alias:eCurring_WC_Plugin');
         $ecurringPlugin->shouldReceive('eCurringSubscriptionIsInCart')
             ->andReturn(true);
@@ -29,6 +26,9 @@ class AddToCartValidationEventListenerTest extends TestCase
 
         /** @var WC_Product&MockObject $productMock */
         $productMock = $this->createMock(WC_Product::class);
+        $productMock->method('get_meta')
+            ->with('_ecurring_subscription_plan')
+            ->willReturn(432);
 
         expect('wc_get_product')->with($productId)
             ->andReturn($productMock);
@@ -37,15 +37,9 @@ class AddToCartValidationEventListenerTest extends TestCase
         expect('get_current_user_id')
             ->andReturn(456);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
-        $subscriptionsCrudMock = $this->createConfiguredMock(
-            SubscriptionCrudInterface::class,
-            ['getProductSubscriptionId' => $subscriptionId]
-        );
-
         expect('wc_add_notice')->once();
 
-        $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
+        $sut = new AddToCartValidationEventListener();
         $addedToCart = $sut->onAddToCart(true, $productId, 1);
 
         $this->assertSame(false, $addedToCart);
@@ -59,21 +53,21 @@ class AddToCartValidationEventListenerTest extends TestCase
 
         /** @var WC_Product&MockObject $productMock */
         $productMock = $this->createMock(WC_Product::class);
+        $productMock->method('get_meta')
+            ->with('_ecurring_subscription_plan')
+            ->willReturn($subscriptionId);
 
         expect('wc_get_product')->with($productId)
                                 ->andReturn($productMock);
         when('_x')->returnArg();
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
-        $subscriptionsCrudMock = $this->createConfiguredMock(
-            SubscriptionCrudInterface::class,
-            ['getProductSubscriptionId' => $subscriptionId]
-        );
-
         expect('get_current_user_id')
             ->andReturn(456);
 
-        $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
+        expect('get_current_user_id')
+            ->andReturn(1);
+
+        $sut = new AddToCartValidationEventListener();
 
         expect('wc_add_notice')->once();
 
@@ -84,8 +78,6 @@ class AddToCartValidationEventListenerTest extends TestCase
 
     public function testOnAddToCartItsAllowedToAddSubscriptionIfNotAddedYet()
     {
-        $subscriptionId = '456';
-
         $ecurringPlugin = Mockery::mock('alias:eCurring_WC_Plugin');
         $ecurringPlugin->shouldReceive('eCurringSubscriptionIsInCart')
                        ->andReturn(false);
@@ -95,23 +87,17 @@ class AddToCartValidationEventListenerTest extends TestCase
         /** @var WC_Product&MockObject $productMock */
         $productMock = $this->createMock(WC_Product::class);
 
+        $productMock->method('get_meta')
+            ->with('_ecurring_subscription_plan')
+            ->willReturn(567);
+
         expect('wc_get_product')->with($productId)
                                 ->andReturn($productMock);
-
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
-        $subscriptionsCrudMock = $this->createConfiguredMock(
-            SubscriptionCrudInterface::class,
-            ['getProductSubscriptionId' => $subscriptionId]
-        );
 
         expect('get_current_user_id')
             ->andReturn(456);
 
-        expect('wc_add_notice')->never();
-
-        when('_x')->returnArg();
-
-        $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
+        $sut = new AddToCartValidationEventListener();
         $addedToCart = $sut->onAddToCart(true, $productId, 1);
 
         $this->assertSame(true, $addedToCart);
@@ -119,7 +105,6 @@ class AddToCartValidationEventListenerTest extends TestCase
 
     public function testOnAddSubscriptionGuestsNotAllowedToAddSubscriptionToCart()
     {
-        $subscriptionId = '456';
         $productId = 123;
 
         $ecurringPlugin = Mockery::mock('alias:eCurring_WC_Plugin');
@@ -128,15 +113,12 @@ class AddToCartValidationEventListenerTest extends TestCase
 
         /** @var WC_Product&MockObject $productMock */
         $productMock = $this->createMock(WC_Product::class);
+        $productMock->method('get_meta')
+            ->with('_ecurring_subscription_plan')
+            ->willReturn(567);
 
         expect('wc_get_product')->with($productId)
             ->andReturn($productMock);
-
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
-        $subscriptionsCrudMock = $this->createConfiguredMock(
-            SubscriptionCrudInterface::class,
-            ['getProductSubscriptionId' => $subscriptionId]
-        );
 
         expect('wc_add_notice')->once();
 
@@ -148,7 +130,7 @@ class AddToCartValidationEventListenerTest extends TestCase
 
         when('wp_kses_post')->returnArg();
 
-        $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
+        $sut = new AddToCartValidationEventListener();
         $addedToCart = $sut->onAddToCart(true, $productId, 1);
 
         $this->assertSame(false, $addedToCart);
@@ -165,19 +147,22 @@ class AddToCartValidationEventListenerTest extends TestCase
         /** @var WC_Product&MockObject $productMock */
         $productMock = $this->createMock(WC_Product::class);
 
+        $productMock->method('get_meta')
+            ->with('_ecurring_subscription_plan')
+            ->willReturn('');
+
         expect('wc_get_product')->with($productId)
                                 ->andReturn($productMock);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionsCrudMock */
-        $subscriptionsCrudMock = $this->createConfiguredMock(
-            SubscriptionCrudInterface::class,
-            ['getProductSubscriptionId' => null]
-        );
-
         expect('wc_add_notice')->never();
 
-        $sut = new AddToCartValidationEventListener($subscriptionsCrudMock);
-        $addedToCart = $sut->onAddToCart(true, $productId, 2);
+        when('get_current_user_id')
+            ->justReturn(1);
+        when('_x')
+            ->returnArg(1);
+
+        $sut = new AddToCartValidationEventListener();
+        $addedToCart = $sut->onAddToCart(true, $productId, 1);
 
         $this->assertSame(true, $addedToCart);
     }

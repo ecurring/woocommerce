@@ -8,7 +8,6 @@ use Dhii\Output\Template\PathTemplateFactoryInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
-use Ecurring\WooEcurring\Subscription\SubscriptionCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Exception;
 use Mockery;
@@ -39,14 +38,10 @@ class ProductEditPageControllerTest extends TestCase
         /** @var SubscriptionPlans&MockObject $subscriptionPlansMock */
         $subscriptionPlansMock = $this->createMock(SubscriptionPlans::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-
         $sut = new ProductEditPageController(
             $pathTemplateFactoryMock,
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
-            $subscriptionCrudMock,
             '',
             true
         );
@@ -104,14 +99,10 @@ class ProductEditPageControllerTest extends TestCase
         /** @var SubscriptionPlans&MockObject $subscriptionPlansMock */
         $subscriptionPlansMock = $this->createMock(SubscriptionPlans::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-
         $sut = new ProductEditPageController(
             $pathTemplateFactoryMock,
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
-            $subscriptionCrudMock,
             '',
             true
         );
@@ -141,14 +132,10 @@ class ProductEditPageControllerTest extends TestCase
         /** @var SubscriptionPlans&MockObject $subscriptionPlansMock */
         $subscriptionPlansMock = $this->createMock(SubscriptionPlans::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-
         $sut = new ProductEditPageController(
             $pathTemplateFactoryMock,
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
-            $subscriptionCrudMock,
             '',
             true
         );
@@ -165,7 +152,6 @@ class ProductEditPageControllerTest extends TestCase
         $templateContent = 'This is the template content.';
         $productId = 12;
         $productMock = $this->createMock(WC_Product::class);
-        $productSubscriptionId = '123456';
 
         /** @var TemplateBlockFactoryInterface&MockObject $selectBlockMock */
         $selectBlockMock = $this->createMock(BlockInterface::class);
@@ -194,17 +180,10 @@ class ProductEditPageControllerTest extends TestCase
         /** @var SubscriptionPlans&MockObject $subscriptionPlansMock */
         $subscriptionPlansMock = $this->createMock(SubscriptionPlans::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-        $subscriptionCrudMock->method('getProductSubscriptionId')
-            ->with($productMock)
-            ->willReturn($productSubscriptionId);
-
         $sut = new ProductEditPageController(
             $pathTemplateFactoryMock,
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
-            $subscriptionCrudMock,
             '',
             true
         );
@@ -231,7 +210,6 @@ class ProductEditPageControllerTest extends TestCase
 
         $productId = 15;
         $productMock = $this->createMock(WC_Product::class);
-        $productSubscriptionId = '123456';
 
         /** @var TemplateBlockFactoryInterface&MockObject $selectBlockMock */
         $selectBlockMock = $this->createMock(BlockInterface::class);
@@ -260,17 +238,10 @@ class ProductEditPageControllerTest extends TestCase
         /** @var SubscriptionPlans&MockObject $subscriptionPlansMock */
         $subscriptionPlansMock = $this->createMock(SubscriptionPlans::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-        $subscriptionCrudMock->method('getProductSubscriptionId')
-            ->with($productMock)
-            ->willReturn($productSubscriptionId);
-
         $sut = new ProductEditPageController(
             $pathTemplateFactoryMock,
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
-            $subscriptionCrudMock,
             '',
             true
         );
@@ -326,14 +297,10 @@ class ProductEditPageControllerTest extends TestCase
         /** @var SubscriptionPlans&MockObject $subscriptionPlansMock */
         $subscriptionPlansMock = $this->createMock(SubscriptionPlans::class);
 
-        /** @var SubscriptionCrudInterface&MockObject $subscriptionCrudMock */
-        $subscriptionCrudMock = $this->createMock(SubscriptionCrudInterface::class);
-
         $sut = new ProductEditPageController(
             $pathTemplateFactoryMock,
             $templateBlockFactoryMock,
             $subscriptionPlansMock,
-            $subscriptionCrudMock,
             '',
             false
         );

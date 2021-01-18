@@ -32,21 +32,9 @@ class WebHook
             function ($request) {
                 $webhook = filter_input(INPUT_GET, 'ecurring-webhook', FILTER_SANITIZE_STRING);
 
-                if ($webhook === 'transaction') {
+                if (in_array($webhook, ['transaction', 'subscription'], true)) {
                     $response = json_decode(file_get_contents('php://input'));
 
-                    $subscriptionId = filter_var(
-                        $response->subscription_id,
-                        FILTER_SANITIZE_STRING
-                    );
-
-                    $subscription = $this->subscriptionsApi->getSubscriptionById($subscriptionId);
-
-                    $this->repository->update($subscription);
-                }
-
-                if ($webhook === 'subscription') {
-                    $response = json_decode(file_get_contents('php://input'));
                     $subscriptionId = filter_var(
                         $response->subscription_id,
                         FILTER_SANITIZE_STRING
