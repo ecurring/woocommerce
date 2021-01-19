@@ -8,6 +8,7 @@ use DateTime;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 
+use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use function get_user_meta;
 use function get_current_user_id;
 use function esc_attr;
@@ -18,6 +19,10 @@ use function selected;
 class Subscriptions
 {
     /**
+     * @var SettingsCrudInterface
+     */
+    protected $settingsCrud;
+    /**
      * @var Customers
      */
     private $customer;
@@ -27,10 +32,19 @@ class Subscriptions
      */
     private $subscriptionPlans;
 
-    public function __construct(Customers $customer, SubscriptionPlans $subscriptionPlans)
-    {
+    /**
+     * @param Customers $customer Customers API client.
+     * @param SubscriptionPlans $subscriptionPlans Subscription plans API client.
+     * @param SettingsCrudInterface $settingsCrud Settings storage.
+     */
+    public function __construct(
+            Customers $customer,
+            SubscriptionPlans $subscriptionPlans,
+            SettingsCrudInterface $settingsCrud
+    ){
         $this->customer = $customer;
         $this->subscriptionPlans = $subscriptionPlans;
+        $this->settingsCrud = $settingsCrud;
     }
 
     //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
@@ -303,13 +317,13 @@ class Subscriptions
         $allowSwitch = get_option('ecurring_customer_subscription_switch');
         $allowCancel = get_option('ecurring_customer_subscription_cancel');
 
-        return $allowPause === '1' || $allowSwitch === '1' || $allowCancel === '1';
+        return $allowPause !== 'no' || $allowSwitch !== 'no' || $allowCancel !== 'no';
     }
 
     protected function allowOption(string $option): bool
     {
         $option = get_option("ecurring_customer_subscription_{$option}");
 
-        return $option === '1';
+        return $option !== 'no';
     }
 }
