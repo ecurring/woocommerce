@@ -41,7 +41,55 @@ return static function (string $formAction, SettingsCrudInterface $settings): ar
                 'label' => esc_html_x('Debug Log', 'Plugin settings', 'woo-ecurring'),
             ],
             [
-
+                'attributes' => [
+                    'name' => 'ecurring_customer_subscription_pause',
+                    'type' => 'checkbox',
+                    'value' => $settings->getOption(
+                        'ecurring_customer_subscription_pause'
+                    ) === 'no' ? '' : 'yes',
+                ],
+                'choices' => [
+                    'yes' => esc_html_x(
+                        'When checked, customers able to pause subscription in Woocommerce account',
+                        'Plugin settings',
+                        'woo-ecurring'
+                    ),
+                ],
+                'label' => esc_html_x('Pause subscription', 'Plugin settings', 'woo-ecurring'),
+            ],
+            [
+                'attributes' => [
+                    'name' => 'ecurring_customer_subscription_switch',
+                    'type' => 'checkbox',
+                    'value' => $settings->getOption(
+                        'ecurring_customer_subscription_switch'
+                    ) === 'no' ? '' : 'yes',
+                ],
+                'choices' => [
+                    'yes' => esc_html_x(
+                        'When checked, customers able to switch subscription plan in Woocommerce account',
+                        'Plugin settings',
+                        'woo-ecurring'
+                    ),
+                ],
+                'label' => esc_html_x('Switch subscription', 'Plugin settings', 'woo-ecurring'),
+            ],
+            [
+                'attributes' => [
+                    'name' => 'ecurring_customer_subscription_cancel',
+                    'type' => 'checkbox',
+                    'value' => $settings->getOption(
+                        'ecurring_customer_subscription_cancel'
+                    ) === 'no' ? '' : 'yes',
+                ],
+                'choices' => [
+                    'yes' => esc_html_x(
+                        'When checked, customers able to cancel subscription in Woocommerce account',
+                        'Plugin settings',
+                        'woo-ecurring'
+                    ),
+                ],
+                'label' => esc_html_x('Cancel subscription', 'Plugin settings', 'woo-ecurring'),
             ],
         ],
     ];
