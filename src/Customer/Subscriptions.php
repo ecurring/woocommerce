@@ -13,7 +13,6 @@ use function get_user_meta;
 use function get_current_user_id;
 use function esc_attr;
 use function ucfirst;
-use function get_option;
 use function selected;
 
 class Subscriptions
@@ -332,7 +331,7 @@ class Subscriptions
      */
     protected function allowOption(string $action): bool
     {
-        $action = get_option("ecurring_customer_subscription_{$action}");
+        $action = $this->settingsCrud->getOption("ecurring_customer_subscription_{$action}");
 
         return $action !== 'no';
     }
