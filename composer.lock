@@ -689,29 +689,32 @@
         },
         {
             "name": "automattic/jetpack-autoloader",
-            "version": "v2.2.0",
+            "version": "v2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Automattic/jetpack-autoloader.git",
-                "reference": "66a5d150b3928be718d86696f85631a7f0b98a7b"
+                "reference": "5437697a56aefbdf707849b9833e1b36093d7a73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/66a5d150b3928be718d86696f85631a7f0b98a7b",
-                "reference": "66a5d150b3928be718d86696f85631a7f0b98a7b",
+                "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/5437697a56aefbdf707849b9833e1b36093d7a73",
+                "reference": "5437697a56aefbdf707849b9833e1b36093d7a73",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.1 || ^2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5"
+                "yoast/phpunit-polyfills": "0.2.0"
             },
             "type": "composer-plugin",
             "extra": {
                 "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin"
             },
             "autoload": {
+                "classmap": [
+                    "src/AutoloadGenerator.php"
+                ],
                 "psr-4": {
                     "Automattic\\Jetpack\\Autoloader\\": "src"
                 }
@@ -721,20 +724,20 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Creates a custom autoloader for a plugin or theme.",
-            "time": "2020-08-14T20:34:36+00:00"
+            "time": "2020-12-18T22:33:59+00:00"
         },
         {
             "name": "automattic/jetpack-constants",
-            "version": "v1.5.0",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Automattic/jetpack-constants.git",
-                "reference": "9827a2f446b8c4faafaf1c740483031c073a381d"
+                "reference": "18f772daddc8be5df76c9f4a92e017a3c2569a5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Automattic/jetpack-constants/zipball/9827a2f446b8c4faafaf1c740483031c073a381d",
-                "reference": "9827a2f446b8c4faafaf1c740483031c073a381d",
+                "url": "https://api.github.com/repos/Automattic/jetpack-constants/zipball/18f772daddc8be5df76c9f4a92e017a3c2569a5b",
+                "reference": "18f772daddc8be5df76c9f4a92e017a3c2569a5b",
                 "shasum": ""
             },
             "require-dev": {
@@ -752,7 +755,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "A wrapper for defining constants in a more testable way.",
-            "time": "2020-08-13T14:33:09+00:00"
+            "time": "2020-10-28T19:00:31+00:00"
         },
         {
             "name": "automattic/phpcs-neutron-standard",
@@ -987,12 +990,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d"
+                "reference": "df100b004465aa07b686f1c2245bbb4794498b07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
-                "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
+                "url": "https://api.github.com/repos/composer/installers/zipball/df100b004465aa07b686f1c2245bbb4794498b07",
+                "reference": "df100b004465aa07b686f1c2245bbb4794498b07",
                 "shasum": ""
             },
             "require": {
@@ -1123,7 +1126,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-14T11:07:16+00:00"
+            "time": "2021-01-14T20:30:14+00:00"
         },
         {
             "name": "composer/package-versions-deprecated",
@@ -1916,78 +1919,6 @@
             "time": "2020-10-17T22:47:35+00:00"
         },
         {
-            "name": "league/container",
-            "version": "3.3.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/container.git",
-                "reference": "7dc67bdf89efc338e674863c0ea70a63efe4de05"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/container/zipball/7dc67bdf89efc338e674863c0ea70a63efe4de05",
-                "reference": "7dc67bdf89efc338e674863c0ea70a63efe4de05",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.0 || ^8.0",
-                "psr/container": "^1.0"
-            },
-            "provide": {
-                "psr/container-implementation": "^1.0"
-            },
-            "replace": {
-                "orno/di": "~2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0",
-                "squizlabs/php_codesniffer": "^3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-3.x": "3.x-dev",
-                    "dev-2.x": "2.x-dev",
-                    "dev-1.x": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "League\\Container\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Phil Bennett",
-                    "email": "philipobenito@gmail.com",
-                    "homepage": "http://www.philipobenito.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A fast and intuitive dependency injection container.",
-            "homepage": "https://github.com/thephpleague/container",
-            "keywords": [
-                "container",
-                "dependency",
-                "di",
-                "injection",
-                "league",
-                "provider",
-                "service"
-            ],
-            "funding": [
-                {
-                    "url": "https://github.com/philipobenito",
-                    "type": "github"
-                }
-            ],
-            "time": "2020-09-28T13:38:44+00:00"
-        },
-        {
             "name": "maxmind-db/reader",
             "version": "v1.6.0",
             "source": {
@@ -2114,16 +2045,16 @@
         },
         {
             "name": "mollie/mollie-api-php",
-            "version": "v2.27.2",
+            "version": "v2.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/mollie-api-php.git",
-                "reference": "e8db8cd08e3754b31dd355b07525cce8733a0ec6"
+                "reference": "8ae6104a76952dc4ba8b2173afab6b6a9288f503"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/mollie-api-php/zipball/e8db8cd08e3754b31dd355b07525cce8733a0ec6",
-                "reference": "e8db8cd08e3754b31dd355b07525cce8733a0ec6",
+                "url": "https://api.github.com/repos/mollie/mollie-api-php/zipball/8ae6104a76952dc4ba8b2173afab6b6a9288f503",
+                "reference": "8ae6104a76952dc4ba8b2173afab6b6a9288f503",
                 "shasum": ""
             },
             "require": {
@@ -2197,7 +2128,7 @@
                 "sofortbanking",
                 "subscriptions"
             ],
-            "time": "2021-01-13T09:49:36+00:00"
+            "time": "2021-01-18T13:14:33+00:00"
         },
         {
             "name": "mollie/mollie-woocommerce",
@@ -2205,12 +2136,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/WooCommerce.git",
-                "reference": "74e42d5382446649495243136b0a25e40dfe3002"
+                "reference": "bf3e922e9cf4786e109ebc1843774ae99701d6a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/74e42d5382446649495243136b0a25e40dfe3002",
-                "reference": "74e42d5382446649495243136b0a25e40dfe3002",
+                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/bf3e922e9cf4786e109ebc1843774ae99701d6a0",
+                "reference": "bf3e922e9cf4786e109ebc1843774ae99701d6a0",
                 "shasum": ""
             },
             "require": {
@@ -2261,7 +2192,7 @@
                 "source": "https://github.com/mollie/WooCommerce/tree/develop",
                 "issues": "https://github.com/mollie/WooCommerce/issues"
             },
-            "time": "2021-01-14T08:30:43+00:00"
+            "time": "2021-01-19T09:17:12+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -5163,12 +5094,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "ef4afd72bca50a0aff61599d3e433c9ee64287ac"
+                "reference": "2f58c6afc8af2972d3759ad45151da7b43bea6f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/ef4afd72bca50a0aff61599d3e433c9ee64287ac",
-                "reference": "ef4afd72bca50a0aff61599d3e433c9ee64287ac",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/2f58c6afc8af2972d3759ad45151da7b43bea6f4",
+                "reference": "2f58c6afc8af2972d3759ad45151da7b43bea6f4",
                 "shasum": ""
             },
             "require": {
@@ -5255,24 +5186,24 @@
                 "inspection",
                 "php"
             ],
-            "time": "2021-01-13T23:10:59+00:00"
+            "time": "2021-01-17T19:28:28+00:00"
         },
         {
             "name": "webmozart/assert",
-            "version": "1.9.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
+                "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
-                "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/9c89b265ccc4092d58e66d72af5d343ee77a41ae",
+                "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3.3 || ^7.0 || ^8.0",
+                "php": "^7.2 || ^8.0",
                 "symfony/polyfill-ctype": "^1.8"
             },
             "conflict": {
@@ -5280,9 +5211,14 @@
                 "vimeo/psalm": "<3.9.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.36 || ^7.5.13"
+                "phpunit/phpunit": "^8.5.13"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.10-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Webmozart\\Assert\\": "src/"
@@ -5304,7 +5240,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2020-07-08T17:02:28+00:00"
+            "time": "2021-01-18T12:52:36+00:00"
         },
         {
             "name": "webmozart/path-util",
@@ -5389,30 +5325,29 @@
         },
         {
             "name": "woocommerce/woocommerce",
-            "version": "4.9.0.x-dev",
+            "version": "4.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/woocommerce.git",
-                "reference": "89cb493c868211d35c63bf6e63938d3ce63fffab"
+                "reference": "1667a1e8c560901e6ecbcec7115098a4ea574a48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/woocommerce/zipball/89cb493c868211d35c63bf6e63938d3ce63fffab",
-                "reference": "89cb493c868211d35c63bf6e63938d3ce63fffab",
+                "url": "https://api.github.com/repos/woocommerce/woocommerce/zipball/1667a1e8c560901e6ecbcec7115098a4ea574a48",
+                "reference": "1667a1e8c560901e6ecbcec7115098a4ea574a48",
                 "shasum": ""
             },
             "require": {
-                "automattic/jetpack-autoloader": "2.2.0",
-                "automattic/jetpack-constants": "1.5.0",
+                "automattic/jetpack-autoloader": "2.7.1",
+                "automattic/jetpack-constants": "1.5.1",
                 "composer/installers": "~1.7",
-                "league/container": "3.3.3",
                 "maxmind-db/reader": "1.6.0",
                 "pelago/emogrifier": "3.1.0",
                 "php": ">=7.0",
                 "psr/container": "1.0.0",
                 "woocommerce/action-scheduler": "3.1.6",
-                "woocommerce/woocommerce-admin": "1.7.3",
-                "woocommerce/woocommerce-blocks": "3.8.1"
+                "woocommerce/woocommerce-admin": "1.8.3",
+                "woocommerce/woocommerce-blocks": "4.0.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.4"
@@ -5447,7 +5382,10 @@
                 ],
                 "psr-4": {
                     "Automattic\\WooCommerce\\": "src/",
-                    "Automattic\\WooCommerce\\Vendor\\League\\Container\\": "vendor/league/container/"
+                    "Automattic\\WooCommerce\\Vendor\\": "lib/packages/"
+                },
+                "psr-0": {
+                    "Automattic\\WooCommerce\\Vendor\\": "lib/packages/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -5456,20 +5394,20 @@
             ],
             "description": "An eCommerce toolkit that helps you sell anything. Beautifully.",
             "homepage": "https://woocommerce.com/",
-            "time": "2020-12-04T04:28:48+00:00"
+            "time": "2021-01-19T10:16:55+00:00"
         },
         {
             "name": "woocommerce/woocommerce-admin",
-            "version": "1.7.3",
+            "version": "1.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/woocommerce-admin.git",
-                "reference": "16de972f319e5e6fc8dbebf5024dd263234f39e0"
+                "reference": "534442980c34369f711efdb8e85fdcb1363be712"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/woocommerce-admin/zipball/16de972f319e5e6fc8dbebf5024dd263234f39e0",
-                "reference": "16de972f319e5e6fc8dbebf5024dd263234f39e0",
+                "url": "https://api.github.com/repos/woocommerce/woocommerce-admin/zipball/534442980c34369f711efdb8e85fdcb1363be712",
+                "reference": "534442980c34369f711efdb8e85fdcb1363be712",
                 "shasum": ""
             },
             "require": {
@@ -5501,20 +5439,20 @@
             ],
             "description": "A modern, javascript-driven WooCommerce Admin experience.",
             "homepage": "https://github.com/woocommerce/woocommerce-admin",
-            "time": "2020-12-03T21:12:01+00:00"
+            "time": "2021-01-06T00:00:42+00:00"
         },
         {
             "name": "woocommerce/woocommerce-blocks",
-            "version": "v3.8.1",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/woocommerce-gutenberg-products-block.git",
-                "reference": "e5aef9eddd13c5511ba673eb70ed8cb3e80d828c"
+                "reference": "f5b2485254f36f0b85fd0f30c28e17bdf44a8d1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/woocommerce-gutenberg-products-block/zipball/e5aef9eddd13c5511ba673eb70ed8cb3e80d828c",
-                "reference": "e5aef9eddd13c5511ba673eb70ed8cb3e80d828c",
+                "url": "https://api.github.com/repos/woocommerce/woocommerce-gutenberg-products-block/zipball/f5b2485254f36f0b85fd0f30c28e17bdf44a8d1e",
+                "reference": "f5b2485254f36f0b85fd0f30c28e17bdf44a8d1e",
                 "shasum": ""
             },
             "require": {
@@ -5548,7 +5486,7 @@
                 "gutenberg",
                 "woocommerce"
             ],
-            "time": "2020-11-23T20:48:39+00:00"
+            "time": "2020-12-08T13:17:01+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
