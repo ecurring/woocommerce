@@ -24,35 +24,6 @@ class ApiClient implements ApiClientInterface
     /**
      * @inheritDoc
      */
-    public function createSubscription(
-        string $ecurringCustomerId,
-        string $subscriptionPlanId,
-        string $transactionWebhookUrl = ''
-    ): array {
-
-        $requestData = [
-            'data' => [
-                'type' => 'subscription',
-                'attributes' => [
-                    'customer_id' => $ecurringCustomerId,
-                    'subscription_plan_id' => $subscriptionPlanId,
-                    'transaction_webhook_url' => $transactionWebhookUrl,
-                    'confirmation_sent' => true,
-                    'metadata' => ['source' => 'woocommerce'],
-                ],
-            ],
-        ];
-
-        return $this->apiCall(
-            'POST',
-            'https://api.ecurring.com/subscriptions',
-            $requestData
-        );
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getSubscriptionById(string $subscription_id): array
     {
         $url = 'https://api.ecurring.com/subscriptions/' . $subscription_id;
@@ -61,26 +32,42 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function activateSubscription(string $subscriptionId, string $mandateAcceptedDate): array
+    public function createCustomer(array $customerAttributes): array
     {
-
         $requestData = [
             'data' => [
-                'type' => 'subscription',
-                'id' => $subscriptionId,
+                'type' => 'customer',
+                'attributes' => $customerAttributes,
+            ],
+        ];
+
+        return $this->apiCall(
+            'POST',
+            'https://api.ecurring.com/customers?_beta=1',
+            $requestData
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addMollieMandateToTheEcurringCustomer(string $customerId, string $mollieMandateId): array
+    {
+        $requestData = [
+            'data' => [
+                'type' => 'mandate',
                 'attributes' => [
-                    'status' => 'active',
-                    'mandate_accepted' => true,
-                    'mandate_accepted_date' => $mandateAcceptedDate,
+                    'customer_id' => $customerId,
+                    'external_id' => $mollieMandateId,
                 ],
             ],
         ];
 
         return $this->apiCall(
-            'PATCH',
-            sprintf('https://api.ecurring.com/subscriptions/%1$s', $subscriptionId),
+            'POST',
+            'https://api.ecurring.com/mandates?_beta=1',
             $requestData
         );
     }

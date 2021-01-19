@@ -11,23 +11,6 @@ interface ApiClientInterface
 {
 
     /**
-     * API call to create subscription.
-     *
-     * @param string $ecurringCustomerId    eCurring customer id.
-     * @param string $subscriptionPlanId    eCurring subscription product id.
-     * @param string $transactionWebhookUrl Webhook URL will be triggered by eCurring on transaction.
-     *
-     * @return array Created subscription data or error details.
-     *
-     * @throws ApiClientException If request failed.
-     */
-    public function createSubscription(
-        string $ecurringCustomerId,
-        string $subscriptionPlanId,
-        string $transactionWebhookUrl = ''
-    ): array;
-
-    /**
      * @param string $subscriptionId
      *
      * @return array Subscription data or request error details.
@@ -37,13 +20,25 @@ interface ApiClientInterface
     public function getSubscriptionById(string $subscriptionId): array;
 
     /**
-     * @param string $subscriptionId Id of the subscription to activate.
+     * Add Mollie mandate id to the eCurring customer.
      *
-     * @param string $mandateAcceptedDate Date string formatted according to ISO 8601.
+     * @param string $customerId      eCurring customer id to add mandate to.
+     * @param string $mollieMandateId Mollie mandate id to add.
      *
-     * @return array Subscription data.
+     * @return array Data accepted by the API.
      *
      * @throws ApiClientException If request failed.
      */
-    public function activateSubscription(string $subscriptionId, string $mandateAcceptedDate): array;
+    public function addMollieMandateToTheEcurringCustomer(string $customerId, string $mollieMandateId): array;
+
+    /**
+     * Create an eCurring customer with given attributes.
+     *
+     * @param array $customerAttributes Attributes to use for create customer API call.
+     *
+     * @throws ApiClientException If request failed.
+     *
+     * @return array Created customer data.
+     */
+    public function createCustomer(array $customerAttributes): array;
 }

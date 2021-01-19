@@ -10,7 +10,7 @@ interface PaymentGatewaysFilterInterface
 {
 
     /**
-     * Filter arrays by some criteria.
+     * Filter gateway list by some criteria.
      *
      * @param WC_Payment_Gateway[] $gateways Initial gateways list.
      *

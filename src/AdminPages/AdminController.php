@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\AdminPages;
 
 use Brain\Nonces\NonceInterface;
-use ChriCo\Fields\Element\ElementInterface;
 use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
@@ -46,14 +45,24 @@ class AdminController
      * @var NonceFieldBuilderInterface
      */
     protected $nonceFieldBuilder;
+    /**
+     * @var ProductEditPageController
+     */
+    protected $productEditPageController;
+    /**
+     * @var OrderEditPageController
+     */
+    protected $orderEditPageController;
 
     /**
-     * @param TemplateInterface                    $adminSettingsPageRenderer To render admin settings page content.
+     * @param TemplateInterface $adminSettingsPageRenderer To render admin settings page content.
      * @param FormFieldsCollectionBuilderInterface $formBuilder
-     * @param SettingsCrudInterface                $settingsCrud
-     * @param string                               $fieldsCollectionName
-     * @param NonceInterface                       $nonce
-     * @param NonceFieldBuilderInterface           $nonceFieldBuilder
+     * @param SettingsCrudInterface $settingsCrud
+     * @param string $fieldsCollectionName
+     * @param NonceInterface $nonce
+     * @param NonceFieldBuilderInterface $nonceFieldBuilder
+     * @param ProductEditPageController $productEditPageController
+     * @param OrderEditPageController $orderEditPageController
      */
     public function __construct(
         TemplateInterface $adminSettingsPageRenderer,
@@ -61,7 +70,9 @@ class AdminController
         SettingsCrudInterface $settingsCrud,
         string $fieldsCollectionName,
         NonceInterface $nonce,
-        NonceFieldBuilderInterface $nonceFieldBuilder
+        NonceFieldBuilderInterface $nonceFieldBuilder,
+        ProductEditPageController $productEditPageController,
+        OrderEditPageController $orderEditPageController
     ) {
 
         $this->adminSettingsPageRenderer = $adminSettingsPageRenderer;
@@ -70,6 +81,8 @@ class AdminController
         $this->settingsCrud = $settingsCrud;
         $this->nonce = $nonce;
         $this->nonceFieldBuilder = $nonceFieldBuilder;
+        $this->productEditPageController = $productEditPageController;
+        $this->orderEditPageController = $orderEditPageController;
     }
 
     /**
@@ -83,6 +96,64 @@ class AdminController
             [$this, 'renderPluginSettingsPage']
         );
         add_action('admin_init', [$this, 'saveSettings'], 11);
+
+        //Product edit page calls
+        add_filter(
+            'woocommerce_product_data_tabs',
+            [$this, 'handleRegisteringProductDataTabs'],
+            99,
+            1
+        );
+
+        add_action('woocommerce_product_data_panels', [$this, 'handleRenderingProductDataPanels']);
+
+        add_action('woocommerce_process_product_meta', [$this, 'handleProductSaving']);
+
+        add_action('add_meta_boxes', [$this, 'handleRegisteringMetaBoxes']);
+    }
+
+    /**
+     * Handle registering data tabs on the product edit page.
+     *
+     * @param array $productDataTabs Already registered tabs.
+     *
+     * @return array All tabs with the ones added by the plugin.
+     */
+    public function handleRegisteringProductDataTabs(array $productDataTabs): array
+    {
+        return $this->productEditPageController->addProductDataTabsToTheDataTabsList($productDataTabs);
+    }
+
+    /**
+     * Handle saving product meta data.
+     *
+     * @param $productId
+     */
+    public function handleProductSaving($productId): void
+    {
+        $this->productEditPageController->savePostedProductFields((int)$productId);
+    }
+
+    /**
+     * Handle rendering content for a plugin tab on a product edit page.
+     */
+    public function handleRenderingProductDataPanels(): void
+    {
+        global $post;
+
+        if (!isset($post, $post->ID)) {
+            return;
+        }
+
+        $this->productEditPageController->renderProductDataFields((int) $post->ID);
+    }
+
+    /**
+     * Handle rendering content for a meta box on the edit order page.
+     */
+    public function handleRegisteringMetaBoxes()
+    {
+        $this->orderEditPageController->registerEditOrderPageMetaBox();
     }
 
     /**

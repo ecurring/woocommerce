@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Ecurring\WooEcurringTests\AdminPages;
-
+namespace Ecurring\WooEcurringTests\Unit\AdminPages;
 
 use Brain\Nonces\NonceInterface;
 use ChriCo\Fields\Element\CollectionElementInterface;
@@ -11,107 +9,154 @@ use Dhii\Output\Template\TemplateInterface;
 use Ecurring\WooEcurring\AdminPages\AdminController;
 use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilderInterface;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilderInterface;
+use Ecurring\WooEcurring\AdminPages\OrderEditPageController;
+use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
+
 use function Brain\Monkey\Functions\when;
 
-class AdminControllerTest extends TestCase {
+class AdminControllerTest extends TestCase
+{
+    use MockeryPHPUnitIntegration;
 
-	use MockeryPHPUnitIntegration;
+    public function setUp()
+    {
 
-	public function setUp() {
-		$_POST = [];
+        $_POST = [];
 
-		parent::setUp();
-	}
+        parent::setUp();
+    }
 
-	public function testRegisterPluginSettingsTab()
-	{
-		/** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
-		$adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
+    public function testRegisterPluginSettingsTab()
+    {
+        /** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
+        $adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
 
-		/** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
-		$formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
+        /** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
+        $formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
 
-		/** @var SettingsCrudInterface&MockObject $settingsCrudMock */
-		$settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
+        /** @var SettingsCrudInterface&MockObject $settingsCrudMock */
+        $settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
 
-		/** @var NonceInterface&MockObject $nonceMock */
-		$nonceMock = $this->createMock(NonceInterface::class);
+        /** @var NonceInterface&MockObject $nonceMock */
+        $nonceMock = $this->createMock(NonceInterface::class);
 
-		/** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
-		$nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
+        /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
+        $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
 
+        when('plugin_dir_path')->justReturn('');
 
-		$sut = new AdminController(
-			$adminSettingsPageRendererMock,
-			$formBuilderMock,
-			$settingsCrudMock,
-			'',
-			$nonceMock,
-			$nonceFieldBuilderMock
-		);
+        if (! defined('WOOECUR_PLUGIN_FILE')) {
+            define('WOOECUR_PLUGIN_FILE', 'woo-ecurring/woo-ecurring.php');
+        }
 
-		when('_x')->returnArg();
+        $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
 
-		$tabs = [];
+        $orderEditPageControllerMock = $this->createMock(OrderEditPageController::class);
 
-		$tabsWithPluginTab = $sut->registerPluginSettingsTab($tabs);
+        $sut = new AdminController(
+            $adminSettingsPageRendererMock,
+            $formBuilderMock,
+            $settingsCrudMock,
+            '',
+            $nonceMock,
+            $nonceFieldBuilderMock,
+            $productEditPageControllerMock,
+            $orderEditPageControllerMock
+        );
 
-		$this->assertArrayHasKey('mollie_subscriptions', $tabsWithPluginTab);
-	}
+        when('_x')->returnArg();
 
-	public function testRenderPluginSettingsPage()
-	{
-		/** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
-		$adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
+        $tabs = [];
 
-		$renderedContent = 'some rendered content';
+        $tabsWithPluginTab = $sut->registerPluginSettingsTab($tabs);
 
-		$adminSettingsPageRendererMock->expects($this->once())
-			->method('render')
-			->willReturn($renderedContent);
+        $this->assertArrayHasKey('mollie_subscriptions', $tabsWithPluginTab);
+    }
 
-		/** @var CollectionElementInterface&MockObject $formFieldsMock */
-		$formFieldsMock = $this->createMock(CollectionElementInterface::class);
+    public function testRenderPluginSettingsPage()
+    {
+        /** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
+        $adminSettingsPageRendererMock = $this->createMock(TemplateInterface::class);
 
-		/** @var RenderableElementInterface&MockObject $formViewMock */
-		$formViewMock = $this->createMock(RenderableElementInterface::class);
+        $renderedContent = 'some rendered content';
 
-		/** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
-		$formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
+        $adminSettingsPageRendererMock->expects($this->once())
+            ->method('render')
+            ->willReturn($renderedContent);
 
-		$formBuilderMock->expects($this->once())
-			->method('buildFieldsCollection')
-			->willReturn($formFieldsMock);
+        /** @var CollectionElementInterface&MockObject $formFieldsMock */
+        $formFieldsMock = $this->createMock(CollectionElementInterface::class);
 
-		$formBuilderMock->expects($this->once())
-			->method('buildFormFieldsCollectionView')
-			->willReturn($formViewMock);
+        /** @var RenderableElementInterface&MockObject $formViewMock */
+        $formViewMock = $this->createMock(RenderableElementInterface::class);
 
-		/** @var SettingsCrudInterface&MockObject $settingsCrudMock */
-		$settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
+        /** @var FormFieldsCollectionBuilderInterface&MockObject $formBuilderMock */
+        $formBuilderMock = $this->createMock(FormFieldsCollectionBuilderInterface::class);
 
-		/** @var NonceInterface&MockObject $nonceMock */
-		$nonceMock = $this->createMock(NonceInterface::class);
+        $formBuilderMock->expects($this->once())
+            ->method('buildFieldsCollection')
+            ->willReturn($formFieldsMock);
 
-		/** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
-		$nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
+        $formBuilderMock->expects($this->once())
+            ->method('buildFormFieldsCollectionView')
+            ->willReturn($formViewMock);
 
-		$sut = new AdminController(
-			$adminSettingsPageRendererMock,
-			$formBuilderMock,
-			$settingsCrudMock,
-			'',
-			$nonceMock,
-			$nonceFieldBuilderMock
-		);
+        /** @var SettingsCrudInterface&MockObject $settingsCrudMock */
+        $settingsCrudMock = $this->createMock(SettingsCrudInterface::class);
 
-		$this->expectOutputString($renderedContent);
+        /** @var NonceInterface&MockObject $nonceMock */
+        $nonceMock = $this->createMock(NonceInterface::class);
 
-		$sut->renderPluginSettingsPage();
+        /** @var NonceFieldBuilderInterface&MockObject $nonceFieldBuilderMock */
+        $nonceFieldBuilderMock = $this->createMock(NonceFieldBuilderInterface::class);
 
-	}
+        when('plugin_dir_path')->justReturn('');
+
+        if (! defined('WOOECUR_PLUGIN_FILE')) {
+            define('WOOECUR_PLUGIN_FILE', 'woo-ecurring/woo-ecurring.php');
+        }
+
+        $productEditPageControllerMock = $this->createMock(ProductEditPageController::class);
+
+        $orderEditPageControllerMock = $this->createMock(OrderEditPageController::class);
+
+        $sut = new AdminController(
+            $adminSettingsPageRendererMock,
+            $formBuilderMock,
+            $settingsCrudMock,
+            '',
+            $nonceMock,
+            $nonceFieldBuilderMock,
+            $productEditPageControllerMock,
+            $orderEditPageControllerMock
+        );
+
+        $this->expectOutputString($renderedContent);
+
+        $sut->renderPluginSettingsPage();
+    }
+
+    public function testHandleRegisteringMetaBox()
+    {
+        $orderEditPageControllerMock = $this->createMock(OrderEditPageController::class);
+        $orderEditPageControllerMock->expects($this->once())
+            ->method('registerEditOrderPageMetaBox');
+
+        $sut = new AdminController(
+            $this->createMock(TemplateInterface::class),
+            $this->createMock(FormFieldsCollectionBuilderInterface::class),
+            $this->createMock(SettingsCrudInterface::class),
+            '',
+            $this->createMock(NonceInterface::class),
+            $this->createMock(NonceFieldBuilderInterface::class),
+            $this->createMock(ProductEditPageController::class),
+            $orderEditPageControllerMock
+        );
+
+        $sut->handleRegisteringMetaBoxes();
+    }
 }

@@ -36,6 +36,14 @@ class Metabox
                     'esubscriptions'
                 );
                 add_meta_box(
+                    'ecurring_subscription_general',
+                    'General',
+                    function ($post) {
+                        $this->display->general($post);
+                    },
+                    'esubscriptions'
+                );
+                add_meta_box(
                     'ecurring_subscription_options',
                     'Options',
                     function ($post) {
@@ -48,9 +56,7 @@ class Metabox
 
         add_action(
             'post_updated',
-            function ($postId) {
-                $this->save->save($postId);
-            }
+            [$this->save, 'save']
         );
     }
 }
