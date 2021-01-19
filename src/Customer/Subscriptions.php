@@ -311,19 +311,29 @@ class Subscriptions
         </table>
     <?php }
 
+    /**
+     * Check if customer allowed to perform any actions with subscription.
+     *
+     * @return bool
+     */
     protected function allowAtLeastOneOption(): bool
     {
-        $allowPause = get_option('ecurring_customer_subscription_pause');
-        $allowSwitch = get_option('ecurring_customer_subscription_switch');
-        $allowCancel = get_option('ecurring_customer_subscription_cancel');
-
-        return $allowPause !== 'no' || $allowSwitch !== 'no' || $allowCancel !== 'no';
+        return $this->allowOption('pause') ||
+            $this->allowOption('switch') ||
+            $this->allowOption('cancel');
     }
 
-    protected function allowOption(string $option): bool
+    /**
+     * Check if customer allowed to do perform given action with subscription.
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
+    protected function allowOption(string $action): bool
     {
-        $option = get_option("ecurring_customer_subscription_{$option}");
+        $action = get_option("ecurring_customer_subscription_{$action}");
 
-        return $option !== 'no';
+        return $action !== 'no';
     }
 }
