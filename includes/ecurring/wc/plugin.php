@@ -169,6 +169,9 @@ class eCurring_WC_Plugin
         add_filter('woocommerce_product_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
         add_filter('woocommerce_product_single_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
 
+        //Disable quantity input for subscription products
+        add_filter('woocommerce_is_sold_individually', array ( __CLASS__, 'eCurringDisableQuantity'), 10, 2);
+
         add_filter('mollie-payments-for-woocommerce_is_subscription_payment', [__CLASS__, 'eCurringSubscriptionIsInCart']);
 
         // Mark plugin initiated
@@ -565,5 +568,19 @@ class eCurring_WC_Plugin
     {
 
         return get_post_meta($product->get_id(), '_ecurring_subscription_plan', true) ? __('Subscribe', 'woo-ecurring') : __($text, 'woo-ecurring');
+    }
+
+    /**
+     * eCurring add to cart button text
+     *
+     * @param $default
+     * @param $product
+     *
+     * @return bool
+     */
+    public static function eCurringDisableQuantity($default, $product)
+    {
+
+        return get_post_meta($product->get_id(), '_ecurring_subscription_plan', true) ? true : $default;
     }
 }
