@@ -7,8 +7,8 @@ namespace Ecurring\WooEcurring\Customer;
 use DateTime;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
-
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
+
 use function get_user_meta;
 use function get_current_user_id;
 use function esc_attr;
@@ -38,10 +38,10 @@ class Subscriptions
      * @param SettingsCrudInterface $settingsCrud Settings storage.
      */
     public function __construct(
-            Customers $customer,
-            SubscriptionPlans $subscriptionPlans,
-            SettingsCrudInterface $settingsCrud
-    ){
+        Customers $customer,
+        SubscriptionPlans $subscriptionPlans,
+        SettingsCrudInterface $settingsCrud
+    ) {
         $this->customer = $customer;
         $this->subscriptionPlans = $subscriptionPlans;
         $this->settingsCrud = $settingsCrud;
