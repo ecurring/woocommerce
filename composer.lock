@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a1ba9d67ced4ad92689f9b171f4b8aff",
+    "content-hash": "3b44f89174c405b5964dfb29a878c889",
     "packages": [
         {
             "name": "brain/nonces",
@@ -4267,12 +4267,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "356c70659d6b48595f9f275cd7c4de0d5544c49c"
+                "reference": "021965b9ccf6afeaeb906bc0b8c9f1d508aeb4d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/356c70659d6b48595f9f275cd7c4de0d5544c49c",
-                "reference": "356c70659d6b48595f9f275cd7c4de0d5544c49c",
+                "url": "https://api.github.com/repos/symfony/console/zipball/021965b9ccf6afeaeb906bc0b8c9f1d508aeb4d7",
+                "reference": "021965b9ccf6afeaeb906bc0b8c9f1d508aeb4d7",
                 "shasum": ""
             },
             "require": {
@@ -4353,7 +4353,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-14T15:43:35+00:00"
+            "time": "2021-01-20T11:45:16+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -5094,12 +5094,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "2f58c6afc8af2972d3759ad45151da7b43bea6f4"
+                "reference": "9e0525439d3024e12b3402b2ef7f908ca2cb2e56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/2f58c6afc8af2972d3759ad45151da7b43bea6f4",
-                "reference": "2f58c6afc8af2972d3759ad45151da7b43bea6f4",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/9e0525439d3024e12b3402b2ef7f908ca2cb2e56",
+                "reference": "9e0525439d3024e12b3402b2ef7f908ca2cb2e56",
                 "shasum": ""
             },
             "require": {
@@ -5186,7 +5186,7 @@
                 "inspection",
                 "php"
             ],
-            "time": "2021-01-17T19:28:28+00:00"
+            "time": "2021-01-19T22:22:25+00:00"
         },
         {
             "name": "webmozart/assert",
