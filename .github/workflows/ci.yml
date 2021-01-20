@@ -23,7 +23,14 @@ jobs:
                 run: composer -vvv about | grep "PHP" && composer validate
 
             -   name: Install dependencies
+                if: {{matrics.php-versions != 8.0}}
                 run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+
+            - name: Install dependencies using PHP 7.4
+                  if: {{matrics.php-versions == 8.0}}
+                  run: php -v && composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+                  with:
+                      php-version: ${{ matrix.php-versions }}
 
             -   name: Run PHPUnit
                 run: vendor/bin/phpunit
