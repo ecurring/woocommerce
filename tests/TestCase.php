@@ -7,13 +7,13 @@ use Mockery;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    public function setUp():void
     {
         parent::setUp();
         Monkey\setUp();
     }
 
-    public function tearDown()
+    public function tearDown():void
     {
         Mockery::close();
         Monkey\tearDown();

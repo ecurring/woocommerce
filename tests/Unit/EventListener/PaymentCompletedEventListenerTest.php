@@ -18,10 +18,16 @@ use WC_Order;
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\EventListener\PaymentCompletedEventListener
+ */
 class PaymentCompletedEventListenerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;  //to properly count Mockery expectations as assertions.
 
+    /**
+     * @covers
+     */
     public function testInit()
     {
 
@@ -54,6 +60,9 @@ class PaymentCompletedEventListenerTest extends TestCase
         $sut->init();
     }
 
+    /**
+     * @covers
+     */
     public function testOnPaymentCompleted()
     {
         //Prevent calling static eCurring_WC_Plugin::debug() method.

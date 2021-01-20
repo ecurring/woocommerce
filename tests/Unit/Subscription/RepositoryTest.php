@@ -12,10 +12,16 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 use function Brain\Monkey\Functions\expect;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\Subscription\Repository
+ */
 class RepositoryTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
+    /**
+     * @covers
+     */
     public function testInsert()
     {
         $pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
@@ -25,9 +31,9 @@ class RepositoryTest extends TestCase
             }));
 
         $orderId = 2432;
-        $subscriptionId = 5435;
+        $subscriptionId = '5435';
         $insertedPostId = 213;
-        $ecurringCustomerId = 8453;
+        $ecurringCustomerId = '8453';
         $customerDetails = [];
         $subscriptionMock = $this->createConfiguredMock(
             SubscriptionInterface::class,
