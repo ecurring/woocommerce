@@ -28,9 +28,7 @@ jobs:
 
             -   name: Install dependencies using PHP 7.4
                 if: {{ matrics.php-versions == 8.0 }}
-                run: php -v && composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
-                with:
-                    php-version: ${{ matrix.php-versions }}
+                run: apt-get install php7.4 && composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
 
             -   name: Run PHPUnit
                 run: vendor/bin/phpunit
