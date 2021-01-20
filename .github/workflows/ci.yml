@@ -20,7 +20,7 @@ jobs:
                     tools: composer:v1
 
             -   name: Validate composer.json and composer.lock
-                run: composer validate
+                run: composer -vvv about | grep "PHP" && composer validate
 
             -   name: Install dependencies
                 run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
