@@ -7,16 +7,20 @@ namespace Ecurring\WooEcurring\Customer;
 use DateTime;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
+use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 
 use function get_user_meta;
 use function get_current_user_id;
 use function esc_attr;
 use function ucfirst;
-use function get_option;
 use function selected;
 
 class Subscriptions
 {
+    /**
+     * @var SettingsCrudInterface
+     */
+    protected $settingsCrud;
     /**
      * @var Customers
      */
@@ -27,10 +31,19 @@ class Subscriptions
      */
     private $subscriptionPlans;
 
-    public function __construct(Customers $customer, SubscriptionPlans $subscriptionPlans)
-    {
+    /**
+     * @param Customers $customer Customers API client.
+     * @param SubscriptionPlans $subscriptionPlans Subscription plans API client.
+     * @param SettingsCrudInterface $settingsCrud Settings storage.
+     */
+    public function __construct(
+        Customers $customer,
+        SubscriptionPlans $subscriptionPlans,
+        SettingsCrudInterface $settingsCrud
+    ) {
         $this->customer = $customer;
         $this->subscriptionPlans = $subscriptionPlans;
+        $this->settingsCrud = $settingsCrud;
     }
 
     //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
@@ -297,19 +310,29 @@ class Subscriptions
         </table>
     <?php }
 
+    /**
+     * Check if customer allowed to perform any actions with subscription.
+     *
+     * @return bool
+     */
     protected function allowAtLeastOneOption(): bool
     {
-        $allowPause = get_option('ecurring_customer_subscription_pause');
-        $allowSwitch = get_option('ecurring_customer_subscription_switch');
-        $allowCancel = get_option('ecurring_customer_subscription_cancel');
-
-        return $allowPause === '1' || $allowSwitch === '1' || $allowCancel === '1';
+        return $this->allowOption('pause') ||
+            $this->allowOption('switch') ||
+            $this->allowOption('cancel');
     }
 
-    protected function allowOption(string $option): bool
+    /**
+     * Check if customer allowed to do perform given action with subscription.
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
+    protected function allowOption(string $action): bool
     {
-        $option = get_option("ecurring_customer_subscription_{$option}");
+        $action = $this->settingsCrud->getOption("ecurring_customer_subscription_{$action}");
 
-        return $option === '1';
+        return $action !== 'no';
     }
 }

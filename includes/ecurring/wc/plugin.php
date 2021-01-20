@@ -169,6 +169,9 @@ class eCurring_WC_Plugin
         add_filter('woocommerce_product_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
         add_filter('woocommerce_product_single_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
 
+        //Disable quantity input for subscription products
+        add_filter('woocommerce_is_sold_individually', array ( __CLASS__, 'eCurringDisableQuantity'), 10, 2);
+
         add_filter('mollie-payments-for-woocommerce_is_subscription_payment', [__CLASS__, 'eCurringSubscriptionIsInCart']);
 
         // Mark plugin initiated
@@ -185,7 +188,7 @@ class eCurring_WC_Plugin
     {
         // Convert message to string
         if (!is_string($message)) {
-            $message = ( version_compare(WC_VERSION, '3.0', '<') ) ? print_r($message, true) : wc_print_r($message, true);
+            $message = wc_print_r($message, true);
         }
 
         // Set debug header
@@ -296,21 +299,6 @@ class eCurring_WC_Plugin
         }
 
         return $status_helper;
-    }
-
-    /**
-     * @return eCurring_WC_Subscription
-     */
-    public static function eCurringSubscription($subscription)
-    {
-
-        static $ecurring_subscription;
-
-        if (!$ecurring_subscription) {
-            $ecurring_subscription = new eCurring_WC_Subscription($subscription);
-        }
-
-        return $ecurring_subscription;
     }
 
     /**
@@ -594,179 +582,5 @@ class eCurring_WC_Plugin
     {
 
         return get_post_meta($product->get_id(), '_ecurring_subscription_plan', true) ? true : $default;
-    }
-
-    /**
-     * eCurring Subscriptions - Add query vars
-     */
-    public static function eCurringSubscriptionsQueryVars($vars)
-    {
-
-        $vars[] = 'ecurring-subscriptions';
-
-        return $vars;
-    }
-
-    /**
-     * eCurring Subscriptions - Update page title to "Subscriptions"
-     *
-     *
-     * @param $title
-     *
-     * @return string|void
-     */
-    public static function eCurringSubscriptionsUpdateTitle($title)
-    {
-
-        global $wp_query;
-
-        if (isset($wp_query->query_vars['ecurring-subscriptions']) && in_the_loop()) {
-            return __('Subscriptions', 'woo-ecurring');
-        }
-
-        return $title;
-    }
-
-    /**
-     * eCurring Subscriptions - Subscriptions table
-     */
-    public static function eCurringSubscriptionsContent()
-    {
-
-        $api = eCurring_WC_Plugin::getApiHelper();
-
-        // Handle basic caching for a users subscriptions
-        if (get_transient('ecurring_subscriptions_user_' . get_current_user_id()) !== false) {
-            $subscriptions = get_transient('ecurring_subscriptions_user_' . get_current_user_id());
-        } else {
-            $ecurring_customer_id = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
-
-            $subscriptions = json_decode($api->apiCall('GET', 'https://api.ecurring.com/customers/' . $ecurring_customer_id . '/subscriptions?page[size]=15'), true);
-            delete_transient('ecurring_subscriptions_user_' . get_current_user_id());
-            set_transient('ecurring_subscriptions_user_' . get_current_user_id(), $subscriptions, 5 * MINUTE_IN_SECONDS);
-        }
-
-        echo '<div class="woocommerce_account_ecurring_subscriptions">';
-        echo '<table class="shop_table shop_table_responsive my_account_ecurring_subscriptions my_account_orders">';
-        echo '<tr>';
-        echo '<th class="order-number">Subscription</th>';
-        echo '<th class="">Product</th>';
-        echo '<th class="">Status</th>';
-        echo '<th class=""></th>';
-
-        echo '</tr>';
-
-        if (! isset($subscriptions['data'])) {
-            echo "</tr>";
-            echo '</table>';
-
-            echo "No subscriptions found!";
-
-            echo '</div>';
-        } else {
-            // Sort on newest subscriptions first
-            krsort($subscriptions['data']);
-
-            foreach ($subscriptions['data'] as $subscription) {
-                $subscription_plan_id = $subscription['relationships']['subscription-plan']['data']['id'];
-                $subscription_status = $subscription['attributes']['status'];
-                $subscription_plan_name = false;
-
-                if (get_transient('ecurring_subscription_plans') !== false) {
-                    $subscription_plans = get_transient('ecurring_subscription_plans');
-                    $subscription_plan_name = ( isset($subscription_plans[ $subscription_plan_id ]) ) ? $subscription_plans[ $subscription_plan_id ] : false;
-                }
-
-                if ($subscription_plan_name == false) {
-                    // Get the subscription plan
-                    $subscription_plan = json_decode($api->apiCall('GET', 'https://api.ecurring.com/subscription-plans/' . $subscription_plan_id), true);
-
-                    $subscription_plans = get_transient('ecurring_subscription_plans');
-
-                    $subscription_plans[ $subscription_plan_id ] = $subscription_plan['data']['attributes']['name'];
-
-                    set_transient('ecurring_subscription_plans', $subscription_plans, DAY_IN_SECONDS);
-                }
-
-                switch ($subscription_status) {
-                    case 'active':
-                        $status_description = __("This subscription is active. Orders and payments for this subscriptions are processed automatically every period.", 'woo-ecurring');
-                        break;
-                    case 'cancelled':
-                        $status_description = __("This subscription has been cancelled. Orders and payments won't be processed anymore, unless a payment has already been sent to the bank before the subscription was cancelled.", 'woo-ecurring');
-                        break;
-                    case 'paused':
-                        $status_description = __("This subscription is paused. Orders and payments won't be processed anymore, unless a payment has already been sent to the bank before the subscription was paused. Contact the shop to resume this subscription.", 'woo-ecurring');
-                        break;
-                    case 'unverified':
-                        $status_description = __("You haven't verified this subscription yet. Orders won't be processed until you do. Click on 'Activate' in the overview to activate your subscription.", 'woo-ecurring');
-                        break;
-                }
-
-                echo "<tr class='order'>
-		            <td class='order-number'>#" . $subscription['id'] . "</td>
-		            <td class=''>" . $subscription_plan_name . "</td>
-		            <td class='order-status' id='ecurring-status-subscription-" . $subscription['id'] . "'>" . ucwords($subscription_status);
-
-                echo "<div class='ecurring-subscriptions-status'><span class='dashicons dashicons-info ecurring-subscriptions-status-read-more ' style='float: right'>";
-                echo '<span class="ecurring-subscriptions-status-description">' . $status_description . '</span></span></div>';
-
-                echo "</td>";
-
-                echo '<input type="hidden" id="subscription_id" name="subscription_id"
-                                   value="' . $subscription['id'] . '">';
-
-                if ($subscription_status == 'unverified') {
-                    echo "<td class='order-actions'><a class='button' href='" . $subscription['attributes']['confirmation_page'] . "'>" . __('ACTIVATE', 'woo-ecurring') . "</a></td>";
-                } elseif ($subscription_status != 'cancelled') {
-                    if (get_option('ecurring_customer_subscription_cancel') === '1') {
-                        echo "<td class='order-actions'><a class='button' id='ecurring_cancel_subscription_" . $subscription['id'] . "' onclick='canceleCurringSubscriptionWithID(this)' data-ecurring-subscription-id='" . $subscription['id'] . "'>" . __(
-                            'CANCEL',
-                            'woo-ecurring'
-                        ) . "</a></td>";
-                    }
-                } else {
-                    echo "<td class='order-actions'></td>";
-                }
-
-                echo "</tr>";
-            }
-            echo '</table>';
-            echo '</div>';
-        }
-    }
-
-    /**
-     * eCurring Subscriptions - Cancel Subscriptions redirect
-     */
-    public static function eCurringSubscriptionsCancelSubscription()
-    {
-
-        $subscription_id = sanitize_text_field($_POST['subscription_id']);
-
-        $api = eCurring_WC_Plugin::getApiHelper();
-
-        $request = json_decode($api->apiCall('PATCH', 'https://api.ecurring.com/subscriptions/' . $subscription_id, [
-            'data' =>  [
-                'type' => 'subscription',
-                'id' => $subscription_id,
-                'attributes' =>  [
-                    'status' => 'cancelled',
-                ],
-            ],
-        ]), true);
-
-        $subscription_status = $request['data']['attributes']['status'];
-
-        if ($subscription_status == 'cancelled') {
-            // If a subscriptions status is successfully changed, remove the cache
-            delete_transient('ecurring_subscriptions_user_' . get_current_user_id());
-
-            wp_send_json([ 'result' => 'success' ]);
-            wp_die();
-        } else {
-            wp_send_json([ 'result' => 'failed' ]);
-            wp_die();
-        }
     }
 }

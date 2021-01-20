@@ -20,6 +20,7 @@ use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
+use Ecurring\WooEcurring\Settings\SettingsCrud;
 use Ecurring\WooEcurring\Subscription\Mandate\SubscriptionMandateFactory;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
@@ -32,7 +33,6 @@ use Ecurring\WooEcurring\Subscription\Metabox\Save;
 use Ecurring\WooEcurring\Subscription\Metabox\Metabox;
 use Ecurring\WooEcurring\Assets;
 use Ecurring\WooEcurring\WebHook;
-use Ecurring\WooEcurring\Settings;
 use Ecurring\WooEcurring\Customer\MyAccount;
 use Ecurring\WooEcurring\Customer\Subscriptions;
 use Ecurring\WooEcurring\Api\Subscriptions as SubscriptionsApi;
@@ -218,14 +218,14 @@ function eCurringInitialize()
         $display = new Display();
         $save = new Save($subscriptionStatusSwitcher, $subscriptionPlanSwitcher);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
-        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans);
+        $settingsCrud = new SettingsCrud();
+        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans, $settingsCrud);
 
         (new SubscriptionsJob($repository, $subscriptionsFactory, $subscriptionsApi))->init();
         (new Metabox($display, $save))->init();
         (new PostType($apiHelper))->init();
         (new Assets())->init();
         (new WebHook($subscriptionsApi, $repository))->init();
-        (new Settings())->init();
         (new MyAccount($subscriptions, $subscriptionPlanSwitcher, $subscriptionStatusSwitcher))->init();
 
         // Add custom order status "Retrying payment at eCurring"

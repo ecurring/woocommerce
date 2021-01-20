@@ -232,7 +232,8 @@ class AdminController
         $fieldsCollection = $this->formFieldsCollectionBuilder->buildFieldsCollection();
 
         foreach ($fieldsCollection->elements() as $element) {
-            $this->settingsCrud->updateOption($element->name(), $formData[$element->name()] ?? null);
+            $defaultValue = $element->type() === 'checkbox' ? 'no' : null;
+            $this->settingsCrud->updateOption($element->name(), $formData[$element->name()] ?? $defaultValue);
         }
 
         $this->settingsCrud->persist();
