@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bbab307970c5f044396f09d5352b2532",
+    "content-hash": "6d9d376c896faacfa7b1c169f589437c",
     "packages": [
         {
             "name": "brain/nonces",
@@ -5094,12 +5094,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "2f58c6afc8af2972d3759ad45151da7b43bea6f4"
+                "reference": "9e0525439d3024e12b3402b2ef7f908ca2cb2e56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/2f58c6afc8af2972d3759ad45151da7b43bea6f4",
-                "reference": "2f58c6afc8af2972d3759ad45151da7b43bea6f4",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/9e0525439d3024e12b3402b2ef7f908ca2cb2e56",
+                "reference": "9e0525439d3024e12b3402b2ef7f908ca2cb2e56",
                 "shasum": ""
             },
             "require": {
@@ -5186,7 +5186,7 @@
                 "inspection",
                 "php"
             ],
-            "time": "2021-01-17T19:28:28+00:00"
+            "time": "2021-01-19T22:22:25+00:00"
         },
         {
             "name": "webmozart/assert",
