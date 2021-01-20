@@ -10,9 +10,14 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurringTests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder
+ */
 class FormFieldsCollectionBuilderTest extends TestCase
 {
-
+    /**
+     * @covers 
+     */
     public function testBuildFieldsCollection()
     {
         /** @var CollectionElementInterface&MockObject $elementMock */
@@ -39,6 +44,9 @@ class FormFieldsCollectionBuilderTest extends TestCase
         $this->assertSame($elementMock, $sut->buildFieldsCollection());
     }
 
+    /**
+     * @covers 
+     */
     public function testBuildFormFieldsCollectionView()
     {
         /** @var ElementFactory&MockObject $elementFactoryMock */

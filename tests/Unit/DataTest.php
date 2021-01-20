@@ -9,10 +9,15 @@ use WC_Order;
 
 use Brain\Monkey\Functions;
 
+/**
+ * @coversDefaultClass
+ */
 class DataTest extends TestCase
 {
     /**
      * @dataProvider provider
+     * 
+     * @covers
      */
     public function testGetCustomerLanguageReturnsExpectedLanguage($input, $output)
     {

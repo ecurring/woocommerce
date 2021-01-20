@@ -12,10 +12,16 @@ use WC_Product;
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\EventListener\AddToCartValidationEventListener
+ */
 class AddToCartValidationEventListenerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
+    /**
+     * @covers
+     */
     public function testOnAddToCartNotAllowedToAddSecondSubscription()
     {
         $ecurringPlugin = Mockery::mock('alias:eCurring_WC_Plugin');
@@ -45,6 +51,9 @@ class AddToCartValidationEventListenerTest extends TestCase
         $this->assertSame(false, $addedToCart);
     }
 
+    /**
+     * @covers
+     */
     public function testOnAddToCartNotAllowedToAddTwoSubscriptions()
     {
         $subscriptionId = '456';
@@ -76,6 +85,9 @@ class AddToCartValidationEventListenerTest extends TestCase
         $this->assertSame(false, $addedToCart);
     }
 
+    /**
+     * @covers
+     */
     public function testOnAddToCartItsAllowedToAddSubscriptionIfNotAddedYet()
     {
         $ecurringPlugin = Mockery::mock('alias:eCurring_WC_Plugin');
@@ -103,6 +115,9 @@ class AddToCartValidationEventListenerTest extends TestCase
         $this->assertSame(true, $addedToCart);
     }
 
+    /**
+     * @covers
+     */
     public function testOnAddSubscriptionGuestsNotAllowedToAddSubscriptionToCart()
     {
         $productId = 123;
@@ -136,6 +151,9 @@ class AddToCartValidationEventListenerTest extends TestCase
         $this->assertSame(false, $addedToCart);
     }
 
+    /**
+     * @covers
+     */
     public function testOnAddToCartItsAllowedToAddSimpleProductsIfSubscriptionAdded()
     {
         $ecurringPlugin = Mockery::mock('alias:eCurring_WC_Plugin');

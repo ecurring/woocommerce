@@ -13,10 +13,16 @@ use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 use function Patchwork\redefine;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker
+ */
 class EnvironmentCheckerTest extends TestCase
 {
     use MockeryPHPUnitIntegration; //to count Mockery expectations properly as assertions
 
+    /**
+     * @covers
+     */
     public function testCheckEnvironmentCaseEverythingOk()
     {
         $versionMock = $this->createConfiguredMock(
@@ -79,6 +85,9 @@ class EnvironmentCheckerTest extends TestCase
         $this->assertSame($sut->getErrors(), [], 'Errors returned after successful environment check.');
     }
 
+    /**
+     * @covers
+     */
     public function testCheckEnvironmentCasePhpVersionLessThenRequired()
     {
         $actualPhpVersion = '7.1';
@@ -122,6 +131,9 @@ class EnvironmentCheckerTest extends TestCase
         $this->assertTrue($stringFound, 'Not found expected message about PHP update required.');
     }
 
+    /**
+     * @covers
+     */
     public function testCheckEnvironmentCaseNoJsonExtension()
     {
         $actualPhpVersion = $requiredPhpVersion = '7.2';
@@ -202,6 +214,9 @@ class EnvironmentCheckerTest extends TestCase
         $this->assertTrue($stringFound, 'Not found expected message about JSON PHP extension required.');
     }
 
+    /**
+     * @covers
+     */
     public function testCheckEnvironmentCaseWoocommerceIsInactive()
     {
         $currentPhpVersion = $requiredPhpVersion = '7.2';
@@ -283,6 +298,9 @@ class EnvironmentCheckerTest extends TestCase
         $this->assertTrue($stringFound, 'Not found expected message about WooCommerce not active.');
     }
 
+    /**
+     * @covers
+     */
     public function testCheckEnvironmentCaseWoocommerceVersionTooLow()
     {
         $minRequiredPhpVersion = $actualPhpVersion = '7.2';
@@ -370,6 +388,9 @@ class EnvironmentCheckerTest extends TestCase
         $this->assertTrue($stringFound, 'Not found expected message about WooCommerce update required.');
     }
 
+    /**
+     * @covers
+     */
     public function testCheckEnvironmentCaseMollieIsInactive()
     {
         /** @var StringVersionFactoryInterface&MockObject $versionFactoryMock */
@@ -445,6 +466,9 @@ class EnvironmentCheckerTest extends TestCase
         $this->assertTrue($stringFound, 'Not found expected message about Mollie Payments plugin is not active.');
     }
 
+    /**
+     * @covers
+     */
     public function testCheckEnvironmentCaseMollieVersionTooLow()
     {
         $minRequiredPhpVersion = '7.2';
@@ -534,6 +558,8 @@ class EnvironmentCheckerTest extends TestCase
      * Test Mollie version in short (X.Y) form correctly interpreted and compared with full-form required version.
      *
      * @see https://inpsyde.atlassian.net/browse/ECUR-73
+     *
+     * @covers
      */
     public function testCheckEnvironmentCaseMollieVersionOkShortForm()
     {

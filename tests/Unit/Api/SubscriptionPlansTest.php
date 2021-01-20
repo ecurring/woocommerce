@@ -7,8 +7,14 @@ use Ecurring\WooEcurringTests\TestCase;
 use eCurring_WC_Helper_Api;
 use function Brain\Monkey\Functions\when;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\Api\SubscriptionPlans
+ */
 class SubscriptionPlansTest extends TestCase
 {
+    /**
+     * @covers
+     */
     public function testGetSubscriptionPlansNotCached()
     {
         $apiResponse = '{"foo":{"bar":"baz"}}';
@@ -32,6 +38,9 @@ class SubscriptionPlansTest extends TestCase
         self::assertEquals($responseDecoded, $sut->getSubscriptionPlans());
     }
 
+    /**
+     * @covers
+     */
     public function testGetSubscriptionPlansCached()
     {
         $api = $this->createMock(eCurring_WC_Helper_Api::class);

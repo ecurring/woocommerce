@@ -7,8 +7,14 @@ use Ecurring\WooEcurringTests\TestCase;
 use eCurring_WC_Helper_Api;
 use function Brain\Monkey\Functions\when;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\Api\Customers
+ */
 class CustomersTest extends TestCase
 {
+    /**
+     * @covers
+     */
     public function testGetCustomerByIdNotCached()
     {
         $apiResponse = '{"foo":{"bar":"baz"}}';
@@ -32,6 +38,9 @@ class CustomersTest extends TestCase
         self::assertEquals($responseDecoded, $sut->getCustomerById(1));
     }
 
+    /**
+     * @covers
+     */
     public function testGetCustomerByIdCached()
     {
         $api = $this->createMock(eCurring_WC_Helper_Api::class);
@@ -42,6 +51,9 @@ class CustomersTest extends TestCase
         self::assertSame('foo', $sut->getCustomerById(1));
     }
 
+    /**
+     * @covers
+     */
     public function testGetCustomerSubscriptionsNotCached()
     {
         $apiResponse = '{"foo":{"bar":"baz"}}';
@@ -65,6 +77,9 @@ class CustomersTest extends TestCase
         self::assertEquals($responseDecoded, $sut->getCustomerSubscriptions(1));
     }
 
+    /**
+     * @covers
+     */
     public function testGetCustomerSubscriptionsCached()
     {
         $api = $this->createMock(eCurring_WC_Helper_Api::class);

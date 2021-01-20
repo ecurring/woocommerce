@@ -18,11 +18,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 use function Brain\Monkey\Functions\when;
 
+/**
+ * @coversDefaultClass
+ */
 class AdminControllerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    public function setUp()
+    public function setUp(): void
     {
 
         $_POST = [];
@@ -30,6 +33,9 @@ class AdminControllerTest extends TestCase
         parent::setUp();
     }
 
+    /**
+     * @covers
+     */
     public function testRegisterPluginSettingsTab()
     {
         /** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
@@ -77,6 +83,9 @@ class AdminControllerTest extends TestCase
         $this->assertArrayHasKey('mollie_subscriptions', $tabsWithPluginTab);
     }
 
+    /**
+     * @covers
+     */
     public function testRenderPluginSettingsPage()
     {
         /** @var TemplateInterface&MockObject $adminSettingsPageRendererMock */
@@ -140,6 +149,9 @@ class AdminControllerTest extends TestCase
         $sut->renderPluginSettingsPage();
     }
 
+    /**
+     * @covers
+     */
     public function testHandleRegisteringMetaBox()
     {
         $orderEditPageControllerMock = $this->createMock(OrderEditPageController::class);

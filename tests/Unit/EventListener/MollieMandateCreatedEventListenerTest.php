@@ -20,10 +20,16 @@ use WC_Product;
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener
+ */
 class MollieMandateCreatedEventListenerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
+    /**
+     * @covers
+     */
     public function testInit()
     {
 
@@ -49,6 +55,9 @@ class MollieMandateCreatedEventListenerTest extends TestCase
         $sut->init();
     }
 
+    /**
+     * @covers
+     */
     public function testOnMollieMandateCreated()
     {
         //Prevent calling static eCurring_WC_Plugin::debug() method.

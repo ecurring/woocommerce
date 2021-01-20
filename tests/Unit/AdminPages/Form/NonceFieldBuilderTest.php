@@ -12,10 +12,16 @@ use Ecurring\WooEcurringTests\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder
+ */
 class NonceFieldBuilderTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
+    /**
+     * @covers 
+     */
     public function testBuildNonceField()
     {
         /** @var ElementFactory&MockObject $elementFactoryMock */
@@ -57,6 +63,9 @@ class NonceFieldBuilderTest extends TestCase
         $this->assertInstanceOf(ElementInterface::class, $field);
     }
 
+    /**
+     * @covers
+     */
     public function testBuildNonceFieldView()
     {
         /** @var ElementInterface&MockObject $elementViewMock */

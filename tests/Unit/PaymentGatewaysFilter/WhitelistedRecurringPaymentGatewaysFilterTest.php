@@ -8,11 +8,16 @@ use WC_Payment_Gateway;
 
 use function Patchwork\redefine;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\PaymentGatewaysFilter\WhitelistedRecurringPaymentGatewaysFilter
+ */
 class WhitelistedRecurringPaymentGatewaysFilterTest extends TestCase
 {
 
     /**
      * @dataProvider filterTestDataProvider
+     * 
+     * @covers
      */
     public function testFilter(
         array $whitelistedClasses,
