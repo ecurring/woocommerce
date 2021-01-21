@@ -10,6 +10,9 @@ use WP_Error;
 
 use function Brain\Monkey\Functions\expect;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\Api\ApiClient
+ */
 class ApiClientTest extends TestCase
 {
 
@@ -17,6 +20,8 @@ class ApiClientTest extends TestCase
     use MockeryPHPUnitIntegration;
     /**
      * @dataProvider apiCallDataProvider
+     * 
+     * @covers
      */
     public function testApiCall(array $requestData, string $apiKey, array $expectedRequestArgs, $testResponse)
     {

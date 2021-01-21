@@ -18,12 +18,17 @@ use WC_Product;
 use function Brain\Monkey\Functions\expect;
 use function Brain\Monkey\Functions\when;
 
+/**
+ * @coversDefaultClass \Ecurring\WooEcurring\AdminPages\ProductEditPageController
+ */
 class ProductEditPageControllerTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
     /**
      * @dataProvider productDataFieldsTabsProvider
+     * 
+     * @covers
      */
     public function testAddProductDataTabToTheDataTabsList(array $existingTabs)
     {
@@ -80,6 +85,9 @@ class ProductEditPageControllerTest extends TestCase
         ];
     }
 
+    /**
+     * @covers
+     */
     public function testSavePostedProductFieldsSubscriptionNotEmpty()
     {
         $subscriptionId = 'testsubscriptionid123';
@@ -114,6 +122,9 @@ class ProductEditPageControllerTest extends TestCase
         $sut->savePostedProductFields(10);
     }
 
+    /**
+     * @covers
+     */
     public function testSavePostedProductFieldsSubscriptionEmpty()
     {
         $productId = 10;
@@ -147,6 +158,9 @@ class ProductEditPageControllerTest extends TestCase
         $sut->savePostedProductFields(10);
     }
 
+    /**
+     * @covers
+     */
     public function testRenderProductDataFields()
     {
         $templateContent = 'This is the template content.';
@@ -203,6 +217,9 @@ class ProductEditPageControllerTest extends TestCase
         $sut->renderProductDataFields($productId);
     }
 
+    /**
+     * @covers
+     */
     public function testRenderProductDataFieldsExceptionLogged()
     {
         $pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
@@ -259,6 +276,9 @@ class ProductEditPageControllerTest extends TestCase
         $sut->renderProductDataFields($productId);
     }
 
+    /**
+     * @covers
+     */
     public function testRenderProductDataFieldsNoApiKey()
     {
         $pluginMock = Mockery::mock('alias:eCurring_WC_Plugin');
