@@ -113,7 +113,8 @@ function ecurring_webhook( $request ) {
 				if ($is_first_payment) {
 					$order = wc_get_order( $subscription_order_id );
 
-					update_post_meta( $subscription_order_id, '_transaction_id', $transaction_id );
+					update_post_meta( $subscription_order_id, '_ecurring_transaction_id', $transaction_id );
+					//todo: set _transaction_id from the external_payment_id field from transaction data.
 					$order->update_meta_data( '_first_transaction_completed', '1' );
 
 					$order->add_order_note( sprintf(
