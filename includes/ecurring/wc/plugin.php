@@ -10,6 +10,7 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\AdminPages\OrderEditPageController;
 use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
+use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrud;
@@ -24,6 +25,7 @@ use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\Status\SubscriptionStatusFactory;
 use Ecurring\WooEcurring\Subscription\StatusSwitcher\SubscriptionStatusSwitcher;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Template\SettingsFormTemplate;
 use Ecurring\WooEcurring\Template\SimpleTemplateBlockFactory;
 
@@ -63,7 +65,7 @@ class eCurring_WC_Plugin
             $subscriptionStatusFactory
         );
 
-        $customersApiClient = new \Ecurring\WooEcurring\Api\Customers(self::getApiHelper());
+        $customersApiClient = new Customers(self::getApiHelper());
         $repository = new Repository($subscriptionFactory, $customersApiClient);
 
         $subscriptionsApiClient = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
@@ -299,6 +301,45 @@ class eCurring_WC_Plugin
         }
 
         return $status_helper;
+    }
+
+    public static function getSubscriptionRepository(): Repository
+    {
+        static $repository;
+
+        if (! $repository) {
+            $repository = new Repository(
+                self::getSubscriptionsFactory(),
+                self::getCustomersApiClient()
+            );
+        }
+
+        return $repository;
+    }
+
+    public static function getSubscriptionsFactory(): DataBasedSubscriptionFactoryInterface
+    {
+        static $factory;
+
+        if (! $factory) {
+            $mandateFactory = new SubscriptionMandateFactory();
+            $statusFactory = new SubscriptionStatusFactory();
+
+            $factory = new DataBasedSubscriptionFactory($mandateFactory, $statusFactory);
+        }
+
+        return $factory;
+    }
+
+    public static function getCustomersApiClient(): Customers
+    {
+        static $customersApiClient;
+
+        if (!$customersApiClient) {
+            $customersApiClient = new Customers(self::getApiHelper());
+        }
+
+        return $customersApiClient;
     }
 
     /**
