@@ -34,8 +34,8 @@ function ecurring_webhook( $request ) {
 			eCurring_WC_Plugin::debug( $transaction );
 
 			// Get related subscription to this transaction
-			$prepare = $wpdb->prepare( "SELECT post_id FROM " . $wpdb->prefix . "postmeta WHERE meta_key = '_ecurring_subscription_id' AND meta_value = '%d'",$subscription_id);
-			$subscription_order_id = $wpdb->get_var( $prepare );
+			$repository = eCurring_WC_Plugin::getSubscriptionRepository();
+			$subscription_order_id = $repository->findSubscriptionOrderIdBySubscriptionId($subscription_id);
 			$subscription_order = wc_get_order( $subscription_order_id );
 
 			if (!$subscription_order) {
