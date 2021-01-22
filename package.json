@@ -1,0 +1,40 @@
+{
+  "name": "woo-ecurring",
+  "version": "1.2.0",
+  "license": "GPL-2.0-or-later",
+  "description": "Collect your subscription fees in WooCommerce with ease.",
+  "keywords": [
+    "eCurring",
+    "Mollie",
+    "WooCommerce",
+    "WordPress"
+  ],
+  "authors": [
+    {
+      "name": "Inpsyde GmbH",
+      "homepage": "https://inpsyde.com/",
+      "email": "hallo@inpsyde.com",
+      "role": "Company"
+    },
+    {
+      "name": "Mollie B.V.",
+      "email": "info@mollie.com"
+    }
+  ],
+  "homepage": "https://github.com/ecurring/woocommerce",
+  "main": "gulpfile.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ecurring/woocommerce.git"
+  },
+  "devDependencies": {
+    "date-and-time": "^0.14.0",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-zip": "^4.2.0"
+  },
+  "scripts": {
+    "build": "gulp buildAssets",
+    "setup": "gulp setup"
+  }
+}
