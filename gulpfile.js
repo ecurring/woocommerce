@@ -8,6 +8,8 @@ const usage = require('gulp-help-doc')
 const zip = require('gulp-zip')
 const rename = require('gulp-rename')
 const date = require('date-and-time')
+const composer = require('/app/composer.json');
+const semver = require('semver');
 
 const options = {
     ...minimist(
@@ -31,7 +33,17 @@ const options = {
                 buildDir: `${__dirname}/build`,
                 distDir: `${__dirname}/dist`,
                 q: false,
-                depsVersionPhp: '7.2.34',
+                depsVersionPhp: (function (){
+
+                    const version = '7.2.34';
+                    if(typeof composer.require != "undefined" && typeof composer.require.php != "undefined"){
+                        const parsed = semver.valid(semver.coerce(composer.require.php));
+                        if(parsed != null){
+                            return parsed;
+                        }
+                    }
+                    return version;
+                })(),
             },
         }
     )
