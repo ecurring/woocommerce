@@ -268,5 +268,5 @@ exports.dist = series(
 )
 
 exports.default = series(
-    exports.build
+    exports.dist
 )
