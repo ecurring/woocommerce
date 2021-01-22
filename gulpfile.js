@@ -8,8 +8,8 @@ const usage = require('gulp-help-doc')
 const zip = require('gulp-zip')
 const rename = require('gulp-rename')
 const date = require('date-and-time')
-const composer = require('/app/composer.json');
 const semver = require('semver');
+const composer = require('/app/composer.json');
 
 const options = {
     ...minimist(
@@ -264,6 +264,7 @@ exports.build = series(
 exports.dist = series(
     exports.build,
     exports.archive,
+    exports.clean
 )
 
 exports.default = series(
