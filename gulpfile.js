@@ -28,7 +28,7 @@ const options = {
             ],
             default: {
                 packageVersion: 'dev',
-                packageName: 'mollie-payments-for-woocommerce',
+                packageName: 'woo-ecurring',
                 baseDir: __dirname,
                 buildDir: `${__dirname}/build`,
                 distDir: `${__dirname}/dist`,
