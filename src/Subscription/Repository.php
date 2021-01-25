@@ -356,7 +356,7 @@ class Repository
         if ($subscriptionId === '') {
             return 0;
         }
-        
+
         /** @var int[] $found */
         $found = get_posts(
             [
