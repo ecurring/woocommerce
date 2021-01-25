@@ -3438,8 +3438,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6",
-                "reference": "5.6"
+                "url": "https://api.github.com/repos/WordPress/WordPress/zipball/5.6"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -4267,12 +4266,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "021965b9ccf6afeaeb906bc0b8c9f1d508aeb4d7"
+                "reference": "5d9e349571fa1fed2ed89fe1f5ffd58331468e87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/021965b9ccf6afeaeb906bc0b8c9f1d508aeb4d7",
-                "reference": "021965b9ccf6afeaeb906bc0b8c9f1d508aeb4d7",
+                "url": "https://api.github.com/repos/symfony/console/zipball/5d9e349571fa1fed2ed89fe1f5ffd58331468e87",
+                "reference": "5d9e349571fa1fed2ed89fe1f5ffd58331468e87",
                 "shasum": ""
             },
             "require": {
@@ -4353,7 +4352,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-20T11:45:16+00:00"
+            "time": "2021-01-23T09:52:46+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -5094,12 +5093,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "9e0525439d3024e12b3402b2ef7f908ca2cb2e56"
+                "reference": "ae172b2c04f4f2341e09b68a5391baefbccfc905"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/9e0525439d3024e12b3402b2ef7f908ca2cb2e56",
-                "reference": "9e0525439d3024e12b3402b2ef7f908ca2cb2e56",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/ae172b2c04f4f2341e09b68a5391baefbccfc905",
+                "reference": "ae172b2c04f4f2341e09b68a5391baefbccfc905",
                 "shasum": ""
             },
             "require": {
@@ -5186,19 +5185,19 @@
                 "inspection",
                 "php"
             ],
-            "time": "2021-01-19T22:22:25+00:00"
+            "time": "2021-01-24T20:00:21+00:00"
         },
         {
             "name": "webmozart/assert",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/9c89b265ccc4092d58e66d72af5d343ee77a41ae",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/9c89b265ccc4092d58e66d72af5d343ee77a41ae",
                 "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae",
                 "shasum": ""
             },
