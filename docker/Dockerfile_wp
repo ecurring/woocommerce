@@ -8,7 +8,7 @@ ARG BUILD_ROOT_PATH
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN apt-get update
-RUN apt-get install -y zip unzip curl git g++ zlib1g-dev libicu-dev
+RUN apt-get install -y zip unzip curl git g++ zlib1g-dev libicu-dev npm yarn
 RUN docker-php-ext-configure intl && \
     docker-php-ext-install intl
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
