@@ -144,7 +144,7 @@ class Repository
     {
         $subscriptionPostId = $this->findSubscriptionPostIdBySubscriptionId($subscriptionId);
 
-        if ($subscriptionPostId === 0) {
+        if ($subscriptionPostId === '') {
             return null;
         }
 
