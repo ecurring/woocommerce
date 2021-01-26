@@ -76,7 +76,7 @@ class ProductEditPageController
     {
         $productDataTabs['woo-ecurring-tab'] = [
             'label' => _x(
-                'Mollie Subscriptions',
+                'WooCommerce eCurring gateway',
                 'Tab name on the product edit page',
                 'woo-ecurring'
             ),
@@ -158,7 +158,7 @@ class ProductEditPageController
             /* translators: %1$s is replaced with the opening a HTML tag, %2$s is replaced with the closing a tag. */
             _x(
                 'Please, enter an API key on the %1$splugin settings page%2$s to be able to connect subscription to this product.',
-                'Message on the product edit page, Mollie Subscriptions tab',
+                'Message on the product edit page, WooCommerce eCurring gateway tab',
                 'woo-ecurring'
             ),
             $openingTag,
