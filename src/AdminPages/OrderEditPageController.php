@@ -55,8 +55,8 @@ class OrderEditPageController
 
     public function renderMetaBox($post): void
     {
-        $postId = (int) $post->ID;
-        $subscriptionId = $this->repository->findSubscriptionIdByOrderId($postId);
+        $postId = $post->post_parent > 0 ? $post->post_parent : $post->ID;
+        $subscriptionId = $this->repository->findSubscriptionIdByOrderId((int) $postId);
         $subscription = $this->repository->getSubscriptionById($subscriptionId);
 
         $metaBoxTemplate = $this->templateFactory->fromPath(
