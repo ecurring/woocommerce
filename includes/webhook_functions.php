@@ -34,8 +34,8 @@ function ecurring_webhook( $request ) {
 			eCurring_WC_Plugin::debug( $transaction );
 
 			// Get related subscription to this transaction
-			$prepare = $wpdb->prepare( "SELECT post_id FROM " . $wpdb->prefix . "postmeta WHERE meta_key = '_ecurring_subscription_id' AND meta_value = '%d'",$subscription_id);
-			$subscription_order_id = $wpdb->get_var( $prepare );
+			$repository = eCurring_WC_Plugin::getSubscriptionRepository();
+			$subscription_order_id = $repository->findSubscriptionOrderIdBySubscriptionId($subscription_id);
 			$subscription_order = wc_get_order( $subscription_order_id );
 
 			if (!$subscription_order) {
@@ -113,7 +113,16 @@ function ecurring_webhook( $request ) {
 				if ($is_first_payment) {
 					$order = wc_get_order( $subscription_order_id );
 
-					update_post_meta( $subscription_order_id, '_transaction_id', $transaction_id );
+					update_post_meta( $subscription_order_id, '_ecurring_transaction_id', $transaction_id );
+					$externalPaymentId = '';
+
+					$transactionHistory = $transaction_attrs['history'] ?? [];
+					foreach($transactionHistory as $historyElement){
+					    if(isset($historyElement['status']) && $historyElement['status'] === 'fulfilled'){
+                            $externalPaymentId = (string) $historyElement['external_payment_id'] ?? '';
+                        }
+                    }
+
 					$order->update_meta_data( '_first_transaction_completed', '1' );
 
 					$order->add_order_note( sprintf(
@@ -149,7 +158,7 @@ function ecurring_webhook( $request ) {
 					$payment_method_title = get_post_meta( $subscription_order_id, '_payment_method_title', true );
 
 					// Add meta data to renewal payment
-					update_post_meta($order->get_id(),'_transaction_id',$transaction_id);
+					update_post_meta($order->get_id(),'_transaction_id', $externalPaymentId);
 					update_post_meta($order->get_id(),'_ecurring_transaction_id',$transaction_id);
 					update_post_meta($order->get_id(),'_ecurring_subscription_id',$subscription_id);
 					update_post_meta($order->get_id(),'_payment_method',$payment_method);

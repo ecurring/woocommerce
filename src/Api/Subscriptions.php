@@ -155,6 +155,8 @@ class Subscriptions
 
         $attributes['customer_id'] = $ecurringCustomerId;
         $attributes['subscription_plan_id'] = $subscriptionPlanId;
+        $attributes['subscription_webhook_url'] = $this->getSubscriptionWebhookUrl();
+        $attributes['transaction_webhook_url'] = $this->getTransactionWebhookUrl();
 
         $requestData = [
             'data' => [
@@ -235,6 +237,34 @@ class Subscriptions
         $normalizedSubscriptionData = $this->normalizeSubscriptionData($response['data']);
 
         return $this->subscriptionFactory->createSubscription($normalizedSubscriptionData);
+    }
+
+    /**
+     * Get the url that should be used by eCurring for subscription webhooks.
+     *
+     * @return string
+     */
+    protected function getSubscriptionWebhookUrl(): string
+    {
+        return add_query_arg(
+            'ecurring-webhook',
+            'subscription',
+            home_url('/')
+        );
+    }
+
+    /**
+     * Get the url that should be used by eCurring for transaction webhooks.
+     *
+     * @return string
+     */
+    protected function getTransactionWebhookUrl(): string
+    {
+        return add_query_arg(
+            'ecurring-webhook',
+            'transaction',
+            home_url('/')
+        );
     }
 
     /**

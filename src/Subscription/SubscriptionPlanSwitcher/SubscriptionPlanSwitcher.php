@@ -106,9 +106,6 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
         $mandate = $oldSubscription->getMandate();
         $mandateAcceptedDate = $mandate->getAcceptedDate();
 
-        $subscriptionWebhookUrl = $this->getSubscriptionWebhookUrl();
-        $transactionWebhookUrl = $this->getTransactionWebhookUrl();
-
         $subscriptionAttributes = [
             'mandate_code' => $mandate->getMandateCode(),
             'mandate_accepted' => true,
@@ -116,8 +113,6 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
                 $mandateAcceptedDate->format('Y-m-d\TH:i:sP') :
                 '',
             'confirmation_sent' => 'true',
-            'subscription_webhook_url' => $subscriptionWebhookUrl,
-            'transaction_webhook_url' => $transactionWebhookUrl,
             'status' => 'active',
             'start_date' => $startDate->format('Y-m-d\TH:i:sP'),
             'metadata' => json_encode($oldSubscription->getMeta()),
@@ -127,30 +122,6 @@ class SubscriptionPlanSwitcher implements SubscriptionPlanSwitcherInterface
             $oldSubscription->getCustomerId(),
             $newSubscriptionPlanId,
             $subscriptionAttributes
-        );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getSubscriptionWebhookUrl(): string
-    {
-        return add_query_arg(
-            'ecurring-webhook',
-            'subscription',
-            home_url('/')
-        );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getTransactionWebhookUrl(): string
-    {
-        return add_query_arg(
-            'ecurring-webhook',
-            'transaction',
-            home_url('/')
         );
     }
 }
