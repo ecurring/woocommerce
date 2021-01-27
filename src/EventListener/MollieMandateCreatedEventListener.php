@@ -202,11 +202,11 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         }
 
         try {
-            $subscriptionData = $this->apiClient->getSubscriptionById($subscriptionId);
+            $subscriptionData = $this->subscriptionsApiClient->subscriptionExists($subscriptionId);
         } catch (ApiClientException $exception) {
             eCurring_WC_Plugin::debug(
                 sprintf(
-                    'Failed to check if subscription %1$s exists, caught API client exception. Exception message: %2$s',
+                    'Failed to check if subscription %1$s exists, caught exception with message: %2$s',
                     $subscriptionId,
                     $exception->getMessage()
                 )
