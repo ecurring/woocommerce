@@ -12,6 +12,7 @@ use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
+use eCurring_WC_Helper_Data;
 use eCurring_WC_Plugin;
 use Mollie\Api\Resources\Payment;
 use WC_Order;
@@ -45,6 +46,10 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @var Customers
      */
     protected $customersApiClient;
+    /**
+     * @var eCurring_WC_Helper_Data
+     */
+    protected $dataHelper;
 
     /**
      * MollieMandateCreatedEventListener constructor.
@@ -54,13 +59,15 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @param Customers $customersApiClient
      * @param Repository $repository
      * @param CustomerCrudInterface $customerCrud
+     * @param eCurring_WC_Helper_Data $dataHelper
      */
     public function __construct(
         ApiClient $apiClient,
         Subscriptions $subscriptionsApiClient,
         Customers $customersApiClient,
         Repository $repository,
-        CustomerCrudInterface $customerCrud
+        CustomerCrudInterface $customerCrud,
+        eCurring_WC_Helper_Data $dataHelper
     ) {
 
         $this->apiClient = $apiClient;
@@ -68,6 +75,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         $this->repository = $repository;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
         $this->customersApiClient = $customersApiClient;
+        $this->dataHelper = $dataHelper;
     }
 
     /**
@@ -150,13 +158,10 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function createEcurringCustomerConnectedToMollieCustomer(string $mollieCustomerId, WC_Order $order): string
     {
-        $response = $this->customersApiClient->createCustomer([
-            'first_name' => $order->get_billing_first_name(),
-            'last_name' => $order->get_billing_last_name(),
-            'email' => $order->get_billing_email(),
-            'language' => 'en',
-            'external_id' => $mollieCustomerId,
-        ]);
+        $customerAttributes = $this->dataHelper->customerAttributesFromOrder($order);
+        $customerAttributes['external_id'] = $mollieCustomerId;
+
+        $response = $this->customersApiClient->createCustomer($customerAttributes);
 
         return (string) $response['data']['id'];
     }
