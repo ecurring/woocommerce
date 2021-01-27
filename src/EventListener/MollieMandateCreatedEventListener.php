@@ -114,7 +114,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 
                 return;
             }
-            
+
             $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
 
             if (! $ecurringCustomerId) {
