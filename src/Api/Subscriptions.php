@@ -15,11 +15,11 @@ use Exception;
 class Subscriptions
 {
     /**
-     * @var ApiClient
+     * @var ApiClientInterface
      */
     protected $apiClient;
     /**
-     * @var DataBasedSubscriptionFactory
+     * @var DataBasedSubscriptionFactoryInterface
      */
     protected $subscriptionFactory;
     /**
