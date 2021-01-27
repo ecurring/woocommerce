@@ -6,6 +6,7 @@ namespace Ecurring\WooEcurring\Api;
 
 use DateTime;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 use eCurring_WC_Helper_Api;
@@ -28,11 +29,14 @@ class Subscriptions
 
     /**
      * @param eCurring_WC_Helper_Api $apiHelper
-     * @param ApiClient $apiClient
-     * @param DataBasedSubscriptionFactory $subscriptionFactory
+     * @param ApiClientInterface $apiClient
+     * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
      */
-    public function __construct(eCurring_WC_Helper_Api $apiHelper, ApiClient $apiClient, DataBasedSubscriptionFactory $subscriptionFactory)
-    {
+    public function __construct(
+        eCurring_WC_Helper_Api $apiHelper,
+        ApiClientInterface $apiClient,
+        DataBasedSubscriptionFactoryInterface $subscriptionFactory
+    ) {
         $this->apiHelper = $apiHelper;
         $this->apiClient = $apiClient;
         $this->subscriptionFactory = $subscriptionFactory;
