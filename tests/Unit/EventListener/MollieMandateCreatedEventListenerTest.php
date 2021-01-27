@@ -3,6 +3,7 @@
 namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
+use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener;
@@ -40,8 +41,9 @@ class MollieMandateCreatedEventListenerTest extends TestCase
         $customerCrudMock = $this->createMock(CustomerCrudInterface::class);
         $subscriptionsApiClientMock = $this->createMock(Subscriptions::class);
         $repositoryMock = $this->createMock(Repository::class);
+        $customersApiClientMock = $this->createMock(Customers::class);
 
-        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionsApiClientMock, $repositoryMock, $customerCrudMock);
+        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionsApiClientMock, $customersApiClientMock, $repositoryMock, $customerCrudMock);
 
         expect('add_action')
         ->once()
@@ -72,9 +74,8 @@ class MollieMandateCreatedEventListenerTest extends TestCase
         $orderId = 456;
         $siteUrl = 'http://example.com';
 
-        /** @var ApiClient&MockObject $apiClientMock */
-        $apiClientMock = $this->createMock(ApiClient::class);
-        $apiClientMock->expects($this->once())
+        $customersApiClientMock = $this->createMock(Customers::class);
+        $customersApiClientMock->expects($this->once())
             ->method('createCustomer')
             ->willReturn([
                 'data' => [
@@ -126,7 +127,10 @@ class MollieMandateCreatedEventListenerTest extends TestCase
             ->method('insert')
             ->with($subscriptionMock, $orderId);
 
-        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionsApiClientMock, $repositoryMock, $customerCrudMock);
+        /** @var ApiClient&MockObject $apiClientMock */
+        $apiClientMock = $this->createMock(ApiClient::class);
+
+        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionsApiClientMock, $customersApiClientMock, $repositoryMock, $customerCrudMock);
         $orderMock = $this->createMock(WC_Order::class);
         $orderMock->method('get_customer_id')
             ->willReturn($localUserId);
