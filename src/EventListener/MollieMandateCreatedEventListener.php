@@ -95,18 +95,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function onMollieMandateCreated($payment, WC_Order $order, string $mollieCustomerId, string $mandateId): void
     {
-        if ($this->subscriptionForOrderExists($order)) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Subscription already exists for order %1$d.' .
-                    ' New subscription will not be created.',
-                    $order->get_id()
-                )
-            );
-
-            return;
-        }
-
         try {
             /**
              * This needed to prevent possible situation when customer returns to the previous page
@@ -115,6 +103,18 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
              *
              * @see https://inpsyde.atlassian.net/browse/ECUR-20 for details.
              */
+            if ($this->subscriptionForOrderExists($order)) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Subscription already exists for order %1$d.' .
+                        ' New subscription will not be created.',
+                        $order->get_id()
+                    )
+                );
+
+                return;
+            }
+            
             $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
 
             if (! $ecurringCustomerId) {
@@ -183,6 +183,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @param WC_Order $order
      *
      * @return bool
+     *
+     * @throws ApiClientException
      */
     protected function subscriptionForOrderExists(WC_Order $order): bool
     {
@@ -192,20 +194,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             return false;
         }
 
-        try {
-            $subscriptionData = $this->subscriptionsApiClient->subscriptionExists($subscriptionId);
-        } catch (ApiClientException $exception) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Failed to check if subscription %1$s exists, caught exception with message: %2$s',
-                    $subscriptionId,
-                    $exception->getMessage()
-                )
-            );
-        }
-
-        return isset($subscriptionData['data']['type']) &&
-            $subscriptionData['data']['type'] === 'subscription';
+        return $this->subscriptionsApiClient->subscriptionExists($subscriptionId);
     }
 
     /**
