@@ -71,7 +71,7 @@ class eCurring_WC_Plugin
         $subscriptionsApiClient = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
         $subscriptionsSwitcher = new SubscriptionStatusSwitcher($subscriptionsApiClient, $repository);
 
-        (new MollieMandateCreatedEventListener($apiClient, $subscriptionsApiClient, $repository, $customerCrud))->init();
+        (new MollieMandateCreatedEventListener($apiClient, $subscriptionsApiClient, self::getCustomersApiClient(), $repository, $customerCrud))->init();
         (new AddToCartValidationEventListener())->init();
         (new PaymentCompletedEventListener($apiClient, $subscriptionsApiClient, $customerCrud, $subscriptionsSwitcher, $repository))->init();
 

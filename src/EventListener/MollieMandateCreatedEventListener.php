@@ -6,6 +6,7 @@ namespace Ecurring\WooEcurring\EventListener;
 
 use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
+use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
@@ -40,18 +41,24 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @var Subscriptions
      */
     protected $subscriptionsApiClient;
+    /**
+     * @var Customers
+     */
+    protected $customersApiClient;
 
     /**
      * MollieMandateCreatedEventListener constructor.
      *
      * @param ApiClient $apiClient Service able to perform actions against eCurring API.
      * @param Subscriptions $subscriptionsApiClient
+     * @param Customers $customersApiClient
      * @param Repository $repository
      * @param CustomerCrudInterface $customerCrud
      */
     public function __construct(
         ApiClient $apiClient,
         Subscriptions $subscriptionsApiClient,
+        Customers $customersApiClient,
         Repository $repository,
         CustomerCrudInterface $customerCrud
     ) {
@@ -60,6 +67,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         $this->customerCrud = $customerCrud;
         $this->repository = $repository;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
+        $this->customersApiClient = $customersApiClient;
     }
 
     /**
@@ -142,7 +150,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function createEcurringCustomerConnectedToMollieCustomer(string $mollieCustomerId, WC_Order $order): string
     {
-        $response = $this->apiClient->createCustomer([
+        $response = $this->customersApiClient->createCustomer([
             'first_name' => $order->get_billing_first_name(),
             'last_name' => $order->get_billing_last_name(),
             'email' => $order->get_billing_email(),
