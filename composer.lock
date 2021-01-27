@@ -1984,12 +1984,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "937a86b3ba04ea2195c96d8e31d5c2d23a7e7fc6"
+                "reference": "dd9d724537922398dccb359dee74cc1f6bf3fc0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/937a86b3ba04ea2195c96d8e31d5c2d23a7e7fc6",
-                "reference": "937a86b3ba04ea2195c96d8e31d5c2d23a7e7fc6",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/dd9d724537922398dccb359dee74cc1f6bf3fc0a",
+                "reference": "dd9d724537922398dccb359dee74cc1f6bf3fc0a",
                 "shasum": ""
             },
             "require": {
@@ -2041,7 +2041,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2020-12-17T10:56:03+00:00"
+            "time": "2021-01-26T14:26:09+00:00"
         },
         {
             "name": "mollie/mollie-api-php",
@@ -2136,12 +2136,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mollie/WooCommerce.git",
-                "reference": "bf3e922e9cf4786e109ebc1843774ae99701d6a0"
+                "reference": "dffe3b4b57a9e157e95f4e9362abbfa92bd4fa84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/bf3e922e9cf4786e109ebc1843774ae99701d6a0",
-                "reference": "bf3e922e9cf4786e109ebc1843774ae99701d6a0",
+                "url": "https://api.github.com/repos/mollie/WooCommerce/zipball/dffe3b4b57a9e157e95f4e9362abbfa92bd4fa84",
+                "reference": "dffe3b4b57a9e157e95f4e9362abbfa92bd4fa84",
                 "shasum": ""
             },
             "require": {
@@ -2192,7 +2192,7 @@
                 "source": "https://github.com/mollie/WooCommerce/tree/develop",
                 "issues": "https://github.com/mollie/WooCommerce/issues"
             },
-            "time": "2021-01-19T09:17:12+00:00"
+            "time": "2021-01-26T10:31:09+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4967,12 +4967,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "2f833cf54d5fe9646638c50778016a06b6fe1603"
+                "reference": "13c9099cdb470223b5863f7d11d17554b2dc6404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/2f833cf54d5fe9646638c50778016a06b6fe1603",
-                "reference": "2f833cf54d5fe9646638c50778016a06b6fe1603",
+                "url": "https://api.github.com/repos/symfony/string/zipball/13c9099cdb470223b5863f7d11d17554b2dc6404",
+                "reference": "13c9099cdb470223b5863f7d11d17554b2dc6404",
                 "shasum": ""
             },
             "require": {
@@ -5039,7 +5039,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-12T14:28:55+00:00"
+            "time": "2021-01-26T09:33:05+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -5093,12 +5093,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "ae172b2c04f4f2341e09b68a5391baefbccfc905"
+                "reference": "06240988657c656b02f2b45f910b194206c2c32f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/ae172b2c04f4f2341e09b68a5391baefbccfc905",
-                "reference": "ae172b2c04f4f2341e09b68a5391baefbccfc905",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/06240988657c656b02f2b45f910b194206c2c32f",
+                "reference": "06240988657c656b02f2b45f910b194206c2c32f",
                 "shasum": ""
             },
             "require": {
@@ -5185,7 +5185,7 @@
                 "inspection",
                 "php"
             ],
-            "time": "2021-01-24T20:00:21+00:00"
+            "time": "2021-01-26T04:41:51+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -5324,16 +5324,16 @@
         },
         {
             "name": "woocommerce/woocommerce",
-            "version": "4.9.1",
+            "version": "4.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/woocommerce/woocommerce.git",
-                "reference": "1667a1e8c560901e6ecbcec7115098a4ea574a48"
+                "reference": "e3b69b901143de3c42d90b9d4bdc97a8821133e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/woocommerce/woocommerce/zipball/1667a1e8c560901e6ecbcec7115098a4ea574a48",
-                "reference": "1667a1e8c560901e6ecbcec7115098a4ea574a48",
+                "url": "https://api.github.com/repos/woocommerce/woocommerce/zipball/e3b69b901143de3c42d90b9d4bdc97a8821133e2",
+                "reference": "e3b69b901143de3c42d90b9d4bdc97a8821133e2",
                 "shasum": ""
             },
             "require": {
@@ -5393,7 +5393,7 @@
             ],
             "description": "An eCommerce toolkit that helps you sell anything. Beautifully.",
             "homepage": "https://woocommerce.com/",
-            "time": "2021-01-19T10:16:55+00:00"
+            "time": "2021-01-25T14:41:31+00:00"
         },
         {
             "name": "woocommerce/woocommerce-admin",

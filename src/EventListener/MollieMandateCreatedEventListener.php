@@ -168,7 +168,9 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 
         $product = $item->get_product();
 
-        return (string) $product->get_meta('_ecurring_subscription_plan');
+        $subscriptionPlanMetaValue = $product->get_meta('_ecurring_subscription_plan');
+
+        return $subscriptionPlanMetaValue === '0' ? '' : strval($subscriptionPlanMetaValue);
     }
 
     /**
