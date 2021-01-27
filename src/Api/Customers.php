@@ -7,13 +7,24 @@ use eCurring_WC_Helper_Api;
 class Customers
 {
     /**
+     * @var ApiClientInterface
+     */
+    protected $apiClient;
+    /**
      * @var eCurring_WC_Helper_Api
      */
     private $api;
 
-    public function __construct(eCurring_WC_Helper_Api $api)
+    /**
+     * Customers constructor.
+     *
+     * @param eCurring_WC_Helper_Api $api Old API client, still used by some methods.
+     * @param ApiClientInterface $apiClient A new API client.
+     */
+    public function __construct(eCurring_WC_Helper_Api $api, ApiClientInterface $apiClient)
     {
         $this->api = $api;
+        $this->apiClient = $apiClient;
     }
 
     public function getCustomerById($customerId)
@@ -29,6 +40,31 @@ class Customers
 
         set_transient("ecurring_customer_{$customerId}", $response, 5 * MINUTE_IN_SECONDS);
         return $response;
+    }
+
+    /**
+     * Create an eCurring customer with given attributes.
+     *
+     * @param array $customerAttributes Attributes to use for create customer API call.
+     *
+     * @throws ApiClientException If request failed.
+     *
+     * @return array Created customer data.
+     */
+    public function createCustomer(array $customerAttributes): array
+    {
+        $requestData = [
+            'data' => [
+                'type' => 'customer',
+                'attributes' => $customerAttributes,
+            ],
+        ];
+
+        return $this->apiClient->apiCall(
+            'POST',
+            'https://api.ecurring.com/customers?_beta=1',
+            $requestData
+        );
     }
 
     public function getCustomerSubscriptions($customerId)
