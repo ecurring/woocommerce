@@ -228,6 +228,28 @@ class Subscriptions
     }
 
     /**
+     * Check if subscription exists on the eCurring side.
+     *
+     * @param string $subscriptionId Subscription id to check.
+     *
+     * @return bool
+     * @throws ApiClientException
+     */
+    public function subscriptionExists(string $subscriptionId): bool
+    {
+        $url = sprintf(
+            'https://api.ecurring.com/subscriptions/%1$s',
+            $subscriptionId
+        );
+
+        $url = add_query_arg('fields[subscription]', 'id', $url);
+
+        $subscriptionData = $this->apiClient->apiCall('GET', $url);
+
+        return isset($subscriptionData['data']['id']);
+    }
+
+    /**
      * @param $subscriptionId
      *
      * @return SubscriptionInterface
