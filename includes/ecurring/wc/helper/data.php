@@ -449,7 +449,7 @@ class eCurring_WC_Helper_Data {
      * @param WC_Order $order
      * @return array
      */
-    private function customerAttributesFromOrder(WC_Order $order)
+    public function customerAttributesFromOrder(WC_Order $order)
     {
         $fields = [
             'first_name' => trim($order->get_billing_first_name()),
