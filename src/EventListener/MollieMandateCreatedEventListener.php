@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EventListener;
 
-use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\Subscriptions;
@@ -24,11 +23,6 @@ use WC_Order_Item_Product;
  */
 class MollieMandateCreatedEventListener implements EventListenerInterface
 {
-
-    /**
-     * @var ApiClient
-     */
-    protected $apiClient;
 
     /**
      * @var CustomerCrudInterface
@@ -54,7 +48,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
     /**
      * MollieMandateCreatedEventListener constructor.
      *
-     * @param ApiClient $apiClient Service able to perform actions against eCurring API.
      * @param Subscriptions $subscriptionsApiClient
      * @param Customers $customersApiClient
      * @param Repository $repository
@@ -62,7 +55,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @param eCurring_WC_Helper_Data $dataHelper
      */
     public function __construct(
-        ApiClient $apiClient,
         Subscriptions $subscriptionsApiClient,
         Customers $customersApiClient,
         Repository $repository,
@@ -70,7 +62,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
         eCurring_WC_Helper_Data $dataHelper
     ) {
 
-        $this->apiClient = $apiClient;
         $this->customerCrud = $customerCrud;
         $this->repository = $repository;
         $this->subscriptionsApiClient = $subscriptionsApiClient;

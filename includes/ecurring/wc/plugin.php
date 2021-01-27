@@ -72,7 +72,6 @@ class eCurring_WC_Plugin
         $subscriptionsSwitcher = new SubscriptionStatusSwitcher($subscriptionsApiClient, $repository);
 
         (new MollieMandateCreatedEventListener(
-            $apiClient,
             $subscriptionsApiClient,
             self::getCustomersApiClient(),
             $repository,
