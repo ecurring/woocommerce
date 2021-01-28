@@ -16,8 +16,6 @@
  */
 
 use Dhii\Versions\StringVersionFactory;
-use Ecurring\WooEcurring\Api\ApiClient;
-use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\EnvironmentChecker\EnvironmentChecker;
 use Ecurring\WooEcurring\Settings\SettingsCrud;
@@ -198,8 +196,8 @@ function eCurringInitialize()
 
         $settingsHelper = new eCurring_WC_Helper_Settings();
         $apiHelper = new eCurring_WC_Helper_Api($settingsHelper);
-        $customerApi = new Customers($apiHelper);
-        $apiClient = new ApiClient($settingsHelper->getApiKey() ?? '');
+        $customerApi = eCurring_WC_Plugin::getCustomersApiClient();
+        $apiClient = eCurring_WC_Plugin::getApiClient();
         $subscriptionMandateFactory = new SubscriptionMandateFactory();
         $subscriptionStatusFactory = new SubscriptionStatusFactory();
         $subscriptionsFactory = new DataBasedSubscriptionFactory(

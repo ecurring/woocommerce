@@ -10,6 +10,7 @@ use Ecurring\WooEcurring\AdminPages\Form\FormFieldsCollectionBuilder;
 use Ecurring\WooEcurring\AdminPages\Form\NonceFieldBuilder;
 use Ecurring\WooEcurring\AdminPages\OrderEditPageController;
 use Ecurring\WooEcurring\AdminPages\ProductEditPageController;
+use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Api\Subscriptions;
@@ -65,13 +66,19 @@ class eCurring_WC_Plugin
             $subscriptionStatusFactory
         );
 
-        $customersApiClient = new Customers(self::getApiHelper());
-        $repository = new Repository($subscriptionFactory, $customersApiClient);
+        $repository = new Repository($subscriptionFactory, self::getCustomersApiClient());
 
         $subscriptionsApiClient = new Subscriptions(self::getApiHelper(), $apiClient, $subscriptionFactory);
         $subscriptionsSwitcher = new SubscriptionStatusSwitcher($subscriptionsApiClient, $repository);
 
-        (new MollieMandateCreatedEventListener($apiClient, $subscriptionsApiClient, $repository, $customerCrud))->init();
+        (new MollieMandateCreatedEventListener(
+            $subscriptionsApiClient,
+            self::getCustomersApiClient(),
+            $repository,
+            $customerCrud,
+            self::getDataHelper()
+        )
+        )->init();
         (new AddToCartValidationEventListener())->init();
         (new PaymentCompletedEventListener($apiClient, $subscriptionsApiClient, $customerCrud, $subscriptionsSwitcher, $repository))->init();
 
@@ -172,7 +179,7 @@ class eCurring_WC_Plugin
         add_filter('woocommerce_product_single_add_to_cart_text', [ __CLASS__, 'eCurringAddToCartText'], 10, 2);
 
         //Disable quantity input for subscription products
-        add_filter('woocommerce_is_sold_individually', array ( __CLASS__, 'eCurringDisableQuantity'), 10, 2);
+        add_filter('woocommerce_is_sold_individually', [ __CLASS__, 'eCurringDisableQuantity'], 10, 2);
 
         add_filter('mollie-payments-for-woocommerce_is_subscription_payment', [__CLASS__, 'eCurringSubscriptionIsInCart']);
 
@@ -303,6 +310,17 @@ class eCurring_WC_Plugin
         return $status_helper;
     }
 
+    public static function getApiClient(): ApiClientInterface
+    {
+        static $apiClient;
+
+        if (! $apiClient) {
+            $apiClient = new ApiClient(self::getSettingsHelper()->getApiKey() ?? '');
+        }
+
+        return $apiClient;
+    }
+
     public static function getSubscriptionRepository(): Repository
     {
         static $repository;
@@ -336,7 +354,7 @@ class eCurring_WC_Plugin
         static $customersApiClient;
 
         if (!$customersApiClient) {
-            $customersApiClient = new Customers(self::getApiHelper());
+            $customersApiClient = new Customers(self::getApiHelper(), self::getApiClient());
         }
 
         return $customersApiClient;

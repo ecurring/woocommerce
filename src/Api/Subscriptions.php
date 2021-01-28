@@ -6,6 +6,7 @@ namespace Ecurring\WooEcurring\Api;
 
 use DateTime;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactory;
+use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionFactoryInterface;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 use eCurring_WC_Helper_Api;
@@ -14,11 +15,11 @@ use Exception;
 class Subscriptions
 {
     /**
-     * @var ApiClient
+     * @var ApiClientInterface
      */
     protected $apiClient;
     /**
-     * @var DataBasedSubscriptionFactory
+     * @var DataBasedSubscriptionFactoryInterface
      */
     protected $subscriptionFactory;
     /**
@@ -28,11 +29,14 @@ class Subscriptions
 
     /**
      * @param eCurring_WC_Helper_Api $apiHelper
-     * @param ApiClient $apiClient
-     * @param DataBasedSubscriptionFactory $subscriptionFactory
+     * @param ApiClientInterface $apiClient
+     * @param DataBasedSubscriptionFactoryInterface $subscriptionFactory
      */
-    public function __construct(eCurring_WC_Helper_Api $apiHelper, ApiClient $apiClient, DataBasedSubscriptionFactory $subscriptionFactory)
-    {
+    public function __construct(
+        eCurring_WC_Helper_Api $apiHelper,
+        ApiClientInterface $apiClient,
+        DataBasedSubscriptionFactoryInterface $subscriptionFactory
+    ) {
         $this->apiHelper = $apiHelper;
         $this->apiClient = $apiClient;
         $this->subscriptionFactory = $subscriptionFactory;
@@ -221,6 +225,28 @@ class Subscriptions
         }
 
         return $subscriptions;
+    }
+
+    /**
+     * Check if subscription exists on the eCurring side.
+     *
+     * @param string $subscriptionId Subscription id to check.
+     *
+     * @return bool
+     * @throws ApiClientException
+     */
+    public function subscriptionExists(string $subscriptionId): bool
+    {
+        $url = sprintf(
+            'https://api.ecurring.com/subscriptions/%1$s',
+            $subscriptionId
+        );
+
+        $url = add_query_arg('fields[subscription]', 'id', $url);
+
+        $subscriptionData = $this->apiClient->apiCall('GET', $url);
+
+        return isset($subscriptionData['data']['id']);
     }
 
     /**

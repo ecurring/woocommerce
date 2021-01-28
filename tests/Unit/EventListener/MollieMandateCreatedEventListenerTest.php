@@ -2,15 +2,17 @@
 
 namespace Ecurring\WooEcurringTests\Unit\EventListener;
 
-use Ecurring\WooEcurring\Api\ApiClient;
+use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EventListener\MollieMandateCreatedEventListener;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionInterface;
 use Ecurring\WooEcurringTests\TestCase;
+use eCurring_WC_Helper_Data;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use WC_Order;
 use WC_Order_Item;
@@ -32,16 +34,14 @@ class MollieMandateCreatedEventListenerTest extends TestCase
      */
     public function testInit()
     {
-
-        /** @var ApiClient&MockObject $apiClientMock */
-        $apiClientMock = $this->createMock(ApiClient::class);
-
         /** @var CustomerCrudInterface&MockObject $customerCrudMock */
         $customerCrudMock = $this->createMock(CustomerCrudInterface::class);
         $subscriptionsApiClientMock = $this->createMock(Subscriptions::class);
         $repositoryMock = $this->createMock(Repository::class);
+        $customersApiClientMock = $this->createMock(Customers::class);
+        $dataHelperMock = $this->createMock(eCurring_WC_Helper_Data::class);
 
-        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionsApiClientMock, $repositoryMock, $customerCrudMock);
+        $sut = new MollieMandateCreatedEventListener($subscriptionsApiClientMock, $customersApiClientMock, $repositoryMock, $customerCrudMock, $dataHelperMock);
 
         expect('add_action')
         ->once()
@@ -72,15 +72,16 @@ class MollieMandateCreatedEventListenerTest extends TestCase
         $orderId = 456;
         $siteUrl = 'http://example.com';
 
-        /** @var ApiClient&MockObject $apiClientMock */
-        $apiClientMock = $this->createMock(ApiClient::class);
-        $apiClientMock->expects($this->once())
+        $customersApiClientMock = $this->createMock(Customers::class);
+        $customersApiClientMock->expects($this->once())
             ->method('createCustomer')
             ->willReturn([
                 'data' => [
                     'id' => $ecurringCustomerId,
                 ]
             ]);
+
+        /** @var SubscriptionInterface&MockObject $subscriptionMock */
         $subscriptionMock = $this->createMock(SubscriptionInterface::class);
 
         /** @var CustomerCrudInterface&MockObject $customerCrudMock */
@@ -126,13 +127,18 @@ class MollieMandateCreatedEventListenerTest extends TestCase
             ->method('insert')
             ->with($subscriptionMock, $orderId);
 
-        $sut = new MollieMandateCreatedEventListener($apiClientMock, $subscriptionsApiClientMock, $repositoryMock, $customerCrudMock);
         $orderMock = $this->createMock(WC_Order::class);
         $orderMock->method('get_customer_id')
             ->willReturn($localUserId);
         $orderMock->expects($this->any())
             ->method('get_id')
             ->willReturn($orderId);
+
+        /** @var MockInterface&eCurring_WC_Helper_Data $dataHelperMock */
+        $dataHelperMock = Mockery::mock(eCurring_WC_Helper_Data::class);
+        $dataHelperMock->shouldReceive('customerAttributesFromOrder')
+            ->with($orderMock)
+            ->andReturn([]);
 
         $orderItemProductMock = $this->createMock(WC_Order_Item_Product::class);
         $orderItemMock = $this->createMock(WC_Order_Item::class);
@@ -146,9 +152,6 @@ class MollieMandateCreatedEventListenerTest extends TestCase
                     $orderItemProductMock,
                 ]
             );
-        $orderMock->expects($this->once())
-            ->method('get_billing_first_name')
-            ->willReturn('Name');
 
         $productMock = $this->createMock(WC_Product::class);
         $productMock->method('get_meta')
@@ -166,6 +169,8 @@ class MollieMandateCreatedEventListenerTest extends TestCase
             ->justReturn('');
 
         when('get_user_meta')->justReturn(0);
+
+        $sut = new MollieMandateCreatedEventListener($subscriptionsApiClientMock, $customersApiClientMock, $repositoryMock, $customerCrudMock, $dataHelperMock);
 
         $sut->onMollieMandateCreated(null, $orderMock, $mollieCustomerId, $mollieMandateId);
     }

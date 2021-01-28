@@ -11,6 +11,19 @@ interface ApiClientInterface
 {
 
     /**
+     * Make eCurring API request call.
+     *
+     * @param string     $method HTTP Method, one of the GET, POST, PATH, DELETE.
+     * @param string     $url    Request target URL.
+     * @param bool|array $data   Content to be sent in JSON-encoded format as request body.
+     *
+     * @return array Parsed response data.
+     *
+     * @throws ApiClientException
+     */
+    public function apiCall(string $method, string $url, $data = false): array;
+
+    /**
      * @param string $subscriptionId
      *
      * @return array Subscription data or request error details.
@@ -30,15 +43,4 @@ interface ApiClientInterface
      * @throws ApiClientException If request failed.
      */
     public function addMollieMandateToTheEcurringCustomer(string $customerId, string $mollieMandateId): array;
-
-    /**
-     * Create an eCurring customer with given attributes.
-     *
-     * @param array $customerAttributes Attributes to use for create customer API call.
-     *
-     * @throws ApiClientException If request failed.
-     *
-     * @return array Created customer data.
-     */
-    public function createCustomer(array $customerAttributes): array;
 }

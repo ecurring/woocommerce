@@ -449,7 +449,7 @@ class eCurring_WC_Helper_Data {
      * @param WC_Order $order
      * @return array
      */
-    private function customerAttributesFromOrder(WC_Order $order)
+    public function customerAttributesFromOrder(WC_Order $order)
     {
         $fields = [
             'first_name' => trim($order->get_billing_first_name()),
@@ -460,7 +460,6 @@ class eCurring_WC_Helper_Data {
             'city' => trim($order->get_billing_city()),
             'country_iso2' => trim($order->get_billing_country()),
             'street' => trim($order->get_billing_address_1()),
-            'house_number' => trim($order->get_billing_address_2()),
             'postalcode' => trim($order->get_billing_postcode()),
             'language' => $this->getCustomerLanguage($order),
         ];

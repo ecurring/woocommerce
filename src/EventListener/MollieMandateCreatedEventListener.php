@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Ecurring\WooEcurring\EventListener;
 
-use Ecurring\WooEcurring\Api\ApiClient;
 use Ecurring\WooEcurring\Api\ApiClientException;
+use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\Subscriptions;
 use Ecurring\WooEcurring\Customer\CustomerCrudInterface;
 use Ecurring\WooEcurring\EcurringException;
 use Ecurring\WooEcurring\Subscription\Repository;
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
+use eCurring_WC_Helper_Data;
 use eCurring_WC_Plugin;
 use Mollie\Api\Resources\Payment;
 use WC_Order;
@@ -24,11 +25,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
 {
 
     /**
-     * @var ApiClient
-     */
-    protected $apiClient;
-
-    /**
      * @var CustomerCrudInterface
      */
     protected $customerCrud;
@@ -40,26 +36,37 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @var Subscriptions
      */
     protected $subscriptionsApiClient;
+    /**
+     * @var Customers
+     */
+    protected $customersApiClient;
+    /**
+     * @var eCurring_WC_Helper_Data
+     */
+    protected $dataHelper;
 
     /**
      * MollieMandateCreatedEventListener constructor.
      *
-     * @param ApiClient $apiClient Service able to perform actions against eCurring API.
      * @param Subscriptions $subscriptionsApiClient
+     * @param Customers $customersApiClient
      * @param Repository $repository
      * @param CustomerCrudInterface $customerCrud
+     * @param eCurring_WC_Helper_Data $dataHelper
      */
     public function __construct(
-        ApiClient $apiClient,
         Subscriptions $subscriptionsApiClient,
+        Customers $customersApiClient,
         Repository $repository,
-        CustomerCrudInterface $customerCrud
+        CustomerCrudInterface $customerCrud,
+        eCurring_WC_Helper_Data $dataHelper
     ) {
 
-        $this->apiClient = $apiClient;
         $this->customerCrud = $customerCrud;
         $this->repository = $repository;
         $this->subscriptionsApiClient = $subscriptionsApiClient;
+        $this->customersApiClient = $customersApiClient;
+        $this->dataHelper = $dataHelper;
     }
 
     /**
@@ -88,18 +95,6 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function onMollieMandateCreated($payment, WC_Order $order, string $mollieCustomerId, string $mandateId): void
     {
-        if ($this->subscriptionForOrderExists($order)) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Subscription already exists for order %1$d.' .
-                    ' New subscription will not be created.',
-                    $order->get_id()
-                )
-            );
-
-            return;
-        }
-
         try {
             /**
              * This needed to prevent possible situation when customer returns to the previous page
@@ -108,6 +103,18 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
              *
              * @see https://inpsyde.atlassian.net/browse/ECUR-20 for details.
              */
+            if ($this->subscriptionForOrderExists($order)) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Subscription already exists for order %1$d.' .
+                        ' New subscription will not be created.',
+                        $order->get_id()
+                    )
+                );
+
+                return;
+            }
+
             $ecurringCustomerId = $this->customerCrud->getEcurringCustomerId($order->get_customer_id());
 
             if (! $ecurringCustomerId) {
@@ -142,13 +149,10 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      */
     public function createEcurringCustomerConnectedToMollieCustomer(string $mollieCustomerId, WC_Order $order): string
     {
-        $response = $this->apiClient->createCustomer([
-            'first_name' => $order->get_billing_first_name(),
-            'last_name' => $order->get_billing_last_name(),
-            'email' => $order->get_billing_email(),
-            'language' => 'en',
-            'external_id' => $mollieCustomerId,
-        ]);
+        $customerAttributes = $this->dataHelper->customerAttributesFromOrder($order);
+        $customerAttributes['external_id'] = $mollieCustomerId;
+
+        $response = $this->customersApiClient->createCustomer($customerAttributes);
 
         return (string) $response['data']['id'];
     }
@@ -179,6 +183,8 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
      * @param WC_Order $order
      *
      * @return bool
+     *
+     * @throws ApiClientException
      */
     protected function subscriptionForOrderExists(WC_Order $order): bool
     {
@@ -188,20 +194,7 @@ class MollieMandateCreatedEventListener implements EventListenerInterface
             return false;
         }
 
-        try {
-            $subscriptionData = $this->apiClient->getSubscriptionById($subscriptionId);
-        } catch (ApiClientException $exception) {
-            eCurring_WC_Plugin::debug(
-                sprintf(
-                    'Failed to check if subscription %1$s exists, caught API client exception. Exception message: %2$s',
-                    $subscriptionId,
-                    $exception->getMessage()
-                )
-            );
-        }
-
-        return isset($subscriptionData['data']['type']) &&
-            $subscriptionData['data']['type'] === 'subscription';
+        return $this->subscriptionsApiClient->subscriptionExists($subscriptionId);
     }
 
     /**

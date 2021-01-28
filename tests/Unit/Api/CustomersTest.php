@@ -2,6 +2,7 @@
 
 namespace Ecurring\WooEcurringTests\Unit\Api;
 
+use Ecurring\WooEcurring\Api\ApiClientInterface;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurringTests\TestCase;
 use eCurring_WC_Helper_Api;
@@ -24,8 +25,9 @@ class CustomersTest extends TestCase
             ],
         ];
         $api = $this->createMock(eCurring_WC_Helper_Api::class);
+        $apiClientMock = $this->createMock(ApiClientInterface::class);
 
-        $sut = new Customers($api);
+        $sut = new Customers($api, $apiClientMock);
 
         when('get_transient')->justReturn(false);
         when('set_transient')->justReturn(true);
@@ -44,7 +46,8 @@ class CustomersTest extends TestCase
     public function testGetCustomerByIdCached()
     {
         $api = $this->createMock(eCurring_WC_Helper_Api::class);
-        $sut = new Customers($api);
+        $apiClientMock = $this->createMock(ApiClientInterface::class);
+        $sut = new Customers($api, $apiClientMock);
 
         when('get_transient')->justReturn('foo');
 
@@ -64,7 +67,8 @@ class CustomersTest extends TestCase
         ];
         $api = $this->createMock(eCurring_WC_Helper_Api::class);
 
-        $sut = new Customers($api);
+        $apiClientMock = $this->createMock(ApiClientInterface::class);
+        $sut = new Customers($api, $apiClientMock);
 
         when('get_transient')->justReturn(false);
         when('set_transient')->justReturn(true);
@@ -83,7 +87,8 @@ class CustomersTest extends TestCase
     public function testGetCustomerSubscriptionsCached()
     {
         $api = $this->createMock(eCurring_WC_Helper_Api::class);
-        $sut = new Customers($api);
+        $apiClientMock = $this->createMock(ApiClientInterface::class);
+        $sut = new Customers($api, $apiClientMock);
 
         when('get_transient')->justReturn('foo');
 
