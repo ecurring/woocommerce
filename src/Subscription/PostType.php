@@ -27,7 +27,7 @@ class PostType
 
         add_filter(
             'post_row_actions',
-            function ($actions) {
+            static function ($actions) {
                 if (get_post_type() === 'esubscriptions') {
                     unset($actions['edit']);
                     unset($actions['view']);
@@ -52,6 +52,27 @@ class PostType
                         'name' => esc_html__('Subscriptions', 'woo-ecurring'),
                         'singular_name' => esc_html__('Subscription', 'woo-ecurring'),
                         'menu_name' => esc_html__('Subscriptions', 'woo-ecurring'),
+                        'add_new_item' => __('Add New Subscription', 'woo-ecurring'),
+                        'new_item' => __('New Subscription', 'woo-ecurring'),
+                        'edit_item' => __('Edit Subscription', 'woo-ecurring'),
+                        'view_item' => __('View Subscription', 'woo-ecurring'),
+                        'all_items' => __('All Subscriptions', 'woo-ecurring'),
+                        'search_items' => __('Search Subscriptions', 'woo-ecurring'),
+                        'not_found' => __('No subscriptions found.', 'woo-ecurring'),
+                        'not_found_in_trash' => __(
+                            'No subscriptions found in Trash.',
+                            'woo-ecurring'
+                        ),
+                        'items_list_navigation' => _x(
+                            'Subscriptions list navigation',
+                            'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4',
+                            'woo-ecurring'
+                        ),
+                        'items_list' => _x(
+                            'Subscriptions list',
+                            'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4',
+                            'woo-ecurring'
+                        ),
                     ],
                     'public' => false,
                     'show_ui' => true,
