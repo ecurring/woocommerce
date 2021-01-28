@@ -140,7 +140,8 @@ function ecurring_webhook( $request ) {
 					$order->set_address( $address, 'billing' );
 					$order->set_address( $shippingAddress, 'shipping' );
 					$order->calculate_totals();
-
+					$order->set_total(wc_format_decimal($transaction_attrs['amount']));
+					$order->set_currency('EUR');
 					$order->set_parent_id( $subscription_order_id );
 					$order->save();
 
