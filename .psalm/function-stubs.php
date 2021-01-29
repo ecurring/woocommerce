@@ -47,8 +47,3 @@ function wc_price($value): string
 {
     return (string) $value;
 }
-
-function wp_post_revision_title( $revision, $link = true )
-{
-    return '';
-}
