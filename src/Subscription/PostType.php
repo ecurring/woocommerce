@@ -66,12 +66,12 @@ class PostType
                         ),
                         'items_list_navigation' => _x(
                             'Subscriptions list navigation',
-                            'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4',
+                            'Screen reader text for the pagination heading on the post type listing screen. Default "Posts list navigation"/"Pages list navigation". Added in 4.4',
                             'woo-ecurring'
                         ),
                         'items_list' => _x(
                             'Subscriptions list',
-                            'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4',
+                            'Screen reader text for the items list heading on the post type listing screen. Default "Posts list"/"Pages list". Added in 4.4',
                             'woo-ecurring'
                         ),
                     ],
