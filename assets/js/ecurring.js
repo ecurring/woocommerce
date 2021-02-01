@@ -78,7 +78,7 @@ function canceleCurringSubscriptionWithID(e) {
                 product_id: productId
             };
 
-        $.post( ajaxurl, data, function( response ) {
+        $.post( woo_ecurring_ajax.ajax_url, data, function( response ) {
 
             if (response.result === 'success') {
                 if (response.is_ajax == 'yes') {
