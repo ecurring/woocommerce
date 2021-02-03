@@ -114,14 +114,6 @@ function ecurring_webhook( $request ) {
 					$order = wc_get_order( $subscription_order_id );
 
 					update_post_meta( $subscription_order_id, '_ecurring_transaction_id', $transaction_id );
-					$externalPaymentId = '';
-
-					$transactionHistory = $transaction_attrs['history'] ?? [];
-					foreach($transactionHistory as $historyElement){
-					    if(isset($historyElement['status']) && $historyElement['status'] === 'fulfilled'){
-                            $externalPaymentId = (string) $historyElement['external_payment_id'] ?? '';
-                        }
-                    }
 
 					$order->update_meta_data( '_first_transaction_completed', '1' );
 
@@ -147,8 +139,12 @@ function ecurring_webhook( $request ) {
 					}
 					$order->set_address( $address, 'billing' );
 					$order->set_address( $shippingAddress, 'shipping' );
-					$order->calculate_totals();
 
+					/** @var WC_Order_Item_Product $orderItem */
+					$orderItem = reset($order->get_items('line_item'));
+					$orderItem->set_total(wc_format_decimal($transaction_attrs['amount']));
+					$order->calculate_totals();
+					$order->set_currency('EUR');
 					$order->set_parent_id( $subscription_order_id );
 					$order->save();
 
@@ -156,6 +152,15 @@ function ecurring_webhook( $request ) {
 
 					$payment_method       = get_post_meta( $subscription_order_id, '_payment_method', true );
 					$payment_method_title = get_post_meta( $subscription_order_id, '_payment_method_title', true );
+
+                    $externalPaymentId = '';
+
+                    $transactionHistory = $transaction_attrs['history'] ?? [];
+                    foreach($transactionHistory as $historyElement){
+                        if(isset($historyElement['status']) && $historyElement['status'] === 'fulfilled'){
+                            $externalPaymentId = (string) $historyElement['external_payment_id'] ?? '';
+                        }
+                    }
 
 					// Add meta data to renewal payment
 					update_post_meta($order->get_id(),'_transaction_id', $externalPaymentId);
