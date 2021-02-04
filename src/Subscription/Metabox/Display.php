@@ -64,7 +64,7 @@ class Display
                     'Admin meta box subscription data',
                     'woo-ecurring'
                 );
-                ?> <?php echo esc_attr((new DateTime($canceledOn))->format('d-m-Y'));?></li>
+                ?> <?php echo $canceledOn ? esc_attr((new DateTime($canceledOn))->format('d-m-Y')) : esc_html(' &mdash;');?></li>
             <li><?php
                 echo esc_html_x(
                     'Mandate ID',
