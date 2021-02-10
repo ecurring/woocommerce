@@ -89,7 +89,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
 
         if (! $phpVersionIsOk) {
             $this->errors[] = __(
-                'WooCommerce eCurring gateway plugin is disabled. Please, update your PHP first.',
+                'eCurring Gateway for WooCommerce plugin is disabled. Please, update your PHP first.',
                 'woo-ecurring'
             );
         }
@@ -108,7 +108,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
 
         if (! $jsonExtensionLoaded) {
             $this->errors[] = esc_html__(
-                'WooCommerce eCurring gateway plugin requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.',
+                'eCurring Gateway for WooCommerce plugin requires the JSON extension for PHP. Enable it in your server or ask your webhoster to enable it for you.',
                 'woo-ecurring'
             );
         }
@@ -134,7 +134,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
             $this->errors[] = sprintf(
                 /* translators: %1$s is replaced with WooCommerce plugin installation page url. */
                 __(
-                    '<strong>WooCommerce eCurring gateway plugin is inactive.</strong> Please, install and activate <a href="%1$s">WooCommerce</a> plugin first.',
+                    '<strong>eCurring Gateway for WooCommerce plugin is inactive.</strong> Please, install and activate <a href="%1$s">WooCommerce</a> plugin first.',
                     'woo-ecurring'
                 ),
                 $woocommercePluginPageUrl
@@ -162,7 +162,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
             $this->errors[] = sprintf(
             /* translators: %1$s is replaced with WooCommerce plugin installation page url. */
                 __(
-                    '<strong>WooCommerce eCurring gateway plugin is inactive.</strong> Please, update <a href="%1$s">WooCommerce</a> plugin first.',
+                    '<strong>eCurring Gateway for WooCommerce plugin is inactive.</strong> Please, update <a href="%1$s">WooCommerce</a> plugin first.',
                     'woo-ecurring'
                 ),
                 $woocommercePluginPageUrl
@@ -186,7 +186,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
             $this->errors[] = sprintf(
             /* translators: %1$s is replaced with Mollie plugin installation page url. */
                 __(
-                    '<strong>WooCommerce eCurring gateway plugin is inactive.</strong> Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+                    '<strong>eCurring Gateway for WooCommerce plugin is inactive.</strong> Please, install and activate <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
                     'woo-ecurring'
                 ),
                 esc_url($molliePluginPageUrl)
@@ -238,7 +238,7 @@ class EnvironmentChecker implements EnvironmentCheckerInterface
             $this->errors[] = $mollieIsNotMinimalVersionMessage = sprintf(
             /* translators: %1$s is replaced with Mollie plugin installation page url. */
                 __(
-                    '<strong>WooCommerce eCurring gateway plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
+                    '<strong>eCurring Gateway for WooCommerce plugin is inactive.</strong> Please, update <a href="%1$s">Mollie Payments for WooCommerce</a> plugin first.',
                     'woo-ecurring'
                 ),
                 $molliePluginPageUrl
