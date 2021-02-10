@@ -1,4 +1,4 @@
-=== WooCommerce eCurring gateway ===
+=== eCurring Gateway for WooCommerce ===
 Contributors: davdebcom, inpsyde
 Tags: recurring payments, woocommerce, payment gateway, direct debit, subscriptions, woocommerce subscriptions, sepa
 Requires at least: 4.6
@@ -114,7 +114,7 @@ Where possible, also include the eCurring log file. You can find the eCurring lo
 
 = Automatic installation =
 
-1. Install the plugin via Plugins -> New plugin. Search for 'WooCommerce eCurring gateway'.
+1. Install the plugin via Plugins -> New plugin. Search for 'eCurring Gateway for WooCommerce'.
 2. Activate the 'eCurring for WooCommerce' plugin through the 'Plugins' menu in WordPress
 3. Set your eCurring API key at WooCommerce -> Settings -> Checkout (or use the *eCurring Settings* link in the Plugins overview)
 4. You're done, the active payment methods should be visible in the checkout of your webshop.

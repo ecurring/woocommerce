@@ -166,7 +166,7 @@ class AdminController
     public function registerPluginSettingsTab(array $tabs): array
     {
         $tabs[self::PLUGIN_SETTINGS_TAB_SLUG] = _x(
-            'WooCommerce eCurring gateway',
+            'eCurring Gateway for WooCommerce',
             'Plugin settings tab name',
             'woo-ecurring'
         );
