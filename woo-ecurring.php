@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce eCurring gateway
+ * Plugin Name: eCurring Gateway for WooCommerce
  * Plugin URI: https://www.ecurring.com/
  * Description: Collect your subscription fees in WooCommerce with ease.
  * Version: 1.2.0
