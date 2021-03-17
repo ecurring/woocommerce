@@ -148,6 +148,21 @@ class Repository
             return null;
         }
 
+        return $this->createSubscriptionFromPostId($subscriptionId, $subscriptionPostId);
+    }
+
+    /**
+     * Create a subscription instance from WP post.
+     *
+     * @param string $subscriptionId The id of the subscription in eCurring.
+     * @param int $subscriptionPostId The id of the WP post used to store subscription data.
+     *
+     * @return SubscriptionInterface
+     *
+     * @throws SubscriptionFactoryException
+     */
+    protected function createSubscriptionFromPostId(string $subscriptionId, int $subscriptionPostId): SubscriptionInterface
+    {
         $startDate = get_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_start_date',
