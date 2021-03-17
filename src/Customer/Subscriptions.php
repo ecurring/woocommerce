@@ -8,6 +8,7 @@ use DateTime;
 use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
+use Ecurring\WooEcurring\Subscription\Repository;
 
 use function get_user_meta;
 use function get_current_user_id;
@@ -22,6 +23,10 @@ class Subscriptions
      */
     protected $settingsCrud;
     /**
+     * @var Repository
+     */
+    protected $repository;
+    /**
      * @var Customers
      */
     private $customer;
@@ -35,23 +40,25 @@ class Subscriptions
      * @param Customers $customer Customers API client.
      * @param SubscriptionPlans $subscriptionPlans Subscription plans API client.
      * @param SettingsCrudInterface $settingsCrud Settings storage.
+     * @param Repository $repository Subscriptions repository.
      */
     public function __construct(
         Customers $customer,
         SubscriptionPlans $subscriptionPlans,
-        SettingsCrudInterface $settingsCrud
+        SettingsCrudInterface $settingsCrud,
+        Repository $repository
     ) {
         $this->customer = $customer;
         $this->subscriptionPlans = $subscriptionPlans;
         $this->settingsCrud = $settingsCrud;
+        $this->repository = $repository;
     }
 
     //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     public function display(): void
     {
         $customerId = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
-        $subscriptions = $this->customer->getCustomerSubscriptions($customerId);
-        $subscriptionsData = $subscriptions->data ?? [];
+        $subscriptionsList = $this->repository->getSubscriptionsByEcurringCustomerId($customerId);
 
         $subscriptionPlans = $this->subscriptionPlans->getSubscriptionPlans();
         $subscriptionPlansData = $subscriptionPlans->data ?? [];
@@ -101,31 +108,29 @@ class Subscriptions
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($subscriptionsData as $subscription) {
-                if (!$subscription) {
-                    continue;
-                }
-                ?>
+            <?php foreach ($subscriptionsList as $subscription) { ?>
                 <tr class="woocommerce-orders-table__row order">
                     <td class="woocommerce-orders-table__cell" data-title="Subscription">
-                        <?php echo esc_attr($subscription->id); ?>
+                        <?php echo esc_attr($subscription->getId()); ?>
                     </td>
                     <td class="woocommerce-orders-table__cell" data-title="Product">
                         <?php echo esc_attr(
-                            $products[$subscription->relationships->{'subscription-plan'}->data->id]
+                            $products[$subscription->getSubscriptionPlanId()]
                         ); ?>
                     </td>
                     <td class="woocommerce-orders-table__cell" data-title="Status">
-                        <?php echo esc_attr(ucfirst($subscription->attributes->status)); ?>
+                        <?php echo esc_attr(
+                            ucfirst($subscription->getStatus()->getCurrentStatus())
+                        ); ?>
                     </td>
                     <?php if ($this->allowAtLeastOneOption()) { ?>
                         <td class="woocommerce-orders-table__cell" data-title="Options">
                             <form class="subscription-options"
-                                  data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                  data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                 <select style="width:100%;" name="ecurring_subscription"
                                         class="ecurring_subscription_options"
                                         data-subscription="<?php
-                                        echo esc_attr($subscription->id); ?>"
+                                        echo esc_attr($subscription->getId()); ?>"
                                 >
                                     <option value=""><?php
                                                         echo esc_html_x(
@@ -134,7 +139,7 @@ class Subscriptions
                                                             'woo-ecurring'
                                                         );
                                                         ?></option>
-                                    <?php if ($subscription->attributes->status === 'paused') { ?>
+                                    <?php if ( $subscription->getStatus()->getCurrentStatus() === 'paused') { ?>
                                         <?php if ($this->allowOption('pause')) { ?>
                                             <option value="resume"
                                             ><?php
@@ -181,7 +186,7 @@ class Subscriptions
 
                                 <?php if ($this->allowOption('pause')) { ?>
                                     <div class="ecurring-hide pause-form"
-                                         data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                         data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <label><input name="ecurring_pause_subscription"
                                                       type="radio"
                                                       value="infinite"
@@ -228,13 +233,13 @@ class Subscriptions
                                 <?php } ?>
                                 <?php if ($this->allowOption('switch')) { ?>
                                     <div class="ecurring-hide switch-form"
-                                         data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                         data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <select class="ecurring_subscription_plan"
                                                 name="ecurring_subscription_plan">
                                             <?php foreach ($products as $key => $value) { ?>
                                                 <option value="<?php echo esc_attr($key); ?>"
                                                     <?php selected(
-                                                        $subscription->relationships->{'subscription-plan'}->data->id,
+                                                        $subscription->getSubscriptionPlanId(),
                                                         $key
                                                     ); ?>
                                                 ><?php echo esc_attr($value); ?></option>
@@ -267,7 +272,7 @@ class Subscriptions
                                 <?php } ?>
                                 <?php if ($this->allowOption('cancel')) { ?>
                                     <div class="ecurring-hide cancel-form"
-                                         data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                         data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <label><input name="ecurring_cancel_subscription"
                                                       type="radio"
                                                       value="infinite" class="tog"

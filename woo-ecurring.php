@@ -217,7 +217,7 @@ function eCurringInitialize()
         $save = new Save($subscriptionStatusSwitcher, $subscriptionPlanSwitcher);
         $subscriptionPlans = new SubscriptionPlans($apiHelper);
         $settingsCrud = new SettingsCrud();
-        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans, $settingsCrud);
+        $subscriptions = new Subscriptions($customerApi, $subscriptionPlans, $settingsCrud, $repository);
 
         (new SubscriptionsJob($repository, $subscriptionsFactory, $subscriptionsApi))->init();
         (new Metabox($display, $save))->init();
