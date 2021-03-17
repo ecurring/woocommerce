@@ -152,6 +152,41 @@ class Repository
     }
 
     /**
+     * Return all subscriptions where eCurring customer id is the same as given.
+     *
+     * @param string $ecurringCustomerId
+     *
+     * @return Subscription[]
+     */
+    public function getSubscriptionsByEcurringCustomerId(string $ecurringCustomerId): array
+    {
+        if ($ecurringCustomerId === '') {
+            return [];
+        }
+
+        /** @var int[] $foundPostIds */
+        $foundPostIds = get_posts(
+            [
+                'post_type' => 'esubscriptions',
+                'numberposts' => -1, //todo: implement pagination
+                'fields' => 'ids',
+                'post_status' => 'publish',
+                'meta_key' => '_ecurring_post_subscription_customer_id',
+                'meta_value' => $ecurringCustomerId,
+            ]
+        );
+
+        return array_map(function (int $postId): ?SubscriptionInterface {
+            $subscriptionId = get_post_meta($postId, '_ecurring_post_subscription_id', true);
+            try {
+                return $this->createSubscriptionFromPostId($subscriptionId, $postId);
+            } catch (SubscriptionFactoryException $exception) {
+                //todo
+            }
+        }, $foundPostIds);
+    }
+
+    /**
      * Create a subscription instance from WP post.
      *
      * @param string $subscriptionId The id of the subscription in eCurring.
