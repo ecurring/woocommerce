@@ -104,7 +104,7 @@ class Repository
         );
         update_post_meta(
             $subscriptionPostId,
-            '_ecurring_post_subscription_links', //todo: save subscription url instead or build it using subscription id.
+            '_ecurring_post_subscription_links',
             []
         );
         update_post_meta(
