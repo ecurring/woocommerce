@@ -171,7 +171,14 @@ class Repository
             try {
                 return $this->createSubscriptionFromPostId($subscriptionId, $postId);
             } catch (SubscriptionFactoryException $exception) {
-                //todo
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Failed to create subscription instance,' .
+                        'post id %1$d. Caught exception message: %2$s',
+                        $postId,
+                        $exception->getMessage()
+                    )
+                );
             }
         }, $foundPostIds);
     }
