@@ -83,7 +83,6 @@ class Subscriptions
     protected function displaySubscriptionsTable(array $subscriptionsList, array $products)
     {
         ?>
-
         <table class="woocommerce-orders-table shop_table shop_table_responsive">
             <?php $this->displaySubscriptionsTableHead(); ?>
             <?php $this->displaySubscriptionsTableBody($subscriptionsList, $products) ?>
@@ -94,7 +93,8 @@ class Subscriptions
      * Render heading of the subscriptions table for the current customer.
      */
     protected function displaySubscriptionsTableHead(): void
-    { ?>
+    {
+        ?>
         <thead>
             <tr>
                 <th class="woocommerce-orders-table__header"
@@ -140,7 +140,8 @@ class Subscriptions
      * @param array $products Available subscription plans.
      */
     protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
-    { ?>
+    {
+        ?>
         <tbody>
             <?php foreach ($subscriptionsList as $subscription) { ?>
                 <tr class="woocommerce-orders-table__row order">
@@ -173,7 +174,7 @@ class Subscriptions
                                                             'woo-ecurring'
                                                         );
                                                         ?></option>
-                                    <?php if ( $subscription->getStatus()->getCurrentStatus() === 'paused') { ?>
+                                    <?php if ($subscription->getStatus()->getCurrentStatus() === 'paused') { ?>
                                         <?php if ($this->allowOption('pause')) { ?>
                                             <option value="resume"
                                             ><?php
