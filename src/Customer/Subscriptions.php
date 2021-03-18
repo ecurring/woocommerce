@@ -130,10 +130,11 @@ class Subscriptions
      * @param array $subscriptionsList Subscriptions to display in the table.
      * @param array $products Available subscription plans.
      *
-     * @phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
      */
+    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
     {
+
         ?>
         <tbody>
             <?php foreach ($subscriptionsList as $subscription) { ?>
@@ -347,15 +348,15 @@ class Subscriptions
         if (1) : ?>
         <div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
             <?php if (1 !== $currentPage) : ?>
-                <a 
-                        class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" 
+                <a
+                        class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button"
                         href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage - 1)); ?>">
                     <?php esc_html_e('Previous', 'woocommerce'); ?>
                 </a>
             <?php endif; ?>
 
             <?php if (intval($pagesTotal) !== $currentPage) : ?>
-                <a 
+                <a
                         class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button"
                         href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage + 1)); ?>">
                     <?php esc_html_e('Next', 'woocommerce'); ?>

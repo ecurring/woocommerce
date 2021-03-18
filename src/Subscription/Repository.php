@@ -238,6 +238,7 @@ class Repository
      *
      * @throws SubscriptionFactoryException
      */
+    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     protected function createSubscriptionFromPostId(string $subscriptionId, int $subscriptionPostId): SubscriptionInterface
     {
         $startDate = get_post_meta(
