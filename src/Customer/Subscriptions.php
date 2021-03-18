@@ -58,7 +58,11 @@ class Subscriptions
     public function display(): void
     {
         $customerId = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
-        $subscriptionsList = $this->repository->getSubscriptionsByEcurringCustomerId($customerId);
+        $currentPage = (int) get_query_var('ecurring-subscriptions', 1);
+        $subscriptionsPerPage = (int) get_option('posts_per_page', 10);
+        $subscriptionsList = $this->repository->getSubscriptionsByEcurringCustomerId($customerId, $currentPage, $subscriptionsPerPage);
+        $customerSubscriptionsTotal = $this->repository->getSubscriptionsNumberForEcurringCustomer($customerId);
+        $pagesTotal = (int) ceil($customerSubscriptionsTotal / $subscriptionsPerPage);
 
         $subscriptionPlans = $this->subscriptionPlans->getSubscriptionPlans();
         $subscriptionPlansData = $subscriptionPlans->data ?? [];
@@ -66,10 +70,32 @@ class Subscriptions
         foreach ($subscriptionPlansData as $product) {
             $products[$product->id] = $product->attributes->name;
         }
+            $this->displaySubscriptionsTable($subscriptionsList, $products);
+            $this->displayPagination($currentPage, $pagesTotal);
+    }
+
+    /**
+     * Render the table containing subscriptions of the current customer.
+     *
+     * @param array $subscriptionsList
+     * @param array $products
+     */
+    protected function displaySubscriptionsTable(array $subscriptionsList, array $products)
+    {
         ?>
 
         <table class="woocommerce-orders-table shop_table shop_table_responsive">
-            <thead>
+            <?php $this->displaySubscriptionsTableHead(); ?>
+            <?php $this->displaySubscriptionsTableBody($subscriptionsList, $products) ?>
+        </table> <?php
+    }
+
+    /**
+     * Render heading of the subscriptions table for the current customer.
+     */
+    protected function displaySubscriptionsTableHead(): void
+    { ?>
+        <thead>
             <tr>
                 <th class="woocommerce-orders-table__header"
                 ><?php
@@ -106,8 +132,16 @@ class Subscriptions
                     </th>
                 <?php } ?>
             </tr>
-            </thead>
-            <tbody>
+            </thead> <?php
+    }
+
+    /**
+     * @param array $subscriptionsList Subscriptions to display in the table.
+     * @param array $products Available subscription plans.
+     */
+    protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
+    { ?>
+        <tbody>
             <?php foreach ($subscriptionsList as $subscription) { ?>
                 <tr class="woocommerce-orders-table__row order">
                     <td class="woocommerce-orders-table__cell" data-title="Subscription">
@@ -311,9 +345,23 @@ class Subscriptions
                     <?php } ?>
                 </tr>
             <?php } ?>
-            </tbody>
-        </table>
-    <?php }
+            </tbody> <?php
+    }
+
+    protected function displayPagination(int $currentPage, int $pagesTotal): void
+    {
+        if (1) : ?>
+        <div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
+            <?php if (1 !== $currentPage) : ?>
+                <a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage - 1)); ?>"><?php esc_html_e('Previous', 'woocommerce'); ?></a>
+            <?php endif; ?>
+
+            <?php if (intval($pagesTotal) !== $currentPage) : ?>
+                <a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button" href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage + 1)); ?>"><?php esc_html_e('Next', 'woocommerce'); ?></a>
+            <?php endif; ?>
+        </div>
+        <?php endif;
+    }
 
     /**
      * Check if customer allowed to perform any actions with subscription.
