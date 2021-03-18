@@ -53,12 +53,12 @@ function wp_post_revision_title( $revision, $link = true )
     return '';
 }
 
-function get_query_var($var, $default)
+function get_query_var($var, $default = '')
 {
     return '';
 }
 
-function wc_get_endpoint_url($endpoint, $var)
+function wc_get_endpoint_url($endpoint, $var = '')
 {
     return '';
 }
