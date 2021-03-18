@@ -155,26 +155,15 @@ class Repository
      * Return all subscriptions where eCurring customer id is the same as given.
      *
      * @param string $ecurringCustomerId
+     * @param int $page Number of page (offset)
+     * @param int $perPage Max number of subscriptions to return (limit), -1 for unlimited.
      *
      * @return Subscription[]
      */
-    public function getSubscriptionsByEcurringCustomerId(string $ecurringCustomerId): array
+    public function getSubscriptionsByEcurringCustomerId(string $ecurringCustomerId, int $page = 1, int $perPage = -1): array
     {
-        if ($ecurringCustomerId === '') {
-            return [];
-        }
 
-        /** @var int[] $foundPostIds */
-        $foundPostIds = get_posts(
-            [
-                'post_type' => 'esubscriptions',
-                'numberposts' => -1, //todo: implement pagination
-                'fields' => 'ids',
-                'post_status' => 'publish',
-                'meta_key' => '_ecurring_post_subscription_customer_id',
-                'meta_value' => $ecurringCustomerId,
-            ]
-        );
+        $foundPostIds = $this->getSubscriptionPostIdsByEcuringCustomerId($ecurringCustomerId, $page, $perPage);
 
         return array_map(function (int $postId): ?SubscriptionInterface {
             $subscriptionId = get_post_meta($postId, '_ecurring_post_subscription_id', true);
@@ -184,6 +173,40 @@ class Repository
                 //todo
             }
         }, $foundPostIds);
+    }
+
+    /**
+     * Return array of subscriptions post ids with optional limit and offset.
+     *
+     * @param string $ecurringCustomerId The eCurring customer to search subscriptions for.
+     * @param int $page Page to start from.
+     * @param int $perPage Max number of ids to return (limit).
+     *
+     * @return array Found ids.
+     */
+
+    protected function getSubscriptionPostIdsByEcuringCustomerId(string $ecurringCustomerId, int $page = 1, int $perPage = -1): array
+    {
+        if ($ecurringCustomerId === '') {
+            return [];
+        }
+
+        $query = new WP_Query();
+
+        /** @var int[] */
+        return $query->query(
+            [
+                'post_type' => 'esubscriptions',
+                'orderby' => 'date',
+                'order' => 'DESC',
+                'posts_per_page' => $perPage,
+                'paged' => $page,
+                'fields' => 'ids',
+                'post_status' => 'publish',
+                'meta_key' => '_ecurring_post_subscription_customer_id',
+                'meta_value' => $ecurringCustomerId,
+            ]
+        );
     }
 
     /**
