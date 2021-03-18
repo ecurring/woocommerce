@@ -62,8 +62,14 @@ class Subscriptions
         foreach ($subscriptionPlansData as $product) {
             $products[$product->id] = $product->attributes->name;
         }
+
+        if (count($subscriptionsList) > 0) {
             $this->displaySubscriptionsTable($subscriptionsList, $products);
             $this->displayPagination($currentPage, $pagesTotal);
+            return;
+        }
+
+        $this->displayNoSubscriptionsMessage();
     }
 
     /**
@@ -366,6 +372,14 @@ class Subscriptions
                 </a>
             <?php endif; ?>
         </div> <?php
+    }
+
+    protected function displayNoSubscriptionsMessage(): void
+    { ?>
+        <div class="woocommerce-message woocommerce-message--info woocommerce-Message woocommerce-Message--info woocommerce-info">
+		<a class="woocommerce-Button button" href="<?php echo esc_url( apply_filters( 'woocommerce_return_to_shop_redirect', wc_get_page_permalink( 'shop' ) ) ); ?>"><?php esc_html_e( 'Browse products', 'woo-ecurring' ); ?></a>
+		<?php esc_html_e( 'You have no subscriptions yet.', 'woo-ecurring' ); ?>
+	    </div> <?php
     }
 
     /**
