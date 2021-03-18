@@ -197,7 +197,6 @@ class Repository
      *
      * @return array Found ids.
      */
-    
     protected function getSubscriptionPostIdsByEcuringCustomerId(string $ecurringCustomerId, int $page = 1, int $perPage = -1): array
     {
         if ($ecurringCustomerId === '') {
