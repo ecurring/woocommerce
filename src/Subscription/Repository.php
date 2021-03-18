@@ -12,6 +12,7 @@ use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionF
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Plugin;
 use Exception;
+use WP_Query;
 
 class Repository
 {
@@ -176,6 +177,18 @@ class Repository
     }
 
     /**
+     * Return number of subscriptions found locally for given eCurring customer.
+     *
+     * @param string $ecurringCustomerId The eCurring customer to search subscriptions for.
+     *
+     * @return int Subscriptions number.
+     */
+    public function getSubscriptionsNumberForEcurringCustomer(string $ecurringCustomerId): int
+    {
+        return count($this->getSubscriptionPostIdsByEcuringCustomerId($ecurringCustomerId));
+    }
+
+    /**
      * Return array of subscriptions post ids with optional limit and offset.
      *
      * @param string $ecurringCustomerId The eCurring customer to search subscriptions for.
@@ -184,7 +197,7 @@ class Repository
      *
      * @return array Found ids.
      */
-
+    
     protected function getSubscriptionPostIdsByEcuringCustomerId(string $ecurringCustomerId, int $page = 1, int $perPage = -1): array
     {
         if ($ecurringCustomerId === '') {
