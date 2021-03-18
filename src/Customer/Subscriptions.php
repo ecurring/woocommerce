@@ -49,7 +49,8 @@ class Subscriptions
     public function display(): void
     {
         $customerId = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
-        $currentPage = (int) get_query_var('ecurring-subscriptions', 1);
+        $currentPage = (int) get_query_var('ecurring-subscriptions') ?: 1;
+
         $subscriptionsPerPage = (int) get_option('posts_per_page', 10);
         $subscriptionsList = $this->repository->getSubscriptionsByEcurringCustomerId($customerId, $currentPage, $subscriptionsPerPage);
         $customerSubscriptionsTotal = $this->repository->getSubscriptionsNumberForEcurringCustomer($customerId);
@@ -350,7 +351,7 @@ class Subscriptions
     {
         if (1) : ?>
         <div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
-            <?php if (1 !== $currentPage) : ?>
+            <?php if ($currentPage > 1) : ?>
                 <a
                         class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button"
                         href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage - 1)); ?>">
@@ -358,7 +359,7 @@ class Subscriptions
                 </a>
             <?php endif; ?>
 
-            <?php if (intval($pagesTotal) !== $currentPage) : ?>
+            <?php if ($currentPage < $pagesTotal) : ?>
                 <a
                         class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button"
                         href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage + 1)); ?>">
