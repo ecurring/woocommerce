@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
-use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
 use Ecurring\WooEcurring\Subscription\Repository;
@@ -26,10 +25,6 @@ class Subscriptions
      * @var Repository
      */
     protected $repository;
-    /**
-     * @var Customers
-     */
-    private $customer;
 
     /**
      * @var SubscriptionPlans
@@ -37,18 +32,15 @@ class Subscriptions
     private $subscriptionPlans;
 
     /**
-     * @param Customers $customer Customers API client.
      * @param SubscriptionPlans $subscriptionPlans Subscription plans API client.
      * @param SettingsCrudInterface $settingsCrud Settings storage.
      * @param Repository $repository Subscriptions repository.
      */
     public function __construct(
-        Customers $customer,
         SubscriptionPlans $subscriptionPlans,
         SettingsCrudInterface $settingsCrud,
         Repository $repository
     ) {
-        $this->customer = $customer;
         $this->subscriptionPlans = $subscriptionPlans;
         $this->settingsCrud = $settingsCrud;
         $this->repository = $repository;
