@@ -129,12 +129,11 @@ class Subscriptions
     /**
      * @param array $subscriptionsList Subscriptions to display in the table.
      * @param array $products Available subscription plans.
-     *
+     * phpcs:disable
      */
-    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
     {
-
+        //phpcs: enable
         ?>
         <tbody>
             <?php foreach ($subscriptionsList as $subscription) { ?>
@@ -154,6 +153,7 @@ class Subscriptions
                     </td>
                     <?php if ($this->allowAtLeastOneOption()) { ?>
                         <td class="woocommerce-orders-table__cell" data-title="Options">
+                            <?php if ($subscription->getStatus()->getCurrentStatus() !== 'cancelled') { ?>
                             <form class="subscription-options"
                                   data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                 <select style="width:100%;" name="ecurring_subscription"
@@ -336,6 +336,9 @@ class Subscriptions
                                     </div>
                                 <?php } ?>
                             </form>
+                            <?php } else {
+                                esc_html_e('No options available.', 'woo-ecurring');
+                            } ?>
                         </td>
                     <?php } ?>
                 </tr>
