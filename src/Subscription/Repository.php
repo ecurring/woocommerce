@@ -159,14 +159,14 @@ class Repository
      * @param int $page Number of page (offset)
      * @param int $perPage Max number of subscriptions to return (limit), -1 for unlimited.
      *
-     * @return Subscription[]
+     * @return SubscriptionInterface[]
      */
     public function getSubscriptionsByEcurringCustomerId(string $ecurringCustomerId, int $page = 1, int $perPage = -1): array
     {
 
         $foundPostIds = $this->getSubscriptionPostIdsByEcuringCustomerId($ecurringCustomerId, $page, $perPage);
 
-        return array_map(function (int $postId): ?SubscriptionInterface {
+        $subscriptions = array_map(function (int $postId): ?SubscriptionInterface {
             $subscriptionId = get_post_meta($postId, '_ecurring_post_subscription_id', true);
             try {
                 return $this->createSubscriptionFromPostId($subscriptionId, $postId);
@@ -179,8 +179,11 @@ class Repository
                         $exception->getMessage()
                     )
                 );
+                return null;
             }
         }, $foundPostIds);
+
+        return array_filter($subscriptions);
     }
 
     /**
