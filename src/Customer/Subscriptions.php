@@ -46,7 +46,6 @@ class Subscriptions
         $this->repository = $repository;
     }
 
-    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     public function display(): void
     {
         $customerId = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
@@ -130,6 +129,8 @@ class Subscriptions
     /**
      * @param array $subscriptionsList Subscriptions to display in the table.
      * @param array $products Available subscription plans.
+     *
+     * @phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
      */
     protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
     {
@@ -346,11 +347,19 @@ class Subscriptions
         if (1) : ?>
         <div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
             <?php if (1 !== $currentPage) : ?>
-                <a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage - 1)); ?>"><?php esc_html_e('Previous', 'woocommerce'); ?></a>
+                <a 
+                        class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" 
+                        href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage - 1)); ?>">
+                    <?php esc_html_e('Previous', 'woocommerce'); ?>
+                </a>
             <?php endif; ?>
 
             <?php if (intval($pagesTotal) !== $currentPage) : ?>
-                <a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button" href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage + 1)); ?>"><?php esc_html_e('Next', 'woocommerce'); ?></a>
+                <a 
+                        class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button"
+                        href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage + 1)); ?>">
+                    <?php esc_html_e('Next', 'woocommerce'); ?>
+                </a>
             <?php endif; ?>
         </div>
         <?php endif;
