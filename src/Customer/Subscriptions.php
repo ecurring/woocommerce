@@ -348,8 +348,7 @@ class Subscriptions
     }
 
     protected function displayPagination(int $currentPage, int $pagesTotal): void
-    {
-        if (1) : ?>
+    { ?>
         <div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
             <?php if ($currentPage > 1) : ?>
                 <a
@@ -366,8 +365,7 @@ class Subscriptions
                     <?php esc_html_e('Next', 'woocommerce'); ?>
                 </a>
             <?php endif; ?>
-        </div>
-        <?php endif;
+        </div> <?php
     }
 
     /**
