@@ -337,7 +337,7 @@ class Subscriptions
                                 <?php } ?>
                             </form>
                             <?php } else {
-                                esc_html_e('No options available.', 'woo-ecurring');
+                                esc_html_e('No available options.', 'woo-ecurring');
                             } ?>
                         </td>
                     <?php } ?>
