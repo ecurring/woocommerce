@@ -178,7 +178,7 @@ class Display
                     'Admin meta box content',
                     'woo-ecurring'
                 ); ?></h4>
-            <label><input name="ecurring_pause_subscription" type="radio" value="infinite"
+            <label><input name="ecurring_pause_subscription" type="radio" value="immediately"
                           class="tog"
                           checked="checked"/><?php
                                                     echo esc_html_x(
@@ -283,7 +283,7 @@ class Display
             <label><input
                         name="ecurring_cancel_subscription"
                         type="radio"
-                        value="infinite"
+                        value="immediately"
                         class="tog"
                         checked="checked"
                 /><?php esc_html_x('Immediately', 'Admin meta box content', 'woo-ecurring');?></label>
