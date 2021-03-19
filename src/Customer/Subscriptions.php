@@ -230,7 +230,7 @@ class Subscriptions
                                                       checked="checked"
                                             /><?php
                                                 echo esc_html_x(
-                                                    'Infinite',
+                                                    'Immediately',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?>
@@ -315,7 +315,7 @@ class Subscriptions
                                                       checked="checked"
                                             /><?php
                                                 echo esc_html_x(
-                                                    'Infinite',
+                                                    'Immediately',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?></label>
