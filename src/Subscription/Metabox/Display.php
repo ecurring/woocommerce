@@ -178,11 +178,11 @@ class Display
                     'Admin meta box content',
                     'woo-ecurring'
                 ); ?></h4>
-            <label><input name="ecurring_pause_subscription" type="radio" value="infinite"
+            <label><input name="ecurring_pause_subscription" type="radio" value="immediately"
                           class="tog"
                           checked="checked"/><?php
                                                     echo esc_html_x(
-                                                        'Infinite',
+                                                        'Immediately',
                                                         'Admin meta box context',
                                                         'woo-ecurring'
                                                     );?></label>
@@ -283,10 +283,10 @@ class Display
             <label><input
                         name="ecurring_cancel_subscription"
                         type="radio"
-                        value="infinite"
+                        value="immediately"
                         class="tog"
                         checked="checked"
-                /><?php esc_html_x('Infinite', 'Admin meta box content', 'woo-ecurring');?></label>
+                /><?php esc_html_x('Immediately', 'Admin meta box content', 'woo-ecurring');?></label>
             <label><input name="ecurring_cancel_subscription" type="radio" value="specific-date"
                           class="tog"/><?php esc_html_x('Specific date', 'Admin meta box content', 'woo-ecurring'); ?></label>
             <input name="ecurring_cancel_date" type="date"

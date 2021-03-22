@@ -225,12 +225,12 @@ class Subscriptions
                                          data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <label><input name="ecurring_pause_subscription"
                                                       type="radio"
-                                                      value="infinite"
+                                                      value="immediately"
                                                       class="tog"
                                                       checked="checked"
                                             /><?php
                                                 echo esc_html_x(
-                                                    'Infinite',
+                                                    'Immediately',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?>
@@ -311,11 +311,12 @@ class Subscriptions
                                          data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <label><input name="ecurring_cancel_subscription"
                                                       type="radio"
-                                                      value="infinite" class="tog"
+                                                      value="immediately"
+                                                      class="tog"
                                                       checked="checked"
                                             /><?php
                                                 echo esc_html_x(
-                                                    'Infinite',
+                                                    'Immediately',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?></label>
