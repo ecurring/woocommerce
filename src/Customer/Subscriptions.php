@@ -141,6 +141,7 @@ class Subscriptions
     protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
     {
         //phpcs: enable
+        $dateToday = (new DateTime('now'))->format('Y-m-d');
         ?>
         <tbody>
             <?php foreach ($subscriptionsList as $subscription) { ?>
@@ -251,7 +252,7 @@ class Subscriptions
                                         <input class="ecurring-hide"
                                                name="ecurring_resume_date"
                                                type="date"
-                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
+                                               value="<?php echo esc_attr($dateToday); ?>">
                                         <div class="update-subscription">
                                             <p>
                                                 <button><?php
@@ -312,7 +313,7 @@ class Subscriptions
                                         <input class="ecurring-hide"
                                                name="ecurring_switch_date"
                                                type="date"
-                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
+                                               value="<?php echo esc_attr($dateToday); ?>">
                                         <div class="update-subscription">
                                             <p>
                                                 <button><?php
@@ -356,7 +357,7 @@ class Subscriptions
                                         <input class="ecurring-hide"
                                                name="ecurring_cancel_date"
                                                type="date"
-                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
+                                               value="<?php echo esc_attr($dateToday); ?>">
                                         <div class="update-subscription">
                                             <p>
                                                 <button><?php
