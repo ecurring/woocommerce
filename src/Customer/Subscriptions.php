@@ -223,7 +223,8 @@ class Subscriptions
                                 <?php if ($this->allowOption('pause')) { ?>
                                     <div class="ecurring-hide pause-form"
                                          data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
-                                        <label><input name="ecurring_pause_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_pause_subscription"
                                                       type="radio"
                                                       value="immediately"
                                                       class="tog"
@@ -235,7 +236,8 @@ class Subscriptions
                                                     'woo-ecurring'
                                                 ); ?>
                                         </label>
-                                        <label><input name="ecurring_pause_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_pause_subscription"
                                                       type="radio"
                                                       value="specific-date"
                                                       class="tog"/>
@@ -281,7 +283,8 @@ class Subscriptions
                                                 ><?php echo esc_attr($value); ?></option>
                                             <?php }; ?>
                                         </select>
-                                        <label><input name="ecurring_switch_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_switch_subscription"
                                                       type="radio"
                                                       value="immediately" class="tog"
                                                       checked="checked"
@@ -291,7 +294,8 @@ class Subscriptions
                                                             'Label on the Subscriptions page in my account',
                                                             'woo-ecurring'
                                                         ); ?></label>
-                                        <label><input name="ecurring_switch_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_switch_subscription"
                                                       type="radio"
                                                       value="specific-date"
                                                       class="tog"
@@ -311,7 +315,8 @@ class Subscriptions
                                 <?php if ($this->allowOption('cancel')) { ?>
                                     <div class="ecurring-hide cancel-form"
                                          data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
-                                        <label><input name="ecurring_cancel_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_cancel_subscription"
                                                       type="radio"
                                                       value="immediately"
                                                       class="tog"
@@ -322,7 +327,8 @@ class Subscriptions
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?></label>
-                                        <label><input name="ecurring_cancel_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_cancel_subscription"
                                                       type="radio"
                                                       value="specific-date"
                                                       class="tog"
