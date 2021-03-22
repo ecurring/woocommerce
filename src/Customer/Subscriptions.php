@@ -120,7 +120,7 @@ class Subscriptions
                     ); ?>
                 </th>
                 <?php if ($this->allowAtLeastOneOption()) { ?>
-                    <th class="woocommerce-orders-table__header"
+                    <th class="woocommerce-orders-table__header subscription-options"
                     ><?php
                         echo esc_html_x(
                             'Options',
@@ -252,13 +252,17 @@ class Subscriptions
                                                name="ecurring_resume_date"
                                                type="date"
                                                value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
-                                        <button><?php
-                                                echo esc_html_x(
-                                                    'Update',
-                                                    'Label on the Subscriptions page in my account',
-                                                    'woo-ecurring'
-                                                ); ?>
-                                        </button>
+                                        <div class="update-subscription">
+                                            <p>
+                                                <button><?php
+                                                        echo esc_html_x(
+                                                            'Update',
+                                                            'Label on the Subscriptions page in my account',
+                                                            'woo-ecurring'
+                                                        ); ?>
+                                                </button>
+                                            </p>
+                                        </div>
                                     </div>
                                     <button class="resume-update ecurring-hide">
                                         <?php
@@ -309,7 +313,11 @@ class Subscriptions
                                                name="ecurring_switch_date"
                                                type="date"
                                                value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
-                                        <button>Update</button>
+                                        <div class="update-subscription">
+                                            <p>
+                                                <button>Update</button>
+                                            </p>
+                                        </div>
                                     </div>
                                 <?php } ?>
                                 <?php if ($this->allowOption('cancel')) { ?>
@@ -327,7 +335,7 @@ class Subscriptions
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?></label>
-                                        <label class="ecurring-subscription-change-date-toggle"
+                                        <div><label class="ecurring-subscription-change-date-toggle"
                                         ><input name="ecurring_cancel_subscription"
                                                       type="radio"
                                                       value="specific-date"
@@ -343,13 +351,17 @@ class Subscriptions
                                                name="ecurring_cancel_date"
                                                type="date"
                                                value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
-                                        <button><?php
+                                        <div class="update-subscription">
+                                            <p>
+                                                <button><?php
                                                 echo esc_html_x(
                                                     'Update',
                                                     'Button title on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 );
                                                 ?></button>
+                                            </p>
+                                        </div>
                                     </div>
                                 <?php } ?>
                             </form>

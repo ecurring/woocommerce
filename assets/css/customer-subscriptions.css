@@ -1,4 +1,28 @@
-.ecurring-hide{display: none;}
-.ecurring-show{display: block;}
+.ecurring-hide {
+    display: none;
+}
 
-.ecurring-subscription-change-date-toggle{clear:both; float: left;}
+.ecurring-show {
+    display: block;
+}
+
+.ecurring-subscriptions-table {
+    table-layout: fixed
+}
+
+.ecurring-subscription-change-date-toggle {
+    clear: both;
+    float: left;
+}
+
+.ecurring-subscriptions-table td select {
+    margin: 5px;
+}
+
+.woocommerce-orders-table__header.subscription-options {
+    width: 40%;
+}
+
+.woocommerce-orders-table .update-subscription {
+    clear: both;
+}
