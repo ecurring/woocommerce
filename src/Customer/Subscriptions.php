@@ -231,7 +231,7 @@ class Subscriptions
                                                       checked="checked"
                                             /><?php
                                                 echo esc_html_x(
-                                                    'Immediately',
+                                                    'Indefinitely',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?>
@@ -243,7 +243,7 @@ class Subscriptions
                                                       class="tog"/>
                                             <?php
                                                 echo esc_html_x(
-                                                    'Specific date',
+                                                    'Until specific date',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?>
