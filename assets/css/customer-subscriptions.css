@@ -23,6 +23,10 @@
     width: 40%;
 }
 
+.woocommerce-orders-table__header.subscription-id {
+    width: 25%;
+}
+
 .woocommerce-orders-table .update-subscription {
     clear: both;
 }

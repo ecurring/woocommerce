@@ -95,7 +95,7 @@ class Subscriptions
         ?>
         <thead>
             <tr>
-                <th class="woocommerce-orders-table__header"
+                <th class="woocommerce-orders-table__header subscription-id"
                 ><?php
                  echo esc_html_x(
                      'Subscription',
