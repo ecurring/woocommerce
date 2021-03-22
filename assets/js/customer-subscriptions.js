@@ -4,7 +4,7 @@ jQuery(window).load(function () {
       function(){
         jQuery(this).on('change', function (){
           const datePicker = jQuery(this).closest("div[class^='ecurring']").find("input[type='date']")
-          const specificDateSelected = jQuery(this).val() === 'specific-date'
+          const specificDateSelected = jQuery(this).val() !== 'specific-date'
 
           datePicker.toggleClass('ecurring-hide', specificDateSelected)
         })
