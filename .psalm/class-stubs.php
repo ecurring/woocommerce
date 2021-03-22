@@ -87,3 +87,11 @@ class WC_Payment_Gateway
         return false;
     }
 }
+
+class  WP_Query
+{
+    public function query($args)
+    {
+        return [];
+    }
+}

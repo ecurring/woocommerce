@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Ecurring\WooEcurring\Customer;
 
 use DateTime;
-use Ecurring\WooEcurring\Api\Customers;
 use Ecurring\WooEcurring\Api\SubscriptionPlans;
 use Ecurring\WooEcurring\Settings\SettingsCrudInterface;
+use Ecurring\WooEcurring\Subscription\Repository;
 
 use function get_user_meta;
 use function get_current_user_id;
@@ -22,9 +22,9 @@ class Subscriptions
      */
     protected $settingsCrud;
     /**
-     * @var Customers
+     * @var Repository
      */
-    private $customer;
+    protected $repository;
 
     /**
      * @var SubscriptionPlans
@@ -32,26 +32,29 @@ class Subscriptions
     private $subscriptionPlans;
 
     /**
-     * @param Customers $customer Customers API client.
      * @param SubscriptionPlans $subscriptionPlans Subscription plans API client.
      * @param SettingsCrudInterface $settingsCrud Settings storage.
+     * @param Repository $repository Subscriptions repository.
      */
     public function __construct(
-        Customers $customer,
         SubscriptionPlans $subscriptionPlans,
-        SettingsCrudInterface $settingsCrud
+        SettingsCrudInterface $settingsCrud,
+        Repository $repository
     ) {
-        $this->customer = $customer;
         $this->subscriptionPlans = $subscriptionPlans;
         $this->settingsCrud = $settingsCrud;
+        $this->repository = $repository;
     }
 
-    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
     public function display(): void
     {
         $customerId = get_user_meta(get_current_user_id(), 'ecurring_customer_id', true);
-        $subscriptions = $this->customer->getCustomerSubscriptions($customerId);
-        $subscriptionsData = $subscriptions->data ?? [];
+        $currentPage = (int) get_query_var('ecurring-subscriptions') ?: 1;
+
+        $subscriptionsPerPage = (int) get_option('posts_per_page', 10);
+        $subscriptionsList = $this->repository->getSubscriptionsByEcurringCustomerId($customerId, $currentPage, $subscriptionsPerPage);
+        $customerSubscriptionsTotal = $this->repository->getSubscriptionsNumberForEcurringCustomer($customerId);
+        $pagesTotal = (int) ceil($customerSubscriptionsTotal / $subscriptionsPerPage);
 
         $subscriptionPlans = $this->subscriptionPlans->getSubscriptionPlans();
         $subscriptionPlansData = $subscriptionPlans->data ?? [];
@@ -59,10 +62,38 @@ class Subscriptions
         foreach ($subscriptionPlansData as $product) {
             $products[$product->id] = $product->attributes->name;
         }
-        ?>
 
+        if (count($subscriptionsList) > 0) {
+            $this->displaySubscriptionsTable($subscriptionsList, $products);
+            $this->displayPagination($currentPage, $pagesTotal);
+            return;
+        }
+
+        $this->displayNoSubscriptionsMessage();
+    }
+
+    /**
+     * Render the table containing subscriptions of the current customer.
+     *
+     * @param array $subscriptionsList
+     * @param array $products
+     */
+    protected function displaySubscriptionsTable(array $subscriptionsList, array $products)
+    {
+        ?>
         <table class="woocommerce-orders-table shop_table shop_table_responsive">
-            <thead>
+            <?php $this->displaySubscriptionsTableHead(); ?>
+            <?php $this->displaySubscriptionsTableBody($subscriptionsList, $products) ?>
+        </table> <?php
+    }
+
+    /**
+     * Render heading of the subscriptions table for the current customer.
+     */
+    protected function displaySubscriptionsTableHead(): void
+    {
+        ?>
+        <thead>
             <tr>
                 <th class="woocommerce-orders-table__header"
                 ><?php
@@ -99,33 +130,43 @@ class Subscriptions
                     </th>
                 <?php } ?>
             </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($subscriptionsData as $subscription) {
-                if (!$subscription) {
-                    continue;
-                }
-                ?>
+            </thead> <?php
+    }
+
+    /**
+     * @param array $subscriptionsList Subscriptions to display in the table.
+     * @param array $products Available subscription plans.
+     * phpcs:disable
+     */
+    protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
+    {
+        //phpcs: enable
+        ?>
+        <tbody>
+            <?php foreach ($subscriptionsList as $subscription) { ?>
                 <tr class="woocommerce-orders-table__row order">
                     <td class="woocommerce-orders-table__cell" data-title="Subscription">
-                        <?php echo esc_attr($subscription->id); ?>
+                        <?php echo esc_attr($subscription->getId()); ?>
                     </td>
                     <td class="woocommerce-orders-table__cell" data-title="Product">
                         <?php echo esc_attr(
-                            $products[$subscription->relationships->{'subscription-plan'}->data->id]
+                            $products[$subscription->getSubscriptionPlanId()]
                         ); ?>
                     </td>
                     <td class="woocommerce-orders-table__cell" data-title="Status">
-                        <?php echo esc_attr(ucfirst($subscription->attributes->status)); ?>
+                        <?php echo esc_attr(
+                            ucfirst($subscription->getStatus()->getCurrentStatus())
+                        ); ?>
                     </td>
                     <?php if ($this->allowAtLeastOneOption()) { ?>
                         <td class="woocommerce-orders-table__cell" data-title="Options">
+                            <?php if ($subscription->getStatus()->getCurrentStatus() !== 'cancelled') { ?>
                             <form class="subscription-options"
-                                  data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                  data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                 <select style="width:100%;" name="ecurring_subscription"
                                         class="ecurring_subscription_options"
                                         data-subscription="<?php
-                                        echo esc_attr($subscription->id); ?>"
+                                        echo esc_attr($subscription->getId()); ?>"
                                 >
                                     <option value=""><?php
                                                         echo esc_html_x(
@@ -134,7 +175,7 @@ class Subscriptions
                                                             'woo-ecurring'
                                                         );
                                                         ?></option>
-                                    <?php if ($subscription->attributes->status === 'paused') { ?>
+                                    <?php if ($subscription->getStatus()->getCurrentStatus() === 'paused') { ?>
                                         <?php if ($this->allowOption('pause')) { ?>
                                             <option value="resume"
                                             ><?php
@@ -181,7 +222,7 @@ class Subscriptions
 
                                 <?php if ($this->allowOption('pause')) { ?>
                                     <div class="ecurring-hide pause-form"
-                                         data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                         data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <label><input name="ecurring_pause_subscription"
                                                       type="radio"
                                                       value="infinite"
@@ -228,13 +269,13 @@ class Subscriptions
                                 <?php } ?>
                                 <?php if ($this->allowOption('switch')) { ?>
                                     <div class="ecurring-hide switch-form"
-                                         data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                         data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <select class="ecurring_subscription_plan"
                                                 name="ecurring_subscription_plan">
                                             <?php foreach ($products as $key => $value) { ?>
                                                 <option value="<?php echo esc_attr($key); ?>"
                                                     <?php selected(
-                                                        $subscription->relationships->{'subscription-plan'}->data->id,
+                                                        $subscription->getSubscriptionPlanId(),
                                                         $key
                                                     ); ?>
                                                 ><?php echo esc_attr($value); ?></option>
@@ -267,7 +308,7 @@ class Subscriptions
                                 <?php } ?>
                                 <?php if ($this->allowOption('cancel')) { ?>
                                     <div class="ecurring-hide cancel-form"
-                                         data-subscription="<?php echo esc_attr($subscription->id); ?>">
+                                         data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
                                         <label><input name="ecurring_cancel_subscription"
                                                       type="radio"
                                                       value="infinite" class="tog"
@@ -302,13 +343,44 @@ class Subscriptions
                                     </div>
                                 <?php } ?>
                             </form>
+                            <?php } else {
+                                esc_html_e('No available options.', 'woo-ecurring');
+                            } ?>
                         </td>
                     <?php } ?>
                 </tr>
             <?php } ?>
-            </tbody>
-        </table>
-    <?php }
+            </tbody> <?php
+    }
+
+    protected function displayPagination(int $currentPage, int $pagesTotal): void
+    { ?>
+        <div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
+            <?php if ($currentPage > 1) : ?>
+                <a
+                        class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button"
+                        href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage - 1)); ?>">
+                    <?php esc_html_e('Previous', 'woocommerce'); ?>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($currentPage < $pagesTotal) : ?>
+                <a
+                        class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button"
+                        href="<?php echo esc_url(wc_get_endpoint_url('ecurring-subscriptions', $currentPage + 1)); ?>">
+                    <?php esc_html_e('Next', 'woocommerce'); ?>
+                </a>
+            <?php endif; ?>
+        </div> <?php
+    }
+
+    protected function displayNoSubscriptionsMessage(): void
+    { ?>
+        <div class="woocommerce-message woocommerce-message--info woocommerce-Message woocommerce-Message--info woocommerce-info">
+		<a class="woocommerce-Button button" href="<?php echo esc_url( apply_filters( 'woocommerce_return_to_shop_redirect', wc_get_page_permalink( 'shop' ) ) ); ?>"><?php esc_html_e( 'Browse products', 'woo-ecurring' ); ?></a>
+		<?php esc_html_e( 'You have no subscriptions yet.', 'woo-ecurring' ); ?>
+	    </div> <?php
+    }
 
     /**
      * Check if customer allowed to perform any actions with subscription.

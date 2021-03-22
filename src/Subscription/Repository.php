@@ -12,6 +12,7 @@ use Ecurring\WooEcurring\Subscription\SubscriptionFactory\DataBasedSubscriptionF
 use Ecurring\WooEcurring\Subscription\SubscriptionFactory\SubscriptionFactoryException;
 use eCurring_WC_Plugin;
 use Exception;
+use WP_Query;
 
 class Repository
 {
@@ -104,7 +105,7 @@ class Repository
         );
         update_post_meta(
             $subscriptionPostId,
-            '_ecurring_post_subscription_links', //todo: save subscription url instead or build it using subscription id.
+            '_ecurring_post_subscription_links',
             []
         );
         update_post_meta(
@@ -148,6 +149,101 @@ class Repository
             return null;
         }
 
+        return $this->createSubscriptionFromPostId($subscriptionId, $subscriptionPostId);
+    }
+
+    /**
+     * Return all subscriptions where eCurring customer id is the same as given.
+     *
+     * @param string $ecurringCustomerId
+     * @param int $page Number of page (offset)
+     * @param int $perPage Max number of subscriptions to return (limit), -1 for unlimited.
+     *
+     * @return SubscriptionInterface[]
+     */
+    public function getSubscriptionsByEcurringCustomerId(string $ecurringCustomerId, int $page = 1, int $perPage = -1): array
+    {
+
+        $foundPostIds = $this->getSubscriptionPostIdsByEcuringCustomerId($ecurringCustomerId, $page, $perPage);
+
+        $subscriptions = array_map(function (int $postId): ?SubscriptionInterface {
+            $subscriptionId = get_post_meta($postId, '_ecurring_post_subscription_id', true);
+            try {
+                return $this->createSubscriptionFromPostId($subscriptionId, $postId);
+            } catch (SubscriptionFactoryException $exception) {
+                eCurring_WC_Plugin::debug(
+                    sprintf(
+                        'Failed to create subscription instance,' .
+                        'post id %1$d. Caught exception message: %2$s',
+                        $postId,
+                        $exception->getMessage()
+                    )
+                );
+                return null;
+            }
+        }, $foundPostIds);
+
+        return array_filter($subscriptions);
+    }
+
+    /**
+     * Return number of subscriptions found locally for given eCurring customer.
+     *
+     * @param string $ecurringCustomerId The eCurring customer to search subscriptions for.
+     *
+     * @return int Subscriptions number.
+     */
+    public function getSubscriptionsNumberForEcurringCustomer(string $ecurringCustomerId): int
+    {
+        return count($this->getSubscriptionPostIdsByEcuringCustomerId($ecurringCustomerId));
+    }
+
+    /**
+     * Return array of subscriptions post ids with optional limit and offset.
+     *
+     * @param string $ecurringCustomerId The eCurring customer to search subscriptions for.
+     * @param int $page Page to start from.
+     * @param int $perPage Max number of ids to return (limit).
+     *
+     * @return array Found ids.
+     */
+    protected function getSubscriptionPostIdsByEcuringCustomerId(string $ecurringCustomerId, int $page = 1, int $perPage = -1): array
+    {
+        if ($ecurringCustomerId === '') {
+            return [];
+        }
+
+        $query = new WP_Query();
+
+        /** @var int[] */
+        return $query->query(
+            [
+                'post_type' => 'esubscriptions',
+                'orderby' => 'date',
+                'order' => 'DESC',
+                'posts_per_page' => $perPage,
+                'paged' => $page,
+                'fields' => 'ids',
+                'post_status' => 'publish',
+                'meta_key' => '_ecurring_post_subscription_customer_id',
+                'meta_value' => $ecurringCustomerId,
+            ]
+        );
+    }
+
+    /**
+     * Create a subscription instance from WP post.
+     *
+     * @param string $subscriptionId The id of the subscription in eCurring.
+     * @param int $subscriptionPostId The id of the WP post used to store subscription data.
+     *
+     * @return SubscriptionInterface
+     *
+     * @throws SubscriptionFactoryException
+     */
+    //phpcs:ignore Inpsyde.CodeQuality.FunctionLength.TooLong
+    protected function createSubscriptionFromPostId(string $subscriptionId, int $subscriptionPostId): SubscriptionInterface
+    {
         $startDate = get_post_meta(
             $subscriptionPostId,
             '_ecurring_post_subscription_start_date',

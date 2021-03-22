@@ -119,7 +119,7 @@ class ProductEditPageController
      *
      * @param int $productId
      *
-     * @return string[]
+     * @return array
      */
     protected function prepareMainTemplateContext(int $productId): array
     {
