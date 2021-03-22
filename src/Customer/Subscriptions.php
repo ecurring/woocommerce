@@ -315,7 +315,13 @@ class Subscriptions
                                                value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
                                         <div class="update-subscription">
                                             <p>
-                                                <button>Update</button>
+                                                <button><?php
+                                                    echo esc_html_x(
+                                                        'Update',
+                                                        'Label on the Subscriptions page in my account',
+                                                        'woo-ecurring'
+                                                    );
+                                                    ?></button>
                                             </p>
                                         </div>
                                     </div>
