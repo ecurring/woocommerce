@@ -301,7 +301,9 @@ class Subscriptions
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?></label>
-                                        <input name="ecurring_switch_date" type="date"
+                                        <input class="ecurring-hide"
+                                               name="ecurring_switch_date"
+                                               type="date"
                                                value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
                                         <button>Update</button>
                                     </div>
@@ -331,7 +333,8 @@ class Subscriptions
                                                     'woo-ecurring'
                                                 );
                                                 ?></label>
-                                        <input name="ecurring_cancel_date"
+                                        <input class="ecurring-hide"
+                                               name="ecurring_cancel_date"
                                                type="date"
                                                value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
                                         <button><?php
