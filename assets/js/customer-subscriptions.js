@@ -1,5 +1,19 @@
 jQuery(window).load(function () {
 
+  jQuery("input.tog[type=radio][name*='ecurring']").each(
+      function(){
+        jQuery(this).on('change', function (){
+          const datePicker = jQuery(this).closest("div[class^='ecurring']").find("input[type='date']")
+
+          if(jQuery(this).val() === 'specific-date'){
+            datePicker.removeClass('ecurring-hide')
+          } else {
+            datePicker.addClass('ecurring-hide')
+          }
+        })
+      }
+  );
+
   function hideOptions (subscription)
   {
     jQuery('div[data-subscription="' + subscription + '"]').
