@@ -81,7 +81,7 @@ class Subscriptions
     protected function displaySubscriptionsTable(array $subscriptionsList, array $products)
     {
         ?>
-        <table class="woocommerce-orders-table shop_table shop_table_responsive">
+        <table class="ecurring-subscriptions-table woocommerce-orders-table shop_table shop_table_responsive">
             <?php $this->displaySubscriptionsTableHead(); ?>
             <?php $this->displaySubscriptionsTableBody($subscriptionsList, $products) ?>
         </table> <?php
