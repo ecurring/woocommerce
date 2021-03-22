@@ -142,6 +142,7 @@ class Subscriptions
     {
         //phpcs: enable
         $dateToday = (new DateTime('now'))->format('Y-m-d');
+        $dateTomorrow = (new DateTime('tomorrow'))->format('Y-m-d');
         ?>
         <tbody>
             <?php foreach ($subscriptionsList as $subscription) { ?>
@@ -252,7 +253,8 @@ class Subscriptions
                                         <input class="ecurring-hide"
                                                name="ecurring_resume_date"
                                                type="date"
-                                               value="<?php echo esc_attr($dateToday); ?>">
+                                               min="<?php echo esc_attr($dateTomorrow); ?>"
+                                               value="<?php echo esc_attr($dateTomorrow); ?>">
                                         <div class="update-subscription">
                                             <p>
                                                 <button><?php
@@ -313,6 +315,7 @@ class Subscriptions
                                         <input class="ecurring-hide"
                                                name="ecurring_switch_date"
                                                type="date"
+                                               min="<?php echo esc_attr($dateToday); ?>"
                                                value="<?php echo esc_attr($dateToday); ?>">
                                         <div class="update-subscription">
                                             <p>
@@ -357,6 +360,7 @@ class Subscriptions
                                         <input class="ecurring-hide"
                                                name="ecurring_cancel_date"
                                                type="date"
+                                               min="<?php echo esc_attr($dateToday); ?>"
                                                value="<?php echo esc_attr($dateToday); ?>">
                                         <div class="update-subscription">
                                             <p>
