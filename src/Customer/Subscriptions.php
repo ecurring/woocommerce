@@ -81,7 +81,7 @@ class Subscriptions
     protected function displaySubscriptionsTable(array $subscriptionsList, array $products)
     {
         ?>
-        <table class="woocommerce-orders-table shop_table shop_table_responsive">
+        <table class="ecurring-subscriptions-table woocommerce-orders-table shop_table shop_table_responsive">
             <?php $this->displaySubscriptionsTableHead(); ?>
             <?php $this->displaySubscriptionsTableBody($subscriptionsList, $products) ?>
         </table> <?php
@@ -95,7 +95,7 @@ class Subscriptions
         ?>
         <thead>
             <tr>
-                <th class="woocommerce-orders-table__header"
+                <th class="woocommerce-orders-table__header subscription-id"
                 ><?php
                  echo esc_html_x(
                      'Subscription',
@@ -120,7 +120,7 @@ class Subscriptions
                     ); ?>
                 </th>
                 <?php if ($this->allowAtLeastOneOption()) { ?>
-                    <th class="woocommerce-orders-table__header"
+                    <th class="woocommerce-orders-table__header subscription-options"
                     ><?php
                         echo esc_html_x(
                             'Options',
@@ -141,6 +141,8 @@ class Subscriptions
     protected function displaySubscriptionsTableBody(array $subscriptionsList, array $products): void
     {
         //phpcs: enable
+        $dateToday = (new DateTime('now'))->format('Y-m-d');
+        $dateTomorrow = (new DateTime('tomorrow'))->format('Y-m-d');
         ?>
         <tbody>
             <?php foreach ($subscriptionsList as $subscription) { ?>
@@ -223,25 +225,27 @@ class Subscriptions
                                 <?php if ($this->allowOption('pause')) { ?>
                                     <div class="ecurring-hide pause-form"
                                          data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
-                                        <label><input name="ecurring_pause_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_pause_subscription"
                                                       type="radio"
                                                       value="immediately"
                                                       class="tog"
                                                       checked="checked"
                                             /><?php
                                                 echo esc_html_x(
-                                                    'Immediately',
+                                                    'Indefinitely',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?>
                                         </label>
-                                        <label><input name="ecurring_pause_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_pause_subscription"
                                                       type="radio"
                                                       value="specific-date"
                                                       class="tog"/>
                                             <?php
                                                 echo esc_html_x(
-                                                    'Specific date',
+                                                    'Until specific date',
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?>
@@ -249,14 +253,19 @@ class Subscriptions
                                         <input class="ecurring-hide"
                                                name="ecurring_resume_date"
                                                type="date"
-                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
-                                        <button><?php
-                                                echo esc_html_x(
-                                                    'Update',
-                                                    'Label on the Subscriptions page in my account',
-                                                    'woo-ecurring'
-                                                ); ?>
-                                        </button>
+                                               min="<?php echo esc_attr($dateTomorrow); ?>"
+                                               value="<?php echo esc_attr($dateTomorrow); ?>">
+                                        <div class="update-subscription">
+                                            <p>
+                                                <button><?php
+                                                        echo esc_html_x(
+                                                            'Update',
+                                                            'Label on the Subscriptions page in my account',
+                                                            'woo-ecurring'
+                                                        ); ?>
+                                                </button>
+                                            </p>
+                                        </div>
                                     </div>
                                     <button class="resume-update ecurring-hide">
                                         <?php
@@ -281,7 +290,8 @@ class Subscriptions
                                                 ><?php echo esc_attr($value); ?></option>
                                             <?php }; ?>
                                         </select>
-                                        <label><input name="ecurring_switch_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_switch_subscription"
                                                       type="radio"
                                                       value="immediately" class="tog"
                                                       checked="checked"
@@ -291,7 +301,8 @@ class Subscriptions
                                                             'Label on the Subscriptions page in my account',
                                                             'woo-ecurring'
                                                         ); ?></label>
-                                        <label><input name="ecurring_switch_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_switch_subscription"
                                                       type="radio"
                                                       value="specific-date"
                                                       class="tog"
@@ -301,15 +312,29 @@ class Subscriptions
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?></label>
-                                        <input name="ecurring_switch_date" type="date"
-                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
-                                        <button>Update</button>
+                                        <input class="ecurring-hide"
+                                               name="ecurring_switch_date"
+                                               type="date"
+                                               min="<?php echo esc_attr($dateToday); ?>"
+                                               value="<?php echo esc_attr($dateToday); ?>">
+                                        <div class="update-subscription">
+                                            <p>
+                                                <button><?php
+                                                    echo esc_html_x(
+                                                        'Update',
+                                                        'Label on the Subscriptions page in my account',
+                                                        'woo-ecurring'
+                                                    );
+                                                    ?></button>
+                                            </p>
+                                        </div>
                                     </div>
                                 <?php } ?>
                                 <?php if ($this->allowOption('cancel')) { ?>
                                     <div class="ecurring-hide cancel-form"
                                          data-subscription="<?php echo esc_attr($subscription->getId()); ?>">
-                                        <label><input name="ecurring_cancel_subscription"
+                                        <label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_cancel_subscription"
                                                       type="radio"
                                                       value="immediately"
                                                       class="tog"
@@ -320,7 +345,8 @@ class Subscriptions
                                                     'Label on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 ); ?></label>
-                                        <label><input name="ecurring_cancel_subscription"
+                                        <div><label class="ecurring-subscription-change-date-toggle"
+                                        ><input name="ecurring_cancel_subscription"
                                                       type="radio"
                                                       value="specific-date"
                                                       class="tog"
@@ -331,16 +357,22 @@ class Subscriptions
                                                     'woo-ecurring'
                                                 );
                                                 ?></label>
-                                        <input name="ecurring_cancel_date"
+                                        <input class="ecurring-hide"
+                                               name="ecurring_cancel_date"
                                                type="date"
-                                               value="<?php echo esc_attr((new DateTime('now'))->format('Y-m-d')); ?>">
-                                        <button><?php
+                                               min="<?php echo esc_attr($dateToday); ?>"
+                                               value="<?php echo esc_attr($dateToday); ?>">
+                                        <div class="update-subscription">
+                                            <p>
+                                                <button><?php
                                                 echo esc_html_x(
                                                     'Update',
                                                     'Button title on the Subscriptions page in my account',
                                                     'woo-ecurring'
                                                 );
                                                 ?></button>
+                                            </p>
+                                        </div>
                                     </div>
                                 <?php } ?>
                             </form>

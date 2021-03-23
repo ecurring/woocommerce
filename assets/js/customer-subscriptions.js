@@ -1,5 +1,20 @@
 jQuery(window).load(function () {
 
+  jQuery("input.tog[type=radio][name*='ecurring']").each(
+      function(){
+        jQuery(this).on('change', function (event){
+            toggleDatePicker(jQuery(event.target));
+        })
+      }
+  );
+
+  function toggleDatePicker(subscriptionChangeDateSwitcher) {
+    const datePicker = subscriptionChangeDateSwitcher.closest("div[class^='ecurring']").find("input[type='date']")
+    const specificDateSelected = subscriptionChangeDateSwitcher.val() !== 'specific-date'
+
+    datePicker.toggleClass('ecurring-hide', specificDateSelected)
+  }
+
   function hideOptions (subscription)
   {
     jQuery('div[data-subscription="' + subscription + '"]').
